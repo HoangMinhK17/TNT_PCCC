@@ -1,0 +1,32 @@
+/* Language Switcher */
+.language-switcher {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: 20px;
+}
+
+.language-switcher .fi {
+    font-size: 24px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.language-switcher .fi:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 992px) {
+    .language-switcher {
+        margin-left: auto;
+        /* Push to right on mobile? */
+        margin-right: 15px;
+    }
+
+    .language-switcher .fi {
+        font-size: 20px;
+    }
+}

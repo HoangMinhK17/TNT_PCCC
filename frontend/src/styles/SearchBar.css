@@ -1,0 +1,111 @@
+/* Search Bar */
+.search-bar-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    width: 100%;
+    height: 300px;
+    /* Increased height for better balance */
+    background-image: url('src/uploads/information/gthdoanhnghiep.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Add overlay to ensure text readability */
+.search-bar-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.search-container {
+    max-width: 800px;
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    /* Spacing between title and form */
+    position: relative;
+    z-index: 2;
+}
+
+.search-container h2 {
+    color: white;
+    font-size: 28px;
+    margin: 0;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.search-form {
+    display: flex;
+    width: 100%;
+    max-width: 600px;
+    background: white;
+    border-radius: 30px;
+    /* More rounded for modern look */
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    padding: 5px;
+    /* Inner padding for floating look */
+}
+
+.search-input {
+    flex: 1;
+    padding: 15px 25px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+}
+
+.search-btn {
+    padding: 12px 30px;
+    background: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 25px;
+    /* Rounded button inside */
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin: 2px;
+    /* Slight spacing from edge */
+}
+
+.search-btn:hover {
+    background: #B71C1C;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(183, 28, 28, 0.4);
+}
+
+@media (max-width: 768px) {
+    .search-bar-section {
+        height: 250px;
+    }
+
+    .search-container h2 {
+        font-size: 20px;
+    }
+
+    .search-input {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+
+    .search-btn {
+        padding: 10px 20px;
+    }
+}

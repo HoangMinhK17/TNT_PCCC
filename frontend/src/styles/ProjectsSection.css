@@ -1,0 +1,136 @@
+/* Projects Section */
+.projects-section {
+    padding: 80px 0;
+    background: var(--light-bg);
+    width: 100%;
+}
+
+.projects-carousel-container {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.projects-carousel {
+    display: flex;
+    gap: 30px;
+    animation: slideProjects 16s linear infinite;
+}
+
+.carousel-card {
+    flex: 0 0 calc(33.333% - 20px);
+    min-width: calc(33.333% - 20px);
+}
+
+.project-card {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.project-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 200px;
+}
+
+.project-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.project-card:hover .project-image {
+    transform: scale(1.1);
+}
+
+.project-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.project-card:hover .project-overlay {
+    opacity: 1;
+}
+
+.btn-view-project {
+    background: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 10px 25px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.btn-view-project:hover {
+    background: #B71C1C;
+}
+
+.project-info {
+    padding: 20px;
+}
+
+.project-category {
+    display: inline-block;
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.project-name {
+    font-size: 18px;
+    margin: 10px 0;
+    color: var(--text-color);
+}
+
+.project-description {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.project-year {
+    color: #999;
+    font-size: 12px;
+}
+
+.view-all-projects {
+    text-align: center;
+}
+
+@keyframes slideProjects {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@media (max-width: 768px) {
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+}
