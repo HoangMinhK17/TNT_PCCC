@@ -96,7 +96,7 @@ const Product = () => {
   return (
     <section className="products-section">
       <div className="container">
-        <h2 className="section-title">Danh sách sản phẩm PCCC</h2>
+        <h2 className="section-title">Danh sách sản phẩm </h2>
 
         <div className="products-layout">
           {/* Sidebar */}

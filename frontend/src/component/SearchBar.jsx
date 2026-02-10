@@ -12,7 +12,7 @@ const SearchBar = () => {
   return (
     <section className="search-bar-section">
       <div className="search-container">
-        <h2>Về TNT Company - Chuyên Gia PCCC</h2>
+        <h2>TNT Company - Chuyên Gia PCCC</h2>
         <form onSubmit={handleSearch} className="search-form">
           <input
             type="text"
