@@ -115,7 +115,7 @@ const ContactSection = () => {
 
               {submitted && (
                 <div className="success-message">
-                  ✓ Tin nhắn đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.
+                   Tin nhắn đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.
                 </div>
               )}
             </form>
@@ -159,14 +159,6 @@ const ContactSection = () => {
                 </div>
               </div>
 
-              <div className="social-links">
-                <h4>Kết nối với chúng tôi</h4>
-                <div className="social-buttons">
-                  <a href="#" className="social-btn facebook">f</a>
-                  <a href="#" className="social-btn zalo">zalo</a>
-
-                </div>
-              </div>
             </div>
           </div>
         </div>

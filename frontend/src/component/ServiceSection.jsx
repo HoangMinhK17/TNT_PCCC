@@ -53,7 +53,7 @@ const ServiceSection = () => {
               <div className="service-icon">{service.icon}</div>
               <h3 className="service-title">{service.title}</h3>
               <p className="service-description">{service.description}</p>
-              <a href="#contact" className="service-link">Tìm hiểu thêm →</a>
+              <a href="/contact" className="service-link">Tư vấn ngay</a>
             </div>
           ))}
         </div>

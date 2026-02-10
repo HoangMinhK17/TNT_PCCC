@@ -5,12 +5,8 @@ const PartnersSection = () => {
   const [partners] = useState([
     { id: 1, name: 'VinGroup', logo: 'src/uploads/Partner/pn1.jpg' },
     { id: 2, name: 'SunGroup', logo: 'src/uploads/Partner/pn2.jpg' },
-    { id: 3, name: 'KCN VSIP', logo: 'src/uploads/Partner/pn3.jpg' },
     { id: 4, name: 'Cảnh sát PCCC', logo: 'src/uploads/Partner/pn4.jpg' },
-    { id: 5, name: 'Novaland', logo: 'src/uploads/Partner/pn5.jpg' },
-    { id: 6, name: 'Aeon Mall', logo: 'src/uploads/Partner/pn6.jpg' },
     { id: 7, name: 'Viettel', logo: 'src/uploads/Partner/pn7.jpg' },
-    { id: 8, name: 'Samsung Bac Ninh', logo: 'src/uploads/Partner/pn8.jpg' }
   ]);
 
   return (

@@ -58,8 +58,15 @@ const Header = () => {
                 <nav className={`menu ${isMenuOpen ? 'active' : ''}`}>
                     <ul className="menu-items">
                         {menuItems.map((item, index) => (
-                            <li key={index}>
+                            <li key={index} className="menu-item">
                                 <Link to={item.path} onClick={closeMenu}>{item.label}</Link>
+                                {item.label === t("products") && (
+                                    <ul className="dropdown">
+                                        <li><Link to="/products/pccc">PCCC</Link></li>
+                                        <li><Link to="/products/pccc">Bình chữa cháy</Link></li>
+
+                                    </ul>
+                                )}
                             </li>
                         ))}
                     </ul>
