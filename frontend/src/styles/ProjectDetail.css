@@ -9,6 +9,7 @@
     padding: 40px;
     border-radius: var(--border-radius);
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+
 }
 
 .project-detail-image-wrapper {
@@ -27,7 +28,8 @@
 
 .project-detail-info {
     max-width: 900px;
-    margin: 0 auto;
+    margin: 0;
+
 }
 
 .project-detail-category {

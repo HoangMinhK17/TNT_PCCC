@@ -24,7 +24,7 @@ body {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 0 var(--padding);
 }
@@ -43,7 +43,7 @@ body {
 .section-title::after {
   content: '';
   display: block;
-  width: 80px;
+  width: 400px;
   height: 4px;
   background: var(--primary-color);
   margin: 15px auto 0;

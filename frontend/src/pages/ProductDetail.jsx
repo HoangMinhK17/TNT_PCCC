@@ -61,6 +61,22 @@ const ProductDetail = () => {
                         <div className="product-specs">
                             <h3>Chi tiết sản phẩm</h3>
                             <p>{product.detail}</p>
+
+                            {product.specifications && product.specifications.length > 0 && (
+                                <div className="specs-container">
+                                    <h4>Thông số kỹ thuật</h4>
+                                    <table className="specs-table">
+                                        <tbody>
+                                            {product.specifications.map((spec, index) => (
+                                                <tr key={index} className="specs-row">
+                                                    <td className="specs-label">{spec.label}</td>
+                                                    <td className="specs-value">{spec.value}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
                         </div>
 
                         <div className="product-actions">

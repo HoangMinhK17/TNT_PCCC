@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="container">
         <div className="footer-content">
           <div className="footer-section">
-            <h4 className="footer-title">Về TNT Company</h4>
+            <h4 className="footer-title">TNT Company</h4>
             <p style={{ color: '#999', fontSize: '14px', marginBottom: '15px', lineHeight: '1.6' }}>
               Giải pháp PCCC toàn diện - An toàn cho mọi công trình.
               Chúng tôi cam kết chất lượng và sự hài lòng tuyệt đối.
@@ -26,7 +26,6 @@ const Footer = () => {
             <ul className="footer-list">
               <li><Link to="/products">Danh sách sản phẩm</Link></li>
               <li><Link to="/services">Dịch vụ tư vấn</Link></li>
-              <li><Link to="/services">Hỗ trợ kỹ thuật</Link></li>
             </ul>
           </div>
 
@@ -44,19 +43,15 @@ const Footer = () => {
             <h4 className="footer-title">Liên hệ</h4>
             <ul className="footer-list">
               <li className="contact-item">
-                📍 Địa chỉ: 123 Đường Lê Lợi, Quận 1, TP.HCM
+                📍 : 123 Đường Lê Lợi, Quận 1, TP.HCM
               </li>
               <li className="contact-item">
-                📞 Điện thoại: 0912345678
+                📞 : 0912345678
               </li>
               <li className="contact-item">
-                ✉️ Email: info@tntcompany.com
+                ✉️ : info@tntcompany.com
               </li>
-              <li className="contact-item social-icons">
-                <a href="#" className="social-icon">f</a>
-                <a href="#" className="social-icon">tw</a>
-                <a href="#" className="social-icon">ig</a>
-              </li>
+       
             </ul>
           </div>
         </div>

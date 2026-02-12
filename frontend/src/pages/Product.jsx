@@ -11,7 +11,7 @@ const Product = () => {
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 6;
+  const productsPerPage = 8;
 
   const filteredProducts = products.filter(product => {
     const matchCategory = selectedCategory === 'Tất cả' || product.category === selectedCategory;
@@ -41,23 +41,19 @@ const Product = () => {
                 value={searchTerm}
                 onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                 className="sidebar-search-input"
+                style={{
+                  width: '80%',
+                  padding: '12px 20px',
+                  border: '1px solid #ddd',
+                  borderRadius: '50px',
+                  fontSize: '15px',
+                  outline: 'none'
+                }}
+
               />
             </div>
 
-            <div className="category-list">
-              <h3>Danh mục</h3>
-              <ul>
-                {categories.map((cat, index) => (
-                  <li
-                    key={index}
-                    className={selectedCategory === cat ? 'active' : ''}
-                    onClick={() => { setSelectedCategory(cat); setCurrentPage(1); }}
-                  >
-                    {cat}
-                  </li>
-                ))}
-              </ul>
-            </div>
+
           </aside>
 
           <div className="products-content">

@@ -126,7 +126,6 @@ const ContactSection = () => {
               <h3>Thông tin liên hệ</h3>
 
               <div className="info-item">
-                <div className="info-icon">📍</div>
                 <div className="info-content">
                   <h4>Địa chỉ</h4>
                   <p>123 Đường Lê Lợi, Quận 1, TP. Hồ Chí Minh</p>
@@ -134,7 +133,6 @@ const ContactSection = () => {
               </div>
 
               <div className="info-item">
-                <div className="info-icon">📞</div>
                 <div className="info-content">
                   <h4>Điện thoại</h4>
                   <p><a href="tel:0912345678">(+84) 912 345 678</a></p>
@@ -142,7 +140,6 @@ const ContactSection = () => {
               </div>
 
               <div className="info-item">
-                <div className="info-icon">✉️</div>
                 <div className="info-content">
                   <h4>Email</h4>
                   <p><a href="mailto:info@tntcompany.com">info@tntcompany.com</a></p>
@@ -150,7 +147,6 @@ const ContactSection = () => {
               </div>
 
               <div className="info-item">
-                <div className="info-icon">🕐</div>
                 <div className="info-content">
                   <h4>Giờ làm việc</h4>
                   <p>Thứ Hai - Thứ Sáu: 8:00 - 17:00</p>

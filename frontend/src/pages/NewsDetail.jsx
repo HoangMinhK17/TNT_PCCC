@@ -46,7 +46,7 @@ const NewsDetail = () => {
                     </div>
 
                     <div className="news-detail-footer">
-                        <Link to="/news" className="btn-back">← Quay lại tin tức</Link>
+                        <Link to="/news" className="btn-back">Quay lại</Link>
                     </div>
                 </div>
             </div>

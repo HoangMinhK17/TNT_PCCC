@@ -6,9 +6,21 @@ import '../styles/ProductSection.css';
 const ProductSection = () => {
     // Use imported products
     // Filter only featured products for the section
-    const featuredProducts = products.filter(p => p.isFeatured);
+    const [visibleProducts, setVisibleProducts] = useState(products.filter(p => p.isFeatured));
 
-    console.log(featuredProducts);
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            setVisibleProducts(prev => {
+                if (prev.length <= 1) return prev;
+                const newProducts = [...prev];
+                const firstProduct = newProducts.shift();
+                newProducts.push(firstProduct);
+                return newProducts;
+            });
+        }, 5000); // Rotate every 3 seconds
+
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <section id="products" className="products-section">
@@ -17,7 +29,7 @@ const ProductSection = () => {
 
                 <h2 className="section-title">Danh sách sản phẩm nổi bật</h2>
                 <div className="products-grid">
-                    {featuredProducts.map(product => (
+                    {visibleProducts.slice(0, 4).map(product => (
                         <Link
                             key={product.id}
                             to={`/products/${product.id}`}

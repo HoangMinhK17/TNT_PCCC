@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Header.css';
 import { useTranslation } from 'react-i18next';
+import { products } from '../data/products';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -10,9 +11,10 @@ const Header = () => {
     const languageGlobal = JSON.parse(localStorage.getItem("language")) || "vn";
 
 
-    const handleLanguageChange = (e) => {
-        i18n.changeLanguage(e.target.value);
-        localStorage.setItem("language", JSON.stringify(e.target.value));
+    const handleLanguageChange = (lang) => {
+        i18n.changeLanguage(lang);
+        localStorage.setItem("language", JSON.stringify(lang));
+        setLanguage(lang); // Update local state to trigger re-render if needed
     };
 
     console.log(language);
@@ -40,6 +42,7 @@ const Header = () => {
 
     return (
         <header className="header">
+
             <div className="header-container">
                 <Link to="/" className="logo" onClick={closeMenu}>
                     <img src="src/uploads/tnt.jpg" alt="Logo" className="logo-img" />
@@ -62,9 +65,16 @@ const Header = () => {
                                 <Link to={item.path} onClick={closeMenu}>{item.label}</Link>
                                 {item.label === t("products") && (
                                     <ul className="dropdown">
-                                        <li><Link to="/products/pccc">PCCC</Link></li>
-                                        <li><Link to="/products/pccc">Bình chữa cháy</Link></li>
-
+                                        {[...new Set(products.map(p => p.category))].map((category, idx) => (
+                                            <li key={idx}>
+                                                <Link
+                                                    to={`/products?category=${encodeURIComponent(category)}`}
+                                                    onClick={closeMenu}
+                                                >
+                                                    {category}
+                                                </Link>
+                                            </li>
+                                        ))}
                                     </ul>
                                 )}
                             </li>
@@ -72,11 +82,24 @@ const Header = () => {
                     </ul>
                 </nav>
                 <div className="language-switcher">
-                    <select defaultValue={languageGlobal} className="language-select" onChange={handleLanguageChange}>
-                        <option value="vn">VN</option>
-                        <option value="en">ENG</option>
-                        <option value="ch">CH</option>
-                    </select>
+                    <img
+                        src="src/uploads/language/vietnam.png"
+                        alt="VN"
+                        className={`language-flag ${languageGlobal === 'vn' ? 'active' : ''}`}
+                        onClick={() => handleLanguageChange('vn')}
+                    />
+                    <img
+                        src="src/uploads/language/united-kingdom.png"
+                        alt="EN"
+                        className={`language-flag ${languageGlobal === 'en' ? 'active' : ''}`}
+                        onClick={() => handleLanguageChange('en')}
+                    />
+                    <img
+                        src="src/uploads/language/china.png"
+                        alt="CH"
+                        className={`language-flag ${languageGlobal === 'ch' ? 'active' : ''}`}
+                        onClick={() => handleLanguageChange('ch')}
+                    />
                 </div>
             </div>
         </header>

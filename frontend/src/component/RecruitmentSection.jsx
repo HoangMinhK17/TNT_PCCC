@@ -121,7 +121,7 @@ const RecruitmentSection = () => {
                     <span className="job-level">{job.level}</span>
                     <span className="job-salary">{job.salary}</span>
                   </div>
-                  <p className="job-location">📍 {job.location}</p>
+                  <p className="job-location"> {job.location}</p>
                 </div>
               ))}
             </div>
@@ -134,19 +134,19 @@ const RecruitmentSection = () => {
 
                 <div className="detail-info">
                   <div className="info-row">
-                    <span className="label">📍 Địa điểm:</span>
+                    <span className="label">Địa điểm:</span>
                     <span>{selectedJob.location}</span>
                   </div>
                   <div className="info-row">
-                    <span className="label">💼 Cấp độ:</span>
+                    <span className="label">Cấp độ:</span>
                     <span>{selectedJob.level}</span>
                   </div>
                   <div className="info-row">
-                    <span className="label">💰 Mức lương:</span>
+                    <span className="label"> Mức lương:</span>
                     <span className="salary">{selectedJob.salary}</span>
                   </div>
                   <div className="info-row">
-                    <span className="label">⏱️ Loại hình:</span>
+                    <span className="label">Loại hình:</span>
                     <span>{selectedJob.type}</span>
                   </div>
                 </div>

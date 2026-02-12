@@ -8,43 +8,62 @@
 /* Product Layout with Sidebar */
 .products-layout {
     display: flex;
-    gap: 40px;
-    align-items: flex-start;
+    flex-direction: column;
+    /* Stack vertically so sidebar (toolbar) is on top */
+    gap: 30px;
 }
 
-/* Sidebar Styles */
+/* Sidebar Styles (Now acts as a top toolbar) */
 .products-sidebar {
-    flex: 0 0 280px;
-    background: var(--white);
-    padding: 30px;
-    border-radius: var(--border-radius);
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-    position: sticky;
-    top: 180px;
-    height: fit-content;
+    width: 100%;
+    background: transparent;
+    /* Remove background to blend in */
+    padding: 0;
+    box-shadow: none;
+    /* Remove shadow */
+    position: static;
+    /* No longer sticky */
+    display: flex;
+    justify-content: flex-start;
+    /* Align search to right, or center if preferred */
+    margin-bottom: 20px;
 }
 
+/* Search Box Styling */
 .search-box {
-    margin-bottom: 30px;
+    position: relative;
+    max-width: 400px;
+    width: 100%;
 }
 
 .sidebar-search-input {
     width: 100%;
-    padding: 12px 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
+    padding: 12px 20px;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    /* Fully rounded */
     font-size: 15px;
     transition: all 0.3s ease;
-    background-color: #f9f9f9;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    /* Soft shadow */
+    outline: none;
+    padding-left: 20px;
 }
 
 .sidebar-search-input:focus {
     border-color: var(--primary-color);
+    box-shadow: 0 4px 15px rgba(211, 47, 47, 0.15);
+}
+
+.search-input:focus {
+    border-color: var(--primary-color);
     background-color: #fff;
-    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+    box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.1);
     outline: none;
 }
 
+/* Category List (Hidden/Removed) styles can be kept or removed, but keeping safe */
 .category-list h3 {
     font-size: 18px;
     margin-bottom: 20px;
@@ -113,8 +132,8 @@
     display: flex;
     flex-direction: column;
     border: 1px solid transparent;
-    justify-content: center;
-    align-items: center;
+    justify-content: start;
+    align-items: start;
 }
 
 .product-card:hover {

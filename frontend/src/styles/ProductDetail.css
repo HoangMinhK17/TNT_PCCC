@@ -130,6 +130,45 @@
     font-size: 15px;
     color: #666;
     line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.specs-container h4 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: var(--text-color);
+    font-weight: 600;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+    display: inline-block;
+}
+
+.specs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.specs-row:nth-child(odd) {
+    background-color: #f1f1f1;
+}
+
+.specs-row:nth-child(even) {
+    background-color: #fff;
+}
+
+.specs-label {
+    padding: 10px 15px;
+    font-weight: 600;
+    color: #555;
+    width: 40%;
+    border: 1px solid #e0e0e0;
+}
+
+.specs-value {
+    padding: 10px 15px;
+    color: #333;
+    border: 1px solid #e0e0e0;
 }
 
 .product-actions {

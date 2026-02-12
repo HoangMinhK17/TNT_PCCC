@@ -13,12 +13,14 @@ import ProductDetail from './pages/ProductDetail'
 import ProjectDetail from './pages/ProjectDetail'
 import NewsDetail from './pages/NewsDetail'
 import InfotmationCompany from './pages/InfotmationCompany'
-import Project from './pages/project'
+import Project from './pages/Project'
 import New from './pages/New'
 import Contract from './pages/Contract'
 import Recruiment from './pages/Recruiment'
 import Partner from './pages/Partner'
 import Service from './pages/Service'
+import ServiceDetail from './pages/ServiceDetail'
+
 
 function App() {
   useEffect(() => {
@@ -45,6 +47,7 @@ function App() {
         <Route path="/news" element={<New />} />
         <Route path="/contact" element={<Contract />} />
         <Route path="/services" element={<Service />} />
+        <Route path="/services/:id" element={<ServiceDetail />} />
         <Route path="/recruitment" element={<Recruiment />} />
       </Routes>
       <Footer />

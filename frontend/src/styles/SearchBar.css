@@ -86,23 +86,35 @@
 }
 
 .search-btn {
-    padding: 12px 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    /* Circle shape */
     background: var(--primary-color);
     color: var(--white);
     border: none;
-    border-radius: 25px;
-    /* Rounded button inside */
     cursor: pointer;
-    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     transition: all 0.3s ease;
     margin: 2px;
     /* Slight spacing from edge */
+    flex-shrink: 0;
+    /* Prevent shrinking */
 }
 
 .search-btn:hover {
-    background: #B71C1C;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(183, 28, 28, 0.4);
+    background: #FF0000;
+    /* Brighter red on hover if primary is red, otherwise standard hover logic */
+    transform: scale(1.05);
+    /* Slight grow effect */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.search-icon-svg {
+    width: 24px;
+    height: 24px;
 }
 
 @media (max-width: 768px) {
@@ -120,6 +132,7 @@
     }
 
     .search-btn {
-        padding: 10px 20px;
+        width: 40px;
+        height: 40px;
     }
 }
