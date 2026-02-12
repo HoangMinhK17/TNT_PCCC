@@ -83,6 +83,14 @@
     border: none;
     font-size: 16px;
     outline: none;
+    background: transparent;
+}
+
+.search-input:focus,
+.search-input:hover {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 .search-btn {

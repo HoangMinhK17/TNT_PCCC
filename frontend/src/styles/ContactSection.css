@@ -1,6 +1,6 @@
 /* Contact Section */
 .contact-section {
-    padding: 80px 0;
+    padding: 20px 0;
     background: var(--white);
     width: 100%;
 }
@@ -132,9 +132,12 @@
 }
 
 .info-icon {
-    font-size: 32px;
+    font-size: 24px;
     min-width: 40px;
     text-align: center;
+    color: var(--primary-color);
+    margin-top: 5px;
+    /* Align with text */
 }
 
 .info-content h4 {

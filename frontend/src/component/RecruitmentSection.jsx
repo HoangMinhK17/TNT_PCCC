@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import '../styles/RecruitmentSection.css';
+import {
+  FaMoneyBillWave, FaHeartbeat, FaGraduationCap, FaCar, FaClock, FaGift,
+  FaMapMarkerAlt, FaUserTie, FaBriefcase, FaCheckCircle
+} from 'react-icons/fa';
 
 const RecruitmentSection = () => {
   const [selectedJob, setSelectedJob] = useState(null);
@@ -92,12 +96,12 @@ const RecruitmentSection = () => {
   ];
 
   const benefits = [
-    { icon: '💰', title: 'Lương cạnh tranh', desc: 'Lương thưởng xứng đáng với năng lực' },
-    { icon: '🏥', title: 'Bảo hiểm đầy đủ', desc: 'BHXH, BHYT, BHTN' },
-    { icon: '🎓', title: 'Đào tạo liên tục', desc: 'Cơ hội nâng cao kiến thức chuyên môn' },
-    { icon: '🚗', title: 'Cấp xe công', desc: 'Cho các vị trí quản lý' },
-    { icon: '⏰', title: 'Công việc linh hoạt', desc: 'Thời gian làm việc hợp lý' },
-    { icon: '🎁', title: 'Phúc lợi hấp dẫn', desc: 'Thưởng lễ, du lịch, team building' }
+    { icon: <FaMoneyBillWave />, title: 'Lương cạnh tranh', desc: 'Lương thưởng xứng đáng với năng lực' },
+    { icon: <FaHeartbeat />, title: 'Bảo hiểm đầy đủ', desc: 'BHXH, BHYT, BHTN' },
+    { icon: <FaGraduationCap />, title: 'Đào tạo liên tục', desc: 'Cơ hội nâng cao kiến thức chuyên môn' },
+    { icon: <FaCar />, title: 'Cấp xe công', desc: 'Cho các vị trí quản lý' },
+    { icon: <FaClock />, title: 'Công việc linh hoạt', desc: 'Thời gian làm việc hợp lý' },
+    { icon: <FaGift />, title: 'Phúc lợi hấp dẫn', desc: 'Thưởng lễ, du lịch, team building' }
   ];
 
   return (
@@ -121,7 +125,7 @@ const RecruitmentSection = () => {
                     <span className="job-level">{job.level}</span>
                     <span className="job-salary">{job.salary}</span>
                   </div>
-                  <p className="job-location"> {job.location}</p>
+                  <p className="job-location"> <FaMapMarkerAlt style={{ marginRight: '5px' }} /> {job.location}</p>
                 </div>
               ))}
             </div>
@@ -134,18 +138,22 @@ const RecruitmentSection = () => {
 
                 <div className="detail-info">
                   <div className="info-row">
+                    <span className="icon"><FaMapMarkerAlt /></span>
                     <span className="label">Địa điểm:</span>
                     <span>{selectedJob.location}</span>
                   </div>
                   <div className="info-row">
+                    <span className="icon"><FaUserTie /></span>
                     <span className="label">Cấp độ:</span>
                     <span>{selectedJob.level}</span>
                   </div>
                   <div className="info-row">
+                    <span className="icon"><FaMoneyBillWave /></span>
                     <span className="label"> Mức lương:</span>
                     <span className="salary">{selectedJob.salary}</span>
                   </div>
                   <div className="info-row">
+                    <span className="icon"><FaBriefcase /></span>
                     <span className="label">Loại hình:</span>
                     <span>{selectedJob.type}</span>
                   </div>
@@ -156,7 +164,7 @@ const RecruitmentSection = () => {
                   <ul className="requirements-list">
                     {selectedJob.requirements.map((req, idx) => (
                       <li key={idx}>
-                        <span className="check">✓</span> {req}
+                        <span className="check"><FaCheckCircle /></span> {req}
                       </li>
                     ))}
                   </ul>
@@ -166,7 +174,7 @@ const RecruitmentSection = () => {
               </div>
             ) : (
               <div className="no-selection">
-                <p>👈 Chọn một vị trí để xem chi tiết</p>
+                <p>Chọn một vị trí để xem chi tiết</p>
               </div>
             )}
           </div>

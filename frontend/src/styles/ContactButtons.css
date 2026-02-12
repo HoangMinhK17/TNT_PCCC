@@ -14,19 +14,26 @@
 .social-btn-global {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    /* Align content to start for expansion */
     width: 60px;
+    /* Start as circle */
     height: 60px;
-    border-radius: 50%;
+    border-radius: 30px;
+    /* Fully rounded pill */
     color: white;
     text-decoration: none;
     font-weight: 600;
-    font-size: 0;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 16px;
+    transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.3s ease;
+    /* Smooth expansion */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     position: relative;
     overflow: hidden;
+    /* Hide text */
     cursor: pointer;
+    padding-left: 12px;
+    /* Center icon initially (60-35)/2 approx */
 }
 
 .social-btn-global img {
@@ -34,48 +41,39 @@
     height: 35px;
     object-fit: contain;
     transition: transform 0.3s ease;
+    flex-shrink: 0;
+    /* Prevent icon shrinking */
 }
-
-/* Remove old icon styles */
-/* .social-btn-global i { ... } - replaced by img styles */
 
 /* Ensure text is vertically centered */
 .social-btn-global span {
     white-space: nowrap;
-    margin-left: 10px;
-    /* Add spacing between icon and text */
-    display: none;
-    /* Hide text initially */
+    margin-left: 15px;
+    opacity: 0;
+    /* Hidden initially */
+    transform: translateX(20px);
+    /* Slid out slightly */
+    transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
+    /* Delayed fade in */
+    color: white;
 }
 
-/* Show text on hover */
-.social-btn-global:hover span {
-    display: inline-block;
+/* Hover State */
+.social-btn-global:hover {
+    width: 220px;
+    /* Expanded width */
+    padding-left: 20px;
+    /* Adjust padding */
+    filter: brightness(1.1);
 }
 
 .social-btn-global:hover img {
     transform: scale(1.1);
 }
 
-/* Expand on hover */
-/* Expand on hover */
-.social-btn-global:hover {
-    width: auto;
-    /* Let it grow to fit content, or fixed 200px? Old was 160px */
-    min-width: 180px;
-    /* Ensure enough space */
-    border-radius: 30px;
-    padding: 0 20px;
-    gap: 10px;
-    transform: none;
-    /* Override default hover transform */
-    filter: brightness(1.1);
-}
-
 .social-btn-global:hover span {
-    display: inline-block;
-    font-size: 16px;
-    color: white;
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .social-btn-global.zalo {

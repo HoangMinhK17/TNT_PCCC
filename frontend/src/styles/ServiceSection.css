@@ -1,6 +1,6 @@
 /* Services Section */
 .services-section {
-    padding: 80px 0;
+    padding: 20px 0;
     background: var(--light-bg);
     width: 100%;
 }
@@ -10,14 +10,14 @@
     grid-template-columns: repeat(4, 1fr);
     /* Force 4 columns */
     gap: 30px;
-    margin-bottom: 60px;
+    margin-bottom: 20px;
 }
 
 .service-card {
     background: var(--white);
     padding: 40px;
     border-radius: var(--border-radius);
-    text-align: center;
+    text-align: start;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-top: 4px solid var(--primary-color);
@@ -73,19 +73,21 @@
     color: #B71C1C;
 }
 
+/* Highlight Section */
 .service-highlight {
-    background: var(--white);
-    padding: 50px;
-    border-radius: var(--border-radius);
-    margin-top: 40px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: transparent;
+    /* Remove background container */
+    padding: 20px 0;
+    margin-top: 20px;
+    box-shadow: none;
 }
 
 .service-highlight h3 {
-    font-size: 24px;
-    margin-bottom: 30px;
+    font-size: 28px;
+    margin-bottom: 40px;
     text-align: center;
     color: var(--text-color);
+    font-weight: 700;
 }
 
 .highlight-grid {
@@ -94,16 +96,44 @@
     gap: 30px;
 }
 
-.highlight-item h4 {
+.highlight-item {
+    background: var(--white);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.highlight-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-bottom-color: var(--primary-color);
+}
+
+.highlight-icon {
+    font-size: 40px;
     color: var(--primary-color);
-    margin-bottom: 10px;
-    font-size: 16px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+.highlight-item h4 {
+    color: var(--text-color);
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: 700;
 }
 
 .highlight-item p {
     color: #666;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.6;
+    margin: 0;
 }
 
 @media (max-width: 992px) {

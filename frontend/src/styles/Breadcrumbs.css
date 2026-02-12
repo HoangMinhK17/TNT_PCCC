@@ -1,7 +1,6 @@
 .breadcrumbs-container {
     background-color: #f5f5f5;
     padding: 15px 0;
-    margin-bottom: 30px;
     border-bottom: 1px solid #e0e0e0;
     background-image: url('src/uploads/breadcrumb/nav2.jpg');
 }
@@ -25,7 +24,7 @@
 .breadcrumb-item:not(:last-child)::after {
     content: '/';
     margin: 0 10px;
-    color: #ccc;
+    color: #e00a0a;
 }
 
 .breadcrumb-item a {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Footer.css';
+import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -43,15 +44,18 @@ const Footer = () => {
             <h4 className="footer-title">Liên hệ</h4>
             <ul className="footer-list">
               <li className="contact-item">
-                📍 : 123 Đường Lê Lợi, Quận 1, TP.HCM
+                <span className="icon"><FaMapMarkerAlt /></span>
+                <span>123 Đường Lê Lợi, Quận 1, TP.HCM</span>
               </li>
               <li className="contact-item">
-                📞 : 0912345678
+                <span className="icon"><FaPhoneAlt /></span>
+                <span>0912345678</span>
               </li>
               <li className="contact-item">
-                ✉️ : info@tntcompany.com
+                <span className="icon"><FaEnvelope /></span>
+                <span>info@tntcompany.com</span>
               </li>
-       
+
             </ul>
           </div>
         </div>

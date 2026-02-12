@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/ServiceSection.css';
 import { services } from '../data/services';
+import { FaTrophy, FaUserTie, FaTools, FaHandHoldingUsd } from 'react-icons/fa';
 
 const ServiceSection = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -59,19 +60,31 @@ const ServiceSection = () => {
           <h3>Tại sao chọn dịch vụ của chúng tôi?</h3>
           <div className="highlight-grid">
             <div className="highlight-item">
-              <h4>✓ Kinh nghiệm 10+ năm</h4>
+              <div className="highlight-icon">
+                <FaTrophy />
+              </div>
+              <h4>Kinh nghiệm 10+ năm</h4>
               <p>Đã phục vụ hàng ngàn khách hàng lớn nhỏ trên toàn quốc</p>
             </div>
             <div className="highlight-item">
-              <h4>✓ Đội ngũ chuyên nghiệp</h4>
+              <div className="highlight-icon">
+                <FaUserTie />
+              </div>
+              <h4>Đội ngũ chuyên nghiệp</h4>
               <p>Nhân viên có chứng chỉ PCCC, được đào tạo bài bản</p>
             </div>
             <div className="highlight-item">
-              <h4>✓ Giải pháp toàn diện</h4>
-              <p>Từ tư vấn, lắp đặt đến bảo dưỡng, kiểu chứng</p>
+              <div className="highlight-icon">
+                <FaTools />
+              </div>
+              <h4>Giải pháp toàn diện</h4>
+              <p>Từ tư vấn, lắp đặt đến bảo dưỡng, kiểm định</p>
             </div>
             <div className="highlight-item">
-              <h4>✓ Giá cạnh tranh</h4>
+              <div className="highlight-icon">
+                <FaHandHoldingUsd />
+              </div>
+              <h4>Giá cạnh tranh</h4>
               <p>Cung cấp giá tốt nhất trên thị trường với chất lượng đảm bảo</p>
             </div>
           </div>

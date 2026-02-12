@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock } from 'react-icons/fa';
 import '../styles/ContactSection.css';
 
 const ContactSection = () => {
@@ -23,7 +24,7 @@ const ContactSection = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    setSubmitted(true);
+    setSubmitted(true)
     setTimeout(() => {
       setFormData({
         name: '',
@@ -115,7 +116,7 @@ const ContactSection = () => {
 
               {submitted && (
                 <div className="success-message">
-                   Tin nhắn đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.
+                  Tin nhắn đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.
                 </div>
               )}
             </form>
@@ -126,6 +127,9 @@ const ContactSection = () => {
               <h3>Thông tin liên hệ</h3>
 
               <div className="info-item">
+                <div className="info-icon">
+                  <FaMapMarkerAlt />
+                </div>
                 <div className="info-content">
                   <h4>Địa chỉ</h4>
                   <p>123 Đường Lê Lợi, Quận 1, TP. Hồ Chí Minh</p>
@@ -133,6 +137,9 @@ const ContactSection = () => {
               </div>
 
               <div className="info-item">
+                <div className="info-icon">
+                  <FaPhoneAlt />
+                </div>
                 <div className="info-content">
                   <h4>Điện thoại</h4>
                   <p><a href="tel:0912345678">(+84) 912 345 678</a></p>
@@ -140,6 +147,9 @@ const ContactSection = () => {
               </div>
 
               <div className="info-item">
+                <div className="info-icon">
+                  <FaEnvelope />
+                </div>
                 <div className="info-content">
                   <h4>Email</h4>
                   <p><a href="mailto:info@tntcompany.com">info@tntcompany.com</a></p>
@@ -147,6 +157,9 @@ const ContactSection = () => {
               </div>
 
               <div className="info-item">
+                <div className="info-icon">
+                  <FaClock />
+                </div>
                 <div className="info-content">
                   <h4>Giờ làm việc</h4>
                   <p>Thứ Hai - Thứ Sáu: 8:00 - 17:00</p>

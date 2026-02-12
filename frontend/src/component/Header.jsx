@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom';
 import '../styles/Header.css';
 import { useTranslation } from 'react-i18next';
 import { products } from '../data/products';
+import { news } from '../data/news';
+
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const [activeSubmenu, setActiveSubmenu] = useState(null); // Track active submenu
     const [language, setLanguage] = useState("");
 
     const languageGlobal = JSON.parse(localStorage.getItem("language")) || "vn";
@@ -21,10 +25,18 @@ const Header = () => {
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+        setActiveSubmenu(null); // Reset submenus when toggling main menu
     };
 
     const closeMenu = () => {
         setIsMenuOpen(false);
+        setActiveSubmenu(null);
+    };
+
+    const toggleSubmenu = (index, e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setActiveSubmenu(activeSubmenu === index ? null : index);
     };
 
     const { t, i18n } = useTranslation();
@@ -32,11 +44,11 @@ const Header = () => {
     const menuItems = [
         { label: t("home"), path: '/' },
         { label: t("about"), path: '/about' },
-        { label: t("products"), path: '/products' },
+        { label: t("products"), path: '/products', hasSubmenu: true },
         { label: t("services"), path: '/services' },
         { label: t("projects"), path: '/projects' },
         { label: t("recruitment"), path: '/recruitment' },
-        { label: t("news"), path: '/news' },
+        { label: t("news"), path: '/news', hasSubmenu: true },
         { label: t("contact"), path: '/contact' }
     ];
 
@@ -47,8 +59,6 @@ const Header = () => {
                 <Link to="/" className="logo" onClick={closeMenu}>
                     <img src="src/uploads/tnt.jpg" alt="Logo" className="logo-img" />
                 </Link>
-
-
 
                 <div className="menu-toggle" onClick={toggleMenu}>
                     <div className={`hamburger ${isMenuOpen ? 'active' : ''}`}>
@@ -61,14 +71,39 @@ const Header = () => {
                 <nav className={`menu ${isMenuOpen ? 'active' : ''}`}>
                     <ul className="menu-items">
                         {menuItems.map((item, index) => (
-                            <li key={index} className="menu-item">
-                                <Link to={item.path} onClick={closeMenu}>{item.label}</Link>
+                            <li key={index} className={`menu-item ${activeSubmenu === index ? 'submenu-open' : ''}`}>
+                                <div className="menu-link-wrapper">
+                                    <Link to={item.path} onClick={closeMenu}>{item.label}</Link>
+                                    {item.hasSubmenu && (
+                                        <span
+                                            className="submenu-toggle"
+                                            onClick={(e) => toggleSubmenu(index, e)}
+                                        >
+                                            {activeSubmenu === index ? <FaChevronUp /> : <FaChevronDown />}
+                                        </span>
+                                    )}
+                                </div>
+
                                 {item.label === t("products") && (
-                                    <ul className="dropdown">
+                                    <ul className={`dropdown ${activeSubmenu === index ? 'open' : ''}`}>
                                         {[...new Set(products.map(p => p.category))].map((category, idx) => (
                                             <li key={idx}>
                                                 <Link
                                                     to={`/products?category=${encodeURIComponent(category)}`}
+                                                    onClick={closeMenu}
+                                                >
+                                                    {category}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                                {item.label === t("news") && (
+                                    <ul className={`dropdown ${activeSubmenu === index ? 'open' : ''}`}>
+                                        {[...new Set(news.map(n => n.category))].map((category, idx) => (
+                                            <li key={idx}>
+                                                <Link
+                                                    to={`/news?category=${encodeURIComponent(category)}`}
                                                     onClick={closeMenu}
                                                 >
                                                     {category}

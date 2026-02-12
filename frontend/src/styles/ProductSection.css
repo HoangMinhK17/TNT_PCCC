@@ -1,33 +1,75 @@
 /* Product Section */
 .products-section {
-    padding: 60px 0;
-    background: var(--light-bg);
-    min-height: 80vh;
+    padding: 20px 0;
+    background-color: #f9f9f9;
+}
+
+.sidebar-title {
+    font-size: 18px;
+    margin: 20px 0 15px;
+    padding-left: 10px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.sidebar-categories {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.category-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    font-size: 15px;
+    color: #333;
+    transition: all 0.3s;
+}
+
+.category-btn:hover,
+.category-btn.active {
+    color: var(--primary-color);
+    padding-left: 20px;
+    font-weight: 600;
 }
 
 /* Product Layout with Sidebar */
 .products-layout {
     display: flex;
-    flex-direction: column;
-    /* Stack vertically so sidebar (toolbar) is on top */
     gap: 30px;
 }
 
-/* Sidebar Styles (Now acts as a top toolbar) */
 .products-sidebar {
-    width: 100%;
-    background: transparent;
-    /* Remove background to blend in */
-    padding: 0;
-    box-shadow: none;
-    /* Remove shadow */
-    position: static;
-    /* No longer sticky */
-    display: flex;
-    justify-content: flex-start;
-    /* Align search to right, or center if preferred */
-    margin-bottom: 20px;
+    width: 250px;
+    flex-shrink: 0;
 }
+
+.products-content {
+    flex: 1;
+}
+
+/* Category Grouped View */
+.category-section {
+    margin-bottom: 50px;
+}
+
+.product-category-title {
+    font-size: 24px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+/* Sidebar Styles (Now acts as a top toolbar) */
+
 
 /* Search Box Styling */
 .search-box {
@@ -294,5 +336,15 @@
         width: 100%;
         margin-bottom: 30px;
         position: static;
+    }
+}
+
+@media (max-width: 576px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .featured-products {
+        grid-template-columns: 1fr;
     }
 }

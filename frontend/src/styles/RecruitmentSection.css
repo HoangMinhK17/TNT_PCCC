@@ -1,6 +1,6 @@
 /* Recruitment Section */
 .recruitment-section {
-    padding: 80px 0;
+    padding: 20px 0;
     background: var(--white);
     width: 100%;
 }
@@ -210,9 +210,19 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* ... existing ... */
+.info-row .icon {
+    color: var(--primary-color);
+    font-size: 18px;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+}
+
 .benefit-icon {
     font-size: 40px;
     margin-bottom: 15px;
+    color: var(--primary-color);
 }
 
 .benefit-card h4 {

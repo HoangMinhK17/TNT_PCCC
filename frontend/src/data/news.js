@@ -1,30 +1,63 @@
+import tintuc1 from '../uploads/news/tintuc1.jpg';
+import tintuc2 from '../uploads/news/tintuc2.jpg';
+import tintuc3 from '../uploads/news/tintuc3.jpg';
+import tintuc4 from '../uploads/news/tintuc4.jpg';
+import tintuc5 from '../uploads/news/tintuc5.jpg';
+import tintuc6 from '../uploads/news/tintuc6.jpg';
 
 export const news = [
     {
         id: 1,
-        title: 'Quy định mới về an toàn PCCC cho nhà cao tầng 2026',
-        date: '08/02/2026',
-        category: 'Pháp luật',
-        image: '/src/uploads/tnt.jpg',
-        excerpt: 'Bộ Xây dựng và Bộ Công an vừa ban hành thông tư liên tịch mới quy định chi tiết về tiêu chuẩn PCCC.',
-        content: 'Bộ Xây dựng và Bộ Công an vừa ban hành thông tư liên tịch mới quy định chi tiết về tiêu chuẩn PCCC cho các tòa nhà cao tầng. Theo đó, các yêu cầu về lối thoát hiểm, hệ thống thông gió và vách ngăn chống cháy được thắt chặt hơn nhằm đảm bảo an toàn tối đa cho cư dân. Các chủ đầu tư cần rà soát và nâng cấp hệ thống hiện có để tuân thủ quy định mới này...'
+        title: "TNT PCCC vinh dự nhận giải thưởng Doanh nghiệp tiêu biểu 2024",
+        description: "Công ty TNT PCCC đã được vinh danh tại lễ trao giải Doanh nghiệp tiêu biểu nhờ những đóng góp tích cực trong lĩnh vực phòng cháy chữa cháy.",
+        content: "Chi tiết nội dung tin tức...",
+        image: tintuc1,
+        date: "12/02/2024",
+        category: "Tin tức công ty"
     },
     {
         id: 2,
-        title: 'Hoàn thành nghiệm thu hệ thống PCCC Keangnam',
-        date: '05/02/2026',
-        category: 'Dự án',
-        image: '/src/uploads/tnt.jpg',
-        excerpt: 'TNT Company chính thức bàn giao hệ thống báo cháy thông minh cho tòa nhà Keangnam Hà Nội.',
-        content: 'Sau 6 tháng thi công khẩn trương, TNT Company đã chính thức bàn giao hệ thống báo cháy thông minh thế hệ mới cho ban quản lý tòa nhà Keangnam Hà Nội. Hệ thống mới tích hợp công nghệ AI giúp phát hiện điểm cháy chính xác và cảnh báo sớm, giảm thiểu tối đa tình trạng báo giả và nâng cao hiệu quả ứng phó.'
+        title: "Hướng dẫn sử dụng bình chữa cháy đúng cách",
+        description: "Việc sử dụng bình chữa cháy đúng cách là kỹ năng sinh tồn quan trọng. Bài viết này sẽ hướng dẫn chi tiết các bước thực hiện.",
+        content: "Chi tiết nội dung tin tức...",
+        image: tintuc2,
+        date: "10/02/2024",
+        category: "Kiến thức PCCC"
     },
     {
         id: 3,
-        title: 'Tập huấn kỹ năng thoát hiểm cho cư dân Vinhomes',
-        date: '02/02/2026',
-        category: 'Hoạt động',
-        image: '/src/uploads/tnt.jpg',
-        excerpt: 'Buổi diễn tập phương án chữa cháy và cứu nạn cứu hộ diễn ra thành công tốt đẹp với sự tham gia của 500 cư dân.',
-        content: 'Vừa qua, TNT Company đã phối hợp với ban quản lý Vinhomes tổ chức buổi diễn tập phương án chữa cháy và cứu nạn cứu hộ định kỳ. Buổi diễn tập thu hút hơn 500 cư dân tham gia, giúp mọi người nắm vững các kỹ năng thoát hiểm, sử dụng bình chữa cháy và sơ cấp cứu cơ bản khi có sự cố xảy ra.'
+        title: "Tuyển dụng nhân viên kỹ thuật PCCC - Tháng 2/2026",
+        description: "TNT PCCC đang tìm kiếm các ứng viên tài năng cho vị trí nhân viên kỹ thuật lắp đặt và bảo trì hệ thống PCCC.",
+        content: "Chi tiết nội dung tin tức...",
+        image: tintuc3,
+        date: "05/02/2024",
+        category: "Tuyển dụng"
+    },
+    {
+        id: 4,
+        title: "Dự án lắp đặt hệ thống PCCC cho chung cư cao cấp TNT Tower",
+        description: "TNT PCCC đã hoàn thành dự án lắp đặt hệ thống báo cháy và chữa cháy tự động cho tòa nhà TNT Tower.",
+        content: "Chi tiết nội dung tin tức...",
+        image: tintuc4,
+        date: "01/02/2024",
+        category: "Tin tức công ty"
+    },
+    {
+        id: 5,
+        title: "Quy định mới về an toàn PCCC năm 2026",
+        description: "Cập nhật những thay đổi mới nhất trong quy định về an toàn phòng cháy chữa cháy mà các doanh nghiệp cần biết.",
+        content: "Chi tiết nội dung tin tức...",
+        image: tintuc5,
+        date: "28/01/2024",
+        category: "Kiến thức PCCC"
+    },
+    {
+        id: 6,
+        title: "Tuyển dụng nhân viên kinh doanh thiết bị PCCC",
+        description: "Cơ hội làm việc trong môi trường chuyên nghiệp với mức thu nhập hấp dẫn tại TNT PCCC.",
+        content: "Chi tiết nội dung tin tức...",
+        image: tintuc6,
+        date: "15/01/2024",
+        category: "Tuyển dụng"
     }
 ];
