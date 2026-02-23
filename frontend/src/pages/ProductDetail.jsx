@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import '../styles/ProductDetail.css';
+import SEO from '../component/SEO';
 
 const ProductDetail = () => {
     const { id } = useParams();
@@ -27,8 +28,26 @@ const ProductDetail = () => {
         );
     }
 
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "description": product.description,
+        "image": product.images[0],
+        "category": product.category,
+        "brand": { "@type": "Organization", "name": "TNT PCCC" }
+    };
+
     return (
         <section className="product-detail-section">
+            <SEO
+                title={product.name}
+                description={product.description}
+                keywords={`${product.name}, ${product.category}, pccc, TNT PCCC`}
+                image={product.images[0]}
+                url={`/products/${product.id}`}
+                schema={structuredData}
+            />
             <div className="container" >
                 <div className="product-detail-container">
                     {/* Image Gallery */}

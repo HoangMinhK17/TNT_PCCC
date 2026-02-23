@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { news } from '../data/news';
 import '../styles/ProductSection.css'; // Reusing Product styles for consistency
+import SEO from '../component/SEO';
 
 const New = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -12,9 +13,8 @@ const New = () => {
     const [selectedCategory, setSelectedCategory] = useState(categoryParam || 'Tất cả');
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 4; // articles per page
+    const itemsPerPage = 4; 
 
-    // Sync state with URL param
     useEffect(() => {
         window.scrollTo(0, 0);
         if (categoryParam) {
@@ -38,8 +38,32 @@ const New = () => {
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+    const pageTitle = selectedCategory === 'Tất cả'
+        ? 'Tin tức & Sự kiện'
+        : `${selectedCategory} - Tin tức`;
+
+    const pageDescription = `Cập nhật tin tức mới nhất về ${selectedCategory === 'Tất cả' ? 'phòng cháy chữa cháy' : selectedCategory.toLowerCase()} từ TNT PCCC.`;
+
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": currentItems.map((item, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "url": `${window.location.origin}/news/${item.id}`,
+            "name": item.title
+        }))
+    };
+
     return (
         <section className="products-section">
+            <SEO
+                title={pageTitle}
+                description={pageDescription}
+                keywords="tin tức pccc, sự kiện pccc, TNT PCCC, phòng cháy chữa cháy"
+                url={`/news${categoryParam ? `?category=${categoryParam}` : ''}`}
+                schema={structuredData}
+            />
             <div className="container" data-aos="fade-up">
                 <h2 className="section-title">Tin tức & Sự kiện</h2>
 
@@ -66,12 +90,10 @@ const New = () => {
 
                     <div className="products-content">
                         {selectedCategory === 'Tất cả' && !searchTerm ? (
-                            // Grouped Categories View
                             categories.filter(cat => cat !== 'Tất cả').map((category, index) => {
                                 const categoryItems = news.filter(n => n.category === category);
                                 if (categoryItems.length === 0) return null;
 
-                                // Show only first 3 items for preview
                                 const previewItems = categoryItems.slice(0, 4);
 
                                 return (
@@ -92,7 +114,7 @@ const New = () => {
                                             {previewItems.map(item => (
                                                 <Link
                                                     key={item.id}
-                                                    to={`/news/${item.id}`} // Assuming detail page might be added later, or just linking to it
+                                                    to={`/news/${item.id}`} 
                                                     style={{ textDecoration: "none", color: "inherit" }}
                                                 >
                                                     <div className="product-card">

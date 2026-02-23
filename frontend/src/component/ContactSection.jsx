@@ -11,6 +11,11 @@ const ContactSection = () => {
     message: ''
   });
 
+  const address = "xóm 2b, Yên Khánh, Ninh Bình";
+  const mapSrc =
+    "https://www.google.com/maps?q=" +
+    encodeURIComponent(address) +
+    "&output=embed";
   const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
@@ -175,8 +180,9 @@ const ContactSection = () => {
         <div className="map-section" data-aos="fade-up">
           <h3>Vị trí của chúng tôi</h3>
           <div className="map-container">
+
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.5123456789!2d106.6966!3d10.7769!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f50f1f1f1f1%3A0x1f1f1f1f1f1f1f1f!2s123%20L%C3%AA%20L%E1%BB%A3i%2C%20District%201%2C%20Ho%20Chi%20Minh%20City!5e0!3m2!1sen!2svn!4v1234567890"
+              src={mapSrc}
               width="100%"
               height="400"
               style={{ border: 0, borderRadius: '8px' }}

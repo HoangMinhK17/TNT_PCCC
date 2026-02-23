@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { services } from '../data/services';
 import '../styles/ServiceDetail.css';
+import SEO from '../component/SEO';
 
 const ServiceDetail = () => {
     const { id } = useParams();
@@ -22,8 +23,25 @@ const ServiceDetail = () => {
         );
     }
 
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": service.title,
+        "description": service.description,
+        "image": service.image,
+        "provider": { "@type": "Organization", "name": "TNT PCCC" }
+    };
+
     return (
         <div className="service-detail-page">
+            <SEO
+                title={service.title}
+                description={service.description}
+                keywords={`${service.title}, dịch vụ pccc, TNT PCCC`}
+                image={service.image}
+                url={`/services/${service.id}`}
+                schema={structuredData}
+            />
             <div className="service-detail-header" style={{ backgroundImage: `url(${service.image})` }}>
                 <div className="overlay"></div>
                 <div className="container">

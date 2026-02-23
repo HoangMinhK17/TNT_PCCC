@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import '../styles/ProductSection.css';
 
 import { products } from '../data/products';
+import SEO from '../component/SEO';
 
 const Product = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -39,10 +40,33 @@ const Product = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const pageTitle = selectedCategory === 'Tất cả'
+    ? 'Danh sách sản phẩm - TNT PCCC'
+    : `${selectedCategory} - TNT PCCC`;
+
+  const pageDescription = `TNT PCCC cung cấp ${selectedCategory.toLowerCase()} chính hãng, chất lượng cao. Xem ngay danh sách sản phẩm mới nhất.`;
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": currentProducts.map((product, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "url": `${window.location.origin}/products/${product.id}`,
+      "name": product.name,
+      "image": product.images[0]
+    }))
+  };
   return (
     <section className="products-section">
+      <SEO
+        title={pageTitle}
+        description={pageDescription}
+        url={`/products?category=${selectedCategory}`}
+        schema={structuredData}
+      />
       <div className="container" data-aos="fade-up">
-        <h2 className="section-title">Danh sách sản phẩm </h2>
+        <h1 className="section-title">Danh sách sản phẩm </h1>
 
         <div className="products-layout" style={{ flexDirection: 'column' }}>
 
@@ -59,6 +83,7 @@ const Product = () => {
                 padding: '12px 20px',
                 border: '1px solid #ddd',
                 borderRadius: '50px',
+                
                 fontSize: '15px',
                 outline: 'none'
               }}
@@ -96,11 +121,11 @@ const Product = () => {
                           to={`/products/${product.id}`}
                           style={{ textDecoration: "none", color: "inherit" }}
                         >
-                          <div className="product-card">
+                          <article className="product-card">
                             <img src={product.images[0]} alt={product.name} className="product-image" />
                             <h3 className="product-name">{product.name}</h3>
                             <p className="product-description">{product.description}</p>
-                          </div>
+                          </article>
                         </Link>
                       ))}
                     </div>
@@ -118,11 +143,11 @@ const Product = () => {
                         to={`/products/${product.id}`}
                         style={{ textDecoration: "none", color: "inherit" }}
                       >
-                        <div className="product-card">
+                        <article className="product-card">
                           <img src={product.images[0]} alt={product.name} className="product-image" />
                           <h3 className="product-name">{product.name}</h3>
                           <p className="product-description">{product.description}</p>
-                        </div>
+                        </article>
                       </Link>
                     ))
                   ) : (

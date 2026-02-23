@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { news } from '../data/news';
 import '../styles/NewsDetail.css';
+import SEO from '../component/SEO';
 
 const NewsDetail = () => {
     const { id } = useParams();
@@ -24,8 +25,27 @@ const NewsDetail = () => {
         );
     }
 
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": newsItem.title,
+        "description": newsItem.description,
+        "image": newsItem.image,
+        "datePublished": newsItem.date,
+        "author": { "@type": "Organization", "name": "TNT PCCC" }
+    };
+
     return (
         <section className="news-detail-section">
+            <SEO
+                title={newsItem.title}
+                description={newsItem.description}
+                keywords={`${newsItem.category}, tin tức pccc, TNT PCCC`}
+                image={newsItem.image}
+                url={`/news/${newsItem.id}`}
+                type="article"
+                schema={structuredData}
+            />
             <div className="container">
                 <div className="news-detail-container">
                     <div className="news-detail-image-wrapper">

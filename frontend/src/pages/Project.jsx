@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { projects } from '../data/projects';
 import '../styles/ProjectsSection.css';
+import SEO from '../component/SEO';
 
 const Project = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -25,13 +26,31 @@ const Project = () => {
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": currentProjects.map((project, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "url": `${window.location.origin}/projects/${project.id}`,
+            "name": project.name
+        }))
+    };
+
     return (
         <section className="projects-section">
+            <SEO
+                title="Dự án tiêu biểu"
+                description="Các dự án phòng cháy chữa cháy tiêu biểu đã được TNT PCCC thực hiện. Thi công, lắp đặt hệ thống PCCC cho các công trình lớn."
+                keywords="dự án pccc, thi công pccc, lắp đặt hệ thống pccc, TNT PCCC"
+                url="/projects"
+                schema={structuredData}
+            />
             <div className="container" data-aos="fade-up">
                 <h2 className="section-title">Dự án tiêu biểu</h2>
 
                 <div className="projects-layout">
-                    
+
                     <aside className="projects-sidebar">
                         <div className="search-box">
                             <input
@@ -39,7 +58,7 @@ const Project = () => {
                                 placeholder="Tìm kiếm dự án..."
                                 value={searchTerm}
                                 onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                                className="sidebar-search-input" 
+                                className="sidebar-search-input"
                                 style={{
                                     width: '80%',
                                     padding: '12px 20px',
@@ -63,10 +82,10 @@ const Project = () => {
                                         >
                                             <div className="project-image-wrapper">
                                                 <img src={project.image} alt={project.name} className="project-image" />
-                                        
+
                                             </div>
                                             <div className="project-info">
-                                         
+
                                                 <h3 className="project-name">{project.name}</h3>
                                                 <p className="project-description">{project.description}</p>
                                                 <p className="project-year">Năm: {project.year}</p>
