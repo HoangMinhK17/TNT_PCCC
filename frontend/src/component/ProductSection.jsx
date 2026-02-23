@@ -17,7 +17,7 @@ const ProductSection = () => {
                 newProducts.push(firstProduct);
                 return newProducts;
             });
-        }, 5000); // Rotate every 3 seconds
+        }, 5000);
 
         return () => clearInterval(interval);
     }, []);

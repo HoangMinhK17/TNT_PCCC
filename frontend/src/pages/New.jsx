@@ -132,7 +132,6 @@ const New = () => {
                                 );
                             })
                         ) : (
-                            // Filtered Grid View
                             <>
                                 <div className="products-grid">
                                     {currentItems.length > 0 ? (

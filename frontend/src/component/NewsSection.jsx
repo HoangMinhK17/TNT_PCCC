@@ -23,7 +23,7 @@ const NewsSection = () => {
                 </div>
 
                 <div className="news-content">
-                  <p className="news-date">🗓️ {newsItem.date}</p>
+                  <p className="news-date"> {newsItem.date}</p>
                   <h3 className="news-title">{newsItem.title}</h3>
                   <p className="news-excerpt">{newsItem.description}</p>
                 </div>

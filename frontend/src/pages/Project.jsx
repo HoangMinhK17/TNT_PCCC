@@ -7,9 +7,8 @@ import SEO from '../component/SEO';
 const Project = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const projectsPerPage = 4; // Adjusted for grid view
+    const projectsPerPage = 4; 
 
-    // Extract unique categories from projects
     const allCategories = ['Tất cả', ...new Set(projects.map(item => item.category))];
     const [selectedCategory, setSelectedCategory] = useState('Tất cả');
 

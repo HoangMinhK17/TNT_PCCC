@@ -8,12 +8,10 @@ const ServiceSection = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 8;
 
-  // Calculate current items
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentServices = services.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
@@ -35,13 +33,11 @@ const ServiceSection = () => {
                   {service.title}
                 </Link>
               </h3>
-              {/* Description removed as per user request */}
               <Link to={`/contact`} className="service-link">Liên hệ</Link>
             </div>
           ))}
         </div>
 
-        {/* Pagination Controls */}
         {Math.ceil(services.length / itemsPerPage) > 1 && (
           <div className="pagination">
             {Array.from({ length: Math.ceil(services.length / itemsPerPage) }).map((_, index) => (

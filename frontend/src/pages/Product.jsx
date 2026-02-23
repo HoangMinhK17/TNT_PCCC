@@ -9,7 +9,6 @@ const Product = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
 
-  // Use imported products directly
   const categories = ['Tất cả', 'Thiết bị chữa cháy', 'Hệ thống báo cháy', 'Bảo hộ lao động'];
 
   const [selectedCategory, setSelectedCategory] = useState(categoryParam || 'Tất cả');
@@ -17,7 +16,6 @@ const Product = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 4;
 
-  // Sync state with URL param
   useEffect(() => {
     if (categoryParam) {
       setSelectedCategory(categoryParam);
@@ -92,12 +90,10 @@ const Product = () => {
 
           <div className="products-content">
             {selectedCategory === 'Tất cả' && !searchTerm ? (
-              // Grouped Categories View
               categories.filter(cat => cat !== 'Tất cả').map((category, index) => {
                 const categoryProducts = products.filter(p => p.category === category);
                 if (categoryProducts.length === 0) return null;
 
-                // Show only first 4 items for preview
                 const previewProducts = categoryProducts.slice(0, 4);
 
                 return (
@@ -110,7 +106,7 @@ const Product = () => {
                         onClick={() => { setSearchParams({ category }); }}
                         style={{ background: 'none', border: 'none', color: '#D32F2F', cursor: 'pointer', fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '5px' }}
                       >
-                        Xem tất cả <span style={{ fontSize: '18px' }}>&rarr;</span>
+                        Xem tất cả
                       </button>
                     </div>
 
@@ -133,7 +129,6 @@ const Product = () => {
                 );
               })
             ) : (
-              // Filtered Grid View
               <>
                 <div className="products-grid">
                   {currentProducts.length > 0 ? (

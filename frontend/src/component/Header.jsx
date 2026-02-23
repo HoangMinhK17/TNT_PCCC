@@ -9,7 +9,7 @@ import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-    const [activeSubmenu, setActiveSubmenu] = useState(null); // Track active submenu
+    const [activeSubmenu, setActiveSubmenu] = useState(null); 
     const [language, setLanguage] = useState("");
 
     const languageGlobal = JSON.parse(localStorage.getItem("language")) || "vn";
@@ -18,14 +18,14 @@ const Header = () => {
     const handleLanguageChange = (lang) => {
         i18n.changeLanguage(lang);
         localStorage.setItem("language", JSON.stringify(lang));
-        setLanguage(lang); // Update local state to trigger re-render if needed
+        setLanguage(lang);
     };
 
     console.log(language);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
-        setActiveSubmenu(null); // Reset submenus when toggling main menu
+        setActiveSubmenu(null);
     };
 
     const closeMenu = () => {

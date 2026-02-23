@@ -10,12 +10,11 @@ const ProductDetail = () => {
     const [activeImage, setActiveImage] = useState(null);
 
     useEffect(() => {
-        // Find product by id from URL
         const foundProduct = products.find(p => p.id === parseInt(id));
         if (foundProduct) {
             setProduct(foundProduct);
-            setActiveImage(foundProduct.images[0]); // Set initial image
-            window.scrollTo(0, 0); // Scroll to top when loaded
+            setActiveImage(foundProduct.images[0]); 
+            window.scrollTo(0, 0); 
         }
     }, [id]);
 
@@ -50,7 +49,6 @@ const ProductDetail = () => {
             />
             <div className="container" >
                 <div className="product-detail-container">
-                    {/* Image Gallery */}
                     <div className="product-gallery">
                         <div className="main-image-container">
                             <img src={activeImage} alt={product.name} className="main-image" />
@@ -68,7 +66,6 @@ const ProductDetail = () => {
                         </div>
                     </div>
 
-                    {/* Product Info */}
                     <div className="product-info-detail">
                         <span className="product-category-detail">{product.category}</span>
                         <h1 className="product-title-detail">{product.name}</h1>
@@ -97,13 +94,10 @@ const ProductDetail = () => {
                                 </div>
                             )}
                         </div>
-
                         <div className="product-actions">
                             <Link to="/contact" className="contact-btn">
                                 Liên hệ tư vấn
                             </Link>
-
-
                         </div>
                     </div>
                 </div>
