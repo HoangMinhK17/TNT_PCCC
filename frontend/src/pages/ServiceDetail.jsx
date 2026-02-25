@@ -1,16 +1,37 @@
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { services } from '../data/services';
+import { getPublicServiceById } from '../utils/serviceApi';
 import '../styles/ServiceDetail.css';
 import SEO from '../component/SEO';
 
 const ServiceDetail = () => {
     const { id } = useParams();
-    const service = services.find(s => s.id === parseInt(id));
+    const [service, setService] = React.useState(null);
+    const [loading, setLoading] = React.useState(true);
 
     useEffect(() => {
+        const fetchService = async () => {
+            try {
+                setLoading(true);
+                const data = await getPublicServiceById(id);
+                setService(data);
+            } catch (error) {
+                console.error("Error fetching service detail:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchService();
         window.scrollTo(0, 0);
     }, [id]);
+
+    if (loading) {
+        return (
+            <div className="service-detail-container" style={{ textAlign: 'center', padding: '100px 0' }}>
+                <div className="loading">Đang tải chi tiết dịch vụ...</div>
+            </div>
+        );
+    }
 
     if (!service) {
         return (
@@ -39,13 +60,13 @@ const ServiceDetail = () => {
                 description={service.description}
                 keywords={`${service.title}, dịch vụ pccc, TNT PCCC`}
                 image={service.image}
-                url={`/services/${service.id}`}
+                url={`/services/${service._id}`}
                 schema={structuredData}
             />
             <div className="service-detail-header" style={{ backgroundImage: `url(${service.image})` }}>
                 <div className="overlay"></div>
                 <div className="container">
-                    <h1 className="service-detail-title" data-aos="fade-up">{service.title}</h1>
+                    <h1 className="service-detail-title" data-aos="fade-up">{service.name}</h1>
                 </div>
             </div>
 
@@ -56,27 +77,15 @@ const ServiceDetail = () => {
                     </div>
                     <div className="detail-info" data-aos="fade-up">
                         <h2>Tổng quan dịch vụ</h2>
-                        <p className="detail-description">{service.description}</p>
+                        <p className="detail-description">{service.title}</p>
                         <hr />
                         <h3>Chi tiết</h3>
-                        <p className="detail-text">{service.detail}</p>
+                        <p className="detail-text">{service.description}</p>
 
                         <div className="cta-box">
                             <p>Bạn quan tâm đến dịch vụ này?</p>
                             <Link to="/contact" className="cta-button">Liên hệ báo giá ngay</Link>
                         </div>
-                    </div>
-                </div>
-
-                <div className="related-services" data-aos="fade-up">
-                    <h3>Các dịch vụ khác</h3>
-                    <div className="related-grid">
-                        {services.filter(s => s.id !== service.id).slice(0, 3).map(related => (
-                            <Link key={related.id} to={`/services/${related.id}`} className="related-card">
-                                <img src={related.image} alt={related.title} />
-                                <h4>{related.title}</h4>
-                            </Link>
-                        ))}
                     </div>
                 </div>
             </div>

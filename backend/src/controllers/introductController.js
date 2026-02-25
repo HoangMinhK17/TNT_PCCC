@@ -19,4 +19,33 @@ const getAllIntroductCompany = async (req, res) => {
     }
 };
 
-export { createIntroductCompany, getAllIntroductCompany };
+const getIntroductCompany = async (req, res) => {
+    try {
+        const introductCompany = await IntroductCompany.find().select("name title description image ");
+        res.status(200).json(introductCompany);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const getMissionVision = async (req, res) => {
+    try {
+        const introductCompany = await IntroductCompany.find().select("mission vision");
+        res.status(200).json(introductCompany);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
+const getCoreValues = async (req, res) => {
+    try {
+        const introductCompany = await IntroductCompany.find().select("coreValues");
+        res.status(200).json(introductCompany);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export { createIntroductCompany, getAllIntroductCompany, getIntroductCompany, getMissionVision, getCoreValues };

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Header.css';
 import { useTranslation } from 'react-i18next';
-import { products } from '../data/products';
 import { news } from '../data/news';
+import { getCategoryProducts } from '../utils/categoryProductApi';
 
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
@@ -11,17 +11,27 @@ const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const [activeSubmenu, setActiveSubmenu] = useState(null);
     const [language, setLanguage] = useState("");
+    const [categories, setCategories] = useState([]);
 
     const languageGlobal = JSON.parse(localStorage.getItem("language")) || "vn";
 
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const data = await getCategoryProducts();
+                setCategories(data);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const handleLanguageChange = (lang) => {
         i18n.changeLanguage(lang);
         localStorage.setItem("language", JSON.stringify(lang));
         setLanguage(lang);
     };
-
-    console.log(language);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -86,13 +96,13 @@ const Header = () => {
 
                                 {item.label === t("products") && (
                                     <ul className={`dropdown ${activeSubmenu === index ? 'open' : ''}`}>
-                                        {[...new Set(products.map(p => p.category))].map((category, idx) => (
+                                        {categories.map((category, idx) => (
                                             <li key={idx}>
                                                 <Link
-                                                    to={`/products?category=${encodeURIComponent(category)}`}
+                                                    to={`/products?category=${encodeURIComponent(category.name)}&categoryId=${category._id}`}
                                                     onClick={closeMenu}
                                                 >
-                                                    {category}
+                                                    {category.name}
                                                 </Link>
                                             </li>
                                         ))}

@@ -1,33 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/Achievements.css';
+import { getCoreValues } from '../utils/introductApi';
 
 const Achievements = () => {
-    const achievements = [
-        {
-            year: "2023",
-            title: "Top 10 Thương Hiệu Uy Tín",
-            description: "Được bình chọn bởi Hiệp hội Doanh nghiệp Việt Nam.",
-            image: "src/uploads/information/achieve/tt1.jpg"
-        },
-        {
-            year: "2022",
-            title: "Chứng nhận ISO 9001:2015",
-            description: "Hệ thống quản lý chất lượng đạt chuẩn quốc tế.",
-            image: "src/uploads/information/achieve/tt2.jpg"
-        },
-        {
-            year: "2021",
-            title: "Dự án PCCC Tiêu Biểu",
-            description: "Hoàn thành xuất sắc dự án tại KCN VSIP.",
-            image: "src/uploads/information/achieve/tt3.jpg"
-        },
-        {
-            year: "2020",
-            title: "Đối Tác Vàng",
-            description: "Được vinh danh bởi tập đoàn Vingroup.",
-            image: "src/uploads/information/achieve/tt4.jpg"
-        }
-    ];
+    const [achievements, setAchievements] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchAchievements = async () => {
+            try {
+                setLoading(true);
+                const response = await getCoreValues();
+        
+                const data = Array.isArray(response) ? (response[0]?.coreValues ?? []) : (response?.coreValues ?? []);
+                setAchievements(data);
+            } catch (error) {
+                console.error("Error fetching achievements:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchAchievements();
+    }, []);
+
+    if (loading) {
+        return <div className="loading">Đang tải...</div>;
+    }
 
     return (
         <section className="achievements-section">
@@ -40,7 +38,7 @@ const Achievements = () => {
                             <div className="achievement-image-wrapper">
                                 <img src={item.image} alt={item.title} className="achievement-image" />
                             </div>
-                            <div className="achievement-year">{item.year}</div>
+                            <div className="achievement-year">{item.date}</div>
                             <h3>{item.title}</h3>
                             <p>{item.description}</p>
                         </div>

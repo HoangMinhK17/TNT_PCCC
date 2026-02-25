@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/CompanyIntro.css';
-import { getIntroduction } from '../utils/introductApi.js';
+import { getIntroductionCompany } from '../utils/introductApi.js';
 // Helper component for counting animation
 const CountUpNumber = ({ end, duration = 2000, suffix = '' }) => {
   const [count, setCount] = useState(0);
@@ -63,7 +63,7 @@ const CompanyIntro = () => {
     const fetchIntroduction = async () => {
       try {
         setLoading(true);
-        const response = await getIntroduction();
+        const response = await getIntroductionCompany();
         setIntroduction(Array.isArray(response) ? (response[0] ?? null) : response);
       } catch (error) {
         console.error("Error fetching introduction:", error);
@@ -74,7 +74,7 @@ const CompanyIntro = () => {
     fetchIntroduction();
   }, []);
 
-const images = introduction?.image || [];
+  const images = introduction?.image || [];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
@@ -92,16 +92,16 @@ const images = introduction?.image || [];
           <div className="company-text" data-aos="fade-up">
             <h1 className="section-title"> {introduction.name}</h1>
             <div className="intro-item">
-              <img src="src/uploads/information/icon1.jpg" alt="Icon 1" className="intro-icon" />
+              <img src={introduction?.title?.titleIcon} alt="Icon 1" className="intro-icon" />
               <p className="company-description">
-                {introduction.title}
+                {introduction?.title?.titleName}
               </p>
             </div>
 
             <div className="intro-item">
-              <img src="src/uploads/information/icon3.jpg" alt="Icon 3" className="intro-icon" />
+              <img src={introduction?.description?.descriptionIcon} alt="Icon 3" className="intro-icon" />
               <p className="company-description">
-                {introduction.description}
+                {introduction?.description?.descriptionName}
               </p>
             </div>
           </div>

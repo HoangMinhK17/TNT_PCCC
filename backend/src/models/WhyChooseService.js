@@ -1,10 +1,6 @@
 import mongoose from "mongoose";
 
-const serviceSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
+const whyChooseServiceSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true
@@ -12,24 +8,6 @@ const serviceSchema = new mongoose.Schema({
     description: {
         type: String,
         required: true
-    },
-    image: {
-        type: String
-    },
-    slug: {
-        type: String,
-        required: true,
-        unique: true,
-        index: true
-    },
-    status: {
-        type: String,
-        enum: ["active", "inactive"],
-        default: "active"
-    },
-    deletedAt: {
-        type: Date,
-        default: null
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -41,16 +19,24 @@ const serviceSchema = new mongoose.Schema({
         ref: "User",
         default: null
     },
-
     isDeleted: {
         type: Boolean,
         default: false
+    },
+    status: {
+        type: String,
+        enum: ["active", "inactive"],
+        default: "active"
+    },
+    deletedAt: {
+        type: Date,
+        default: null
     }
-   
+  
 },
-{
+{   
     timestamps: true
 }
 );
 
-export default mongoose.model("Service", serviceSchema);
+export default mongoose.model("WhyChooseService", whyChooseServiceSchema);

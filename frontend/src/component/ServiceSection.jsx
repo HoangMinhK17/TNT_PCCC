@@ -1,16 +1,31 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/ServiceSection.css';
-import { services } from '../data/services';
 import { FaTrophy, FaUserTie, FaTools, FaHandHoldingUsd } from 'react-icons/fa';
+import { getPublicServices } from '../utils/serviceApi';
 
 const ServiceSection = () => {
+  const [services, setServices] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
   const [currentPage, setCurrentPage] = React.useState(1);
-  const itemsPerPage = 8;
+  const [totalPages, setTotalPages] = React.useState(1);
+  const itemsPerPage = 4;
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentServices = services.slice(indexOfFirstItem, indexOfLastItem);
+  React.useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        setLoading(true);
+        const response = await getPublicServices(currentPage, itemsPerPage);
+        setServices(response.services || []);
+        setTotalPages(response.totalPages || 1);
+      } catch (error) {
+        console.error("Error fetching services:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchServices();
+  }, [currentPage]);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -21,26 +36,32 @@ const ServiceSection = () => {
         <p className="section-subtitle">Cung cấp giải pháp phòng chữa cháy toàn diện cho mọi loại công trình</p>
 
         <div className="services-grid">
-          {currentServices.map(service => (
-            <div key={service.id} className="service-card">
-              <Link to={`/services/${service.id}`} className="service-image-link">
-                <div className="service-image-wrapper">
-                  <img src={service.image} alt={service.title} className="service-image" />
-                </div>
-              </Link>
-              <h3 className="service-title">
-                <Link to={`/services/${service.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  {service.title}
+          {loading ? (
+            <div style={{ textAlign: 'center', width: '100%', padding: '20px' }}>Đang tải dịch vụ...</div>
+          ) : services.length > 0 ? (
+            services.map(service => (
+              <div key={service._id} className="service-card">
+                <Link to={`/services/${service._id}`} className="service-image-link">
+                  <div className="service-image-wrapper">
+                    <img src={service.image} alt={service.title} className="service-image" />
+                  </div>
                 </Link>
-              </h3>
-              <Link to={`/contact`} className="service-link">Liên hệ</Link>
-            </div>
-          ))}
+                <h3 className="service-title">
+                  <Link to={`/services/${service._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    {service.name}
+                  </Link>
+                </h3>
+                <Link to={`/contact`} className="service-link">Liên hệ</Link>
+              </div>
+            ))
+          ) : (
+            <div style={{ textAlign: 'center', width: '100%', padding: '20px' }}>Không có dịch vụ nào.</div>
+          )}
         </div>
 
-        {Math.ceil(services.length / itemsPerPage) > 1 && (
+        {totalPages > 1 && (
           <div className="pagination">
-            {Array.from({ length: Math.ceil(services.length / itemsPerPage) }).map((_, index) => (
+            {Array.from({ length: totalPages }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => paginate(index + 1)}

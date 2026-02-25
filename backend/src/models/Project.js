@@ -16,6 +16,9 @@ const projectSchema = new mongoose.Schema({
     image: {
         type: String
     },
+    date: {
+        type: Date 
+    },
     slug: {
         type: String,
         required: true,
@@ -41,7 +44,10 @@ const projectSchema = new mongoose.Schema({
         ref: "User",
         default: null
     },
-    
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
 },
 {
     timestamps: true

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/SearchBar.css';
 import bg1 from '../uploads/information/gthdoanhnghiep.jpg';
 import bg2 from '../uploads/project/prj1.jpg';
@@ -8,6 +9,7 @@ import bg4 from '../uploads/project/prj3.jpg';
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const navigate = useNavigate();
 
   const backgrounds = [bg1, bg2, bg3, bg4];
 
@@ -21,7 +23,9 @@ const SearchBar = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log('Searching for:', searchTerm);
+    if (searchTerm.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
+    }
   };
 
   return (

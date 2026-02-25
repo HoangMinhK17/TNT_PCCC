@@ -6,12 +6,26 @@ const introductCompanySchema = new mongoose.Schema({
         required: true
     },
     title: {
-        type: String,
-        required: true
+        titleName: {
+          type: String,
+          required: true
+        },
+        titleIcon: {
+          type: String,
+          required: true
+        }
+   
     },
     description: {
-        type: String,
-        required: true      
+        descriptionName: {
+          type: String,
+          required: true
+        },
+        descriptionIcon: {
+          type: String,
+          required: true
+        }
+        
     },
     image: {
         type: [String]

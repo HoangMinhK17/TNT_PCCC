@@ -1,109 +1,228 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import '../styles/ProductSection.css';
-
-import { products } from '../data/products';
 import SEO from '../component/SEO';
+import { FaChevronDown, FaChevronUp, FaSearch } from 'react-icons/fa';
+import { getPublicProducts, getPublicProductByCategoryId, getProductByName } from '../utils/productApi';
+import { getCategoryProducts } from '../utils/categoryProductApi';
 
 const Product = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
+  const categoryIdParam = searchParams.get('categoryId');
+  const searchQueryParam = searchParams.get('search');
 
-  const categories = ['Tất cả', 'Thiết bị chữa cháy', 'Hệ thống báo cháy', 'Bảo hộ lao động'];
-
-  const [selectedCategory, setSelectedCategory] = useState(categoryParam || 'Tất cả');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState(categoryParam || 'Tất cả sản phẩm');
+  const [searchTerm, setSearchTerm] = useState(searchQueryParam || '');
+  const [activeSearchTerm, setActiveSearchTerm] = useState(searchQueryParam || '');
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 4;
+  const [totalPages, setTotalPages] = useState(1);
+  const productsPerPage = 2;
 
   useEffect(() => {
-    if (categoryParam) {
-      setSelectedCategory(categoryParam);
-    } else {
-      setSelectedCategory('Tất cả');
-    }
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await getCategoryProducts();
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        let response;
+
+        if (activeSearchTerm) {
+          response = await getProductByName(activeSearchTerm, currentPage, productsPerPage);
+          setProducts(response.products || []);
+          setTotalPages(response.totalPages || 1);
+        } else if (categoryIdParam && categoryIdParam !== 'all') {
+          response = await getPublicProductByCategoryId(categoryIdParam, currentPage, productsPerPage);
+          setProducts(response.products || []);
+          setTotalPages(response.totalPages || 1);
+        } else {
+          const allProducts = await getPublicProducts();
+          setProducts(allProducts || []);
+          setTotalPages(1);
+        }
+
+        setSelectedCategory(activeSearchTerm ? 'Kết quả tìm kiếm' : (categoryParam || 'Tất cả sản phẩm'));
+
+        if (activeSearchTerm || categoryIdParam) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, [categoryIdParam, categoryParam, currentPage, activeSearchTerm]);
+
+  useEffect(() => {
     setCurrentPage(1);
-  }, [categoryParam]);
+  }, [categoryIdParam, activeSearchTerm, searchQueryParam]);
 
-  const filteredProducts = products.filter(product => {
-    const matchCategory = selectedCategory === 'Tất cả' || product.category === selectedCategory;
-    const matchSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchCategory && matchSearch;
-  });
+  useEffect(() => {
+    const searchFromUrl = searchQueryParam || '';
+    if (searchFromUrl !== activeSearchTerm) {
+      setSearchTerm(searchFromUrl);
+      setActiveSearchTerm(searchFromUrl);
+    }
 
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+    const categoryFromUrl = categoryParam || 'Tất cả sản phẩm';
+    if (categoryFromUrl !== selectedCategory && !searchQueryParam) {
+      setSelectedCategory(categoryFromUrl);
+    }
+  }, [searchQueryParam, categoryParam]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setActiveSearchTerm(searchTerm);
+    if (searchTerm.trim()) {
+      setSearchParams({ search: searchTerm.trim() });
+    } else {
+      if (categoryIdParam) {
+        setSearchParams({ category: categoryParam, categoryId: categoryIdParam });
+      } else {
+        setSearchParams({});
+      }
+    }
+  };
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const pageTitle = selectedCategory === 'Tất cả'
-    ? 'Danh sách sản phẩm - TNT PCCC'
-    : `${selectedCategory} - TNT PCCC`;
+  const pageTitle = activeSearchTerm
+    ? `Tìm kiếm: ${activeSearchTerm} - TNT PCCC`
+    : selectedCategory === 'Tất cả sản phẩm'
+      ? 'Danh sách sản phẩm - TNT PCCC'
+      : `${selectedCategory} - TNT PCCC`;
 
-  const pageDescription = `TNT PCCC cung cấp ${selectedCategory.toLowerCase()} chính hãng, chất lượng cao. Xem ngay danh sách sản phẩm mới nhất.`;
+  const pageDescription = `TNT PCCC cung cấp sản phẩm phòng cháy chữa cháy chất lượng. ${activeSearchTerm ? `Kết quả tìm kiếm cho ${activeSearchTerm}.` : `Xem danh mục ${selectedCategory}.`}`;
 
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "itemListElement": currentProducts.map((product, index) => ({
+    "itemListElement": products.slice(0, 10).map((product, index) => ({
       "@type": "ListItem",
       "position": index + 1,
-      "url": `${window.location.origin}/products/${product.id}`,
+      "url": `${window.location.origin}/products/${product._id}`,
       "name": product.name,
-      "image": product.images[0]
+      "image": product.image[0]
     }))
   };
+
+  if (loading) return (
+    <div className="container" style={{ minHeight: '80vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div className="loading">Đang tải...</div>
+    </div>
+  );
+
   return (
     <section className="products-section">
       <SEO
         title={pageTitle}
         description={pageDescription}
-        url={`/products?category=${selectedCategory}`}
+        url={activeSearchTerm ? '/products' : `/products?category=${selectedCategory}`}
         schema={structuredData}
       />
       <div className="container" data-aos="fade-up">
-        <h1 className="section-title">Danh sách sản phẩm </h1>
+        <h1 className="section-title">
+          {activeSearchTerm ? `Kết quả cho: "${activeSearchTerm}"` : selectedCategory}
+        </h1>
 
         <div className="products-layout" style={{ flexDirection: 'column' }}>
 
-          <div className="search-box" style={{ marginBottom: '30px' }}>
-            <input
-              type="text"
-              placeholder="Tìm kiếm sản phẩm..."
-              value={searchTerm}
-              onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-              className="sidebar-search-input"
-              style={{
-                width: '80%',
-                maxWidth: '400px',
-                padding: '12px 20px',
-                border: '1px solid #ddd',
-                borderRadius: '50px',
-                
-                fontSize: '15px',
-                outline: 'none'
-              }}
-            />
-          </div>
+          <form className="search-box-container" onSubmit={handleSearchSubmit} style={{ marginBottom: '30px', display: 'flex', justifyContent: 'flex-start' }}>
+            <div className="search-input-wrapper" style={{ position: 'relative', width: '100%', maxWidth: '400px' }}>
+              <input
+                type="text"
+                placeholder="Tìm kiếm sản phẩm..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="sidebar-search-input"
+                style={{
+                  width: '80%',
+                  padding: '12px 60px 12px 25px',
+                  border: '1px solid #ddd',
+                  borderRadius: '50px',
+                  fontSize: '15px',
+                  outline: 'none',
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+                }}
+              />
+              <button
+                type="submit"
+                style={{
+                  position: 'absolute',
+                  right: 'calc(20% + 5px)',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: '#df2033ff',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '46px',
+                  height: '46px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'background 0.3s'
+                }}
+              >
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M21 21L16.65 16.65"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </form>
 
           <div className="products-content">
-            {selectedCategory === 'Tất cả' && !searchTerm ? (
-              categories.filter(cat => cat !== 'Tất cả').map((category, index) => {
-                const categoryProducts = products.filter(p => p.category === category);
+            {(selectedCategory === 'Tất cả sản phẩm' || selectedCategory === 'Kết quả tìm kiếm') && !activeSearchTerm ? (
+              categories.map((category, index) => {
+                const categoryProducts = products.filter(p => p.categoryId?._id === category._id || p.categoryId === category._id);
                 if (categoryProducts.length === 0) return null;
 
                 const previewProducts = categoryProducts.slice(0, 4);
 
                 return (
-                  <div key={index} className="category-section" style={{ marginBottom: '50px' }}>
+                  <div key={category._id || index} className="category-section" style={{ marginBottom: '50px' }}>
                     <div className="category-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #1063b2', paddingBottom: '0px' }}>
                       <h3 className="product-category-title" style={{ fontSize: '24px', color: '#D32F2F', margin: 0, textTransform: 'uppercase', fontWeight: 700 }}>
-                        {category}
+                        {category.name}
                       </h3>
                       <button
-                        onClick={() => { setSearchParams({ category }); }}
+                        onClick={() => { setSearchParams({ category: category.name, categoryId: category._id }); }}
                         style={{ background: 'none', border: 'none', color: '#D32F2F', cursor: 'pointer', fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '5px' }}
                       >
                         Xem tất cả
@@ -113,14 +232,14 @@ const Product = () => {
                     <div className="products-grid">
                       {previewProducts.map(product => (
                         <Link
-                          key={product.id}
-                          to={`/products/${product.id}`}
+                          key={product._id}
+                          to={`/products/${product._id}`}
                           style={{ textDecoration: "none", color: "inherit" }}
                         >
                           <article className="product-card">
-                            <img src={product.images[0]} alt={product.name} className="product-image" />
+                            <img src={product.image[0]} alt={product.name} className="product-image" />
                             <h3 className="product-name">{product.name}</h3>
-                            <p className="product-description">{product.description}</p>
+                            <p className="product-description">{product.title}</p>
                           </article>
                         </Link>
                       ))}
@@ -131,17 +250,17 @@ const Product = () => {
             ) : (
               <>
                 <div className="products-grid">
-                  {currentProducts.length > 0 ? (
-                    currentProducts.map(product => (
+                  {products.length > 0 ? (
+                    products.map(product => (
                       <Link
-                        key={product.id}
-                        to={`/products/${product.id}`}
+                        key={product._id}
+                        to={`/products/${product._id}`}
                         style={{ textDecoration: "none", color: "inherit" }}
                       >
                         <article className="product-card">
-                          <img src={product.images[0]} alt={product.name} className="product-image" />
+                          <img src={product.image[0]} alt={product.name} className="product-image" />
                           <h3 className="product-name">{product.name}</h3>
-                          <p className="product-description">{product.description}</p>
+                          <p className="product-description">{product.title}</p>
                         </article>
                       </Link>
                     ))

@@ -1,22 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { products } from '../data/products';
 import '../styles/ProductDetail.css';
 import SEO from '../component/SEO';
+import { getPublicProductById } from '../utils/productApi';
 
 const ProductDetail = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [activeImage, setActiveImage] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const foundProduct = products.find(p => p.id === parseInt(id));
-        if (foundProduct) {
-            setProduct(foundProduct);
-            setActiveImage(foundProduct.images[0]); 
-            window.scrollTo(0, 0); 
-        }
+        const fetchProduct = async () => {
+            try {
+                setLoading(true);
+                const data = await getPublicProductById(id);
+                setProduct(data);
+                if (data.image && data.image.length > 0) {
+                    setActiveImage(data.image[0]);
+                }
+                window.scrollTo(0, 0);
+            } catch (error) {
+                console.error("Error fetching product details:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProduct();
     }, [id]);
+
+    if (loading) return (
+        <div className="container" style={{ minHeight: '80vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div className="loading">Đang tải...</div>
+        </div>
+    );
 
     if (!product) {
         return (
@@ -32,8 +49,8 @@ const ProductDetail = () => {
         "@type": "Product",
         "name": product.name,
         "description": product.description,
-        "image": product.images[0],
-        "category": product.category,
+        "image": product.image[0],
+        "category": product.categoryId?.name,
         "brand": { "@type": "Organization", "name": "TNT PCCC" }
     };
 
@@ -42,9 +59,9 @@ const ProductDetail = () => {
             <SEO
                 title={product.name}
                 description={product.description}
-                keywords={`${product.name}, ${product.category}, pccc, TNT PCCC`}
-                image={product.images[0]}
-                url={`/products/${product.id}`}
+                keywords={`${product.name}, ${product.categoryId?.name}, pccc, TNT PCCC`}
+                image={product.image[0]}
+                url={`/products/${product._id}`}
                 schema={structuredData}
             />
             <div className="container" >
@@ -54,7 +71,7 @@ const ProductDetail = () => {
                             <img src={activeImage} alt={product.name} className="main-image" />
                         </div>
                         <div className="thumbnail-list">
-                            {product.images.map((img, index) => (
+                            {product.image.map((img, index) => (
                                 <div
                                     key={index}
                                     className={`thumbnail-item ${activeImage === img ? 'active' : ''}`}
@@ -67,7 +84,7 @@ const ProductDetail = () => {
                     </div>
 
                     <div className="product-info-detail">
-                        <span className="product-category-detail">{product.category}</span>
+                        <span className="product-category-detail">{product.categoryId?.name}</span>
                         <h1 className="product-title-detail">{product.name}</h1>
 
                         <div className="product-description-detail">
@@ -76,17 +93,17 @@ const ProductDetail = () => {
 
                         <div className="product-specs">
                             <h3>Chi tiết sản phẩm</h3>
-                            <p>{product.detail}</p>
+                            <p>{product.title}</p>
 
-                            {product.specifications && product.specifications.length > 0 && (
+                            {product.technical && product.technical.length > 0 && (
                                 <div className="specs-container">
                                     <h4>Thông số kỹ thuật</h4>
                                     <table className="specs-table">
                                         <tbody>
-                                            {product.specifications.map((spec, index) => (
+                                            {product.technical.map((spec, index) => (
                                                 <tr key={index} className="specs-row">
-                                                    <td className="specs-label">{spec.label}</td>
-                                                    <td className="specs-value">{spec.value}</td>
+                                                    <td className="specs-label">{spec.title}</td>
+                                                    <td className="specs-value">{spec.description}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
