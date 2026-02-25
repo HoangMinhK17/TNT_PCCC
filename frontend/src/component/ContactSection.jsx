@@ -45,7 +45,7 @@ const ContactSection = () => {
   return (
     <section id="contact" className="contact-section">
       <div className="container">
-        <h2 className="section-title" data-aos="fade-up">Liên hệ với chúng tôi</h2>
+        <h1 className="section-title" data-aos="fade-up">Liên hệ với chúng tôi</h1>
 
         <div className="contact-content">
           <div className="contact-form-wrapper" data-aos="fade-up">

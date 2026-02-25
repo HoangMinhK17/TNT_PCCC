@@ -46,7 +46,7 @@ const Project = () => {
                 schema={structuredData}
             />
             <div className="container" data-aos="fade-up">
-                <h2 className="section-title">Dự án tiêu biểu</h2>
+                <h1 className="section-title">Dự án tiêu biểu</h1>
 
                 <div className="projects-layout">
 

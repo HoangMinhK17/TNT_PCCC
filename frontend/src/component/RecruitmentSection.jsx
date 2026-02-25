@@ -107,7 +107,7 @@ const RecruitmentSection = () => {
   return (
     <section id="recruitment" className="recruitment-section">
       <div className="container" data-aos="fade-up">
-        <h2 className="section-title">Tuyển dụng - Gia nhập đội ngũ chúng tôi</h2>
+        <h1 className="section-title">Tuyển dụng - Gia nhập đội ngũ chúng tôi</h1>
         <p className="section-subtitle">Chúng tôi luôn tìm kiếm những nhân tài giỏi để cùng phát triển công ty</p>
 
         <div className="recruitment-content" >

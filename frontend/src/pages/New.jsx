@@ -65,7 +65,7 @@ const New = () => {
                 schema={structuredData}
             />
             <div className="container" data-aos="fade-up">
-                <h2 className="section-title">Tin tức & Sự kiện</h2>
+                <h1 className="section-title">Tin tức & Sự kiện</h1>
 
                 <div className="products-layout" style={{ flexDirection: 'column' }}>
 

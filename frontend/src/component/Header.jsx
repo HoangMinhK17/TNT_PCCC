@@ -9,7 +9,7 @@ import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-    const [activeSubmenu, setActiveSubmenu] = useState(null); 
+    const [activeSubmenu, setActiveSubmenu] = useState(null);
     const [language, setLanguage] = useState("");
 
     const languageGlobal = JSON.parse(localStorage.getItem("language")) || "vn";

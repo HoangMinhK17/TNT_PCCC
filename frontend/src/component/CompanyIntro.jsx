@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/CompanyIntro.css';
-
+import { getIntroduction } from '../utils/introductApi.js';
 // Helper component for counting animation
 const CountUpNumber = ({ end, duration = 2000, suffix = '' }) => {
   const [count, setCount] = useState(0);
@@ -55,11 +55,26 @@ const CountUpNumber = ({ end, duration = 2000, suffix = '' }) => {
 };
 
 const CompanyIntro = () => {
-  const images = [
-    "src/uploads/breadcrumb/nav2.jpg",
-    "src/uploads/information/infor.jpg",
-  ];
+  const [introduction, setIntroduction] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const fetchIntroduction = async () => {
+      try {
+        setLoading(true);
+        const response = await getIntroduction();
+        setIntroduction(Array.isArray(response) ? (response[0] ?? null) : response);
+      } catch (error) {
+        console.error("Error fetching introduction:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchIntroduction();
+  }, []);
+
+const images = introduction?.image || [];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
@@ -75,20 +90,18 @@ const CompanyIntro = () => {
       <div className="container">
         <div className="company-intro-content">
           <div className="company-text" data-aos="fade-up">
-            <h2 className="section-title"> TNT Company - Chuyên Gia PCCC</h2>
+            <h1 className="section-title"> {introduction.name}</h1>
             <div className="intro-item">
               <img src="src/uploads/information/icon1.jpg" alt="Icon 1" className="intro-icon" />
               <p className="company-description">
-                TNT Company là đơn vị hàng đầu trong lĩnh vực <strong>Tư vấn, Thiết kế, Thi công và Lắp đặt hệ thống Phòng cháy chữa cháy</strong>.
-                Chúng tôi cam kết mang đến giải pháp an toàn tối ưu, bảo vệ tính mạng và tài sản cho mọi công trình.
+                {introduction.title}
               </p>
             </div>
 
             <div className="intro-item">
               <img src="src/uploads/information/icon3.jpg" alt="Icon 3" className="intro-icon" />
               <p className="company-description">
-                Với đội ngũ kỹ sư giàu kinh nghiệm và quy trình làm việc chuẩn ISO, chúng tôi tự hào là đối tác tin cậy
-                của nhiều tập đoàn lớn và các dự án trọng điểm quốc gia. Sự an toàn của bạn là sứ mệnh của chúng tôi.
+                {introduction.description}
               </p>
             </div>
           </div>
