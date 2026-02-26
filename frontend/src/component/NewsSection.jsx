@@ -1,8 +1,27 @@
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { news } from '../data/news';
+import { getNews } from '../utils/newsApi';
 import '../styles/NewsSection.css';
 
 const NewsSection = () => {
+  const [newsItems, setNewsItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const data = await getNews();
+        setNewsItems(data || []);
+      } catch (error) {
+        console.error("Error fetching news for section:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNews();
+  }, []);
+
+  if (loading) return null; // Or a skeleton loader
 
   return (
     <section id="news" className="news-section">
@@ -10,22 +29,22 @@ const NewsSection = () => {
         <h2 className="section-title">Tin tức mới nhất</h2>
 
         <div className="news-grid">
-          {news.slice(0, 4).map(newsItem => (
+          {newsItems.slice(0, 4).map(newsItem => (
 
-            <article key={newsItem.id} className="news-card">
+            <article key={newsItem._id} className="news-card">
               <Link
-                to={`/news/${newsItem.id}`}
+                to={`/news/${newsItem._id}`}
                 style={{ textDecoration: 'none', color: 'inherit' }}
               >
                 <div className="news-image-wrapper">
                   <img src={newsItem.image} alt={newsItem.title} className="news-image" />
-                  <span className="news-category">{newsItem.category}</span>
+                  <span className="news-category">{newsItem.categoryNewsId?.name}</span>
                 </div>
 
                 <div className="news-content">
-                  <p className="news-date"> {newsItem.date}</p>
-                  <h3 className="news-title">{newsItem.title}</h3>
-                  <p className="news-excerpt">{newsItem.description}</p>
+                  <p className="news-date"> {new Date(newsItem.date).toLocaleDateString('vi-VN')}</p>
+                  <h3 className="news-title">{newsItem.name}</h3>
+                  <p className="news-excerpt">{newsItem.title}</p>
                 </div>
               </Link>
             </article>

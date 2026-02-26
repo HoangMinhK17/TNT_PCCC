@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/PartnersSection.css';
+import { getPartners } from '../utils/partnerApi';
 
 const PartnersSection = () => {
-  const [partners] = useState([
-    { id: 1, name: 'VinGroup', logo: 'src/uploads/Partner/pn1.jpg' },
-    { id: 2, name: 'SunGroup', logo: 'src/uploads/Partner/pn2.jpg' },
-    { id: 4, name: 'Cảnh sát PCCC', logo: 'src/uploads/Partner/pn4.jpg' },
-    { id: 7, name: 'Viettel', logo: 'src/uploads/Partner/pn7.jpg' },
-  ]);
+  const [partners, setPartners] = useState([]);
+
+  const fetchPartners = async () => {
+    try {
+      const partnersData = await getPartners();
+      setPartners(partnersData);
+    } catch (error) {
+      console.error("Error fetching partners:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPartners();
+  }, []);
 
   return (
     <section className="partners-section">
@@ -19,7 +28,7 @@ const PartnersSection = () => {
           <div className="partners-carousel">
             {[...partners, ...partners].map((partner, index) => (
               <div key={index} className="partner-item carousel-partner">
-                <img src={partner.logo} alt={partner.name} className="partner-logo" />
+                <img src={partner.image} alt={partner.name} className="partner-logo" />
               </div>
             ))}
           </div>

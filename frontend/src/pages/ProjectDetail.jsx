@@ -1,20 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { projects } from '../data/projects';
+import { getProjectById } from '../utils/projectApi';
 import '../styles/ProjectDetail.css';
 import SEO from '../component/SEO';
 
 const ProjectDetail = () => {
     const { id } = useParams();
     const [project, setProject] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const foundProject = projects.find(p => p.id === parseInt(id));
-        if (foundProject) {
-            setProject(foundProject);
-            window.scrollTo(0, 0);
-        }
+        const fetchProject = async () => {
+            try {
+                const data = await getProjectById(id);
+                setProject(data);
+                window.scrollTo(0, 0);
+            } catch (error) {
+                console.error("Error fetching project detail:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProject();
     }, [id]);
+
+    if (loading) return <div className="container" style={{ padding: '100px 0', textAlign: 'center' }}>Đang tải...</div>;
 
     if (!project) {
         return (
@@ -52,14 +62,14 @@ const ProjectDetail = () => {
                     </div>
 
                     <div className="project-detail-info">
-                        <span className="project-detail-category">{project.category}</span>
                         <h1 className="project-detail-title">{project.name}</h1>
-                        <p className="project-detail-year">Năm thực hiện: {project.year}</p>
+                        <p className="project-detail-year">Năm thực hiện: {new Date(project.date).getFullYear()}
+                        </p>
 
                         <div className="project-detail-content">
-                            <p className="project-detail-description">{project.description}</p>
+                            <p className="project-detail-description">{project.title}</p>
                             <h3>Chi tiết dự án</h3>
-                            <p>{project.detail}</p>
+                            <p>{project.description}</p>
                         </div>
 
                         <Link to="/contact" className="contact-btn">Liên hệ tư vấn dự án tương tự</Link>

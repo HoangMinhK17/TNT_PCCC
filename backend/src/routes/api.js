@@ -6,6 +6,11 @@ import categoryProductRouter from "./categoryProductRoute.js";
 import productRouter from "./productRoute.js";
 import serviceRouter from "./serviceRoute.js";
 import projectRouter from "./projectRoute.js";
+import partnerRouter from "./partnerRoute.js";
+import recruitmentRouter from "./recruitmentRoute.js";
+import categoryNewsRouter from "./categoryNewsRoute.js";
+import newsRouter from "./newsRoute.js";
+import informationRouter from "./informationRoute.js";
 
 const router = express.Router();
 //User
@@ -29,4 +34,20 @@ router.use("/service", serviceRouter);
 
 //Project
 router.use("/project", projectRouter);
+
+//Partner
+router.use("/partner", partnerRouter);
+
+//Recruiment
+router.use("/recruitment", recruitmentRouter);
+
+//CategoryNews
+router.use("/categoryNews", categoryNewsRouter);
+
+//News
+router.use("/news", newsRouter);
+
+//Information
+router.use("/information", informationRouter);
+
 export default router;

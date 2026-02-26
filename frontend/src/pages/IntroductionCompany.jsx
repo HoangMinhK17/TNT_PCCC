@@ -4,7 +4,7 @@ import VisionMission from "../component/VisionMission";
 import Achievements from "../component/Achievements";
 import SEO from '../component/SEO';
 
-const InfotmationCompany = () => {
+const IntroductionCompany = () => {
     const schema = {
         "@context": "https://schema.org",
         "@type": "AboutPage",
@@ -29,4 +29,4 @@ const InfotmationCompany = () => {
     );
 }
 
-export default InfotmationCompany;
+export default IntroductionCompany;

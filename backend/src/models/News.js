@@ -1,26 +1,33 @@
 import mongoose from "mongoose";
 
-
-const recruitmentSchema = new mongoose.Schema({
+const newsSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
     },
-    level: {
+    date: {
+        type: Date,
+        required: true
+    },
+    title: {
         type: String,
         required: true
     },
-    location: {
+    description: {
         type: String,
         required: true
     },
-    salary: {
+    image: {
+        type: String
+    },
+    content: {
         type: String,
         required: true
     },
-    time: {
-        type: String,
-        required: true
+    categoryNewsId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "CategoryNews",
+        default: null
     },
     slug: {
         type: String,
@@ -28,12 +35,6 @@ const recruitmentSchema = new mongoose.Schema({
         unique: true,
         index: true
     },
-
-    requirements: {
-        type: [String],
-        default: []
-    },
-
     status: {
         type: String,
         enum: ["active", "inactive"],
@@ -56,12 +57,12 @@ const recruitmentSchema = new mongoose.Schema({
     isDeleted: {
         type: Boolean,
         default: false
-    }
-    
+    },
+
 },
-{
-    timestamps: true
-}
+    {
+        timestamps: true
+    }
 );
 
-export default mongoose.model("Recruitment", recruitmentSchema);
+export default mongoose.model("News", newsSchema);

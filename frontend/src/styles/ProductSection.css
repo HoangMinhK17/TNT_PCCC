@@ -209,7 +209,7 @@
 
 .product-name {
     font-size: 18px;
-    padding: 20px 20px 5px;
+    padding: 10px 20px 5px 10px;
     margin: 0;
     color: var(--text-color);
     text-align: left;
@@ -220,7 +220,7 @@
 .product-description {
     font-size: 14px;
     color: #666;
-    margin: 5px 20px 15px;
+    margin: 5px 20px 15px 10px;
     padding: 0;
     text-align: left;
     flex-grow: 1;

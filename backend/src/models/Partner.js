@@ -1,9 +1,13 @@
 import mongoose from "mongoose";
 
 const partnerSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
 
     image: {
-        type: [String],
+        type: String,
         required: true
     },
     status: {
@@ -25,6 +29,10 @@ const partnerSchema = new mongoose.Schema({
         ref: "User",
         default: null
     },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
     
 },
 {   

@@ -9,7 +9,7 @@ const getPublicServices = async (req, res) => {
         const filter = { isDeleted: false };
         const totalServices = await Service.countDocuments(filter);
         const services = await Service.find(filter)
-            .select("name image slug title")
+            .select("name image slug title status")
             .skip(skip)
             .limit(limit);
 
@@ -26,7 +26,7 @@ const getPublicServices = async (req, res) => {
 
 const createService = async (req, res) => {
     try {
-        const { name, description, title, image, slug, whyChooseUs } = req.body;
+        const { name, description, title, image, slug, whyChooseUs} = req.body;
         const service = await Service.create({ name, description, title, image, slug, whyChooseUs });
         res.status(201).json(service);
     } catch (error) {

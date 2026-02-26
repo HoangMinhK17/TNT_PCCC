@@ -8,7 +8,7 @@ import Product from './pages/Product'
 import ProductDetail from './pages/ProductDetail'
 import ProjectDetail from './pages/ProjectDetail'
 import NewsDetail from './pages/NewsDetail'
-import InfotmationCompany from './pages/InfotmationCompany'
+import IntroductionCompany from './pages/IntroductionCompany'
 import Project from './pages/Project'
 import New from './pages/New'
 import Contract from './pages/Contract'
@@ -42,7 +42,7 @@ function App() {
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/news/:id" element={<NewsDetail />} />
-          <Route path="/about" element={<InfotmationCompany />} />
+          <Route path="/about" element={<IntroductionCompany />} />
           <Route path="/projects" element={<Project />} />
           <Route path="/news" element={<New />} />
           <Route path="/contact" element={<Contract />} />

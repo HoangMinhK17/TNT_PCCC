@@ -1,37 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { projects } from '../data/projects';
+import { getProjects } from '../utils/projectApi';
 import '../styles/ProjectsSection.css';
 import SEO from '../component/SEO';
 
 const Project = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const projectsPerPage = 4; 
-
-    const allCategories = ['Tất cả', ...new Set(projects.map(item => item.category))];
-    const [selectedCategory, setSelectedCategory] = useState('Tất cả');
-
-    const filteredProjects = projects.filter(project => {
-        const matchCategory = selectedCategory === 'Tất cả' || project.category === selectedCategory;
-        const matchSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase());
-        return matchCategory && matchSearch;
+    const [projectsData, setProjectsData] = useState({
+        projects: [],
+        currentPage: 1,
+        totalPages: 0,
+        totalProjects: 0
     });
+    const [loading, setLoading] = useState(true);
+    const projectsPerPage = 4;
 
-    const indexOfLastProject = currentPage * projectsPerPage;
-    const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-    const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
-    const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
+    useEffect(() => {
+        fetchProjects(projectsData.currentPage);
+    }, [projectsData.currentPage]);
 
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const fetchProjects = async (page) => {
+        setLoading(true);
+        try {
+            const data = await getProjects(page, projectsPerPage);
+            setProjectsData(data);
+        } catch (error) {
+            console.error("Error fetching projects:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const paginate = (pageNumber) => {
+        setProjectsData(prev => ({ ...prev, currentPage: pageNumber }));
+        window.scrollTo(0, 0);
+    };
 
     const structuredData = {
         "@context": "https://schema.org",
         "@type": "ItemList",
-        "itemListElement": currentProjects.map((project, index) => ({
+        "itemListElement": projectsData.projects.map((project, index) => ({
             "@type": "ListItem",
             "position": index + 1,
-            "url": `${window.location.origin}/projects/${project.id}`,
+            "url": `${window.location.origin}/projects/${project._id}`,
             "name": project.name
         }))
     };
@@ -50,60 +60,45 @@ const Project = () => {
 
                 <div className="projects-layout">
 
-                    <aside className="projects-sidebar">
-                        <div className="search-box">
-                            <input
-                                type="text"
-                                placeholder="Tìm kiếm dự án..."
-                                value={searchTerm}
-                                onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                                className="sidebar-search-input"
-                                style={{
-                                    width: '80%',
-                                    padding: '12px 20px',
-                                    border: '1px solid #ddd',
-                                    borderRadius: '50px',
-                                    fontSize: '15px',
-                                    outline: 'none'
-                                }}
-                            />
-                        </div>
-                    </aside>
+
 
                     <div className="projects-content">
                         <div className="projects-grid">
-                            {currentProjects.length > 0 ? (
-                                currentProjects.map((project) => (
-                                    <div key={project.id} className="project-card">
-                                        <Link
-                                            to={`/projects/${project.id}`}
-                                            style={{ textDecoration: "none", color: "inherit", display: 'flex', flexDirection: 'column', height: '100%' }}
-                                        >
-                                            <div className="project-image-wrapper">
-                                                <img src={project.image} alt={project.name} className="project-image" />
-
-                                            </div>
-                                            <div className="project-info">
-
-                                                <h3 className="project-name">{project.name}</h3>
-                                                <p className="project-description">{project.description}</p>
-                                                <p className="project-year">Năm: {project.year}</p>
-                                            </div>
-                                        </Link>
-                                    </div>
-                                ))
+                            {!loading ? (
+                                projectsData.projects.length > 0 ? (
+                                    projectsData.projects.map((project) => (
+                                        <div key={project._id} className="project-card">
+                                            <Link
+                                                to={`/projects/${project._id}`}
+                                                style={{ textDecoration: "none", color: "inherit", display: 'flex', flexDirection: 'column', height: '100%' }}
+                                            >
+                                                <div className="project-image-wrapper">
+                                                    <img src={project.image} alt={project.name} className="project-image" />
+                                                </div>
+                                                <div className="project-info">
+                                                    <h3 className="project-name">{project.name}</h3>
+                                                    <p className="project-description">{project.title}</p>
+                                                    <p className="project-year">  Năm: {new Date(project.date).getFullYear()}
+                                                    </p>
+                                                </div>
+                                            </Link>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="no-products">Không tìm thấy dự án phù hợp.</p>
+                                )
                             ) : (
-                                <p className="no-products">Không tìm thấy dự án phù hợp.</p>
+                                <div className="loading">Đang tải...</div>
                             )}
                         </div>
 
-                        {totalPages > 1 && (
+                        {projectsData.totalPages > 1 && (
                             <div className="pagination">
-                                {Array.from({ length: totalPages }, (_, i) => (
+                                {Array.from({ length: projectsData.totalPages }, (_, i) => (
                                     <button
                                         key={i + 1}
                                         onClick={() => paginate(i + 1)}
-                                        className={currentPage === i + 1 ? 'active' : ''}
+                                        className={projectsData.currentPage === i + 1 ? 'active' : ''}
                                     >
                                         {i + 1}
                                     </button>

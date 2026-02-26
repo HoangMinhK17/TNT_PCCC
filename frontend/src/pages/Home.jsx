@@ -21,7 +21,7 @@ const Home = () => {
     return (
         <>
             <SEO
-                title="Trang chủ"
+                title="Trang chủ "
                 description="TNT PCCC - Chuyên cung cấp thiết bị phòng cháy chữa cháy, hệ thống báo cháy, bảo hộ lao động uy tín, chất lượng hàng đầu Việt Nam."
                 keywords="pccc, thiết bị chữa cháy, báo cháy, bảo hộ lao động, TNT PCCC, phòng cháy chữa cháy"
                 url="/"
@@ -29,7 +29,6 @@ const Home = () => {
             />
             <SearchBar />
             <CompanyIntro />
-
             <ProductSection />
             <ServiceSection />
             <ProjectsSection />

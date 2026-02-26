@@ -4,6 +4,7 @@ import '../styles/Header.css';
 import { useTranslation } from 'react-i18next';
 import { news } from '../data/news';
 import { getCategoryProducts } from '../utils/categoryProductApi';
+import { getCategoryNews } from '../utils/categoryNewsApi';
 
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
@@ -12,14 +13,19 @@ const Header = () => {
     const [activeSubmenu, setActiveSubmenu] = useState(null);
     const [language, setLanguage] = useState("");
     const [categories, setCategories] = useState([]);
+    const [newsCategories, setNewsCategories] = useState([]);
 
     const languageGlobal = JSON.parse(localStorage.getItem("language")) || "vn";
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const data = await getCategoryProducts();
-                setCategories(data);
+                const [productData, newsData] = await Promise.all([
+                    getCategoryProducts(),
+                    getCategoryNews()
+                ]);
+                setCategories(productData);
+                setNewsCategories(newsData);
             } catch (error) {
                 console.error("Error fetching categories:", error);
             }
@@ -110,13 +116,13 @@ const Header = () => {
                                 )}
                                 {item.label === t("news") && (
                                     <ul className={`dropdown ${activeSubmenu === index ? 'open' : ''}`}>
-                                        {[...new Set(news.map(n => n.category))].map((category, idx) => (
+                                        {newsCategories.map((category, idx) => (
                                             <li key={idx}>
                                                 <Link
-                                                    to={`/news?category=${encodeURIComponent(category)}`}
+                                                    to={`/news?category=${encodeURIComponent(category.name)}&categoryId=${category._id}`}
                                                     onClick={closeMenu}
                                                 >
-                                                    {category}
+                                                    {category.name}
                                                 </Link>
                                             </li>
                                         ))}

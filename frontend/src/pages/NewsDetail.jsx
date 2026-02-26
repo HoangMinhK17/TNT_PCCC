@@ -1,20 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { news } from '../data/news';
 import '../styles/NewsDetail.css';
 import SEO from '../component/SEO';
+import { getNewsById } from '../utils/newsApi';
 
 const NewsDetail = () => {
     const { id } = useParams();
     const [newsItem, setNewsItem] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const foundNews = news.find(n => n.id === parseInt(id));
-        if (foundNews) {
-            setNewsItem(foundNews);
-            window.scrollTo(0, 0);
-        }
+        const fetchNewsDetail = async () => {
+            try {
+                setLoading(true);
+                const data = await getNewsById(id);
+                setNewsItem(data);
+                window.scrollTo(0, 0);
+            } catch (error) {
+                console.error("Error fetching news detail:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchNewsDetail();
     }, [id]);
+
+    if (loading) {
+        return (
+            <div className="container" style={{ minHeight: '80vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <div className="loading">Đang tải...</div>
+            </div>
+        );
+    }
 
     if (!newsItem) {
         return (
@@ -40,9 +57,9 @@ const NewsDetail = () => {
             <SEO
                 title={newsItem.title}
                 description={newsItem.description}
-                keywords={`${newsItem.category}, tin tức pccc, TNT PCCC`}
+                keywords={`${newsItem.categoryNewsId?.name || ''}, tin tức pccc, TNT PCCC`}
                 image={newsItem.image}
-                url={`/news/${newsItem.id}`}
+                url={`/news/${newsItem._id}`}
                 type="article"
                 schema={structuredData}
             />
@@ -53,16 +70,17 @@ const NewsDetail = () => {
                     </div>
 
                     <div className="news-detail-info">
-                        <span className="news-detail-category">{newsItem.category}</span>
-                        <h1 className="news-detail-title">{newsItem.title}</h1>
-                        <p className="news-detail-date">📅 {newsItem.date}</p>
+                        <span className="news-detail-category">{newsItem.categoryNewsId?.name}</span>
+                        <h1 className="news-detail-title">{newsItem.name}</h1>
+                        <p className="news-detail-date"> {new Date(newsItem.date).toLocaleDateString('vi-VN')}</p>
 
                         <div className="news-detail-content">
-                            <p className="news-detail-description">{newsItem.description}</p>
-                            <div className="news-detail-body">
-                                <p>{newsItem.content}</p>
+                            <p className="news-detail-description" style={{ fontWeight: '600', marginBottom: '10px' }}>{newsItem.title}</p>
+                            <p className="news-detail-short-desc" style={{ color: '#555', marginBottom: '20px', fontStyle: 'italic' }}>{newsItem.description}</p>
+                            <div className="news-detail-body" dangerouslySetInnerHTML={{ __html: newsItem.content }}>
                             </div>
                         </div>
+
 
                         <div className="news-detail-footer">
                             <Link to="/news" className="btn-back">Quay lại danh sách</Link>

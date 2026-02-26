@@ -1,24 +1,9 @@
 import mongoose from "mongoose";
 
-const categoryNewSchema = new mongoose.Schema({
+const categoryNewsSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
-    },
-    date: {
-        type: Date,
-        required: true
-    },
-    title: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    image: {
-        type: String
     },
     slug: {
         type: String,
@@ -45,6 +30,11 @@ const categoryNewSchema = new mongoose.Schema({
         ref: "User",
         default: null
     },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    
     
 },
 {
@@ -52,4 +42,4 @@ const categoryNewSchema = new mongoose.Schema({
 }
 );
 
-export default mongoose.model("CategoryNew", categoryNewSchema);
+export default mongoose.model("CategoryNews", categoryNewsSchema);

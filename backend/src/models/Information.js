@@ -33,15 +33,18 @@ const informationSchema = new mongoose.Schema({
     socialLinks: [  {
         name: {
             type: String,
-            required: true
         },
         url: {
             type: String,
-            required: true
         }
     }],
+    updateBy : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "User",
+        default : null
+    } 
     
-    
+
 },  
 {
     timestamps: true
