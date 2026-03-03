@@ -1,10 +1,12 @@
 import express from "express";
-import { getCategoryProducts, createCategoryProduct, updateCategoryProduct, deleteCategoryProduct } from "../controllers/categoryProductController.js";
+import { getCategoryProducts, createCategoryProduct, updateCategoryProduct, deleteCategoryProduct, getCategoryProductForManage } from "../controllers/categoryProductController.js";
+import { authMiddleware } from "../middleware/auth.js";
 const router = express.Router();
 
 router.get("/get-category-products", getCategoryProducts);
-router.post("/create-category-product", createCategoryProduct);
-router.put("/update-category-product/:id", updateCategoryProduct);
-router.delete("/delete-category-product/:id", deleteCategoryProduct);
+router.get("/get-category-product-for-manage", getCategoryProductForManage);
+router.post("/create-category-product", authMiddleware, createCategoryProduct);
+router.put("/update-category-product/:id", authMiddleware, updateCategoryProduct);
+router.delete("/delete-category-product/:id", authMiddleware, deleteCategoryProduct);
 
 export default router;

@@ -6,16 +6,30 @@ export const getCategoryProducts = async () => {
 };
 
 export const createCategoryProduct = async (categoryProduct) => {
-    const response = await api.post("/categoryProduct/create-category-product", categoryProduct);
+    const token = localStorage.getItem("token");
+    const response = await api.post("/categoryProduct/create-category-product", categoryProduct, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
     return response.data;
 };
 
 export const updateCategoryProduct = async (id, categoryProduct) => {
-    const response = await api.put(`/categoryProduct/update-category-product/${id}`, categoryProduct);
+    const token = localStorage.getItem("token");
+    const response = await api.put(`/categoryProduct/update-category-product/${id}`, categoryProduct, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
     return response.data;
 };
 
 export const deleteCategoryProduct = async (id) => {
-    const response = await api.delete(`/categoryProduct/delete-category-product/${id}`);
+    const token = localStorage.getItem("token");
+    const response = await api.delete(`/categoryProduct/delete-category-product/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+};
+
+export const getCategoryProductForManage = async () => {
+    const response = await api.get("/categoryProduct/get-category-product-for-manage");
     return response.data;
 };

@@ -2,7 +2,15 @@ import CategoryProduct from "../models/CategoryProduct.js";
 
 const getCategoryProducts = async (req, res) => {
     try {
-        const categoryProducts = await CategoryProduct.find({isDeleted : false});
+        const categoryProducts = await CategoryProduct.find({isDeleted : false , status : "active"}).sort({ createdAt: -1 });
+        res.status(200).json(categoryProducts);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+const getCategoryProductForManage = async (req, res) => {
+    try {
+        const categoryProducts = await CategoryProduct.find({ isDeleted: false }).sort({ createdAt: -1 });
         res.status(200).json(categoryProducts);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -12,6 +20,9 @@ const getCategoryProducts = async (req, res) => {
 const createCategoryProduct = async (req, res) => {
     try {
         const { name, slug } = req.body;
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
         const categoryProduct = await CategoryProduct.create({ name, slug });
         res.status(201).json(categoryProduct);
     } catch (error) {
@@ -21,8 +32,11 @@ const createCategoryProduct = async (req, res) => {
 
 const updateCategoryProduct = async (req, res) => {
     try {
-        const { name, slug } = req.body;
-        const categoryProduct = await CategoryProduct.findByIdAndUpdate(req.params.id, { name, slug }, { new: true });
+        const { name, slug, status } = req.body;
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const categoryProduct = await CategoryProduct.findByIdAndUpdate(req.params.id, { name, slug, status }, { new: true });
         res.status(200).json(categoryProduct);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -31,11 +45,14 @@ const updateCategoryProduct = async (req, res) => {
 
 const deleteCategoryProduct = async (req, res) => {
     try {
-        const categoryProduct = await CategoryProduct.findByIdAndDelete(req.params.id);
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const categoryProduct = await CategoryProduct.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
         res.status(200).json(categoryProduct);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-export { getCategoryProducts, createCategoryProduct, updateCategoryProduct, deleteCategoryProduct };
+export { getCategoryProducts, getCategoryProductForManage, createCategoryProduct, updateCategoryProduct, deleteCategoryProduct };

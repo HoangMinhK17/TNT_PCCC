@@ -23,6 +23,7 @@ import MainLayout from './component/MainLayout'
 import ForgetPassword from './admin/ForgetPassword'
 import Dashboard from './admin/dashboard'
 import AdminIntroduction from './admin/AdminIntroduction'
+import AdminProduct from './admin/AdminProduct'
 import ProtectedRoute from './component/ProtectedRoute'
 import api from './utils/api'
 import { getImageInformation } from './utils/informationApi'
@@ -105,6 +106,14 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminIntroduction />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/products"
+          element={
+            <ProtectedRoute>
+              <AdminProduct />
             </ProtectedRoute>
           }
         />

@@ -88,12 +88,12 @@ const ProductDetail = () => {
                         <h1 className="product-title-detail">{product.name}</h1>
 
                         <div className="product-description-detail">
-                            <p>{product.description}</p>
+                            <p>{product.title}</p>
                         </div>
 
                         <div className="product-specs">
                             <h3>Chi tiết sản phẩm</h3>
-                            <p>{product.title}</p>
+                            <p>{product.description}</p>
 
                             {product.technical && product.technical.length > 0 && (
                                 <div className="specs-container">

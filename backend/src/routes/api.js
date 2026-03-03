@@ -13,6 +13,7 @@ import newsRouter from "./newsRoute.js";
 import informationRouter from "./informationRoute.js";
 import whyChooseServiceRouter from "./whyChooseServiceRoute.js";
 import whyChooseCompanyRouter from "./whyChooseCompanyRoute.js";
+import uploadRouter from "./uploadRoute.js";
 
 const router = express.Router();
 //User
@@ -57,5 +58,9 @@ router.use("/whyChooseService", whyChooseServiceRouter);
 
 //WhyChooseCompany
 router.use("/whyChooseCompany", whyChooseCompanyRouter);
+
+//Upload
+router.use("/upload", uploadRouter);
+
 
 export default router;

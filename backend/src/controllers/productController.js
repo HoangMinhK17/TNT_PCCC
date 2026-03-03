@@ -2,9 +2,24 @@ import Product from "../models/Product.js";
 
 const getPublicProducts = async (req, res) => {
     try {
-        const products = await Product.find({ isDeleted: false })
+        const products = await Product.find({ isDeleted: false }).sort({ createdAt: -1 })
             .select("name title  image slug status")
-            .populate({ path: "categoryId", select: "name slug" });
+            .populate({ path: "categoryId", select: "name slug status", match: { status: "active" } });
+
+        const filteredProducts = products.filter(p => p.categoryId !== null);
+        res.status(200).json(filteredProducts);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const getProductForManage = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const products = await Product.find({ isDeleted: false }).sort({ createdAt: -1 })
+            .populate({ path: "categoryId", select: "name slug status" });
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -14,6 +29,9 @@ const getPublicProducts = async (req, res) => {
 const createProduct = async (req, res) => {
     try {
         const { name, title, description, image, technical, categoryId, slug, status } = req.body;
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
         const product = await Product.create({ name, title, description, image, technical, categoryId, slug, status });
         res.status(201).json(product);
     } catch (error) {
@@ -24,6 +42,9 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
     try {
         const { name, title, description, image, technical, categoryId, slug, status } = req.body;
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
         const product = await Product.findByIdAndUpdate(req.params.id, { name, title, description, image, technical, categoryId, slug, status }, { new: true });
         res.status(200).json(product);
     } catch (error) {
@@ -33,7 +54,10 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     try {
-        const product = await Product.findByIdAndDelete(req.params.id);
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const product = await Product.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
         res.status(200).json(product);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -105,4 +129,4 @@ const getProductByName = async (req, res) => {
     }
 };
 
-export { getPublicProducts, createProduct, updateProduct, deleteProduct, getPublicProductById, getPublicProductByCategoryId, getProductByName };    
+export { getPublicProducts, createProduct, updateProduct, deleteProduct, getPublicProductById, getPublicProductByCategoryId, getProductByName, getProductForManage };    

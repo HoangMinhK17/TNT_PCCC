@@ -5,6 +5,15 @@ export const getPublicProducts = async () => {
     return response.data;
 };
 
+export const getProductForManage = async () => {
+    const token = localStorage.getItem("token");
+    console.log("token", token);
+    const response = await api.get("/product/getProductForManage", { 
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+};
+
 export const getPublicProductById = async (id) => {
     const response = await api.get(`/product/getPublicProductById/${id}`);
     return response.data;
@@ -16,17 +25,26 @@ export const getPublicProductByCategoryId = async (categoryId, page = 1, limit =
 };
 
 export const createProduct = async (product) => {
-    const response = await api.post("/product/createProduct", product);
+    const token = localStorage.getItem("token");
+    const response = await api.post("/product/createProduct", product, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
     return response.data;
 };
 
 export const updateProduct = async (id, product) => {
-    const response = await api.put(`/product/updateProduct/${id}`, product);
+    const token = localStorage.getItem("token");
+    const response = await api.put(`/product/updateProduct/${id}`, product, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
     return response.data;
 };
 
 export const deleteProduct = async (id) => {
-    const response = await api.delete(`/product/deleteProduct/${id}`);
+    const token = localStorage.getItem("token");
+    const response = await api.delete(`/product/deleteProduct/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
     return response.data;
 };
 

@@ -1,137 +1,492 @@
-import React, { useState } from 'react';
-import { Table, Button, Modal, Form, Input, Space, Popconfirm, message, Typography } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import {
+    Tabs, Table, Button, Modal, Form, Input, Space,
+    Popconfirm, message, Typography, Upload, Image, Spin, Tag
+} from 'antd';
+import {
+    PlusOutlined, EditOutlined, DeleteOutlined,
+    UploadOutlined, LoadingOutlined
+} from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
+import {
+    getAllIntroduction,
+    updateIntroductionCompany,
+    deleteIntroductionCompany,
+    getMissionVision,
+    updateMissionVision,
+    getCoreValues,
+    addCoreValues,
+    deleteCoreValues,
+    updateCoreValues,
 
-const { Title } = Typography;
+} from '../utils/introductApi';
+import { uploadImageToCloudinary } from '../utils/imageApi';
+
+const { Title, Text } = Typography;
 const { TextArea } = Input;
+// ───────────── HELPER: upload file lên Cloudinary khi cần ───────────
+// Nhận value là string URL hoặc File object.
+// Nếu là File → upload lên Cloudinary và trả về URL.
+// Nếu là string → trả về ngay.
+const resolveImageUrl = async (value) => {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    // là File object → upload thật
+    return await uploadImageToCloudinary(value, "tnt_introduct");
+};
 
-// Dữ liệu giả định (Mock Data)
-const initialData = [
-    {
-        key: '1',
-        title: 'Giới thiệu về TNT Company',
-        content: 'TNT là đơn vị hàng đầu trong lĩnh vực cung cấp thiết bị và giải pháp PCCC...',
-        image: 'https://via.placeholder.com/100x60?text=Logo',
-        createdAt: '2026-03-01',
-    },
-    {
-        key: '2',
-        title: 'Tầm nhìn và Sứ mệnh',
-        content: 'Bảo vệ an toàn tính mạng và tài sản cho mọi khách hàng...',
-        image: 'https://via.placeholder.com/100x60?text=Vision',
-        createdAt: '2026-03-02',
-    }
-];
+// ───────────── UPLOAD COMPONENT (defer – không upload ngay) ──────────
+// value: string URL (ảnh cũ) hoặc File object (ảnh mới chưa upload)
+// onChange: hàm antd Form truyền vào để cập nhật giá trị form
+const CloudinaryUpload = ({ value, onChange }) => {
+    // Tạo preview URL cục bộ nếu value là File
+    const previewSrc = value instanceof File
+        ? URL.createObjectURL(value)
+        : (typeof value === 'string' ? value : null);
 
-const AdminIntroduction = () => {
-    const [data, setData] = useState(initialData);
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [editingRecord, setEditingRecord] = useState(null);
+    const beforeUpload = (file) => {
+        onChange(file);
+        return false;
+    };
+
+    const handleClearFile = () => onChange('');
+
+    return (
+        <Space direction="vertical" style={{ width: '100%' }}>
+            <Space>
+                <Upload beforeUpload={beforeUpload} showUploadList={false} accept="image/*">
+                    <Button icon={<UploadOutlined />}>
+                        {value instanceof File ? '✓ Đã chọn: ' + value.name : 'Chọn ảnh'}
+                    </Button>
+                </Upload>
+                {value instanceof File && (
+                    <Button size="small" danger onClick={handleClearFile}>Bỏ chọn</Button>
+                )}
+            </Space>
+            {previewSrc && (
+                <Image src={previewSrc} height={80} style={{ borderRadius: 6, objectFit: 'cover' }} />
+            )}
+            <Input
+                placeholder="Hoặc nhập URL ảnh trực tiếp..."
+                value={typeof value === 'string' ? value : ''}
+                onChange={e => onChange(e.target.value)}
+                size="small"
+            />
+        </Space>
+    );
+};
+
+// ───────────── UPLOAD NHIỀU ẢNH (tối đa maxCount) ──────────────────
+// value: array chứa mỗi phần tử là string URL HOẶC File object
+const MultiCloudinaryUpload = ({ value = [], onChange, maxCount = 2 }) => {
+    const items = Array.isArray(value) ? value : (value ? [value] : []);
+
+    const beforeUpload = (file) => {
+        if (items.length >= maxCount) {
+            message.warning(`Chỉ được chọn tối đa ${maxCount} ảnh!`);
+            return false;
+        }
+        onChange([...items, file]);
+        return false;
+    };
+
+    const removeItem = (idx) => {
+        const next = items.filter((_, i) => i !== idx);
+        onChange(next);
+    };
+
+    return (
+        <Space direction="vertical" style={{ width: '100%' }}>
+            {items.length < maxCount && (
+                <Upload beforeUpload={beforeUpload} showUploadList={false} accept="image/*">
+                    <Button icon={<UploadOutlined />}>
+                        Chọn ảnh ({items.length}/{maxCount})
+                    </Button>
+                </Upload>
+            )}
+            <Space wrap>
+                {items.map((item, idx) => {
+                    const src = item instanceof File ? URL.createObjectURL(item) : item;
+                    return (
+                        <div key={idx} style={{ position: 'relative', display: 'inline-block' }}>
+                            <Image src={src} height={80} width={120}
+                                style={{ objectFit: 'cover', borderRadius: 6 }} />
+                            <Button
+                                size="small" danger
+                                style={{ position: 'absolute', top: 2, right: 2, padding: '0 4px', minWidth: 'auto' }}
+                                onClick={() => removeItem(idx)}
+                            >✕</Button>
+                        </div>
+                    );
+                })}
+            </Space>
+        </Space>
+    );
+};
+const TabIntroduct = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [editing, setEditing] = useState(null);
     const [form] = Form.useForm();
 
-    // Mở Modal (Cho cả Thêm mới và Sửa)
-    const showModal = (record = null) => {
-        setEditingRecord(record);
-        if (record) {
-            form.setFieldsValue(record); // Đổ dữ liệu cũ vào Form để sửa
-        } else {
-            form.resetFields(); // Làm sạch Form để thêm mới
-        }
-        setIsModalVisible(true);
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const res = await getAllIntroduction();
+            setData(res.map(d => ({ ...d, key: d._id })));
+        } catch { message.error('Lấy dữ liệu thất bại!'); }
+        finally { setLoading(false); }
     };
 
-    // Đóng Modal
-    const handleCancel = () => {
-        setIsModalVisible(false);
+    useEffect(() => { fetchData(); }, []);
+
+    const openModal = (record = null) => {
+        setEditing(record);
         form.resetFields();
-    };
-
-    // Xử lý Lưu dữ liệu (Submit Form)
-    const handleOk = () => {
-        form.validateFields()
-            .then((values) => {
-                if (editingRecord) {
-                    // Cập nhật dữ liệu
-                    const newData = data.map(item =>
-                        item.key === editingRecord.key ? { ...item, ...values } : item
-                    );
-                    setData(newData);
-                    message.success('Cập nhật thành công!');
-                } else {
-                    // Thêm mới
-                    const newRecord = {
-                        ...values,
-                        key: Date.now().toString(),
-                        createdAt: new Date().toISOString().split('T')[0],
-                        image: 'https://via.placeholder.com/100x60?text=NewImage' // Giả mạo url ảnh mới
-                    };
-                    setData([...data, newRecord]);
-                    message.success('Thêm mới bài viết thành công!');
-                }
-                setIsModalVisible(false);
-                form.resetFields();
-            })
-            .catch((info) => {
-                console.log('Validate Failed:', info);
+        if (record) {
+            form.setFieldsValue({
+                name: record.name,
+                'title.titleName': record.title?.titleName,
+                'title.titleIcon': record.title?.titleIcon || '',
+                'description.descriptionName': record.description?.descriptionName,
+                'description.descriptionIcon': record.description?.descriptionIcon || '',
+                images: record.image || [],  // mảng URL ảnh cũ
             });
+        }
+        setModalVisible(true);
     };
 
-    // Xóa bài viết
-    const handleDelete = (key) => {
-        const newData = data.filter(item => item.key !== key);
-        setData(newData);
-        message.success('Xóa bài viết thành công!');
+    const [saving, setSaving] = useState(false);
+
+    const handleSave = async () => {
+        try {
+            setSaving(true);
+            const values = await form.validateFields();
+
+            const titleIconUrl = await resolveImageUrl(values['title.titleIcon']);
+            const descIconUrl = await resolveImageUrl(values['description.descriptionIcon']);
+
+            const imageItems = Array.isArray(values.images) ? values.images : [];
+            const imageUrls = await Promise.all(imageItems.map(resolveImageUrl));
+
+            const payload = {
+                name: values.name,
+                title: { titleName: values['title.titleName'], titleIcon: titleIconUrl },
+                description: { descriptionName: values['description.descriptionName'], descriptionIcon: descIconUrl },
+                image: imageUrls.filter(Boolean),
+            };
+            await updateIntroductionCompany(editing._id, payload);
+            message.success('Cập nhật thành công!');
+            setModalVisible(false);
+            fetchData();
+        } catch (err) {
+            message.error(err?.response?.data?.message || 'Có lỗi xảy ra!');
+        } finally { setSaving(false); }
     };
 
-    // Cấu hình Cột cho Table `antd`
+    const handleDelete = async (id) => {
+        try {
+            await deleteIntroductionCompany(id);
+            message.success('Xóa thành công!');
+            fetchData();
+        } catch { message.error('Xóa thất bại!'); }
+    };
+
     const columns = [
+        { title: 'Tên công ty', dataIndex: 'name', key: 'name' },
         {
             title: 'Tiêu đề',
-            dataIndex: 'title',
             key: 'title',
-            width: '25%',
+            render: (_, r) => <Text>{r.title?.titleName}</Text>,
         },
         {
-            title: 'Hình ảnh',
+            title: 'Mô tả',
+            key: 'desc',
+            render: (_, r) => <Text >{r.description?.descriptionName}</Text>,
+        },
+        {
+            title: 'Ảnh',
             dataIndex: 'image',
             key: 'image',
-            render: (text) => <img src={text} alt="thumbnail" style={{ height: 50, objectFit: 'cover', borderRadius: '4px' }} />,
+            render: (imgs) =>
+                Array.isArray(imgs) && imgs.length > 0 ? (
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                        {imgs.map((img, index) => (
+                            <Image
+                                key={index}
+                                src={img}
+                                height={58}
+                                width={58}
+                                style={{ borderRadius: 4, objectFit: 'cover' }}
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <Tag>Chưa có ảnh</Tag>
+                ),
             width: '15%',
-        },
-        {
-            title: 'Nội dung tóm tắt',
-            dataIndex: 'content',
-            key: 'content',
-            ellipsis: true, // Tự động cắt chữ nếu quá dài
-            width: '35%',
-        },
-        {
-            title: 'Ngày tạo',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            width: '10%',
         },
         {
             title: 'Thao tác',
             key: 'action',
             render: (_, record) => (
-                <Space size="middle">
-                    <Button
-                        type="primary"
-                        ghost
-                        icon={<EditOutlined />}
-                        onClick={() => showModal(record)}
+                <Space>
+                    <Button type="primary" ghost icon={<EditOutlined />} onClick={() => openModal(record)}>Sửa</Button>
+                </Space>
+            ),
+        },
+    ];
+
+    return (
+        <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+                <Title level={4} style={{ margin: 0 }}> Giới thiệu</Title>
+            </div>
+            <Table columns={columns} dataSource={data} loading={loading} bordered pagination={{ pageSize: 5 }} />
+
+            <Modal title="Chỉnh sửa Giới thiệu" open={modalVisible}
+                onOk={handleSave} onCancel={() => setModalVisible(false)}
+                okText={saving ? 'Đang lưu...' : 'Lưu'} okButtonProps={{ loading: saving }}
+                cancelText="Hủy" width={750}>
+                <Form form={form} layout="vertical">
+                    <Form.Item name="name" label="Tên công ty" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="title.titleName" label="Tiêu đề" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="title.titleIcon" label="Icon tiêu đề (upload ảnh)">
+                        <CloudinaryUpload />
+                    </Form.Item>
+                    <Form.Item name="description.descriptionName" label="Mô tả" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                        <TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item name="description.descriptionIcon" label="Icon mô tả (upload ảnh)">
+                        <CloudinaryUpload />
+                    </Form.Item>
+                    <Form.Item
+                        name="images"
+                        label="Ảnh đại diện (tối đa 2 ảnh)"
+                        help="Chọn tối đa 2 ảnh. Ảnh chỉ được upload khi bấm Lưu."
                     >
+                        <MultiCloudinaryUpload maxCount={2} />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </div>
+    );
+};
+
+// ═══════════════════════ TAB 2: SỨ MỆNH - TẦM NHÌN ══════════════════
+const TabMissionVision = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [editing, setEditing] = useState(null);
+    const [editType, setEditType] = useState('mission');
+    const [form] = Form.useForm();
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const res = await getMissionVision();
+            setData(res.map(d => ({ ...d, key: d._id })));
+        } catch { message.error('Lấy dữ liệu thất bại!'); }
+        finally { setLoading(false); }
+    };
+
+    useEffect(() => { fetchData(); }, []);
+
+    const openModal = (record, type) => {
+        setEditing(record);
+        setEditType(type);
+        const src = type === 'mission' ? record.mission : record.vision;
+        form.resetFields();
+        form.setFieldsValue({ title: src?.title, description: src?.description, image: src?.image || '' });
+        setModalVisible(true);
+    };
+
+    const [saving, setSaving] = useState(false);
+
+    const handleSave = async () => {
+        try {
+            setSaving(true);
+            const values = await form.validateFields();
+            const imageUrl = await resolveImageUrl(values.image);
+            const payload = {
+                [editType]: { title: values.title, description: values.description, image: imageUrl }
+            };
+            await updateMissionVision(editing._id, payload);
+            message.success('Cập nhật thành công!');
+            setModalVisible(false);
+            fetchData();
+        } catch (err) {
+            message.error(err?.response?.data?.message || 'Có lỗi xảy ra!');
+        } finally { setSaving(false); }
+    };
+
+    const flatData = data.flatMap(doc => [
+        { key: `${doc._id}_mission`, docId: doc._id, type: 'mission', typeLabel: 'Sứ mệnh', ...(doc.mission || {}) },
+        { key: `${doc._id}_vision`, docId: doc._id, type: 'vision', typeLabel: 'Tầm nhìn', ...(doc.vision || {}) },
+    ]);
+
+    const columns = [
+        {
+            title: 'Loại',
+            dataIndex: 'typeLabel',
+            key: 'typeLabel',
+            render: (text, row) => (
+                <Tag color={row.type === 'mission' ? 'blue' : 'green'} style={{ fontWeight: 600 }}>
+                    {text}
+                </Tag>
+            ),
+        },
+        {
+            title: 'Tiêu đề',
+            dataIndex: 'title',
+            key: 'title',
+            render: (text) => <Text strong>{text}</Text>,
+        },
+        {
+            title: 'Mô tả',
+            dataIndex: 'description',
+            key: 'description',
+            width: '38%',
+        },
+        {
+            title: 'Ảnh',
+            dataIndex: 'image',
+            key: 'image',
+            render: (img) => img
+                ? <Image src={img} height={48} style={{ borderRadius: 4, objectFit: 'cover' }} />
+                : <Tag>Chưa có</Tag>,
+        },
+        {
+            title: 'Thao tác',
+            key: 'action',
+            render: (_, row) => {
+                const record = data.find(d => d._id === row.docId);
+                return (
+                    <Button type="primary" ghost size="small" icon={<EditOutlined />}
+                        onClick={() => openModal(record, row.type)}>
                         Sửa
                     </Button>
-                    <Popconfirm
-                        title="Bạn có chắc chắn muốn xóa bài viết này không?"
-                        onConfirm={() => handleDelete(record.key)}
-                        okText="Có"
-                        cancelText="Không"
-                    >
+                );
+            },
+        },
+    ];
+
+    return (
+        <div>
+            <Title level={4} style={{ marginBottom: 16 }}>Sứ mệnh & Tầm nhìn</Title>
+            <Table columns={columns} dataSource={flatData} loading={loading} bordered pagination={{ pageSize: 6 }} />
+
+            <Modal
+                title={`Chỉnh sửa ${editType === 'mission' ? 'Sứ mệnh' : 'Tầm nhìn'}`}
+                open={modalVisible} onOk={handleSave}
+                onCancel={() => setModalVisible(false)} okText="Lưu" cancelText="Hủy" width={650}>
+                <Form form={form} layout="vertical">
+                    <Form.Item name="title" label="Tiêu đề" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="description" label="Mô tả" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                        <TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item name="image" label="Ảnh đại diện">
+                        <CloudinaryUpload />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </div>
+    );
+};
+
+// ═══════════════════════ TAB 3: GIÁ TRỊ CỐT LÕI ═════════════════════
+const TabCoreValues = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [editing, setEditing] = useState(null);
+    const [parentId, setParentId] = useState(null);
+    const [form] = Form.useForm();
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const res = await getCoreValues();
+            const flattened = [];
+            res.forEach(doc => {
+                (doc.coreValues || []).forEach(cv => {
+                    flattened.push({ ...cv, key: cv._id, parentId: doc._id });
+                });
+            });
+            setData(flattened);
+            if (res.length > 0) setParentId(res[0]._id);
+        } catch { message.error('Lấy dữ liệu thất bại!'); }
+        finally { setLoading(false); }
+    };
+
+    useEffect(() => { fetchData(); }, []);
+
+    const openModal = (record = null) => {
+        setEditing(record);
+        form.resetFields();
+        if (record) {
+            form.setFieldsValue({ title: record.title, description: record.description, image: record.image || '', date: record.date });
+        }
+        setModalVisible(true);
+    };
+
+    const [saving, setSaving] = useState(false);
+
+    const handleSave = async () => {
+        try {
+            setSaving(true);
+            const values = await form.validateFields();
+            const imageUrl = await resolveImageUrl(values.image);
+            const payload = { title: values.title, description: values.description, image: imageUrl || '', date: values.date || 0 };
+            if (editing) {
+                await updateCoreValues(editing.key, payload);
+                message.success('Cập nhật thành công!');
+            } else {
+                if (!parentId) return message.error('Không tìm thấy document cha!');
+                await addCoreValues({ ...payload, parentId });
+                message.success('Thêm mới thành công!');
+            }
+            setModalVisible(false);
+            fetchData();
+        } catch (err) {
+            message.error(err?.response?.data?.message || 'Có lỗi xảy ra!');
+        } finally { setSaving(false); }
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            await deleteCoreValues(id);
+            message.success('Xóa thành công!');
+            fetchData();
+        } catch { message.error('Xóa thất bại!'); }
+    };
+
+    const columns = [
+        { title: 'Tiêu đề', dataIndex: 'title', key: 'title' },
+        { title: 'Mô tả', dataIndex: 'description', key: 'description' },
+        {
+            title: 'Ảnh',
+            dataIndex: 'image',
+            key: 'image',
+            render: (img) => img ? <Image src={img} height={68} width={68} style={{ borderRadius: 4, objectFit: 'cover' }} /> : <Tag>Chưa có</Tag>,
+        },
+        { title: 'Năm', dataIndex: 'date', key: 'date' },
+        {
+            title: 'Thao tác',
+            key: 'action',
+            render: (_, record) => (
+                <Space>
+                    <Button type="primary" ghost icon={<EditOutlined />} onClick={() => openModal(record)}>Sửa</Button>
+                    <Popconfirm title="Xác nhận xóa?" onConfirm={() => handleDelete(record.key)} okText="Xóa" cancelText="Hủy">
                         <Button danger icon={<DeleteOutlined />}>Xóa</Button>
                     </Popconfirm>
                 </Space>
@@ -140,71 +495,70 @@ const AdminIntroduction = () => {
     ];
 
     return (
+        <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+                <Title level={4} style={{ margin: 0 }}>Danh sách Giá trị cốt lõi</Title>
+                <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}
+                >
+                    Thêm mới
+                </Button>
+            </div>
+            <Table columns={columns} dataSource={data} loading={loading} bordered pagination={{ pageSize: 6 }} />
+
+            <Modal title={editing ? 'Chỉnh sửa Giá trị cốt lõi' : 'Thêm mới Giá trị cốt lõi'}
+                open={modalVisible} onOk={handleSave}
+                onCancel={() => setModalVisible(false)} okText="Lưu" cancelText="Hủy" width={650}>
+                <Form form={form} layout="vertical">
+                    <Form.Item name="title" label="Tiêu đề" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="description" label="Mô tả" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                        <TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item name="date" label="Năm (số)" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                        <Input type="number" />
+                    </Form.Item>
+                    <Form.Item name="image" label="Ảnh">
+                        <CloudinaryUpload />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </div>
+    );
+};
+
+// ═══════════════════════ MAIN COMPONENT ═══════════════════════════════
+const AdminIntroduction = () => {
+    return (
         <div className="admin-dashboard-layout">
             <AdminSidebar />
-            <main className="admin-main" style={{ padding: '20px 30px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                    <Title level={2} style={{ margin: 0, color: '#1A237E' }}>Quản lý Bài viết Giới thiệu</Title>
-                    <Button
-                        type="primary"
-                        size="large"
-                        icon={<PlusOutlined />}
-                        onClick={() => showModal()}
-                        style={{ backgroundColor: '#FF6B00', borderColor: '#FF6B00' }}
-                    >
-                        Thêm mới
-                    </Button>
-                </div>
+            <main className="admin-main" style={{ padding: '24px 32px' }}>
+                <Title level={2} style={{ color: '#1A237E', marginBottom: 24 }}>Quản lý Giới thiệu</Title>
 
-                <div style={{ background: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
-                    <Table
-                        columns={columns}
-                        dataSource={data}
-                        pagination={{ pageSize: 5 }}
-                        bordered
+                <div style={{ background: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
+                    <Tabs
+                        defaultActiveKey="introduct"
+                        size="large"
+                        type="card"
+                        items={[
+                            {
+                                key: 'introduct',
+                                label: 'Giới thiệu công ty',
+                                children: <TabIntroduct />,
+                            },
+                            {
+                                key: 'mission',
+                                label: 'Sứ mệnh & Tầm nhìn',
+                                children: <TabMissionVision />,
+                            },
+                            {
+                                key: 'corevalues',
+                                label: 'Giá trị cốt lõi',
+                                children: <TabCoreValues />,
+                            }
+                        ]}
                     />
                 </div>
-
-                {/* Modal Form */}
-                <Modal
-                    title={editingRecord ? "Chỉnh sửa Bài viết" : "Thêm mới Bài viết"}
-                    open={isModalVisible}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                    okText="Lưu dữ liệu"
-                    cancelText="Hủy bỏ"
-                    width={800}
-                >
-                    <Form
-                        form={form}
-                        layout="vertical"
-                        name="introductionForm"
-                    >
-                        <Form.Item
-                            name="title"
-                            label="Tiêu đề bài viết"
-                            rules={[{ required: true, message: 'Vui lòng nhập tiêu đề!' }]}
-                        >
-                            <Input placeholder="Nhập tiêu đề giới thiệu..." size="large" />
-                        </Form.Item>
-
-                        <Form.Item
-                            name="content"
-                            label="Nội dung chi tiết"
-                            rules={[{ required: true, message: 'Vui lòng nhập nội dung!' }]}
-                        >
-                            <TextArea rows={6} placeholder="Nhập nội dung đầy đủ..." size="large" />
-                        </Form.Item>
-
-                        <Form.Item
-                            name="image"
-                            label="Ảnh đại diện (URL / Tải lên)"
-                            help="Trường này sẽ được tính năng Upload thay thế sau khi gọi API"
-                        >
-                            <Input placeholder="https://..." size="large" />
-                        </Form.Item>
-                    </Form>
-                </Modal>
             </main>
         </div>
     );

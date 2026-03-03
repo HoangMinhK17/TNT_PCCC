@@ -30,6 +30,7 @@ const Product = () => {
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
+      
     };
     fetchCategories();
   }, []);
@@ -58,7 +59,6 @@ const Product = () => {
         setSelectedCategory(activeSearchTerm ? 'Kết quả tìm kiếm' : (categoryParam || 'Tất cả sản phẩm'));
 
         if (activeSearchTerm || categoryIdParam) {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -71,6 +71,7 @@ const Product = () => {
 
   useEffect(() => {
     setCurrentPage(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [categoryIdParam, activeSearchTerm, searchQueryParam]);
 
   useEffect(() => {

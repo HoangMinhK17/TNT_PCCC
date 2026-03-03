@@ -58,10 +58,6 @@ const AdminSidebar = () => {
             </ul>
 
             <div className="admin-sidebar-footer">
-                <button className="admin-menu-link" onClick={() => navigate('/')} style={{ background: 'none', border: 'none', width: '100%', marginBottom: '10px' }}>
-                    <FaHome />
-                    <span>Về trang chủ</span>
-                </button>
                 <button className="logout-btn" onClick={handleLogout}>
                     <FaSignOutAlt /> Đăng xuất
                 </button>

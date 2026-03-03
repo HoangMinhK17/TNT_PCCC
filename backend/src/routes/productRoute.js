@@ -1,12 +1,14 @@
 import express from "express";
-import { getPublicProducts, createProduct, updateProduct, deleteProduct, getPublicProductById, getPublicProductByCategoryId, getProductByName } from "../controllers/productController.js";
+import { getPublicProducts, createProduct, updateProduct, deleteProduct, getPublicProductById, getPublicProductByCategoryId, getProductByName, getProductForManage } from "../controllers/productController.js";
+import { authMiddleware } from "../middleware/auth.js";
 
 const router = express.Router();
 
 router.get("/getPublicProducts", getPublicProducts);
-router.post("/createProduct", createProduct);
-router.put("/updateProduct/:id", updateProduct);
-router.delete("/deleteProduct/:id", deleteProduct);
+router.get("/getProductForManage", authMiddleware, getProductForManage);
+router.post("/createProduct", authMiddleware, createProduct);
+router.put("/updateProduct/:id", authMiddleware, updateProduct);
+router.delete("/deleteProduct/:id", authMiddleware, deleteProduct);
 router.get("/getPublicProductById/:id", getPublicProductById);
 router.get("/getPublicProductByCategoryId/:categoryId", getPublicProductByCategoryId);
 router.get("/getProductByName/:name", getProductByName);
