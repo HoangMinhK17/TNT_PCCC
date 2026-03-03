@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ContactSection from "../component/ContactSection";
 import SEO from '../component/SEO';
 
 const Contract = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
     const schema = {
         "@context": "https://schema.org",
         "@type": "ContactPage",

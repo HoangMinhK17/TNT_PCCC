@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import RecruitmentSection from "../component/RecruitmentSection";
 import SEO from '../component/SEO';
 
 const Recruiment = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
     const schema = {
         "@context": "https://schema.org",
         "@type": "WebPage",

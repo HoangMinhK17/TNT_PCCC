@@ -7,6 +7,7 @@ import { getCategoryProducts } from '../utils/categoryProductApi';
 import { getCategoryNews } from '../utils/categoryNewsApi';
 
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { getImageInformation } from '../utils/informationApi';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -14,9 +15,22 @@ const Header = () => {
     const [language, setLanguage] = useState("");
     const [categories, setCategories] = useState([]);
     const [newsCategories, setNewsCategories] = useState([]);
+    const [logo, setLogo] = useState([]);
 
     const languageGlobal = JSON.parse(localStorage.getItem("language")) || "vn";
-
+    useEffect(() => {
+        const fetchLogo = async () => {
+            try {
+                const res = await getImageInformation();
+                const obj = Array.isArray(res) ? res[0] : res;
+                const logo = obj?.logo;
+                setLogo(logo);
+            } catch (error) {
+                console.error("Error fetching logo:", error);
+            }
+        };
+        fetchLogo();
+    }, []);
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -73,7 +87,7 @@ const Header = () => {
 
             <div className="header-container">
                 <Link to="/" className="logo" onClick={closeMenu}>
-                    <img src="src/uploads/tnt.jpg" alt="Logo" className="logo-img" />
+                    <img src={logo} alt="Logo" className="logo-img" />
                 </Link>
 
                 <div className="menu-toggle" onClick={toggleMenu}>

@@ -1,14 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/ServiceSection.css';
-import { FaTrophy, FaUserTie, FaTools, FaHandHoldingUsd } from 'react-icons/fa';
 import { getPublicServices } from '../utils/serviceApi';
+import { getWhyChooseService } from '../utils/whyChooseServiceApi';
 
 const ServiceSection = () => {
   const [services, setServices] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [totalPages, setTotalPages] = React.useState(1);
+  const [whyChooseService, setWhyChooseService] = React.useState([]);
+
   const itemsPerPage = 4;
 
   React.useEffect(() => {
@@ -26,6 +28,19 @@ const ServiceSection = () => {
     };
     fetchServices();
   }, [currentPage]);
+
+  React.useEffect(() => {
+    const fetchWhyChooseService = async () => {
+      try {
+        const response = await getWhyChooseService();
+        console.log("Why choose service:", response);
+        setWhyChooseService(Array.isArray(response) ? response : []);
+      } catch (error) {
+        console.error("Error fetching why choose service:", error);
+      }
+    };
+    fetchWhyChooseService();
+  }, []);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -76,34 +91,15 @@ const ServiceSection = () => {
         <div className="service-highlight">
           <h3>Tại sao chọn dịch vụ của chúng tôi?</h3>
           <div className="highlight-grid">
-            <div className="highlight-item">
-              <div className="highlight-icon">
-                <FaTrophy />
+            {whyChooseService.map((item, index) => (
+              <div key={index} className="highlight-item">
+                <div className="highlight-icon">
+                  <img src={item.icon} alt={item.title} />
+                </div>
+                <h4>{item.title}</h4>
+                <p>{item.description}</p>
               </div>
-              <h4>Kinh nghiệm 10+ năm</h4>
-              <p>Đã phục vụ hàng ngàn khách hàng lớn nhỏ trên toàn quốc</p>
-            </div>
-            <div className="highlight-item">
-              <div className="highlight-icon">
-                <FaUserTie />
-              </div>
-              <h4>Đội ngũ chuyên nghiệp</h4>
-              <p>Nhân viên có chứng chỉ PCCC, được đào tạo bài bản</p>
-            </div>
-            <div className="highlight-item">
-              <div className="highlight-icon">
-                <FaTools />
-              </div>
-              <h4>Giải pháp toàn diện</h4>
-              <p>Từ tư vấn, lắp đặt đến bảo dưỡng, kiểm định</p>
-            </div>
-            <div className="highlight-item">
-              <div className="highlight-icon">
-                <FaHandHoldingUsd />
-              </div>
-              <h4>Giá cạnh tranh</h4>
-              <p>Cung cấp giá tốt nhất trên thị trường với chất lượng đảm bảo</p>
-            </div>
+            ))}
           </div>
         </div>
       </div>

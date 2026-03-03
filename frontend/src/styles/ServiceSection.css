@@ -122,6 +122,12 @@
     height: 60px;
 }
 
+.highlight-icon img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
 .highlight-item h4 {
     color: var(--text-color);
     margin-bottom: 15px;

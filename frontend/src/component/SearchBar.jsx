@@ -1,25 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/SearchBar.css';
-import bg1 from '../uploads/information/gthdoanhnghiep.jpg';
-import bg2 from '../uploads/project/prj1.jpg';
-import bg3 from '../uploads/project/prj2.jpg';
-import bg4 from '../uploads/project/prj3.jpg';
+import { getImageInformation } from '../utils/informationApi';
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
+  const [imageInformation, setImageInformation] = useState([]);
 
-  const backgrounds = [bg1, bg2, bg3, bg4];
+useEffect(() => {
+  const fetchImageInformation = async () => {
+    try {
+      const res = await getImageInformation();
 
+      const obj = Array.isArray(res) ? res[0] : res; 
+      const imgs = obj?.backgroundImage;
+
+      setImageInformation(Array.isArray(imgs) ? imgs : []); 
+    } catch (e) {
+      console.error(e);
+      setImageInformation([]);
+    }
+  };
+  fetchImageInformation();
+}, []);
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % backgrounds.length);
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageInformation.length);
     }, 5000); // Change image every 5 seconds
 
     return () => clearInterval(interval);
-  }, [backgrounds.length]);
+  }, [imageInformation.length]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -30,11 +42,11 @@ const SearchBar = () => {
 
   return (
     <section className="search-bar-section">
-      {backgrounds.map((bg, index) => (
+      {imageInformation.map((image, index) => (
         <div
           key={index}
           className={`search-background ${index === currentImageIndex ? 'active' : ''}`}
-          style={{ backgroundImage: `url(${bg})` }}
+          style={{ backgroundImage: `url(${image})` }}
         />
       ))}
       <div className="search-overlay"></div>

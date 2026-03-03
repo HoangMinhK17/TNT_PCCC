@@ -1,12 +1,16 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "../styles/Login.css";
+import { loginUser } from "../utils/userApi";
 
 const Login = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: "",
         password: ""
     });
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -16,9 +20,25 @@ const Login = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Login data:", formData);
+        setIsLoading(true);
+        try {
+            const data = await loginUser(formData.username, formData.password);
+            if (data.token && data.user.role === "admin") {
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("user", JSON.stringify(data.user));
+                toast.success("Đăng nhập thành công!");
+                navigate("/admin/dashboard");
+            } else {
+                toast.error("Bạn không có quyền truy cập");
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response?.data?.message || "Đăng nhập thất bại, vui lòng thử lại!");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -54,8 +74,8 @@ const Login = () => {
                         />
                     </div>
 
-                    <button type="submit" className="login-btn">
-                        Đăng nhập
+                    <button type="submit" className="login-btn" disabled={isLoading}>
+                        {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
                     </button>
                 </form>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>

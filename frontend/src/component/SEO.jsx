@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 const SEO = ({ title, description, keywords, image, url, type = 'website', schema }) => {
-    const siteTitle = 'TNT PCCC - Thiết bị PCCC & Cứu Hộ';
+    const siteTitle = 'TNT PCCC - Thiết bị PCCC & Cứu Hộ ';
     const defaultDescription = 'Chuyên cung cấp thiết bị phòng cháy chữa cháy, hệ thống báo cháy, và bảo hộ lao động uy tín, chất lượng.';
     const defaultKeywords = 'pccc, thiết bị chữa cháy, báo cháy, bảo hộ lao động, TNT Project';
     const defaultImage = '/assets/logo.png'; 

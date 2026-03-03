@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ServiceSection from "../component/ServiceSection";
 import SEO from '../component/SEO';
 
 const Service = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []); 
     return (
         <div>
             <SEO

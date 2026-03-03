@@ -11,6 +11,8 @@ import recruitmentRouter from "./recruitmentRoute.js";
 import categoryNewsRouter from "./categoryNewsRoute.js";
 import newsRouter from "./newsRoute.js";
 import informationRouter from "./informationRoute.js";
+import whyChooseServiceRouter from "./whyChooseServiceRoute.js";
+import whyChooseCompanyRouter from "./whyChooseCompanyRoute.js";
 
 const router = express.Router();
 //User
@@ -49,5 +51,11 @@ router.use("/news", newsRouter);
 
 //Information
 router.use("/information", informationRouter);
+
+//WhyChooseService
+router.use("/whyChooseService", whyChooseServiceRouter);
+
+//WhyChooseCompany
+router.use("/whyChooseCompany", whyChooseCompanyRouter);
 
 export default router;

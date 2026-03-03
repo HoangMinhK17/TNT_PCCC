@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock } from 'react-icons/fa';
 import '../styles/ContactSection.css';
+import { getInformation } from '../utils/informationApi';
+
 
 const ContactSection = () => {
+  const [information, setInformation] = useState({});
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,9 +15,9 @@ const ContactSection = () => {
     message: ''
   });
 
-  const address = "xóm 2b, Yên Khánh, Ninh Bình";
+  const address = information.address;
   const mapSrc =
-    "https://www.google.com/maps?q=" +
+    "https://www.google.com/maps?q=" + 
     encodeURIComponent(address) +
     "&output=embed";
   const [submitted, setSubmitted] = useState(false);
@@ -41,6 +45,19 @@ const ContactSection = () => {
       setSubmitted(false);
     }, 2000);
   };
+
+  useEffect(() => {
+    const fetchInformation = async () => {
+      try {
+        const response = await getInformation();
+        console.log(response);
+        setInformation(Array.isArray(response) ? response[0] : response);
+      } catch (error) {
+        console.error("Error fetching information:", error);
+      }
+    };
+    fetchInformation();
+  }, []);
 
   return (
     <section id="contact" className="contact-section">
@@ -137,7 +154,7 @@ const ContactSection = () => {
                 </div>
                 <div className="info-content">
                   <h4>Địa chỉ</h4>
-                  <p>123 Đường Lê Lợi, Quận 1, TP. Hồ Chí Minh</p>
+                  <p>{information.address}</p>
                 </div>
               </div>
 
@@ -147,7 +164,7 @@ const ContactSection = () => {
                 </div>
                 <div className="info-content">
                   <h4>Điện thoại</h4>
-                  <p><a href="tel:0912345678">(+84) 912 345 678</a></p>
+                  <p><a href="tel:0912345678">{information.phone}</a></p>
                 </div>
               </div>
 
@@ -157,7 +174,7 @@ const ContactSection = () => {
                 </div>
                 <div className="info-content">
                   <h4>Email</h4>
-                  <p><a href="mailto:info@tntcompany.com">info@tntcompany.com</a></p>
+                  <p><a href={`mailto:${information.email}`}>{information.email}</a></p>
                 </div>
               </div>
 
@@ -167,9 +184,9 @@ const ContactSection = () => {
                 </div>
                 <div className="info-content">
                   <h4>Giờ làm việc</h4>
-                  <p>Thứ Hai - Thứ Sáu: 8:00 - 17:00</p>
-                  <p>Thứ Bảy: 9:00 - 12:00</p>
-                  <p>Chủ Nhật: Đóng cửa</p>
+                  {information.timeWork?.map((time, index) => (
+                    <p key={index}>{time}</p>
+                  ))}
                 </div>
               </div>
 
@@ -180,16 +197,21 @@ const ContactSection = () => {
         <div className="map-section" data-aos="fade-up">
           <h3>Vị trí của chúng tôi</h3>
           <div className="map-container">
-
-            <iframe
-              src={mapSrc}
-              width="100%"
-              height="400"
-              style={{ border: 0, borderRadius: '8px' }}
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
+            {information.address ? (
+              <iframe
+                src={mapSrc}
+                width="100%"
+                height="400"
+                style={{ border: 0, borderRadius: '8px' }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            ) : (
+              <div className="map-loading" style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f0f0f0', borderRadius: '8px' }}>
+                Đang tải bản đồ...
+              </div>
+            )}
           </div>
         </div>
       </div>

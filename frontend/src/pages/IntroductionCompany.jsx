@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CompanyIntro from "../component/CompanyIntro";
 import VisionMission from "../component/VisionMission";
 import Achievements from "../component/Achievements";
 import SEO from '../component/SEO';
 
 const IntroductionCompany = () => {
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
     const schema = {
         "@context": "https://schema.org",
         "@type": "AboutPage",

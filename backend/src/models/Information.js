@@ -36,13 +36,24 @@ const informationSchema = new mongoose.Schema({
         },
         url: {
             type: String,
+        },
+        icon : {
+            type : String,
         }
     }],
     updateBy : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "User",
         default : null
-    } 
+    } ,
+    timeWork : {
+        type : [String],
+        required : true
+    },
+    favicon : {
+        type : String,
+      
+    }
     
 
 },  

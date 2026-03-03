@@ -3,15 +3,29 @@ import { Helmet } from 'react-helmet-async';
 import { getRecruitment } from '../utils/recruitmentApi';
 import '../styles/RecruitmentSection.css';
 import {
-  FaMoneyBillWave, FaHeartbeat, FaGraduationCap, FaCar, FaClock, FaGift,
+  FaMoneyBillWave, FaHeartbeat, FaGraduationCap, FaGift,
   FaMapMarkerAlt, FaUserTie, FaBriefcase, FaCheckCircle, FaSpinner
 } from 'react-icons/fa';
-
+import { getWhyChooseCompany } from '../utils/whyChooseCompanyApi';
 const RecruitmentSection = () => {
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [whyChooseCompany, setWhyChooseCompany] = useState([]);
+
+  useEffect(() => {
+    const fetchWhyChooseCompany = async () => {
+      try {
+        const data = await getWhyChooseCompany();
+        setWhyChooseCompany(data[0]);
+        console.log("data", data);
+      } catch (error) {
+        console.error("Error fetching why choose company:", error);
+      }
+    };
+    fetchWhyChooseCompany();
+  }, []);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -34,15 +48,6 @@ const RecruitmentSection = () => {
 
     fetchJobs();
   }, []);
-
-  const benefits = [
-    { icon: <FaMoneyBillWave />, title: 'Lương cạnh tranh', desc: 'Lương thưởng xứng đáng với năng lực' },
-    { icon: <FaHeartbeat />, title: 'Bảo hiểm đầy đủ', desc: 'BHXH, BHYT, BHTN' },
-    { icon: <FaGraduationCap />, title: 'Đào tạo liên tục', desc: 'Cơ hội nâng cao kiến thức chuyên môn' },
-    { icon: <FaCar />, title: 'Cấp xe công', desc: 'Cho các vị trí quản lý' },
-    { icon: <FaClock />, title: 'Công việc linh hoạt', desc: 'Thời gian làm việc hợp lý' },
-    { icon: <FaGift />, title: 'Phúc lợi hấp dẫn', desc: 'Thưởng lễ, du lịch, team building' }
-  ];
 
   // Schema.org JobPosting Structured Data
   const structuredData = useMemo(() => ({
@@ -212,11 +217,13 @@ const RecruitmentSection = () => {
             <p>Chúng tôi mang đến môi trường làm việc tốt nhất cho bạn</p>
           </header>
           <div className="benefits-grid">
-            {benefits.map((benefit, idx) => (
+            {whyChooseCompany.benefits?.map((benefit, idx) => (
               <div key={idx} className="benefit-card-modern" data-aos="zoom-in" data-aos-delay={idx * 100}>
-                <div className="benefit-icon-wrapper">{benefit.icon}</div>
+                <div className="benefit-icon-wrapper">{
+                <img src={benefit.icon} alt="" />
+                }</div>
                 <h4>{benefit.title}</h4>
-                <p>{benefit.desc}</p>
+                <p>{benefit.description}</p>
               </div>
             ))}
           </div>
@@ -224,12 +231,9 @@ const RecruitmentSection = () => {
 
         <section className="why-join-modern glass-effect">
           <div className="why-join-content">
-            <h3>Tại sao bạn nên gia nhập TNT Company?</h3>
+            <h3>{whyChooseCompany.whyChooseUs?.title}</h3>
             <p>
-              Tại TNT Company, chúng tôi tin rằng nhân viên là tài sản quý giá nhất.
-              Chúng tôi tạo điều kiện làm việc chuyên nghiệp, cơ hội phát triển sự nghiệp,
-              và môi trường làm việc thân thiện. Nếu bạn có đam mê với ngành PCCC và muốn
-              đóng góp cho an toàn cộng đồng, hãy gia nhập đội ngũ chúng tôi!
+              {whyChooseCompany.whyChooseUs?.description}
             </p>
             
           </div>

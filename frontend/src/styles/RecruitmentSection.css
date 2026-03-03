@@ -304,11 +304,19 @@
     background: #fff1f2;
     width: 80px;
     height: 80px;
-    line-height: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 20px;
     margin-left: auto;
     margin-right: auto;
     transition: all 0.3s ease;
+}
+
+.benefit-icon-wrapper img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
 }
 
 .benefit-card-modern:hover .benefit-icon-wrapper {
@@ -489,4 +497,7 @@
         flex-direction: column;
         gap: 30px;
     }
+
+
+
 }

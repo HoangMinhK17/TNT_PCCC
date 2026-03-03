@@ -1,9 +1,9 @@
 import React from 'react';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
-
 const Dashboard = () => {
-    // Mock data for overview
+    const userString = localStorage.getItem("user");
+    const user = userString ? JSON.parse(userString) : {};
     const stats = [
         { label: 'Tổng sản phẩm', value: '124', trend: '+12%', isUp: true },
         { label: 'Dự án đang thực hiện', value: '15', trend: '+2', isUp: true },
@@ -25,12 +25,11 @@ const Dashboard = () => {
                 <header className="admin-header">
                     <h1>Tổng quan hệ thống</h1>
                     <div className="admin-user-info">
-                        <span>Xin chào, Admin</span>
+                        <span>Xin chào {user?.name || "Admin"}</span>
                     </div>
                 </header>
 
                 <div className="admin-content">
-                    {/* Quick Stats */}
                     <div className="stat-grid">
                         {stats.map((stat, index) => (
                             <div key={index} className="stat-card">
@@ -43,7 +42,6 @@ const Dashboard = () => {
                         ))}
                     </div>
 
-                    {/* Recent Activity / Contacts Table */}
                     <div className="admin-table-container">
                         <div className="table-header">
                             <h3>Liên hệ mới nhất</h3>

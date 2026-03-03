@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import 'react-toastify/dist/ReactToastify.css'
 import './App.css'
 import Home from './pages/Home'
 import Product from './pages/Product'
@@ -20,8 +22,12 @@ import Login from './admin/login'
 import MainLayout from './component/MainLayout'
 import ForgetPassword from './admin/ForgetPassword'
 import Dashboard from './admin/dashboard'
+import AdminIntroduction from './admin/AdminIntroduction'
+import ProtectedRoute from './component/ProtectedRoute'
 import api from './utils/api'
+import { getImageInformation } from './utils/informationApi'
 
+const imageModules = import.meta.glob('./uploads/**/*.{png,jpg,jpeg,svg,webp,ico}', { eager: true, query: '?url', import: 'default' });
 
 function App() {
   useEffect(() => {
@@ -30,6 +36,38 @@ function App() {
       once: false,
       mirror: true
     });
+  }, []);
+
+  useEffect(() => {
+    const fetchLogoPath = async () => {
+      try {
+        const res = await getImageInformation();
+        const obj = Array.isArray(res) ? res[0] : res;
+        const faviconPath = obj?.favicon;
+
+        if (faviconPath) {
+          let finalPath = faviconPath;
+
+          if (!faviconPath.startsWith('http') && !faviconPath.startsWith('blob:') && !faviconPath.startsWith('data:')) {
+            const globPath = `.${faviconPath}`;
+            if (imageModules[globPath]) {
+              finalPath = imageModules[globPath];
+            }
+          }
+
+          let link = document.querySelector("link[rel~='icon']");
+          if (!link) {
+            link = document.createElement('link');
+            link.rel = 'icon';
+            document.head.appendChild(link);
+          }
+          link.href = finalPath;
+        }
+      } catch (error) {
+        console.error("Error setting favicon from API:", error);
+      }
+    };
+    fetchLogoPath();
   }, []);
 
   return (
@@ -54,8 +92,24 @@ function App() {
         {/* Admin Routes */}
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin/forget-password" element={<ForgetPassword />} />
-        <Route path="/admin/dashboard" element={<Dashboard />} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/about"
+          element={
+            <ProtectedRoute>
+              <AdminIntroduction />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
     </Router>
   )
 }

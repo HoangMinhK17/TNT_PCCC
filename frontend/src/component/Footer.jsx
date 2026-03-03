@@ -1,18 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Footer.css';
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
+import { getInformation } from '../utils/informationApi';
 
 const Footer = () => {
+  const [information, setInformation] = useState({});
+
+  useEffect(() => {
+    const fetchInformation = async () => {
+      try {
+        const response = await getInformation();
+        console.log(response);
+        setInformation(Array.isArray(response) ? response[0] : response);
+      } catch (error) {
+        console.error("Error fetching information:", error);
+      }
+    };
+    fetchInformation();
+  }, []);
   return (
     <footer className="footer">
       <div className="container">
         <div className="footer-content">
           <div className="footer-section">
-            <h4 className="footer-title">TNT Company</h4>
+            <h4 className="footer-title">{information.name}</h4>
             <p style={{ color: '#999', fontSize: '14px', marginBottom: '15px', lineHeight: '1.6' }}>
-              Giải pháp PCCC toàn diện - An toàn cho mọi công trình.
-              Chúng tôi cam kết chất lượng và sự hài lòng tuyệt đối.
+              {information.title}
             </p>
             <ul className="footer-list">
               <li><Link to="/about">Giới thiệu</Link></li>
@@ -45,15 +59,15 @@ const Footer = () => {
             <ul className="footer-list">
               <li className="contact-item">
                 <span className="icon"><FaMapMarkerAlt /></span>
-                <span>123 Đường Lê Lợi, Quận 1, TP.HCM</span>
+                <span>{information.address}</span>
               </li>
               <li className="contact-item">
                 <span className="icon"><FaPhoneAlt /></span>
-                <span>0912345678</span>
+                <span>{information.phone}</span>
               </li>
               <li className="contact-item">
                 <span className="icon"><FaEnvelope /></span>
-                <span>info@tntcompany.com</span>
+                <span>{information.email}</span>
               </li>
 
             </ul>
