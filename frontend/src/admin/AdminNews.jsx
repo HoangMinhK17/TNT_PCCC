@@ -1,35 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import {
     Tabs, Table, Button, Modal, Form, Input, Space,
-    Popconfirm, message, Typography, Upload, Image, Tag, Select
+    Popconfirm, message, Typography, Upload, Image, Tag, Select, DatePicker
 } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
+import dayjs from 'dayjs';
 
 import {
-    createCategoryProduct, updateCategoryProduct, deleteCategoryProduct,
-    getCategoryProductForManage, getCategoryProducts
-} from '../utils/categoryProductApi';
+    getCategoryNewsForManage, createCategoryNews, updateCategoryNews, deleteCategoryNews, searchCategoryNews, getCategoryNews
+} from '../utils/categoryNewsApi';
+
 import {
-    createProduct, updateProduct, deleteProduct, getProductForManage,
-    getProductByName, getProductByCategoryIdForManage, getProductByNameForManage
-} from '../utils/productApi';
+    getNewsForManage, createNews, updateNews, deleteNews, getNewsByName, getNewsByCategoryIdAdmin
+} from '../utils/newsApi';
+
 import { uploadImageToCloudinary } from '../utils/imageApi';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
-const resolveImageUrl = async (value, folder = "tnt_product") => {
+const resolveImageUrl = async (value, folder = "tnt_news") => {
     if (!value) return '';
     if (typeof value === 'string') return value;
     return await uploadImageToCloudinary(value, folder);
 };
 
-const MultiCloudinaryUpload = ({ value = [], onChange, maxCount = 5 }) => {
+const MultiCloudinaryUpload = ({ value = [], onChange, maxCount = 1 }) => {
     const items = Array.isArray(value) ? value : (value ? [value] : []);
 
     const beforeUpload = (file) => {
+        const isLt5M = file.size / 1024 / 1024 < 5;
+        if (!isLt5M) {
+            message.error('Kích thước ảnh phải nhỏ hơn 5MB!');
+            return false;
+        }
         if (items.length >= maxCount) {
             message.warning(`Chỉ được chọn tối đa ${maxCount} ảnh!`);
             return false;
@@ -66,25 +72,50 @@ const MultiCloudinaryUpload = ({ value = [], onChange, maxCount = 5 }) => {
     );
 };
 
-// ═══════════════════════ TAB 1: DANH MỤC SẢN PHẨM ══════════════════════════
-const TabCategoryProduct = () => {
+// ═══════════════════════ TAB 1: DANH MỤC TIN TỨC ══════════════════════════
+const TabCategoryNews = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [editing, setEditing] = useState(null);
     const [saving, setSaving] = useState(false);
+    const [searchText, setSearchText] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
     const [form] = Form.useForm();
 
-    const fetchData = async () => {
+    const fetchData = async (page = 1, limit = 5) => {
         setLoading(true);
         try {
-            const res = await getCategoryProductForManage();
-            setData(res.map(d => ({ ...d, key: d._id })));
+            const res = await getCategoryNewsForManage(page, limit);
+            setData(res?.categoryNew ? res.categoryNew.map(d => ({ ...d, key: d._id })) : []);
+            setTotalPages(res?.totalPages || 1);
+            setCurrentPage(res?.currentPage || 1);
         } catch { message.error('Lấy dữ liệu danh mục thất bại!'); }
         finally { setLoading(false); }
     };
 
-    useEffect(() => { fetchData(); }, []);
+    useEffect(() => { fetchData(currentPage, pageSize); }, [currentPage, pageSize]);
+
+    const handleSearch = async (value, page = 1, limit = 5) => {
+        setSearchText(value);
+        if (!value || !value.trim()) {
+            fetchData(page, limit);
+            return;
+        }
+        setLoading(true);
+        try {
+            const res = await searchCategoryNews(value.trim(), page, limit);
+            setData(res?.categoryNew ? res.categoryNew.map(d => ({ ...d, key: d._id })) : []);
+            setTotalPages(res?.totalPages || 1);
+            setCurrentPage(res?.currentPage || 1);
+        } catch {
+            message.error('Tìm kiếm thất bại!');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const openModal = (record = null) => {
         setEditing(record);
@@ -106,15 +137,16 @@ const TabCategoryProduct = () => {
             setSaving(true);
             const values = await form.validateFields();
             if (editing) {
-                await updateCategoryProduct(editing._id, values);
+                await updateCategoryNews(editing._id, values);
                 message.success('Cập nhật thành công!');
             } else {
-                await createCategoryProduct(values);
+                await createCategoryNews(values);
                 message.success('Thêm mới thành công!');
             }
             setModalVisible(false);
-            fetchData();
-            window.location.reload();
+            setSearchText('');
+            setCurrentPage(1);
+            fetchData(1, pageSize);
         } catch (err) {
             message.error(err?.response?.data?.message || 'Có lỗi xảy ra!');
         } finally { setSaving(false); }
@@ -122,10 +154,10 @@ const TabCategoryProduct = () => {
 
     const handleDelete = async (id) => {
         try {
-            await deleteCategoryProduct(id);
+            await deleteCategoryNews(id);
             message.success('Xóa thành công!');
-            fetchData();
-            window.location.reload();
+            setSearchText('');
+            fetchData(currentPage, pageSize);
         } catch { message.error('Xóa thất bại!'); }
     };
 
@@ -156,10 +188,39 @@ const TabCategoryProduct = () => {
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-                <Title level={4} style={{ margin: 0 }}>Danh mục Sản phẩm</Title>
+                <Title level={4} style={{ margin: 0 }}>Danh mục Tin tức</Title>
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>Thêm danh mục</Button>
             </div>
-            <Table columns={columns} dataSource={data} loading={loading} bordered pagination={{ pageSize: 5 }} />
+
+            <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
+                <Input.Search
+                    placeholder="Tìm kiếm danh mục theo tên..."
+                    allowClear
+                    onSearch={(val) => { setCurrentPage(1); handleSearch(val, 1, pageSize); }}
+                    style={{ width: 300 }}
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                />
+            </div>
+
+            <Table
+                columns={columns}
+                dataSource={data}
+                loading={loading}
+                bordered
+                pagination={{
+                    current: currentPage,
+                    pageSize: pageSize,
+                    total: totalPages * pageSize,
+                    onChange: (page, size) => {
+                        setCurrentPage(page);
+                        setPageSize(size);
+                        if (searchText) {
+                            handleSearch(searchText, page, size);
+                        }
+                    }
+                }}
+            />
 
             <Modal title={editing ? "Sửa danh mục" : "Thêm mới danh mục"} open={modalVisible}
                 onOk={handleSave} onCancel={() => setModalVisible(false)}
@@ -188,8 +249,8 @@ const TabCategoryProduct = () => {
     );
 };
 
-// ═══════════════════════ TAB 2: SẢN PHẨM ══════════════════════════
-const TabProduct = () => {
+// ═══════════════════════ TAB 2: TIN TỨC ══════════════════════════
+const TabNews = () => {
     const [data, setData] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -197,41 +258,49 @@ const TabProduct = () => {
     const [editing, setEditing] = useState(null);
     const [saving, setSaving] = useState(false);
     const [searchText, setSearchText] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
     const [filterCategory, setFilterCategory] = useState(null);
     const [form] = Form.useForm();
 
-    const fetchData = async () => {
+    const fetchData = async (page = 1, limit = 5) => {
         setLoading(true);
         try {
-            const [prodRes, catRes] = await Promise.all([getProductForManage(), getCategoryProducts()]);
-            setData(prodRes.map(d => ({ ...d, key: d._id })));
-            setCategories(catRes);
+            const [newsRes, catRes] = await Promise.all([getNewsForManage(page, limit), getCategoryNewsForManage()]);
+            setData(newsRes?.news ? newsRes.news.map(d => ({ ...d, key: d._id })) : []);
+            setTotalPages(newsRes?.totalPages || 1);
+            setCurrentPage(newsRes?.currentPage || 1);
+            setCategories(Array.isArray(catRes) ? catRes : (catRes?.categoryNew || []));
         } catch { message.error('Lấy dữ liệu thất bại!'); }
         finally { setLoading(false); }
     };
 
-    useEffect(() => { fetchData(); }, []);
+    useEffect(() => { fetchData(currentPage, pageSize); }, [currentPage, pageSize]);
 
-    const fetchAllProducts = async () => {
+    const fetchAllNews = async (page = 1, limit = 5) => {
         setLoading(true);
         try {
-            const res = await getProductForManage();
-            setData(res.map(d => ({ ...d, key: d._id })));
+            const res = await getNewsForManage(page, limit);
+            setData(res?.news ? res.news.map(d => ({ ...d, key: d._id })) : []);
+            setTotalPages(res?.totalPages || 1);
+            setCurrentPage(res?.currentPage || 1);
         } catch { message.error('Lấy dữ liệu thất bại!'); }
         finally { setLoading(false); }
     };
 
-    const handleSearch = async (value) => {
+    const handleSearch = async (value, page = 1, limit = 5) => {
         setSearchText(value);
         if (!value || !value.trim()) {
-            fetchAllProducts();
+            fetchAllNews(page, limit);
             return;
         }
-        setFilterCategory(null);
         setLoading(true);
         try {
-            const res = await getProductByNameForManage(value.trim(), 1, 1000);
-            setData(res.products.map(d => ({ ...d, key: d._id })));
+            const res = await getNewsByName(value.trim(), page, limit);
+            setData(res?.news ? res.news.map(d => ({ ...d, key: d._id })) : []);
+            setTotalPages(res?.totalPages || 1);
+            setCurrentPage(res?.currentPage || 1);
         } catch {
             message.error('Tìm kiếm thất bại!');
         } finally {
@@ -239,17 +308,19 @@ const TabProduct = () => {
         }
     };
 
-    const handleFilterCategory = async (categoryId) => {
+    const handleFilterCategory = async (categoryId, page = 1, limit = 5) => {
         setFilterCategory(categoryId);
         if (!categoryId) {
-            fetchAllProducts();
+            fetchAllNews(page, limit);
             return;
         }
         setSearchText('');
         setLoading(true);
         try {
-            const res = await getProductByCategoryIdForManage(categoryId, 1, 1000);
-            setData(res.products.map(d => ({ ...d, key: d._id })));
+            const res = await getNewsByCategoryIdAdmin(categoryId, page, limit);
+            setData(res?.news ? res.news.map(d => ({ ...d, key: d._id })) : []);
+            setTotalPages(res?.totalPages || 1);
+            setCurrentPage(res?.currentPage || 1);
         } catch {
             message.error('Lọc thất bại!');
         } finally {
@@ -265,14 +336,14 @@ const TabProduct = () => {
                 name: record.name,
                 title: record.title,
                 description: record.description,
-                categoryId: record.categoryId?._id || record.categoryId,
+                categoryNewsId: record.categoryNewsId?._id || record.categoryNewsId,
                 slug: record.slug,
                 status: record.status || 'active',
-                technical: record.technical?.length > 0 ? record.technical : [{}],
-                images: record.image || [],
+                date: record.date ? dayjs(record.date) : null,
+                images: record.image ? [record.image] : [],
             });
         } else {
-            form.setFieldsValue({ status: 'active', technical: [{}] });
+            form.setFieldsValue({ status: 'active' });
         }
         setModalVisible(true);
     };
@@ -281,30 +352,31 @@ const TabProduct = () => {
         try {
             setSaving(true);
             const values = await form.validateFields();
-            const cate = categories.find(c => c._id === values.categoryId);
-            const folder = cate ? `tnt_product/${cate.slug}` : "tnt_product";
+            const cate = categories.find(c => c._id === values.categoryNewsId);
+            const folder = cate ? `tnt_news/${cate.slug}` : "tnt_news";
 
             const imageItems = Array.isArray(values.images) ? values.images : [];
             const imageUrls = await Promise.all(imageItems.map(value => resolveImageUrl(value, folder)));
 
             const payload = {
                 ...values,
-                image: imageUrls.filter(Boolean)
+                date: values.date ? values.date.toISOString() : null,
+                image: imageUrls.length > 0 ? imageUrls[0] : ""
             };
 
             delete payload.images;
 
             if (editing) {
-                await updateProduct(editing._id, payload);
+                await updateNews(editing._id, payload);
                 message.success('Cập nhật thành công!');
             } else {
-                await createProduct(payload);
+                await createNews(payload);
                 message.success('Thêm mới thành công!');
             }
             setModalVisible(false);
             setSearchText('');
-            setFilterCategory(null);
-            fetchData();
+            setCurrentPage(1);
+            fetchData(1, pageSize);
         } catch (err) {
             message.error(err?.response?.data?.message || 'Có lỗi xảy ra!');
         } finally { setSaving(false); }
@@ -312,28 +384,33 @@ const TabProduct = () => {
 
     const handleDelete = async (id) => {
         try {
-            await deleteProduct(id);
+            await deleteNews(id);
             message.success('Xóa thành công!');
             setSearchText('');
             setFilterCategory(null);
-            fetchData();
+            fetchData(currentPage, pageSize);
         } catch { message.error('Xóa thất bại!'); }
     };
 
     const columns = [
-        { title: 'Tên sản phẩm ', dataIndex: 'name', key: 'name', width: '20%' },
+        { title: 'Tên bài viết', dataIndex: 'name', key: 'name', width: '30%' },
         {
-            title: 'Danh mục', dataIndex: 'categoryId', key: 'categoryId',
-            render: (cat) => <Text>{cat?.name || '---'}</Text>
+            title: 'Danh mục', dataIndex: 'categoryNewsId', key: 'categoryNewsId',
+            render: (cat) => {
+                if (!cat) return <Text>---</Text>;
+                const category = typeof cat === 'object' ? cat : categories.find(c => c._id === cat);
+                return <Text>{category?.name || '---'}</Text>;
+            }
+        },
+        {
+            title: 'Ngày đăng', dataIndex: 'date', key: 'date',
+            render: (date) => date ? dayjs(date).format('DD/MM/YYYY') : '---'
         },
         {
             title: 'Ảnh', dataIndex: 'image', key: 'image',
-            render: (imgs) => Array.isArray(imgs) && imgs.length > 0 ? (
+            render: (img) => img ? (
                 <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                    {imgs.slice(0, 3).map((img, index) => (
-                        <Image key={index} src={img} height={40} width={40} style={{ borderRadius: 4, objectFit: 'cover' }} />
-                    ))}
-                    {imgs.length > 3 && <Tag>+{imgs.length - 3}</Tag>}
+                    <Image src={img} height={58} width={68} style={{ borderRadius: 4, objectFit: 'cover' }} />
                 </div>
             ) : <Tag>Chưa có</Tag>
         },
@@ -361,15 +438,15 @@ const TabProduct = () => {
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-                <Title level={4} style={{ margin: 0 }}>Danh sách Sản phẩm</Title>
-                <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>Thêm Sản phẩm</Button>
+                <Title level={4} style={{ margin: 0 }}>Danh sách Tin tức</Title>
+                <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>Thêm Tin tức</Button>
             </div>
 
             <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
                 <Input.Search
-                    placeholder="Tìm kiếm sản phẩm theo tên..."
+                    placeholder="Tìm kiếm tin tức theo tên..."
                     allowClear
-                    onSearch={handleSearch}
+                    onSearch={(val) => { setCurrentPage(1); handleSearch(val, 1, pageSize); }}
                     style={{ width: 300 }}
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
@@ -377,24 +454,45 @@ const TabProduct = () => {
                 <Select
                     placeholder="Lọc theo danh mục"
                     allowClear
-                    onChange={handleFilterCategory}
+                    onChange={(val) => { setCurrentPage(1); handleFilterCategory(val, 1, pageSize); }}
                     style={{ width: 250 }}
                     value={filterCategory}
                 >
                     {categories.map(c => (
-                        <Select.Option key={c._id} value={c._id}>{c.name}</Select.Option>
+                        <Select.Option key={c._id} value={c._id}>{c.name} {c.status !== "active" ? "(Dừng hoạt động)" : ""}  </Select.Option>
                     ))}
                 </Select>
             </div>
 
-            <Table columns={columns} dataSource={data} loading={loading} bordered pagination={{ pageSize: 5 }} />
+            <Table
+                columns={columns}
+                dataSource={data}
+                loading={loading}
+                bordered
+                pagination={{
+                    current: currentPage,
+                    pageSize: pageSize,
+                    total: totalPages * pageSize,
+                    onChange: (page, size) => {
+                        setCurrentPage(page);
+                        setPageSize(size);
+                        if (searchText) {
+                            handleSearch(searchText, page, size);
+                        } else if (filterCategory) {
+                            handleFilterCategory(filterCategory, page, size);
+                        } else {
+                            fetchAllNews(page, size);
+                        }
+                    }
+                }}
+            />
 
-            <Modal title={editing ? "Sửa Sản phẩm" : "Thêm mới Sản phẩm"} open={modalVisible}
+            <Modal title={editing ? "Sửa Tin tức" : "Thêm mới Tin tức"} open={modalVisible}
                 onOk={handleSave} onCancel={() => setModalVisible(false)}
                 okText={saving ? 'Đang lưu...' : 'Lưu'} okButtonProps={{ loading: saving }} cancelText="Hủy" width={850}>
                 <Form form={form} layout="vertical">
                     <div style={{ display: 'flex', gap: 16 }}>
-                        <Form.Item name="name" label="Tên sản phẩm" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                        <Form.Item name="name" label="Tên bài viết" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
                             <Input onChange={(e) => {
                                 if (!editing) {
                                     const slug = e.target.value.toLowerCase().trim().replace(/[\s\W-]+/g, '-');
@@ -408,10 +506,13 @@ const TabProduct = () => {
                     </div>
 
                     <div style={{ display: 'flex', gap: 16 }}>
-                        <Form.Item name="categoryId" label="Danh mục" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
+                        <Form.Item name="categoryNewsId" label="Danh mục" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
                             <Select placeholder="Chọn danh mục">
-                                {categories.map(c => <Select.Option key={c._id} value={c._id}>{c.name}</Select.Option>)}
+                                {categories.map(c => <Select.Option key={c._id} value={c._id} disabled={c.status === "inactive"}>{c.name } </Select.Option>)}
                             </Select>
+                        </Form.Item>
+                        <Form.Item name="date" label="Ngày đăng" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
+                            <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
                         </Form.Item>
                         <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>
                             <Select>
@@ -425,47 +526,13 @@ const TabProduct = () => {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="description" label="Mô tả chi tiết" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                    <Form.Item name="description" label="Mô tả " rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <TextArea rows={3} />
                     </Form.Item>
 
-                    <Form.Item name="images" label="Hình ảnh (Tối đa 5 ảnh)">
-                        <MultiCloudinaryUpload maxCount={5} />
+                    <Form.Item name="images" label="Hình ảnh">
+                        <MultiCloudinaryUpload maxCount={1} />
                     </Form.Item>
-
-                    <Title level={5}>Thông số kỹ thuật</Title>
-                    <Form.List name="technical">
-                        {(fields, { add, remove }) => (
-                            <>
-                                {fields.map(({ key, name, ...restField }) => (
-                                    <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'title']}
-                                            rules={[{ required: true,whitespace:true , message: 'Nhập tiêu đề' }]}
-                                        >
-                                            <Input placeholder="Tên thông số (Vd: Khối lượng)" style={{ width: 250 }} />
-                                        </Form.Item>
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'description']}
-                                            rules={[{ required: true,whitespace:true , message: 'Nhập giá trị' }]}
-                                        >
-                                            <Input placeholder="Giá trị (Vd: 3kg)" style={{ width: 350 }} />
-                                        </Form.Item>
-                                        {fields.length > 1 ? (
-                                            <DeleteOutlined onClick={() => remove(name)} style={{ color: 'red' }} />
-                                        ) : null}
-                                    </Space>
-                                ))}
-                                <Form.Item>
-                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                                        Thêm thông số kỹ thuật
-                                    </Button>
-                                </Form.Item>
-                            </>
-                        )}
-                    </Form.List>
 
                 </Form>
             </Modal>
@@ -475,12 +542,12 @@ const TabProduct = () => {
 
 
 // ═══════════════════════ ROOT COMPONENT ══════════════════════════
-const AdminProduct = () => {
+const AdminNews = () => {
     return (
         <div className="admin-dashboard-layout">
             <AdminSidebar />
             <main className="admin-main" style={{ padding: '24px 32px' }}>
-                <Title level={2} style={{ color: '#1A237E', marginBottom: 24 }}>Quản lý Sản phẩm</Title>
+                <Title level={2} style={{ color: '#1A237E', marginBottom: 24 }}>Quản lý Tin tức</Title>
                 <div style={{ background: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', minHeight: '80vh' }}>
                     <Tabs
                         defaultActiveKey="1"
@@ -489,13 +556,13 @@ const AdminProduct = () => {
                         items={[
                             {
                                 key: '1',
-                                label: 'Sản phẩm',
-                                children: <TabProduct />,
+                                label: 'Tin tức',
+                                children: <TabNews />,
                             },
                             {
                                 key: '2',
                                 label: 'Danh mục',
-                                children: <TabCategoryProduct />,
+                                children: <TabCategoryNews />,
                             }
                         ]}
                     />
@@ -505,4 +572,4 @@ const AdminProduct = () => {
     );
 };
 
-export default AdminProduct;
+export default AdminNews;

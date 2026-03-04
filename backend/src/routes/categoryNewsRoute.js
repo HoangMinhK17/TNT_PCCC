@@ -1,11 +1,16 @@
 import express from "express";
-import { createCategoryNews, getCategoryNews, updateCategoryNews, deleteCategoryNews } from "../controllers/categoryNewsController.js";
+import { createCategoryNews, getCategoryNews, updateCategoryNews, deleteCategoryNews, getCategoryNewsForManage, searchCategoryNews } from "../controllers/categoryNewsController.js";
+import { authMiddleware } from "../middleware/auth.js";
 
 const router = express.Router();
 
 router.get("/get-category-news", getCategoryNews);
-router.post("/create-category-news", createCategoryNews);
-router.put("/update-category-news/:id", updateCategoryNews);
-router.delete("/delete-category-news/:id", deleteCategoryNews);
+router.post("/create-category-news", authMiddleware, createCategoryNews);
+router.put("/update-category-news/:id", authMiddleware, updateCategoryNews);
+router.delete("/delete-category-news/:id", authMiddleware, deleteCategoryNews);
+router.get("/get-category-news-for-manage", authMiddleware, getCategoryNewsForManage);
+router.get("/search-category-news/:name", authMiddleware, searchCategoryNews);
+
+
 
 export default router;

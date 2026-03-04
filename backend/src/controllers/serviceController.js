@@ -6,10 +6,38 @@ const getPublicServices = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
-        const filter = { isDeleted: false };
+        const filter = { isDeleted: false , status: "active" };
         const totalServices = await Service.countDocuments(filter);
         const services = await Service.find(filter)
             .select("name image slug title status")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        res.status(200).json({
+            services,
+            totalPages: Math.ceil(totalServices / limit),
+            currentPage: page,
+            totalServices
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const getServicesForManage = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const filter = { isDeleted: false };
+        const totalServices = await Service.countDocuments(filter);
+        const services = await Service.find(filter)
+            .select("name image slug title status description")
             .skip(skip)
             .limit(limit);
 
@@ -26,9 +54,63 @@ const getPublicServices = async (req, res) => {
 
 const createService = async (req, res) => {
     try {
-        const { name, description, title, image, slug, whyChooseUs} = req.body;
-        const service = await Service.create({ name, description, title, image, slug, whyChooseUs });
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const { name, description, title, image, slug, status} = req.body;
+        const service = await Service.create({ name, description, title, image, slug, status });
         res.status(201).json(service);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const updateService = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const { name, description, title, image, slug, status} = req.body;
+        const service = await Service.findByIdAndUpdate(req.params.id, { name, description, title, image, slug, status }, { new: true });
+        res.status(200).json(service);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const deleteService = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const service = await Service.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+        res.status(200).json(service);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const searchService = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        const filter = { isDeleted: false };
+        const totalServices = await Service.countDocuments(filter);
+        const { name } = req.query;
+        const services = await Service.find({ name: { $regex: name, $options: "i" }, isDeleted: false })
+            .select("name image slug title status")
+            .skip(skip)
+            .limit(limit);
+        res.status(200).json({
+            services,
+            totalPages: Math.ceil(totalServices / limit),
+            currentPage: page,
+            totalServices
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -46,5 +128,5 @@ const getPublicServiceById = async (req, res) => {
     }
 };
 
-export { getPublicServices, createService, getPublicServiceById };
+export { getPublicServices, createService, getPublicServiceById, updateService, deleteService, searchService, getServicesForManage };
 

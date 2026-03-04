@@ -8,7 +8,7 @@ export const getPublicProducts = async () => {
 export const getProductForManage = async () => {
     const token = localStorage.getItem("token");
     console.log("token", token);
-    const response = await api.get("/product/getProductForManage", { 
+    const response = await api.get("/product/getProductForManage", {
         headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
@@ -50,5 +50,21 @@ export const deleteProduct = async (id) => {
 
 export const getProductByName = async (name, page = 1, limit = 10) => {
     const response = await api.get(`/product/getProductByName/${name}?page=${page}&limit=${limit}`);
+    return response.data;
+};
+
+export const getProductByCategoryIdForManage = async (categoryId, page = 1, limit = 10) => {
+    const token = localStorage.getItem("token");
+    const response = await api.get(`/product/getProductByCategoryIdForManage/${categoryId}?page=${page}&limit=${limit}`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+};
+
+export const getProductByNameForManage = async (name, page = 1, limit = 10) => {
+    const token = localStorage.getItem("token");
+    const response = await api.get(`/product/getProductByNameForManage/${name}?page=${page}&limit=${limit}`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
     return response.data;
 };

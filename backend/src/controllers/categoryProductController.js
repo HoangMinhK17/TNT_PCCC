@@ -54,5 +54,13 @@ const deleteCategoryProduct = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+const getCategoryProductById = async (req, res) => {
+    try {
+        const categoryProduct = await CategoryProduct.findById(req.params.id);
+        res.status(200).json(categoryProduct);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-export { getCategoryProducts, getCategoryProductForManage, createCategoryProduct, updateCategoryProduct, deleteCategoryProduct };
+export { getCategoryProducts, getCategoryProductForManage, createCategoryProduct, updateCategoryProduct, deleteCategoryProduct, getCategoryProductById };

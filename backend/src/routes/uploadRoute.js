@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/upload-image", authMiddleware, upload.single("image"), async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ message: "Không có file nào được upload" });
-        const folder = req.body.folder || "tnt_shared_uploads"; 
+        const folder = req.body.folder || "tnt_shared_uploads";
         const url = await uploadToCloudinary(req.file.buffer, folder);
         res.status(200).json({ url });
     } catch (error) {

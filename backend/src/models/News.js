@@ -20,10 +20,6 @@ const newsSchema = new mongoose.Schema({
     image: {
         type: String
     },
-    content: {
-        type: String,
-        required: true
-    },
     categoryNewsId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "CategoryNews",

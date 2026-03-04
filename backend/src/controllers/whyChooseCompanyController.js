@@ -12,6 +12,9 @@ export const getWhyChooseCompany = async (req, res) => {
 
 export const createWhyChooseCompany = async (req, res) => {
     try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
         const whyChooseCompany = await WhyChooseCompany.create(req.body);
         res.status(201).json(whyChooseCompany);
     } catch (error) {
@@ -21,6 +24,9 @@ export const createWhyChooseCompany = async (req, res) => {
 
 export const updateWhyChooseCompany = async (req, res) => {
     try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
         const whyChooseCompany = await WhyChooseCompany.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.status(200).json(whyChooseCompany);
     } catch (error) {
@@ -30,6 +36,9 @@ export const updateWhyChooseCompany = async (req, res) => {
 
 export const deleteWhyChooseCompany = async (req, res) => {
     try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
         const whyChooseCompany = await WhyChooseCompany.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
         res.status(200).json(whyChooseCompany);
     } catch (error) {

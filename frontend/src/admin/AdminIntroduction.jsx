@@ -251,16 +251,16 @@ const TabIntroduct = () => {
                 okText={saving ? 'Đang lưu...' : 'Lưu'} okButtonProps={{ loading: saving }}
                 cancelText="Hủy" width={750}>
                 <Form form={form} layout="vertical">
-                    <Form.Item name="name" label="Tên công ty" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                    <Form.Item name="name" label="Tên công ty" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name="title.titleName" label="Tiêu đề" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                    <Form.Item name="title.titleName" label="Tiêu đề" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input />
                     </Form.Item>
                     <Form.Item name="title.titleIcon" label="Icon tiêu đề (upload ảnh)">
                         <CloudinaryUpload />
                     </Form.Item>
-                    <Form.Item name="description.descriptionName" label="Mô tả" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                    <Form.Item name="description.descriptionName" label="Mô tả" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <TextArea rows={4} />
                     </Form.Item>
                     <Form.Item name="description.descriptionIcon" label="Icon mô tả (upload ảnh)">
@@ -388,10 +388,10 @@ const TabMissionVision = () => {
                 open={modalVisible} onOk={handleSave}
                 onCancel={() => setModalVisible(false)} okText="Lưu" cancelText="Hủy" width={650}>
                 <Form form={form} layout="vertical">
-                    <Form.Item name="title" label="Tiêu đề" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                    <Form.Item name="title" label="Tiêu đề" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name="description" label="Mô tả" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                    <Form.Item name="description" label="Mô tả" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <TextArea rows={4} />
                     </Form.Item>
                     <Form.Item name="image" label="Ảnh đại diện">
@@ -509,10 +509,10 @@ const TabCoreValues = () => {
                 open={modalVisible} onOk={handleSave}
                 onCancel={() => setModalVisible(false)} okText="Lưu" cancelText="Hủy" width={650}>
                 <Form form={form} layout="vertical">
-                    <Form.Item name="title" label="Tiêu đề" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                    <Form.Item name="title" label="Tiêu đề" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name="description" label="Mô tả" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                    <Form.Item name="description" label="Mô tả" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <TextArea rows={4} />
                     </Form.Item>
                     <Form.Item name="date" label="Năm (số)" rules={[{ required: true, message: 'Bắt buộc!' }]}>

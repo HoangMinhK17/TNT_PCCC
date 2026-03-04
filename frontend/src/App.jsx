@@ -24,6 +24,9 @@ import ForgetPassword from './admin/ForgetPassword'
 import Dashboard from './admin/dashboard'
 import AdminIntroduction from './admin/AdminIntroduction'
 import AdminProduct from './admin/AdminProduct'
+import AdminProject from './admin/AdminProject'
+import AdminService from './admin/AdminService'
+import AdminNews from './admin/AdminNews'
 import ProtectedRoute from './component/ProtectedRoute'
 import api from './utils/api'
 import { getImageInformation } from './utils/informationApi'
@@ -114,6 +117,30 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminProduct />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/projects"
+          element={
+            <ProtectedRoute>
+              <AdminProject />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/services"
+          element={
+            <ProtectedRoute>
+              <AdminService />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/news"
+          element={
+            <ProtectedRoute>
+              <AdminNews />
             </ProtectedRoute>
           }
         />
