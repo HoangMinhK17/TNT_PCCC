@@ -31,7 +31,7 @@
 }
 
 .admin-sidebar-header {
-    padding: 20px;
+    padding: 10px;
     text-align: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -77,7 +77,6 @@
 }
 
 .admin-sidebar-footer {
-    padding: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -86,7 +85,7 @@
     background-color: rgba(211, 47, 47, 0.2);
     color: var(--admin-white);
     border: 1px solid var(--admin-accent);
-    padding: 10px;
+    padding: 10px 0 20px 25px;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s ease;

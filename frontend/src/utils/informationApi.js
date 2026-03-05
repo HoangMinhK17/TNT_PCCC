@@ -30,3 +30,66 @@ export const getContactInformation = async () => {
     }
 };
 
+export const updateInformation = async (id, data) => {
+    try {
+        const response = await api.put(`/information/update-information/${id}`, data, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error updating information:", error);
+        throw error;
+    }
+};
+
+export const updateImageInformation = async (id, data) => {
+    try {
+        const response = await api.put(`/information/update-image-information/${id}`, data, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error updating image information:", error);
+        throw error;
+    }
+};
+
+export const updateContractInformation = async (id, data) => {
+    try {
+        const response = await api.put(`/information/update-contract-information/${id}`, data, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error updating contract information:", error);
+        throw error;
+    }
+};  
+
+export const getAllInformation = async () => {
+    try {
+        const response = await api.get("/information/get-all-information", {
+            headers: {  
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching all information:", error);
+        throw error;
+    }
+};
+
+
+
+

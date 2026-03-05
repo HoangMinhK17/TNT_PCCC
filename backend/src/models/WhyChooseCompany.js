@@ -44,6 +44,10 @@ const whyChooseCompanySchema = new mongoose.Schema({
         ref: "User",
         default: null
     },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
 
 },
     {

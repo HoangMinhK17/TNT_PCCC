@@ -9,11 +9,11 @@ import '../styles/Dashboard.css';
 
 import {
     createCategoryProduct, updateCategoryProduct, deleteCategoryProduct,
-    getCategoryProductForManage, getCategoryProducts
+    getCategoryProductForManage
 } from '../utils/categoryProductApi';
 import {
     createProduct, updateProduct, deleteProduct, getProductForManage,
-    getProductByName, getProductByCategoryIdForManage, getProductByNameForManage
+    getProductByCategoryIdForManage, getProductByNameForManage
 } from '../utils/productApi';
 import { uploadImageToCloudinary } from '../utils/imageApi';
 
@@ -203,7 +203,7 @@ const TabProduct = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [prodRes, catRes] = await Promise.all([getProductForManage(), getCategoryProducts()]);
+            const [prodRes, catRes] = await Promise.all([getProductForManage(), getCategoryProductForManage()]);
             setData(prodRes.map(d => ({ ...d, key: d._id })));
             setCategories(catRes);
         } catch { message.error('Lấy dữ liệu thất bại!'); }
@@ -382,7 +382,7 @@ const TabProduct = () => {
                     value={filterCategory}
                 >
                     {categories.map(c => (
-                        <Select.Option key={c._id} value={c._id}>{c.name}</Select.Option>
+                        <Select.Option key={c._id} value={c._id}>{c.name} {c.status !== 'active' ? '(Tạm dừng)' : ''}</Select.Option>
                     ))}
                 </Select>
             </div>
@@ -410,7 +410,7 @@ const TabProduct = () => {
                     <div style={{ display: 'flex', gap: 16 }}>
                         <Form.Item name="categoryId" label="Danh mục" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
                             <Select placeholder="Chọn danh mục">
-                                {categories.map(c => <Select.Option key={c._id} value={c._id}>{c.name}</Select.Option>)}
+                                {categories.map(c => <Select.Option key={c._id} value={c._id} disabled={c.status !== 'active'}>{c.name}</Select.Option>)}
                             </Select>
                         </Form.Item>
                         <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
     FaTachometerAlt,
@@ -12,6 +13,7 @@ import {
     FaHome,
     FaInfoCircle
 } from 'react-icons/fa';
+import { getImageInformation } from '../utils/informationApi';
 
 const AdminSidebar = () => {
     const navigate = useNavigate();
@@ -36,11 +38,25 @@ const AdminSidebar = () => {
         { label: 'Thông tin chung', path: '/admin/information', icon: <FaInfoCircle /> },
     ];
 
+    const [information, setInformation] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await getImageInformation();
+                setInformation(Array.isArray(data) ? data[0] : data);
+            } catch (error) {
+                console.error('Error fetching information:', error);
+            }
+        };
+        fetchData();
+    }, []);
+
     return (
         <aside className="admin-sidebar">
             <div className="admin-sidebar-header">
-                <img src="/src/uploads/tnt.jpg" alt="TNT Logo" className="admin-logo" />
-                <h4>Quản trị TNT</h4>
+                <img src={information?.logo} alt="TNT Logo" className="admin-logo" />
+                <h4>{information?.name}</h4>
             </div>
 
             <ul className="admin-sidebar-menu">

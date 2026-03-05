@@ -2,7 +2,7 @@ import WhyChooseCompany from "../models/WhyChooseCompany.js";
 
 export const getWhyChooseCompany = async (req, res) => {
     try {
-        const whyChooseCompany = await WhyChooseCompany.find().select("benefits whyChooseUs");
+        const whyChooseCompany = await WhyChooseCompany.find({ status: "active", isDeleted: false }).select("benefits whyChooseUs");
         res.status(200).json(whyChooseCompany);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -45,3 +45,16 @@ export const deleteWhyChooseCompany = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+export const getWhyChooseCompanyForManage = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const whyChooseCompany = await WhyChooseCompany.find({ isDeleted: false }).select("benefits whyChooseUs status");
+        res.status(200).json(whyChooseCompany);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+

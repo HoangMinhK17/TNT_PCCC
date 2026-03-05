@@ -217,13 +217,13 @@ const RecruitmentSection = () => {
             <p>Chúng tôi mang đến môi trường làm việc tốt nhất cho bạn</p>
           </header>
           <div className="benefits-grid">
-            {whyChooseCompany.benefits?.map((benefit, idx) => (
+            {whyChooseCompany?.benefits?.map((benefit, idx) => (
               <div key={idx} className="benefit-card-modern" data-aos="zoom-in" data-aos-delay={idx * 100}>
                 <div className="benefit-icon-wrapper">{
-                <img src={benefit.icon} alt="" />
+                <img src={benefit?.icon} alt="" />
                 }</div>
-                <h4>{benefit.title}</h4>
-                <p>{benefit.description}</p>
+                <h4>{benefit?.title}</h4>
+                <p>{benefit?.description}</p>
               </div>
             ))}
           </div>
@@ -231,9 +231,9 @@ const RecruitmentSection = () => {
 
         <section className="why-join-modern glass-effect">
           <div className="why-join-content">
-            <h3>{whyChooseCompany.whyChooseUs?.title}</h3>
+            <h3>{whyChooseCompany?.whyChooseUs?.title}</h3>
             <p>
-              {whyChooseCompany.whyChooseUs?.description}
+              {whyChooseCompany?.whyChooseUs?.description}
             </p>
             
           </div>

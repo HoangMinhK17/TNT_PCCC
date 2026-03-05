@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock } from 'react-icons/fa';
 import '../styles/ContactSection.css';
 import { getInformation } from '../utils/informationApi';
-
+import { createContract } from '../utils/contractApi';
+import { toast } from 'react-toastify';
 
 const ContactSection = () => {
   const [information, setInformation] = useState({});
@@ -11,13 +12,13 @@ const ContactSection = () => {
     name: '',
     email: '',
     phone: '',
-    subject: '',
+    title: '',
     message: ''
   });
 
   const address = information.address;
   const mapSrc =
-    "https://www.google.com/maps?q=" + 
+    "https://www.google.com/maps?q=" +
     encodeURIComponent(address) +
     "&output=embed";
   const [submitted, setSubmitted] = useState(false);
@@ -30,20 +31,28 @@ const ContactSection = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    setSubmitted(true)
-    setTimeout(() => {
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: ''
+    try {
+      await createContract({
+        ...formData
       });
-      setSubmitted(false);
-    }, 2000);
+      setSubmitted(true);
+      toast.success("Tin nhắn đã được gửi thành công!");
+      setTimeout(() => {
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          title: '',
+          message: ''
+        });
+        setSubmitted(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Error creating contact:', error);
+      toast.error("Có lỗi xảy ra khi gửi tin nhắn!");
+    }
   };
 
   useEffect(() => {
@@ -107,12 +116,12 @@ const ContactSection = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="subject">Tiêu đề *</label>
+                <label htmlFor="title">Tiêu đề *</label>
                 <input
                   type="text"
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
+                  id="title"
+                  name="title"
+                  value={formData.title}
                   onChange={handleChange}
                   placeholder="Nhập tiêu đề"
                   required

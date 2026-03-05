@@ -459,7 +459,7 @@ const TabNews = () => {
                     value={filterCategory}
                 >
                     {categories.map(c => (
-                        <Select.Option key={c._id} value={c._id}>{c.name} {c.status !== "active" ? "(Dừng hoạt động)" : ""}  </Select.Option>
+                        <Select.Option key={c._id} value={c._id}>{c.name} {c.status !== "active" ? "(Tạm dừng)" : ""}  </Select.Option>
                     ))}
                 </Select>
             </div>

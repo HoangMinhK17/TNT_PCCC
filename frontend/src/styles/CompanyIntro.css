@@ -10,7 +10,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 50px;
     align-items: stretch;
-    margin-bottom: 60px;
+    margin-bottom: 30px;
 }
 
 .company-text h2 {
@@ -96,43 +96,11 @@
     background: #B71C1C;
 }
 
-.company-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 30px;
-    padding-top: 40px;
-    border-top: 2px solid var(--border-color);
-}
 
-.stat-item {
-    text-align: center;
-}
-
-.stat-number {
-    font-size: 36px;
-    color: var(--primary-color);
-    font-weight: bold;
-
-}
-
-h3.stat-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-.stat-label {
-    color: #666;
-    margin-top: 10px;
-    font-size: 14px;
-}
 
 @media (max-width: 768px) {
     .company-intro-content {
         grid-template-columns: 1fr;
     }
 
-    .company-stats {
-        grid-template-columns: repeat(2, 1fr);
-    }
 }

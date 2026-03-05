@@ -27,6 +27,10 @@ import AdminProduct from './admin/AdminProduct'
 import AdminProject from './admin/AdminProject'
 import AdminService from './admin/AdminService'
 import AdminNews from './admin/AdminNews'
+import AdminRecruitment from './admin/AdminRecruitment'
+import AdminPartner from './admin/AdminPartner'
+import AdminContact from './admin/AdminContact'
+import AdminInformation from './admin/AdminInformation'
 import ProtectedRoute from './component/ProtectedRoute'
 import api from './utils/api'
 import { getImageInformation } from './utils/informationApi'
@@ -47,6 +51,11 @@ function App() {
       try {
         const res = await getImageInformation();
         const obj = Array.isArray(res) ? res[0] : res;
+
+        if (obj?.name) {
+          document.title = obj.name;
+        }
+
         const faviconPath = obj?.favicon;
 
         if (faviconPath) {
@@ -141,6 +150,38 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminNews />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/recruitment"
+          element={
+            <ProtectedRoute>
+              <AdminRecruitment />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/partners"
+          element={
+            <ProtectedRoute>
+              <AdminPartner />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/contacts"
+          element={
+            <ProtectedRoute>
+              <AdminContact />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/information"
+          element={
+            <ProtectedRoute>
+              <AdminInformation />
             </ProtectedRoute>
           }
         />

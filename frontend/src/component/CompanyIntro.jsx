@@ -116,24 +116,7 @@ const CompanyIntro = () => {
           </div>
         </div>
 
-        <div className="company-stats">
-          <div className="stat-item">
-            <h3 className="stat-number"><CountUpNumber end={10} suffix="+" /></h3>
-            <p className="stat-label">Năm kinh nghiệm PCCC</p>
-          </div>
-          <div className="stat-item">
-            <h3 className="stat-number"><CountUpNumber end={500} suffix="+" /></h3>
-            <p className="stat-label">Dự án đã thẩm duyệt</p>
-          </div>
-          <div className="stat-item">
-            <h3 className="stat-number"><CountUpNumber end={100} suffix="%" /></h3>
-            <p className="stat-label">Đạt chuẩn ISO/TCVN</p>
-          </div>
-          <div className="stat-item">
-            <h3 className="stat-number"><CountUpNumber end={24} suffix="/7" /></h3>
-            <p className="stat-label">Hỗ trợ kỹ thuật</p>
-          </div>
-        </div>
+
       </div>
     </section>
   );

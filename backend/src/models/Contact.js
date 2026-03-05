@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+    import mongoose from "mongoose";
 
 const contactSchema = new mongoose.Schema({
     name: {
@@ -36,6 +36,10 @@ const contactSchema = new mongoose.Schema({
         ref: "User",
         default: null
     },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
     
 },
 {
