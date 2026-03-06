@@ -8,7 +8,7 @@ export const getInformation = async () => {
         console.error("Error fetching information:", error);
         throw error;
     }
-}; 
+};
 
 export const getImageInformation = async () => {
     try {
@@ -60,9 +60,9 @@ export const updateImageInformation = async (id, data) => {
     }
 };
 
-export const updateContractInformation = async (id, data) => {
+export const updateContactInformation = async (id, data) => {
     try {
-        const response = await api.put(`/information/update-contract-information/${id}`, data, {
+        const response = await api.put(`/information/update-contact-information/${id}`, data, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${localStorage.getItem("token")}`
@@ -70,15 +70,15 @@ export const updateContractInformation = async (id, data) => {
         });
         return response.data;
     } catch (error) {
-        console.error("Error updating contract information:", error);
+        console.error("Error updating contact information:", error);
         throw error;
     }
-};  
+};
 
 export const getAllInformation = async () => {
     try {
         const response = await api.get("/information/get-all-information", {
-            headers: {  
+            headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${localStorage.getItem("token")}`
             }

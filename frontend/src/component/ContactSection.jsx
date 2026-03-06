@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock } from 'react-icons/fa';
 import '../styles/ContactSection.css';
 import { getInformation } from '../utils/informationApi';
-import { createContract } from '../utils/contractApi';
+import { createContact } from '../utils/contactApi';
 import { toast } from 'react-toastify';
 
 const ContactSection = () => {
@@ -34,7 +34,7 @@ const ContactSection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createContract({
+      await createContact({
         ...formData
       });
       setSubmitted(true);

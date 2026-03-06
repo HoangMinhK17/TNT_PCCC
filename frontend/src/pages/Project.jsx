@@ -12,7 +12,7 @@ const Project = () => {
         totalProjects: 0
     });
     const [loading, setLoading] = useState(true);
-    const projectsPerPage = 4;
+    const projectsPerPage = 6;
 
     useEffect(() => {
         fetchProjects(projectsData.currentPage);

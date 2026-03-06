@@ -1,7 +1,7 @@
 import api from "./api";
 
-const getContractsForManage = async (page, limit) => {
-    const response = await api.get(`/contract/get-contract-for-manage?page=${page}&limit=${limit}`,{
+const getContactsForManage = async (page, limit) => {
+    const response = await api.get(`/contact/get-contact-for-manage?page=${page}&limit=${limit}`,{
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -10,8 +10,8 @@ const getContractsForManage = async (page, limit) => {
     return response.data;
 };
 
-const getContractById = async (id) => {
-    const response = await api.get(`/contract/get-contract-by-id/${id}`,{
+const getContactById = async (id) => {
+    const response = await api.get(`/contact/get-contact-by-id/${id}`,{
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -20,13 +20,13 @@ const getContractById = async (id) => {
     return response.data;
 };
 
-const createContract = async (contract) => {
-    const response = await api.post("/contract/create-contract", contract);
+const createContact = async (contact) => {
+    const response = await api.post("/contact/create-contact", contact);
     return response.data;
 };
 
-const updateContract = async (id, contract) => {
-    const response = await api.put(`/contract/update-contract/${id}`, contract, {
+const updateContact = async (id, contact) => {
+    const response = await api.put(`/contact/update-contact/${id}`, contact, {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -35,8 +35,8 @@ const updateContract = async (id, contract) => {
     return response.data;
 };
 
-const deleteContract = async (id) => {
-    const response = await api.delete(`/contract/delete-contract/${id}`, {
+const deleteContact = async (id) => {
+    const response = await api.delete(`/contact/delete-contact/${id}`, {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -45,8 +45,8 @@ const deleteContract = async (id) => {
     return response.data;
 };
 
-const findContractByNameOrPhone = async (name, phone, page, limit) => {
-    const response = await api.post(`/contract/find-contract-by-name-or-phone?page=${page}&limit=${limit}`, { name, phone }, {
+const findContactByNameOrPhone = async (name, phone, page, limit) => {
+    const response = await api.post(`/contact/find-contact-by-name-or-phone?page=${page}&limit=${limit}`, { name, phone }, {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -56,7 +56,7 @@ const findContractByNameOrPhone = async (name, phone, page, limit) => {
 };
 
 const filterByStatus = async (status, page, limit) => {
-    const response = await api.post(`/contract/filter-by-status?page=${page}&limit=${limit}`, { status }, {
+    const response = await api.post(`/contact/filter-by-status?page=${page}&limit=${limit}`, { status }, {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -65,4 +65,4 @@ const filterByStatus = async (status, page, limit) => {
     return response.data;
 };
 
-export { getContractsForManage, getContractById, createContract, updateContract, deleteContract, findContractByNameOrPhone, filterByStatus };
+export { getContactsForManage, getContactById, createContact, updateContact, deleteContact, findContactByNameOrPhone, filterByStatus };

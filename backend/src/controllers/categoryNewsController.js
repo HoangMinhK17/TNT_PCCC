@@ -56,6 +56,7 @@ export const createCategoryNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+
         const categoryNew = await CategoryNew.create(req.body);
         res.status(201).json(categoryNew);
     } catch (error) {
@@ -68,6 +69,7 @@ export const updateCategoryNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+   
         const categoryNew = await CategoryNew.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.status(200).json(categoryNew);
     } catch (error) {

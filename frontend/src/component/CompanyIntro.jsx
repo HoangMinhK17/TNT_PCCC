@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/CompanyIntro.css';
 import { getIntroductionCompany } from '../utils/introductApi.js';
-// Helper component for counting animation
 const CountUpNumber = ({ end, duration = 2000, suffix = '' }) => {
   const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);

@@ -32,6 +32,7 @@ const createProduct = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+ 
         const product = await Product.create({ name, title, description, image, technical, categoryId, slug, status });
         res.status(201).json(product);
     } catch (error) {
@@ -45,6 +46,8 @@ const updateProduct = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+ 
+
         const product = await Product.findByIdAndUpdate(req.params.id, { name, title, description, image, technical, categoryId, slug, status }, { new: true });
         res.status(200).json(product);
     } catch (error) {

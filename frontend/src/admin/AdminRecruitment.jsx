@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
     Tabs, Table, Button, Modal, Form, Input, Space,
-    Popconfirm, message, Typography, Tag, Select, InputNumber, Upload, Image
+    Popconfirm, message, Typography, Tag, Select, InputNumber, Upload, Image, Descriptions
 } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, MinusCircleOutlined, UploadOutlined } from '@ant-design/icons';
+import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined, MinusCircleOutlined, UploadOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
+import dayjs from 'dayjs';
 
 import {
     getRecruitmentForManage, createRecruitment, updateRecruitment, deleteRecruitment, getRecruimentsByName
@@ -14,6 +15,9 @@ import {
 import {
     getWhyChooseCompanyForManage, createWhyChooseCompany, updateWhyChooseCompany, deleteWhyChooseCompany
 } from '../utils/whyChooseCompanyApi';
+import {
+    getContactRecruitment, getContactRecruitmentByNameOrPhone, getContactRecruitmentByStatus, updateContactRecruitment, deleteContactRecruitment
+} from '../utils/contactRecruitmentApi';
 import { uploadImageToCloudinary } from '../utils/imageApi';
 
 const resolveImageUrl = async (value, folder = "tnt_company") => {
@@ -66,42 +70,40 @@ const TabRecruitment = () => {
     const [saving, setSaving] = useState(false);
     const [searchText, setSearchText] = useState('');
     const [form] = Form.useForm();
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
-    const fetchData = async () => {
+    const fetchData = async (page = pagination.current, limit = pagination.pageSize, search = searchText) => {
         setLoading(true);
         try {
-            const res = await getRecruitmentForManage(1, 100);
+            let res;
+            if (search && search.trim()) {
+                res = await getRecruimentsByName(search.trim(), page, limit);
+            } else {
+                res = await getRecruitmentForManage(page, limit);
+            }
             const dataToSet = res.recruiments ? res.recruiments : (res.recruitments ? res.recruitments : res);
             if (Array.isArray(dataToSet)) {
                 setData(dataToSet.map(d => ({ ...d, key: d._id })));
             } else {
                 setData([]);
             }
+            setPagination({ current: res.currentPage || page, pageSize: limit, total: res.total || 0 });
         } catch { message.error('Lấy dữ liệu tuyển dụng thất bại!'); }
         finally { setLoading(false); }
     };
 
     useEffect(() => { fetchData(); }, []);
 
-    const handleSearch = async (value) => {
+    const handleTableChange = (pag) => {
+        fetchData(pag.current, pag.pageSize, searchText);
+    };
+
+    const handleSearch = (value) => {
         setSearchText(value);
         if (!value || !value.trim()) {
-            fetchData();
-            return;
-        }
-        setLoading(true);
-        try {
-            const res = await getRecruimentsByName(value.trim(), 1, 100);
-            const dataToSet = res.recruiments ? res.recruiments : (res.recruitments ? res.recruitments : res);
-            if (Array.isArray(dataToSet)) {
-                setData(dataToSet.map(d => ({ ...d, key: d._id })));
-            } else {
-                setData([]);
-            }
-        } catch {
-            message.error('Tìm kiếm thất bại!');
-        } finally {
-            setLoading(false);
+            fetchData(1, pagination.pageSize, '');
+        } else {
+            fetchData(1, pagination.pageSize, value.trim());
         }
     };
 
@@ -138,7 +140,7 @@ const TabRecruitment = () => {
             }
             setModalVisible(false);
             setSearchText('');
-            fetchData();
+            fetchData(1, pagination.pageSize, '');
         } catch (err) {
             message.error(err?.response?.data?.message || 'Có lỗi xảy ra!');
         } finally { setSaving(false); }
@@ -148,13 +150,13 @@ const TabRecruitment = () => {
         try {
             await deleteRecruitment(id);
             message.success('Xóa thành công!');
-            setSearchText('');
-            fetchData();
+            const newPage = data.length === 1 && pagination.current > 1 ? pagination.current - 1 : pagination.current;
+            fetchData(newPage, pagination.pageSize, searchText);
         } catch { message.error('Xóa thất bại!'); }
     };
 
     const columns = [
-        { title: 'Tên công việc', dataIndex: 'name', key: 'name'},
+        { title: 'Tên công việc', dataIndex: 'name', key: 'name' },
         { title: 'Cấp bậc', dataIndex: 'level', key: 'level' },
         { title: 'Địa điểm', dataIndex: 'location', key: 'location' },
         { title: 'Mức lương', dataIndex: 'salary', key: 'salary' },
@@ -198,7 +200,14 @@ const TabRecruitment = () => {
                 />
             </div>
 
-            <Table columns={columns} dataSource={data} loading={loading} bordered pagination={{ pageSize: 5 }} />
+            <Table
+                columns={columns}
+                dataSource={data}
+                loading={loading}
+                bordered
+                pagination={pagination}
+                onChange={handleTableChange}
+            />
 
             <Modal title={editing ? "Sửa Tuyển dụng" : "Thêm mới Tuyển dụng"} open={modalVisible}
                 onOk={handleSave} onCancel={() => setModalVisible(false)}
@@ -450,7 +459,7 @@ const TabWhyChooseCompany = () => {
                                             {...restField}
                                             name={[name, 'description']}
                                             rules={[{ required: true, whitespace: true, message: 'Nhập mô tả' }]}
-                                            style={{ flex: 2, minWidth:400, marginBottom: 0 }}
+                                            style={{ flex: 2, minWidth: 400, marginBottom: 0 }}
                                         >
                                             <Input placeholder="Mô tả lợi ích" style={{ width: '100%' }} />
                                         </Form.Item>
@@ -483,6 +492,237 @@ const TabWhyChooseCompany = () => {
 };
 
 
+// ═══════════════════════ TAB 3: QUẢN LÝ ỨNG VIÊN ══════════════════════════
+const TabContactRecruitment = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [viewModalVisible, setViewModalVisible] = useState(false);
+    const [currentRecord, setCurrentRecord] = useState(null);
+    const [editing, setEditing] = useState(null);
+    const [saving, setSaving] = useState(false);
+    const [searchText, setSearchText] = useState('');
+    const [statusFilter, setStatusFilter] = useState(null);
+    const [form] = Form.useForm();
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+
+    const fetchData = async (page = pagination.current, limit = pagination.pageSize, search = searchText, status = statusFilter) => {
+        setLoading(true);
+        try {
+            let res;
+            if (search && search.trim()) {
+                res = await getContactRecruitmentByNameOrPhone(search.trim(), page, limit);
+            } else if (status) {
+                res = await getContactRecruitmentByStatus(status, page, limit);
+            } else {
+                res = await getContactRecruitment(page, limit);
+            }
+            const dataList = res.contactRecruitment || res.contactRecruitments || [];
+            setData(dataList?.map(d => ({ ...d, key: d._id })));
+            setPagination({ current: res.currentPage || page, pageSize: limit, total: res.total || 0 });
+        } catch { message.error('Lấy dữ liệu ứng viên thất bại!'); }
+        finally { setLoading(false); }
+    };
+
+    useEffect(() => { fetchData(); }, []);
+
+    const handleTableChange = (pag) => {
+        fetchData(pag.current, pag.pageSize, searchText, statusFilter);
+    };
+
+    const handleSearch = (value) => {
+        setSearchText(value);
+        if (!value) {
+            fetchData(1, pagination.pageSize, '', statusFilter);
+        } else {
+            fetchData(1, pagination.pageSize, value, statusFilter);
+        }
+    };
+
+    const handleFilterStatus = (value) => {
+        const newStatus = value === undefined ? null : value;
+        setStatusFilter(newStatus);
+        fetchData(1, pagination.pageSize, searchText, newStatus);
+    };
+
+    const openEditModal = (record) => {
+        setEditing(record);
+        form.resetFields();
+        form.setFieldsValue({
+            status: record.status || 'pending',
+            note: record.note || ''
+        });
+        setModalVisible(true);
+    };
+
+    const openViewModal = (record) => {
+        setCurrentRecord(record);
+        setViewModalVisible(true);
+    };
+
+    const handleSave = async () => {
+        try {
+            setSaving(true);
+            const values = await form.validateFields();
+            await updateContactRecruitment(editing._id, { ...editing, ...values });
+            message.success('Cập nhật trạng thái thành công!');
+            setModalVisible(false);
+            fetchData(pagination.current, pagination.pageSize, searchText, statusFilter);
+        } catch (err) {
+            message.error(err?.response?.data?.message || 'Có lỗi xảy ra!');
+        } finally { setSaving(false); }
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            await deleteContactRecruitment(id);
+            message.success('Xóa ứng viên thành công!');
+            fetchData(pagination.current, pagination.pageSize, searchText, statusFilter);
+        } catch { message.error('Xóa thất bại!'); }
+    };
+
+    const columns = [
+        { title: 'Tên Ứng viên', dataIndex: 'name', key: 'name' },
+        { title: 'SĐT', dataIndex: 'phone', key: 'phone' },
+        { title: 'Email', dataIndex: 'email', key: 'email' },
+        {
+            title: 'Vị trí Ứng tuyển', dataIndex: 'recruitmentId', key: 'recruitmentId',
+            render: (recruitment) => recruitment?.name || '---'
+        },
+        {
+            title: 'Trạng thái', dataIndex: 'status', key: 'status',
+            render: (status) => {
+                let color = 'blue';
+                let text = 'Chờ xử lý';
+                if (status === 'approved') { color = 'green'; text = 'Đã duyệt'; }
+                if (status === 'rejected') { color = 'red'; text = 'Từ chối'; }
+                return <Tag color={color}>{text}</Tag>;
+            }
+        },
+        {
+            title: 'Ngày nộp', dataIndex: 'createdAt', key: 'createdAt',
+            render: (date) => dayjs(date).format('DD/MM/YYYY HH:mm')
+        },
+        {
+            title: 'Thao tác', key: 'action',
+            render: (_, record) => (
+                <Space>
+                    <Button type="default" size="small" icon={<EyeOutlined />} onClick={() => openViewModal(record)}>Xem</Button>
+                    <Button type="primary" size="small" ghost icon={<EditOutlined />} onClick={() => openEditModal(record)} disabled={record.status !== 'pending'}>Cập nhật</Button>
+                    <Popconfirm title="Xác nhận xóa?" onConfirm={() => handleDelete(record._id)}>
+                        <Button danger size="small" icon={<DeleteOutlined />} />
+                    </Popconfirm>
+                </Space>
+            ),
+        },
+    ];
+
+    return (
+        <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+                <Title level={4} style={{ margin: 0 }}>Danh sách Ứng viên</Title>
+            </div>
+
+            <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
+                <Input.Search
+                    placeholder="Tìm theo tên hoặc SĐT..."
+                    allowClear
+                    onSearch={handleSearch}
+                    style={{ width: 300 }}
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                />
+                <Select
+                    placeholder="Lọc theo trạng thái"
+                    allowClear
+                    style={{ width: 200 }}
+                    value={statusFilter}
+                    onChange={handleFilterStatus}
+                >
+                    <Select.Option value="pending">Chờ xử lý</Select.Option>
+                    <Select.Option value="approved">Đã duyệt (Chấp nhận)</Select.Option>
+                    <Select.Option value="rejected">Từ chối</Select.Option>
+                </Select>
+            </div>
+
+            <Table
+                columns={columns}
+                dataSource={data}
+                loading={loading}
+                bordered
+                pagination={pagination}
+                onChange={handleTableChange}
+            />
+
+            <Modal title="Cập nhật Ứng viên" open={modalVisible}
+                onOk={handleSave} onCancel={() => setModalVisible(false)}
+                okText={saving ? 'Đang lưu...' : 'Lưu'} okButtonProps={{ loading: saving }} cancelText="Hủy">
+                <Form form={form} layout="vertical">
+                    <p><b>Ứng viên:</b> {editing?.name}</p>
+                    <p><b>Vị trí:</b> {editing?.recruitmentId?.name}</p>
+                    <p style={{ marginBottom: 16 }}><b>CV:</b> <a href={editing?.cv} target="_blank" rel="noopener noreferrer">Mở CV</a></p>
+
+                    <Form.Item name="status" label="Trạng thái">
+                        <Select>
+                            <Select.Option value="pending">Chờ xử lý</Select.Option>
+                            <Select.Option value="approved">Đã duyệt (Chấp nhận)</Select.Option>
+                            <Select.Option value="rejected">Từ chối</Select.Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="note" label="Ghi chú nội bộ">
+                        <TextArea rows={3} placeholder="Ghi chú thêm về buổi phỏng vấn (nếu có)..." />
+                    </Form.Item>
+                </Form>
+            </Modal>
+
+
+            <Modal title="Chi tiết Ứng viên" open={viewModalVisible}
+                onCancel={() => setViewModalVisible(false)} footer={<Button onClick={() => setViewModalVisible(false)}>Đóng</Button>} width={700}>
+                {currentRecord && (
+                    <Descriptions bordered column={1}>
+                        <Descriptions.Item label="Họ và tên">{currentRecord.name}</Descriptions.Item>
+                        <Descriptions.Item label="Số điện thoại">{currentRecord.phone}</Descriptions.Item>
+                        <Descriptions.Item label="Email">{currentRecord.email}</Descriptions.Item>
+                        <Descriptions.Item label="Vị trí ứng tuyển">{currentRecord.recruitmentId?.name}</Descriptions.Item>
+                        <Descriptions.Item label="Địa chỉ">{currentRecord.address}</Descriptions.Item>
+                        <Descriptions.Item label="Ngày nộp">{dayjs(currentRecord.createdAt).format('DD/MM/YYYY HH:mm')}</Descriptions.Item>
+                        <Descriptions.Item label="CV Đính kèm">
+                            {currentRecord.cv ? (
+                                <div>
+                                    <a href={currentRecord.cv} target="_blank" rel="noopener noreferrer">
+                                        Mở CV ở tab mới
+                                    </a>
+
+                                    <div style={{ marginTop: 12, border: '1px solid #ddd', borderRadius: 8, overflow: 'hidden' }}>
+                                        <iframe
+                                            src={currentRecord.cv}
+                                            title="CV PDF"
+                                            width="100%"
+                                            height="500px"
+                                            style={{ border: 'none' }}
+                                        />
+                                    </div>
+                                </div>
+                            ) : (
+                                <span>Không có CV</span>
+                            )}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Trạng thái">
+                            {currentRecord.status === 'approved' ? <Tag color="green">Đã duyệt</Tag> : currentRecord.status === 'rejected' ? <Tag color="red">Từ chối</Tag> : <Tag color="blue">Chờ xử lý</Tag>}
+                        </Descriptions.Item>
+                        {currentRecord.status !== 'pending' && (
+                            <Descriptions.Item label="Ghi chú xử lý">
+                                <div style={{ whiteSpace: 'pre-wrap' }}>{currentRecord.note || "(Không có)"}</div>
+                            </Descriptions.Item>
+                        )}
+                    </Descriptions>
+                )}
+            </Modal>
+        </div>
+    );
+};
+
+
 // ═══════════════════════ ROOT COMPONENT ══════════════════════════
 const AdminRecruitment = () => {
     return (
@@ -505,6 +745,11 @@ const AdminRecruitment = () => {
                                 key: '2',
                                 label: 'Tại sao chọn chúng tôi',
                                 children: <TabWhyChooseCompany />,
+                            },
+                            {
+                                key: '3',
+                                label: 'Quản lý Ứng viên',
+                                children: <TabContactRecruitment />,
                             }
                         ]}
                     />

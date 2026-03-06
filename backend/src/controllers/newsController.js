@@ -20,7 +20,7 @@ export const getNewsForManage = async (req, res) => {
         const skip = (page - 1) * limit;
         const totalNews = await News.countDocuments({ isDeleted: false });
         const news = await News.find({ isDeleted: false }).sort({ createdAt: -1 }).
-            select("name date title image slug description status").populate("categoryNewsId", "name").skip(skip).limit(limit);   
+            select("name date title image slug description status").populate("categoryNewsId", "name").skip(skip).limit(limit);
         res.status(200).json({
             news,
             totalPages: Math.ceil(totalNews / limit),
@@ -36,6 +36,8 @@ export const createNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+
+   
         const news = await News.create(req.body);
         res.status(201).json(news);
     } catch (error) {
@@ -48,6 +50,7 @@ export const updateNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+    
         const news = await News.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.status(200).json(news);
     } catch (error) {
@@ -146,7 +149,7 @@ export const getNewsByName = async (req, res) => {
         const { name } = req.params;
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
-        const skip = (page - 1) * limit;    
+        const skip = (page - 1) * limit;
 
         const query = {
             name: { $regex: name, $options: "i" },

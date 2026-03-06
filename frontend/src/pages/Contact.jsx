@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import ContactSection from "../component/ContactSection";
 import SEO from '../component/SEO';
 
-const Contract = () => {
+const Contact = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -28,4 +28,4 @@ const Contract = () => {
     );
 }
 
-export default Contract;
+export default Contact;

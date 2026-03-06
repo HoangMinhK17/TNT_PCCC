@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Header.css';
 import { useTranslation } from 'react-i18next';
-import { news } from '../data/news';
 import { getCategoryProducts } from '../utils/categoryProductApi';
 import { getCategoryNews } from '../utils/categoryNewsApi';
 
@@ -159,12 +158,7 @@ const Header = () => {
                         className={`language-flag ${languageGlobal === 'en' ? 'active' : ''}`}
                         onClick={() => handleLanguageChange('en')}
                     />
-                    <img
-                        src="src/uploads/language/china.png"
-                        alt="CH"
-                        className={`language-flag ${languageGlobal === 'ch' ? 'active' : ''}`}
-                        onClick={() => handleLanguageChange('ch')}
-                    />
+             
                 </div>
             </div>
         </header>

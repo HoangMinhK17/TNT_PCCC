@@ -403,7 +403,7 @@ const TabMissionVision = () => {
     );
 };
 
-// ═══════════════════════ TAB 3: GIÁ TRỊ CỐT LÕI ═════════════════════
+// ═══════════════════════ TAB 3: THÀNH TỰ ═════════════════════
 const TabCoreValues = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -497,7 +497,7 @@ const TabCoreValues = () => {
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-                <Title level={4} style={{ margin: 0 }}>Danh sách Giá trị cốt lõi</Title>
+                <Title level={4} style={{ margin: 0 }}>Danh sách thành tựu</Title>
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}
                 >
                     Thêm mới
@@ -505,7 +505,7 @@ const TabCoreValues = () => {
             </div>
             <Table columns={columns} dataSource={data} loading={loading} bordered pagination={{ pageSize: 6 }} />
 
-            <Modal title={editing ? 'Chỉnh sửa Giá trị cốt lõi' : 'Thêm mới Giá trị cốt lõi'}
+            <Modal title={editing ? 'Chỉnh sửa Thành tựu' : 'Thêm mới Thành tựu'}
                 open={modalVisible} onOk={handleSave}
                 onCancel={() => setModalVisible(false)} okText="Lưu" cancelText="Hủy" width={650}>
                 <Form form={form} layout="vertical">
@@ -553,7 +553,7 @@ const AdminIntroduction = () => {
                             },
                             {
                                 key: 'corevalues',
-                                label: 'Giá trị cốt lõi',
+                                label: 'Thành tựu',
                                 children: <TabCoreValues />,
                             }
                         ]}

@@ -104,10 +104,10 @@ const Product = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const pageTitle = activeSearchTerm
-    ? `Tìm kiếm: ${activeSearchTerm} - TNT PCCC`
+    ? `Tìm kiếm: ${activeSearchTerm} `
     : selectedCategory === 'Tất cả sản phẩm'
-      ? 'Danh sách sản phẩm - TNT PCCC'
-      : `${selectedCategory} - TNT PCCC`;
+      ? 'Danh sách sản phẩm '
+      : `${selectedCategory} `;
 
   const pageDescription = `TNT PCCC cung cấp sản phẩm phòng cháy chữa cháy chất lượng. ${activeSearchTerm ? `Kết quả tìm kiếm cho ${activeSearchTerm}.` : `Xem danh mục ${selectedCategory}.`}`;
 

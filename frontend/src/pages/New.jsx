@@ -105,8 +105,8 @@ const New = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     const pageTitle = selectedCategory === 'Tất cả tin tức'
-        ? 'Tin tức & Sự kiện - TNT PCCC'
-        : `${selectedCategory} - Tin tức - TNT PCCC`;
+        ? 'Tin tức & Sự kiện '
+        : `${selectedCategory} `;
 
     const pageDescription = `Cập nhật tin tức mới nhất về ${selectedCategory === 'Tất cả tin tức' ? 'phòng cháy chữa cháy' : selectedCategory.toLowerCase()} từ TNT PCCC.`;
 

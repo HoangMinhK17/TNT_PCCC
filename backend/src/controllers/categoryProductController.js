@@ -23,6 +23,12 @@ const createCategoryProduct = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+        if(slug){
+            const categoryProduct =  await CategoryProduct.findOne({slug : slug});
+            if(categoryProduct){
+                return res.status(400).json({ message: "Slug already exists" });
+            }
+        }
         const categoryProduct = await CategoryProduct.create({ name, slug });
         res.status(201).json(categoryProduct);
     } catch (error) {

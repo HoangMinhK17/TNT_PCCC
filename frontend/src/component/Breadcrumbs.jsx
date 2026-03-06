@@ -1,13 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import '../styles/Breadcrumbs.css';
-import { products } from '../data/products';
-import { news } from '../data/news';
+
+import { getPublicProducts } from '../utils/productApi.js';
+import { getNews } from '../utils/newsApi.js';
 
 const Breadcrumbs = () => {
     const location = useLocation();
     const [searchParams] = useSearchParams();
     const categoryParam = searchParams.get('category');
+    const [products, setProducts] = useState([]);
+    const [news, setNews] = useState([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await getPublicProducts();
+                setProducts(Array.isArray(response) ? response : []);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
+
+        const fetchNews = async () => {
+            try {
+                const response = await getNews();
+                console.log("data", response);
+                setNews(Array.isArray(response) ? response : []);
+            } catch (error) {
+                console.error('Error fetching news:', error);
+            }
+        };
+
+        fetchProducts();
+        fetchNews();
+    }, []);
 
     if (location.pathname === '/') {
         return null;
@@ -33,13 +60,17 @@ const Breadcrumbs = () => {
         breadcrumbs.push({ name: 'Sản phẩm', path: '/products' });
 
         if (pathnames[1]) {
-            const id = parseInt(pathnames[1]);
-            const product = products.find(p => p.id === id);
+            const id = pathnames[1];
+            const product = products.find(p => p._id === id || p.id === id);
             if (product) {
-                breadcrumbs.push({
-                    name: product.category,
-                    path: `/products?category=${encodeURIComponent(product.category)}`
-                });
+                if (product.categoryId && product.categoryId.name) {
+                    breadcrumbs.push({
+                        name: product.categoryId.name,
+                        path: `/products?category=${encodeURIComponent(product.categoryId.name)}&categoryId=${product.categoryId._id}`
+                    });
+                } else if (categoryParam && categoryParam !== 'Tất cả') {
+                    breadcrumbs.push({ name: categoryParam, path: null });
+                }
                 breadcrumbs.push({ name: product.name, path: null });
             } else {
                 breadcrumbs.push({ name: 'Chi tiết sản phẩm', path: null });
@@ -52,14 +83,18 @@ const Breadcrumbs = () => {
         breadcrumbs.push({ name: 'Tin tức', path: '/news' });
 
         if (pathnames[1]) {
-            const id = parseInt(pathnames[1]);
-            const newsItem = news.find(n => n.id === id);
+            const id = pathnames[1];
+            const newsItem = news.find(n => n._id === id || n.id === id);
             if (newsItem) {
-                breadcrumbs.push({
-                    name: newsItem.category,
-                    path: `/news?category=${encodeURIComponent(newsItem.category)}`
-                });
-                breadcrumbs.push({ name: newsItem.title, path: null });
+                if (newsItem.categoryNewsId && newsItem.categoryNewsId.name) {
+                    breadcrumbs.push({
+                        name: newsItem.categoryNewsId.name,
+                        path: `/news?category=${encodeURIComponent(newsItem.categoryNewsId.name)}&categoryId=${newsItem.categoryNewsId._id}`
+                    });
+                } else if (categoryParam && categoryParam !== 'Tất cả') {
+                    breadcrumbs.push({ name: categoryParam, path: null });
+                }
+                breadcrumbs.push({ name: newsItem.name || newsItem.title, path: null });
             } else {
                 breadcrumbs.push({ name: 'Chi tiết tin tức', path: null });
             }

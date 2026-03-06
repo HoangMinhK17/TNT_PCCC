@@ -13,7 +13,7 @@ import NewsDetail from './pages/NewsDetail'
 import IntroductionCompany from './pages/IntroductionCompany'
 import Project from './pages/Project'
 import New from './pages/New'
-import Contract from './pages/Contract'
+import Contact from './pages/Contact'
 import Recruiment from './pages/Recruiment'
 import Partner from './pages/Partner'
 import Service from './pages/Service'
@@ -96,7 +96,7 @@ function App() {
           <Route path="/about" element={<IntroductionCompany />} />
           <Route path="/projects" element={<Project />} />
           <Route path="/news" element={<New />} />
-          <Route path="/contact" element={<Contract />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/services" element={<Service />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
           <Route path="/recruitment" element={<Recruiment />} />

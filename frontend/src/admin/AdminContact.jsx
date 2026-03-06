@@ -9,8 +9,8 @@ import '../styles/Dashboard.css';
 import dayjs from 'dayjs';
 
 import {
-    getContractsForManage, updateContract, deleteContract, findContractByNameOrPhone, filterByStatus
-} from '../utils/contractApi';
+    getContactsForManage, updateContact, deleteContact, findContactByNameOrPhone, filterByStatus
+} from '../utils/contactApi';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -33,8 +33,8 @@ const AdminContact = () => {
     const fetchData = async (page = 1, limit = 10) => {
         setLoading(true);
         try {
-            const res = await getContractsForManage(page, limit);
-            setData(res?.contracts ? res.contracts.map(d => ({ ...d, key: d._id })) : []);
+            const res = await getContactsForManage(page, limit);
+            setData(res?.contacts ? res.contacts.map(d => ({ ...d, key: d._id })) : []);
             setTotalPages(res?.totalPage || 1);
             setCurrentPage(res?.currentPage || 1);
         } catch { message.error('Lấy dữ liệu liên hệ thất bại!'); }
@@ -55,8 +55,8 @@ const AdminContact = () => {
         }
         setLoading(true);
         try {
-            const res = await findContractByNameOrPhone(value.trim(), value.trim(), page, limit);
-            setData(res?.contracts ? res.contracts.map(d => ({ ...d, key: d._id })) : []);
+            const res = await findContactByNameOrPhone(value.trim(), value.trim(), page, limit);
+            setData(res?.contacts ? res.contacts.map(d => ({ ...d, key: d._id })) : []);
             setTotalPages(res?.totalPage || 1);
             setCurrentPage(res?.currentPage || 1);
         } catch {
@@ -79,7 +79,7 @@ const AdminContact = () => {
         setLoading(true);
         try {
             const res = await filterByStatus(status, page, limit);
-            setData(res?.contracts ? res.contracts.map(d => ({ ...d, key: d._id })) : []);
+            setData(res?.contacts ? res.contacts.map(d => ({ ...d, key: d._id })) : []);
             setTotalPages(res?.totalPage || 1);
             setCurrentPage(res?.currentPage || 1);
         } catch {
@@ -115,7 +115,7 @@ const AdminContact = () => {
                 repliedMessage: values.repliedMessage
             };
 
-            await updateContract(editing._id, payload);
+            await updateContact(editing._id, payload);
             message.success('Cập nhật thành công!');
 
             setModalVisible(false);
@@ -134,7 +134,7 @@ const AdminContact = () => {
 
     const handleDelete = async (id) => {
         try {
-            await deleteContract(id);
+            await deleteContact(id);
             message.success('Xóa thành công!');
             fetchData(currentPage, pageSize);
         } catch { message.error('Xóa thất bại!'); }
@@ -142,7 +142,7 @@ const AdminContact = () => {
 
     const renderStatus = (status) => {
         switch (status) {
-            case 'replied': return <Tag color="green">Đã duyệt (Phản hồi)</Tag>;
+            case 'replied': return <Tag color="green">Đã phản hồi</Tag>;
             case 'rejected': return <Tag color="red">Từ chối</Tag>;
             default: return <Tag color="blue">Chờ xử lý</Tag>;
         }

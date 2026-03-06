@@ -7,7 +7,7 @@ import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
 
 import {
-    updateInformation, updateImageInformation, updateContractInformation, getAllInformation
+    updateInformation, updateImageInformation, updateContactInformation, getAllInformation
 } from '../utils/informationApi';
 import { uploadImageToCloudinary } from '../utils/imageApi';
 
@@ -189,7 +189,7 @@ const AdminInformation = () => {
                 socialLinks: updatedLinks
             };
 
-            await updateContractInformation(infoData._id, payload);
+            await updateContactInformation(infoData._id, payload);
             message.success("Cập nhật liên kết xã hội thành công!");
             fetchDetail();
         } catch (err) {
@@ -214,27 +214,27 @@ const AdminInformation = () => {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item name="title" label="Tiêu đề trang web (Slogan)" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                            <Form.Item name="title" label="Tiêu đề (Slogan)" rules={[{ required: true, whitespace: true, message: 'Bắt buộc!' }]}>
                                 <Input />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item name="email" label="Email liên hệ" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                            <Form.Item name="email" label="Email liên hệ" rules={[{ required: true, whitespace: true, message: 'Bắt buộc!' }]}>
                                 <Input />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item name="phone" label="Số điện thoại" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                            <Form.Item name="phone" label="Số điện thoại" rules={[{ required: true, whitespace: true, message: 'Bắt buộc!' }]}>
                                 <Input />
                             </Form.Item>
                         </Col>
                         <Col span={24}>
-                            <Form.Item name="address" label="Địa chỉ Map" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                            <Form.Item name="address" label="Địa chỉ" rules={[{ required: true, whitespace: true, message: 'Bắt buộc!' }]}>
                                 <Input />
                             </Form.Item>
                         </Col>
                         <Col span={24}>
-                            <Form.Item name="timeWork" label="Giờ làm việc (Mỗi dòng là một mục)" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                            <Form.Item name="timeWork" label="Giờ làm việc (Mỗi dòng là một mục)" rules={[{ required: true, whitespace: true, message: 'Bắt buộc!' }]}>
                                 <TextArea rows={4} placeholder="Ví dụ:\nThứ 2 - Thứ 6: 08:00 - 17:00\nThứ 7: 08:00 - 12:00" />
                             </Form.Item>
                         </Col>

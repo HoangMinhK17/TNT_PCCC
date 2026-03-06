@@ -94,7 +94,7 @@ const upadateImageInformation = async (req, res) => {
     }
 }
 
-const updateContractInformation = async (req, res) => {
+const updateContactInformation = async (req, res) => {
     try {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
@@ -111,4 +111,4 @@ const updateContractInformation = async (req, res) => {
     }
 }
 
-export { getInformation, getImageInformation, getContactInformation,getAllInformation, createInformation, updateInformation, upadateImageInformation, updateContractInformation };
+export { getInformation, getImageInformation, getContactInformation, getAllInformation, createInformation, updateInformation, upadateImageInformation, updateContactInformation };

@@ -1,6 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { getRecruitment } from '../utils/recruitmentApi';
+import { createContactRecruitment } from '../utils/contactRecruitmentApi';
+import { uploadCvToCloudinary } from '../utils/imageApi';
+import { Modal, Form, Input, Button, Upload, message } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 import '../styles/RecruitmentSection.css';
 import {
   FaMoneyBillWave, FaHeartbeat, FaGraduationCap, FaGift,
@@ -14,18 +18,79 @@ const RecruitmentSection = () => {
   const [error, setError] = useState(null);
   const [whyChooseCompany, setWhyChooseCompany] = useState([]);
 
+  const [applyModalVisible, setApplyModalVisible] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [form] = Form.useForm();
+  const [cvFile, setCvFile] = useState(null);
+
   useEffect(() => {
     const fetchWhyChooseCompany = async () => {
       try {
         const data = await getWhyChooseCompany();
         setWhyChooseCompany(data[0]);
-        console.log("data", data);
       } catch (error) {
         console.error("Error fetching why choose company:", error);
       }
     };
     fetchWhyChooseCompany();
   }, []);
+
+  const handleApplyClick = () => {
+    form.resetFields();
+    setCvFile(null);
+    setApplyModalVisible(true);
+  };
+
+  const handleApplySubmit = async (values) => {
+    try {
+      setSubmitting(true);
+      let cvUrl = null;
+
+      if (cvFile) {
+        cvUrl = await uploadCvToCloudinary(cvFile, "tnt_cv_uploads");
+      }
+
+      const payload = {
+        name: values.name,
+        phone: values.phone,
+        email: values.email,
+        address: values.address,
+        recruitmentId: selectedJob._id,
+        cv: cvUrl
+      };
+
+      const res = await createContactRecruitment(payload);
+      if (res?.message === "Liên hệ đã được gửi thành công!" || res?._id) { 
+         message.success('Ứng tuyển thành công! Cảm ơn bạn đã quan tâm.');
+         setApplyModalVisible(false);
+      } else if (res?.message) {
+         message.error(res.message);
+      } else {
+         message.success('Ứng tuyển thành công! Cảm ơn bạn đã quan tâm.');
+         setApplyModalVisible(false);
+      }
+    } catch (err) {
+      console.log(err);
+      message.error(err?.message || 'Có lỗi xảy ra khi nộp hồ sơ!');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const beforeUpload = (file) => {
+    const isPdf = file.type === 'application/pdf';
+    if (!isPdf) {
+      message.error('Chỉ hỗ trợ dãn định .PDF cho CV!');
+      return Upload.LIST_IGNORE;
+    }
+    const isLt5M = file.size / 1024 / 1024 <= 5;
+    if (!isLt5M) {
+      message.error('Kích thước file PDF phải nhỏ hơn 5MB!');
+      return Upload.LIST_IGNORE;
+    }
+    setCvFile(file);
+    return false;
+  };
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -196,7 +261,7 @@ const RecruitmentSection = () => {
                       </ul>
                     </div>
 
-                    <button className="btn-primary-apply">Ứng tuyển ngay</button>
+                    <button className="btn-primary-apply" onClick={handleApplyClick}>Ứng tuyển ngay</button>
                   </div>
                 ) : (
                   <div className="no-selection-placeholder">
@@ -220,7 +285,7 @@ const RecruitmentSection = () => {
             {whyChooseCompany?.benefits?.map((benefit, idx) => (
               <div key={idx} className="benefit-card-modern" data-aos="zoom-in" data-aos-delay={idx * 100}>
                 <div className="benefit-icon-wrapper">{
-                <img src={benefit?.icon} alt="" />
+                  <img src={benefit?.icon} alt="" />
                 }</div>
                 <h4>{benefit?.title}</h4>
                 <p>{benefit?.description}</p>
@@ -235,10 +300,47 @@ const RecruitmentSection = () => {
             <p>
               {whyChooseCompany?.whyChooseUs?.description}
             </p>
-            
+
           </div>
         </section>
       </div>
+
+      {/* Modal Ứng Tuyển */}
+      <Modal
+        title={`Ứng tuyển vị trí: ${selectedJob?.name}`}
+        open={applyModalVisible}
+        onCancel={() => setApplyModalVisible(false)}
+        footer={null}
+      >
+        <Form form={form} layout="vertical" onFinish={handleApplySubmit}>
+          <Form.Item name="name" label="Họ và tên" rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}>
+            <Input placeholder="Nhập họ và tên của bạn" />
+          </Form.Item>
+          <Form.Item name="phone" label="Số điện thoại" rules={[{ required: true, message: 'Vui lòng nhập số điện thoại' }]}>
+            <Input placeholder="Nhập số điện thoại" />
+          </Form.Item>
+          <Form.Item name="email" label="Email" rules={[
+            { required: true, message: 'Vui lòng nhập Email' },
+            { type: 'email', message: 'Email không hợp lệ' }
+          ]}>
+            <Input placeholder="Nhập địa chỉ Email" />
+          </Form.Item>
+          <Form.Item name="address" label="Địa chỉ hiện tại">
+            <Input.TextArea rows={2} placeholder="Nhập địa chỉ của bạn" />
+          </Form.Item>
+          <Form.Item label="CV Đính kèm (Bắt buộc PDF < 5MB)" required>
+            <Upload beforeUpload={beforeUpload} maxCount={1} accept=".pdf">
+              <Button icon={<UploadOutlined />}>Tải lên CV (PDF)</Button>
+            </Upload>
+            {cvFile && <span style={{ marginLeft: 10, color: 'blue' }}>{cvFile.name}</span>}
+          </Form.Item>
+          <Form.Item style={{ marginTop: 24, textAlign: 'right' }}>
+            <Button onClick={() => setApplyModalVisible(false)} style={{ marginRight: 8 }}>Hủy</Button>
+            <Button type="primary" htmlType="submit" loading={submitting}>Nộp Hồ Sơ</Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
     </section>
   );
 };

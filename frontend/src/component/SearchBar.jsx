@@ -8,6 +8,7 @@ const SearchBar = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
   const [imageInformation, setImageInformation] = useState([]);
+  const [name, setName] = useState('');
 
 useEffect(() => {
   const fetchImageInformation = async () => {
@@ -16,7 +17,9 @@ useEffect(() => {
 
       const obj = Array.isArray(res) ? res[0] : res; 
       const imgs = obj?.backgroundImage;
+      const name = obj?.name;
 
+      setName(name);
       setImageInformation(Array.isArray(imgs) ? imgs : []); 
     } catch (e) {
       console.error(e);
@@ -52,7 +55,7 @@ useEffect(() => {
       <div className="search-overlay"></div>
 
       <div className="search-container">
-        <h2>TNT Company - Chuyên Gia PCCC</h2>
+        <h2>{name}</h2>
         <form onSubmit={handleSearch} className="search-form">
           <input
             type="text"

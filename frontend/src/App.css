@@ -24,7 +24,7 @@ body {
 }
 
 .container {
-  max-width: 1440px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--padding);
 }
@@ -43,23 +43,11 @@ body {
 .section-title::after {
   content: '';
   display: block;
-  width: 400px;
+  width: 80px;
   height: 4px;
   background: var(--primary-color);
   margin: 15px auto 0;
   border-radius: 2px;
-}
-
-@media (max-width: 768px) {
-  .section-title {
-    font-size: 24px;
-    margin-bottom: 30px;
-  }
-
-  .section-title::after {
-    width: 60px;
-    /* Short line on mobile */
-  }
 }
 
 .fade-in {

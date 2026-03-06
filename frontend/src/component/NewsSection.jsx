@@ -21,7 +21,7 @@ const NewsSection = () => {
     fetchNews();
   }, []);
 
-  if (loading) return null; // Or a skeleton loader
+  if (loading) return null; 
 
   return (
     <section id="news" className="news-section">
@@ -29,7 +29,7 @@ const NewsSection = () => {
         <h2 className="section-title">Tin tức mới nhất</h2>
 
         <div className="news-grid">
-          {newsItems.slice(0, 4).map(newsItem => (
+          {newsItems.slice(0, 3).map(newsItem => (
 
             <article key={newsItem._id} className="news-card">
               <Link
