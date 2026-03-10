@@ -12,7 +12,7 @@ const Footer = () => {
       try {
         const response = await getInformation();
         console.log(response);
-        setInformation(Array.isArray(response) ? response[0] : response);
+        setInformation(Array.isArray(response) ? response[0] || {} : response || {});
       } catch (error) {
         console.error("Error fetching information:", error);
       }
@@ -24,9 +24,9 @@ const Footer = () => {
       <div className="container">
         <div className="footer-content">
           <div className="footer-section">
-            <h4 className="footer-title">{information.name}</h4>
+            <h4 className="footer-title">{information?.name}</h4>
             <p style={{ color: '#999', fontSize: '14px', marginBottom: '15px', lineHeight: '1.6' }}>
-              {information.title}
+              {information?.title}
             </p>
             <ul className="footer-list">
               <li><Link to="/about">Giới thiệu</Link></li>
@@ -59,15 +59,15 @@ const Footer = () => {
             <ul className="footer-list">
               <li className="contact-item">
                 <span className="icon"><FaMapMarkerAlt /></span>
-                <span>{information.address}</span>
+                <span>{information?.address}</span>
               </li>
               <li className="contact-item">
                 <span className="icon"><FaPhoneAlt /></span>
-                <span>{information.phone}</span>
+                <span>{information?.phone}</span>
               </li>
               <li className="contact-item">
                 <span className="icon"><FaEnvelope /></span>
-                <span>{information.email}</span>
+                <span>{information?.email}</span>
               </li>
 
             </ul>

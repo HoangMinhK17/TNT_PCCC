@@ -89,7 +89,7 @@ const CompanyIntro = () => {
       <div className="container">
         <div className="company-intro-content">
           <div className="company-text" data-aos="fade-up">
-            <h1 className="section-title"> {introduction.name}</h1>
+            <h1 className="section-title"> {introduction?.name}</h1>
             <div className="intro-item">
               <img src={introduction?.title?.titleIcon} alt="Icon 1" className="intro-icon" />
               <p className="company-description">

@@ -16,7 +16,7 @@ const ContactSection = () => {
     message: ''
   });
 
-  const address = information.address;
+  const address = information?.address || "";
   const mapSrc =
     "https://www.google.com/maps?q=" +
     encodeURIComponent(address) +
@@ -60,7 +60,7 @@ const ContactSection = () => {
       try {
         const response = await getInformation();
         console.log(response);
-        setInformation(Array.isArray(response) ? response[0] : response);
+        setInformation(Array.isArray(response) ? response[0] || {} : response || {});
       } catch (error) {
         console.error("Error fetching information:", error);
       }
