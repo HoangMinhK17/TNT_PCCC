@@ -1,0 +1,79 @@
+import Leader from "../models/Leader.js";
+
+export const getAllLeaders = async (req, res) => {
+    try {
+        const leaders = await Leader.find({ status: "active", isDeleted: false });
+        res.status(200).json(leaders);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export const getAllLeadersForManagement = async (req, res) => {
+    try {
+        if(req.user.role !== "admin") {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        const   page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        const leaders = await Leader.find({ isDeleted: false }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+        const total = await Leader.countDocuments({ isDeleted: false });
+        res.status(200).json({ leaders, totalPages: Math.ceil(total / limit), currentPage: page });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export const findLeaderByName = async (req, res) => {
+    try {
+        if(req.user.role !== "admin") {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        const leaders = await Leader.find({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+        const total = await Leader.countDocuments({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false });
+        res.status(200).json({ leaders, totalPages: Math.ceil(total / limit), currentPage: page });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export const createLeader = async (req, res) => {
+    try {
+        if(req.user.role !== "admin") {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        const leader = new Leader(req.body);
+        await leader.save();
+        res.status(201).json(leader);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export const updateLeader = async (req, res) => {
+    try {
+        if(req.user.role !== "admin") {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        const leader = await Leader.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.status(200).json(leader);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export const deleteLeader = async (req, res) => {
+    try {
+        if(req.user.role !== "admin") {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        const leader = await Leader.findByIdAndUpdate(req.params.id, { isDeleted: true });
+        res.status(200).json(leader);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}

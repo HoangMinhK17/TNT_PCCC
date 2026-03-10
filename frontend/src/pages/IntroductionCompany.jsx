@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import CompanyIntro from "../component/CompanyIntro";
 import VisionMission from "../component/VisionMission";
 import Achievements from "../component/Achievements";
+import LeadershipSection from "../component/LeadershipSection";
 import SEO from '../component/SEO';
 
 const IntroductionCompany = () => {
@@ -29,6 +30,7 @@ const IntroductionCompany = () => {
             <CompanyIntro />
             <VisionMission />
             <Achievements />
+            <LeadershipSection />
         </div>
     );
 }

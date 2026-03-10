@@ -35,7 +35,7 @@ const AdminSidebar = () => {
         { label: 'Tuyển dụng', path: '/admin/recruitment', icon: <FaUserTie /> },
         { label: 'Liên hệ', path: '/admin/contacts', icon: <FaEnvelope /> },
         { label: 'Đối tác', path: '/admin/partners', icon: <FaUserTie /> },
-        { label: 'Thông tin chung', path: '/admin/information', icon: <FaInfoCircle /> },
+        { label: 'Cấu hình hệ thống', path: '/admin/information', icon: <FaInfoCircle /> },
     ];
 
     const [information, setInformation] = useState(null);

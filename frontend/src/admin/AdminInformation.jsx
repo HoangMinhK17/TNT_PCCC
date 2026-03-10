@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Tabs, Button, Form, Input, Space, message, Typography, Upload, Image, Card, Row, Col, Divider
+    Tabs, Button, Form, Input, Space, message, Typography, Upload, Image, Card, Row, Col, Divider, Table, Modal, Select, Pagination, Tag
 } from 'antd';
-import { UploadOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { UploadOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
 
@@ -10,6 +10,7 @@ import {
     updateInformation, updateImageInformation, updateContactInformation, getAllInformation
 } from '../utils/informationApi';
 import { uploadImageToCloudinary } from '../utils/imageApi';
+import { getAllHeaderForManagement, updateHeader, findHeaderByName } from '../utils/headerApi';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -77,6 +78,77 @@ const AdminInformation = () => {
     const [formImg] = Form.useForm();
     const [formContact] = Form.useForm();
 
+    const [headerData, setHeaderData] = useState([]);
+    const [headerLoading, setHeaderLoading] = useState(false);
+    const [headerSearchText, setHeaderSearchText] = useState('');
+    const [headerPage, setHeaderPage] = useState(1);
+    const [headerTotal, setHeaderTotal] = useState(0);
+    const headerLimit = 5;
+    const [isHeaderModalVisible, setIsHeaderModalVisible] = useState(false);
+    const [editingHeader, setEditingHeader] = useState(null);
+    const [formHeader] = Form.useForm();
+    const [savingHeader, setSavingHeader] = useState(false);
+    const [searchTimeout, setSearchTimeout] = useState(null);
+
+    const fetchHeaders = async (page = 1, search = '') => {
+        setHeaderLoading(true);
+        try {
+            let res;
+            if (search.trim()) {
+                res = await findHeaderByName(search, page, headerLimit);
+            } else {
+                res = await getAllHeaderForManagement(page, headerLimit);
+            }
+            if (res && res.header) {
+                setHeaderData(res.header);
+                setHeaderTotal(res.total || 0);
+                setHeaderPage(res.currentPage || page);
+            }
+        } catch (error) {
+            message.error("Lỗi khi tải danh sách Header!");
+        } finally {
+            setHeaderLoading(false);
+        }
+    };
+
+    const handleHeaderSearch = (e) => {
+        const value = e.target.value;
+        setHeaderSearchText(value);
+        if (searchTimeout) clearTimeout(searchTimeout);
+        setSearchTimeout(setTimeout(() => {
+            fetchHeaders(1, value);
+        }, 500));
+    };
+
+    const handleHeaderPageChange = (page) => {
+        fetchHeaders(page, headerSearchText);
+    };
+
+    const openHeaderModal = (record) => {
+        setEditingHeader(record);
+        formHeader.setFieldsValue({
+            name_en: record.name_en,
+            name_vn: record.name_vn,
+            status: record.status
+        });
+        setIsHeaderModalVisible(true);
+    };
+
+    const handleUpdateHeader = async () => {
+        try {
+            const values = await formHeader.validateFields();
+            setSavingHeader(true);
+            await updateHeader(editingHeader._id, values);
+            message.success("Cập nhật Header thành công!");
+            setIsHeaderModalVisible(false);
+            fetchHeaders(headerPage, headerSearchText);
+        } catch (error) {
+            message.error("Cập nhật Header thất bại!");
+        } finally {
+            setSavingHeader(false);
+        }
+    };
+
     const fetchDetail = async () => {
         setLoading(true);
         try {
@@ -113,7 +185,10 @@ const AdminInformation = () => {
         }
     };
 
-    useEffect(() => { fetchDetail(); }, []);
+    useEffect(() => {
+        fetchDetail();
+        fetchHeaders(1, '');
+    }, []);
 
     const handleSaveGeneral = async () => {
         try {
@@ -200,6 +275,40 @@ const AdminInformation = () => {
     };
 
     if (loading) return <div style={{ padding: 50, textAlign: 'center' }}>Đang tải thông tin...</div>;
+
+    const headerColumns = [
+        {
+            title: 'Tiếng Anh (EN)',
+            dataIndex: 'name_en',
+            key: 'name_en',
+        },
+        {
+            title: 'Tiếng Việt (VN)',
+            dataIndex: 'name_vn',
+            key: 'name_vn',
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status) => (
+                <Tag color={status === 'active' ? 'green' : 'red'}>
+                    {status === 'active' ? 'Hoạt động' : 'Tạm ẩn'}
+                </Tag>
+            )
+        },
+        {
+            title: 'Hành động',
+            key: 'action',
+            render: (_, record) => (
+                <Space>
+                    <Button type="primary" ghost size="small" icon={<EditOutlined />} onClick={() => openHeaderModal(record)}>
+                        Sửa
+                    </Button>
+                </Space>
+            )
+        }
+    ];
 
     const items = [
         {
@@ -329,6 +438,65 @@ const AdminInformation = () => {
                         <Button type="primary" htmlType="submit" loading={savingContact}>Lưu Liên Kết</Button>
                     </Form.Item>
                 </Form>
+            )
+        },
+        {
+            key: '4',
+            label: 'Quản lý Header',
+            children: (
+                <div>
+                    <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
+                        <Input.Search
+                            placeholder="Tìm kiếm Header..."
+                            allowClear
+                            onChange={handleHeaderSearch}
+                            style={{ width: 300 }}
+                        />
+                    </div>
+                    <Table
+                        columns={headerColumns}
+                        dataSource={headerData}
+                        rowKey="_id"
+                        loading={headerLoading}
+                        pagination={false}
+                    />
+                    {headerTotal > 0 && (
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+                            <Pagination
+                                current={headerPage}
+                                total={headerTotal}
+                                pageSize={headerLimit}
+                                onChange={handleHeaderPageChange}
+                                showSizeChanger={false}
+                            />
+                        </div>
+                    )}
+
+                    <Modal
+                        title="Cập nhật Header"
+                        open={isHeaderModalVisible}
+                        onCancel={() => setIsHeaderModalVisible(false)}
+                        onOk={handleUpdateHeader}
+                        confirmLoading={savingHeader}
+                        okText="Lưu"
+                        cancelText="Hủy"
+                    >
+                        <Form form={formHeader} layout="vertical">
+                            <Form.Item name="name_en" label="Tên Tiếng Anh (EN)" rules={[{ required: true, message: 'Vui lòng nhập tên tiếng Anh!' }]}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item name="name_vn" label="Tên Tiếng Việt (VN)" rules={[{ required: true, message: 'Vui lòng nhập tên tiếng Việt!' }]}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item name="status" label="Trạng thái" rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}>
+                                <Select>
+                                    <Select.Option value="active">Hoạt động</Select.Option>
+                                    <Select.Option value="inactive">Tạm ẩn</Select.Option>
+                                </Select>
+                            </Form.Item>
+                        </Form>
+                    </Modal>
+                </div>
             )
         }
     ];

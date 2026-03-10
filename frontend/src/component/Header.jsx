@@ -7,6 +7,7 @@ import { getCategoryNews } from '../utils/categoryNewsApi';
 
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { getImageInformation } from '../utils/informationApi';
+import { getAllHeader } from '../utils/headerApi';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -15,6 +16,7 @@ const Header = () => {
     const [categories, setCategories] = useState([]);
     const [newsCategories, setNewsCategories] = useState([]);
     const [logo, setLogo] = useState([]);
+    const [headerTitles, setHeaderTitles] = useState([]);
 
     const languageGlobal = JSON.parse(localStorage.getItem("language")) || "vn";
     useEffect(() => {
@@ -46,6 +48,18 @@ const Header = () => {
         fetchCategories();
     }, []);
 
+    useEffect(() => {
+        const fetchHeaders = async () => {
+            try {
+                const data = await getAllHeader();
+                setHeaderTitles(data);
+            } catch (error) {
+                console.error("Error fetching headers:", error);
+            }
+        };
+        fetchHeaders();
+    }, []);
+
     const handleLanguageChange = (lang) => {
         i18n.changeLanguage(lang);
         localStorage.setItem("language", JSON.stringify(lang));
@@ -70,16 +84,28 @@ const Header = () => {
 
     const { t, i18n } = useTranslation();
 
-    const menuItems = [
-        { label: t("home"), path: '/' },
-        { label: t("about"), path: '/about' },
-        { label: t("products"), path: '/products', hasSubmenu: true },
-        { label: t("services"), path: '/services' },
-        { label: t("projects"), path: '/projects' },
-        { label: t("recruitment"), path: '/recruitment' },
-        { label: t("news"), path: '/news', hasSubmenu: true },
-        { label: t("contact"), path: '/contact' }
-    ];
+    const PATH_MAP = {
+        home: { path: '/', hasSubmenu: false, key: 'home' },
+        about: { path: '/about', hasSubmenu: false, key: 'about' },
+        products: { path: '/products', hasSubmenu: true, key: 'products' },
+        services: { path: '/services', hasSubmenu: false, key: 'services' },
+        projects: { path: '/projects', hasSubmenu: false, key: 'projects' },
+        recruitment: { path: '/recruitment', hasSubmenu: false, key: 'recruitment' },
+        news: { path: '/news', hasSubmenu: true, key: 'news' },
+        contact: { path: '/contact', hasSubmenu: false, key: 'contact' },
+        feedback: { path: '/feedback', hasSubmenu: false, key: 'feedback' },
+        management: { path: '/management', hasSubmenu: false, key: 'management' }
+    };
+
+    const menuItems = headerTitles.map(header => {
+        const enKey = header.key?.toLowerCase() || '';
+        const mapInfo = PATH_MAP[enKey] || { path: '/', hasSubmenu: false, key: enKey };
+        const label = languageGlobal === 'vn' ? header.name_vn : header.name_en;
+        return {
+            ...mapInfo,
+            label: label
+        };
+    });
 
     return (
         <header className="header">
@@ -113,7 +139,7 @@ const Header = () => {
                                     )}
                                 </div>
 
-                                {item.label === t("products") && (
+                                {item.key === 'products' && (
                                     <ul className={`dropdown ${activeSubmenu === index ? 'open' : ''}`}>
                                         {categories.map((category, idx) => (
                                             <li key={idx}>
@@ -127,7 +153,7 @@ const Header = () => {
                                         ))}
                                     </ul>
                                 )}
-                                {item.label === t("news") && (
+                                {item.key === 'news' && (
                                     <ul className={`dropdown ${activeSubmenu === index ? 'open' : ''}`}>
                                         {newsCategories.map((category, idx) => (
                                             <li key={idx}>
@@ -145,7 +171,7 @@ const Header = () => {
                         ))}
                     </ul>
                 </nav>
-                <div className="language-switcher">
+                {/* <div className="language-switcher">
                     <img
                         src="src/uploads/language/vietnam.png"
                         alt="VN"
@@ -159,7 +185,7 @@ const Header = () => {
                         onClick={() => handleLanguageChange('en')}
                     />
              
-                </div>
+                </div> */}
             </div>
         </header>
     );

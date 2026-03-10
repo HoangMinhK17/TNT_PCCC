@@ -9,7 +9,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 50px;
-    margin-bottom: 60px;
+    margin-bottom: 30px;
 }
 
 .contact-form {
@@ -197,7 +197,7 @@
 
 /* Map Section */
 .map-section {
-    margin-top: 60px;
+    margin-top: 30px;
 }
 
 .map-section h3 {

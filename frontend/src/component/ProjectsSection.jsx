@@ -10,7 +10,7 @@ const ProjectsSection = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const data = await getProjects(1, 10); // Lấy 10 dự án đầu tiên cho section
+        const data = await getProjects(1, 5); // Lấy 10 dự án đầu tiên cho section
         setProjectsList(data.projects);
       } catch (error) {
         console.error("Error fetching projects:", error);

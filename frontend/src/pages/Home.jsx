@@ -4,10 +4,11 @@ import CompanyIntro from '../component/CompanyIntro'
 import ServiceSection from '../component/ServiceSection'
 import ProjectsSection from '../component/ProjectsSection'
 import PartnersSection from '../component/PartnersSection'
+import TestimonialSection from '../component/TestimonialSection'
 import NewsSection from '../component/NewsSection'
 import RecruitmentSection from '../component/RecruitmentSection'
 import ContactSection from '../component/ContactSection'
-
+import LeadershipSection from '../component/LeadershipSection'
 const Home = () => {
     return (
         <>
@@ -18,6 +19,8 @@ const Home = () => {
             <ServiceSection />
             <ProjectsSection />
             <PartnersSection />
+            <LeadershipSection />
+            <TestimonialSection />
             <NewsSection />
             <ContactSection />
         </>

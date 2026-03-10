@@ -16,6 +16,8 @@ import whyChooseCompanyRouter from "./whyChooseCompanyRoute.js";
 import uploadRouter from "./uploadRoute.js";
 import contactRouter from "./contactRoute.js";
 import contactRecruitmentRouter from "./contactRecruitmentRoute.js";
+import headerRouter from "./headerRoute.js";
+import leaderRouter from "./leaderRoute.js";
 
 
 const router = express.Router();
@@ -70,6 +72,12 @@ router.use("/contact", contactRouter);
 
 //ContactRecruitment
 router.use("/contactRecruitment", contactRecruitmentRouter);
+
+//Header
+router.use("/header", headerRouter);
+
+//Leader
+router.use("/leader", leaderRouter);
 
 
 export default router;
