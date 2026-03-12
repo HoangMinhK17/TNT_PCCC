@@ -50,7 +50,7 @@ const ProductSection = () => {
                     {visibleProducts.slice(0, 4).map(product => (
                         <Link
                             key={product._id}
-                            to={`/products/${product._id}`}
+                            to={`/products/${product.slug}`}
                             style={{ textDecoration: "none", color: "inherit" }}
                         >
                             <div className="product-card">

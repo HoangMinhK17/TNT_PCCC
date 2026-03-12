@@ -18,6 +18,7 @@ import contactRouter from "./contactRoute.js";
 import contactRecruitmentRouter from "./contactRecruitmentRoute.js";
 import headerRouter from "./headerRoute.js";
 import leaderRouter from "./leaderRoute.js";
+import testimonialRouter from "./testimonialRoute.js";
 
 
 const router = express.Router();
@@ -78,6 +79,9 @@ router.use("/header", headerRouter);
 
 //Leader
 router.use("/leader", leaderRouter);
+
+//Testimonial
+router.use("/testimonial", testimonialRouter);
 
 
 export default router;

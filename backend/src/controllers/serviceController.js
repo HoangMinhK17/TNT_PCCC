@@ -118,7 +118,13 @@ const searchService = async (req, res) => {
 
 const getPublicServiceById = async (req, res) => {
     try {
-        const service = await Service.findOne({ _id: req.params.id, isDeleted: false });
+        const id = req.params.id;
+        const mongoose = await import('mongoose');
+        const query = mongoose.isValidObjectId(id) 
+            ? { $or: [{ _id: id }, { slug: id }], isDeleted: false }
+            : { slug: id, isDeleted: false };
+            
+        const service = await Service.findOne(query);
         if (!service) {
             return res.status(404).json({ message: "Service not found" });
         }

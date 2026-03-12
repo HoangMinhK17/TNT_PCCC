@@ -41,7 +41,7 @@ const Project = () => {
         "itemListElement": projectsData.projects.map((project, index) => ({
             "@type": "ListItem",
             "position": index + 1,
-            "url": `${window.location.origin}/projects/${project._id}`,
+            "url": `${window.location.origin}/projects/${project.slug}`,
             "name": project.name
         }))
     };
@@ -69,7 +69,7 @@ const Project = () => {
                                     projectsData.projects.map((project) => (
                                         <div key={project._id} className="project-card">
                                             <Link
-                                                to={`/projects/${project._id}`}
+                                                to={`/projects/${project.slug}`}
                                                 style={{ textDecoration: "none", color: "inherit", display: 'flex', flexDirection: 'column', height: '100%' }}
                                             >
                                                 <div className="project-image-wrapper">

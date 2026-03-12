@@ -4,6 +4,11 @@ import '../styles/Breadcrumbs.css';
 
 import { getPublicProducts } from '../utils/productApi.js';
 import { getNews } from '../utils/newsApi.js';
+import { getAllHeader } from '../utils/headerApi.js'; 
+import { getPublicServices } from '../utils/serviceApi.js';
+import { getProjects } from '../utils/projectApi.js';
+
+
 
 const Breadcrumbs = () => {
     const location = useLocation();
@@ -11,6 +16,10 @@ const Breadcrumbs = () => {
     const categoryParam = searchParams.get('category');
     const [products, setProducts] = useState([]);
     const [news, setNews] = useState([]);
+    const [headers, setHeaders] = useState([]);
+    const [services, setServices] = useState([])
+    const [projects, setProjects] = useState([])
+
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -25,15 +34,44 @@ const Breadcrumbs = () => {
         const fetchNews = async () => {
             try {
                 const response = await getNews();
-                console.log("data", response);
                 setNews(Array.isArray(response) ? response : []);
             } catch (error) {
                 console.error('Error fetching news:', error);
             }
         };
 
+        const fetchHeaders = async () => {
+            try {
+                const response = await getAllHeader();
+                setHeaders(Array.isArray(response) ? response : []);
+            } catch (error) {
+                console.error('Error fetching headers:', error);
+            }
+        };
+
+        const fetchServices = async () => {
+            try {
+                const response = await getPublicServices();
+                setServices(Array.isArray(response) ? response : (response?.services || []));
+            } catch (error) {
+                console.error('Error fetching services:', error);
+            }
+        };
+
+        const fetchProjects = async () => {
+            try {
+                const response = await getProjects();
+                setProjects(Array.isArray(response) ? response : (response?.projects || []));
+            } catch (error) {
+                console.error('Error fetching projects:', error);
+            }
+        };
+
         fetchProducts();
         fetchNews();
+        fetchHeaders();
+        fetchServices();
+        fetchProjects();
     }, []);
 
     if (location.pathname === '/') {
@@ -45,23 +83,21 @@ const Breadcrumbs = () => {
 
     breadcrumbs.push({ name: 'Trang chủ', path: '/' });
 
-    const routeNameMap = {
-        'about': 'Giới thiệu',
-        'projects': 'Dự án',
-        'contact': 'Liên hệ',
-        'services': 'Dịch vụ',
-        'recruitment': 'Tuyển dụng',
-        'partner': 'Đối tác'
+    const getName = (path) => {
+        const matchingHeader = headers.find(h => {
+             if (!h || !h.key) return false;
+             return h.key === path;
+        });
+        
+        return matchingHeader ? matchingHeader.name_vn : path.charAt(0).toUpperCase() + path.slice(1);
     };
 
-    const getName = (path) => routeNameMap[path] || path.charAt(0).toUpperCase() + path.slice(1);
-
     if (pathnames[0] === 'products') {
-        breadcrumbs.push({ name: 'Sản phẩm', path: '/products' });
-
+        const productHeaderName = getName('products'); 
+        breadcrumbs.push({ name: productHeaderName === 'Products' ? 'Sản phẩm' : productHeaderName, path: '/products' });
         if (pathnames[1]) {
             const id = pathnames[1];
-            const product = products.find(p => p._id === id || p.id === id);
+            const product = products.find(p => p._id === id || p.id === id || p.slug === id);
             if (product) {
                 if (product.categoryId && product.categoryId.name) {
                     breadcrumbs.push({
@@ -80,11 +116,12 @@ const Breadcrumbs = () => {
         }
     }
     else if (pathnames[0] === 'news') {
-        breadcrumbs.push({ name: 'Tin tức', path: '/news' });
+        const newsHeaderName = getName('news'); 
+        breadcrumbs.push({ name: newsHeaderName === 'News' ? 'Tin tức' : newsHeaderName, path: '/news' });
 
         if (pathnames[1]) {
             const id = pathnames[1];
-            const newsItem = news.find(n => n._id === id || n.id === id);
+            const newsItem = news.find(n => n._id === id || n.id === id || n.slug === id);
             if (newsItem) {
                 if (newsItem.categoryNewsId && newsItem.categoryNewsId.name) {
                     breadcrumbs.push({
@@ -97,6 +134,52 @@ const Breadcrumbs = () => {
                 breadcrumbs.push({ name: newsItem.name || newsItem.title, path: null });
             } else {
                 breadcrumbs.push({ name: 'Chi tiết tin tức', path: null });
+            }
+        } else if (categoryParam && categoryParam !== 'Tất cả') {
+            breadcrumbs.push({ name: categoryParam, path: null });
+        }
+    }
+    else if (pathnames[0] === 'services') {
+        const serviceHeaderName = getName('services');
+        breadcrumbs.push({ name: serviceHeaderName === 'Services' ? 'Dịch vụ' : serviceHeaderName, path: '/services' });
+
+        if (pathnames[1]) {
+            const id = pathnames[1];
+            const service = services.find(s => s._id === id || s.id === id || s.slug === id);
+            if (service) {
+                if (service.name) {
+                    breadcrumbs.push({
+                        name: service.name,
+                        path: `/services?category=${encodeURIComponent(service._id)}&categoryId=${service._id}`
+                    });
+                } else if (categoryParam && categoryParam !== 'Tất cả') {
+                    breadcrumbs.push({ name: categoryParam, path: null });
+                }
+            } else {
+                breadcrumbs.push({ name: 'Chi tiết dịch vụ', path: null });
+            }
+        } else if (categoryParam && categoryParam !== 'Tất cả') {
+            breadcrumbs.push({ name: categoryParam, path: null });
+        }
+    }
+    else if (pathnames[0] === 'projects') {
+        const projectHeaderName = getName('projects');
+        breadcrumbs.push({ name: projectHeaderName === 'Projects' ? 'Dự án' : projectHeaderName, path: '/projects' });
+
+        if (pathnames[1]) {
+            const id = pathnames[1];
+            const project = projects.find(p => p._id === id || p.id === id || p.slug === id);
+            if (project) {
+                if (project.name) {
+                    breadcrumbs.push({
+                        name: project.name,
+                        path: `/projects?category=${encodeURIComponent(project._id)}&categoryId=${project._id}`
+                    });
+                } else if (categoryParam && categoryParam !== 'Tất cả') {
+                    breadcrumbs.push({ name: categoryParam, path: null });
+                }
+            } else {
+                breadcrumbs.push({ name: 'Chi tiết dự án', path: null });
             }
         } else if (categoryParam && categoryParam !== 'Tất cả') {
             breadcrumbs.push({ name: categoryParam, path: null });

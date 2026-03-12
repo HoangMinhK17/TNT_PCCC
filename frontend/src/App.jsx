@@ -31,6 +31,7 @@ import AdminRecruitment from './admin/AdminRecruitment'
 import AdminPartner from './admin/AdminPartner'
 import AdminContact from './admin/AdminContact'
 import AdminInformation from './admin/AdminInformation'
+import AdminTestimonial from './admin/AdminTestimonial'
 import ProtectedRoute from './component/ProtectedRoute'
 import api from './utils/api'
 import { getImageInformation } from './utils/informationApi'
@@ -174,6 +175,14 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminContact />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/testimonial"
+          element={
+            <ProtectedRoute>
+              <AdminTestimonial />
             </ProtectedRoute>
           }
         />

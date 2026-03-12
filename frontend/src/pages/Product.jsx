@@ -117,7 +117,7 @@ const Product = () => {
     "itemListElement": products.slice(0, 10).map((product, index) => ({
       "@type": "ListItem",
       "position": index + 1,
-      "url": `${window.location.origin}/products/${product._id}`,
+      "url": `${window.location.origin}/products/${product.slug}`,
       "name": product.name,
       "image": product.image[0]
     }))
@@ -234,7 +234,7 @@ const Product = () => {
                       {previewProducts.map(product => (
                         <Link
                           key={product._id}
-                          to={`/products/${product._id}`}
+                          to={`/products/${product.slug}`}
                           style={{ textDecoration: "none", color: "inherit" }}
                         >
                           <article className="product-card">
@@ -255,7 +255,7 @@ const Product = () => {
                     products.map(product => (
                       <Link
                         key={product._id}
-                        to={`/products/${product._id}`}
+                        to={`/products/${product.slug}`}
                         style={{ textDecoration: "none", color: "inherit" }}
                       >
                         <article className="product-card">

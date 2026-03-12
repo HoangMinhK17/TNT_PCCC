@@ -74,7 +74,17 @@ export const deleteNews = async (req, res) => {
 
 export const getNewsById = async (req, res) => {
     try {
-        const news = await News.findOne({ _id: req.params.id, status: "active", isDeleted: false }).select("name date title image description content slug ").populate("categoryNewsId", "name");
+        const id = req.params.id;
+        const mongoose = await import('mongoose');
+        const query = mongoose.isValidObjectId(id) 
+            ? { $or: [{ _id: id }, { slug: id }], status: "active", isDeleted: false }
+            : { slug: id, status: "active", isDeleted: false };
+            
+        const news = await News.findOne(query).select("name date title image description content slug ").populate("categoryNewsId", "name");
+        
+        if (!news) {
+            return res.status(404).json({ message: "News not found" });
+        }
         res.status(200).json(news);
     } catch (error) {
         res.status(500).json({ message: error.message });

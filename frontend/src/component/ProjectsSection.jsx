@@ -33,7 +33,7 @@ const ProjectsSection = () => {
             {[...projectsList, ...projectsList].map((project, index) => (
               <div key={index} className="project-card carousel-card">
                 <Link
-                  to={`/projects/${project._id}`}>
+                  to={`/projects/${project.slug}`}>
                   <div className="project-image-wrapper">
                     <img src={project.image} alt={project.name} className="project-image" />
                   </div>

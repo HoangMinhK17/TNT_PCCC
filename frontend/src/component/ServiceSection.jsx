@@ -56,13 +56,13 @@ const ServiceSection = () => {
           ) : services.length > 0 ? (
             services.map(service => (
               <div key={service._id} className="service-card">
-                <Link to={`/services/${service._id}`} className="service-image-link">
+                <Link to={`/services/${service.slug}`} className="service-image-link">
                   <div className="service-image-wrapper">
                     <img src={service.image} alt={service.title} className="service-image" />
                   </div>
                 </Link>
                 <h3 className="service-title">
-                  <Link to={`/services/${service._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <Link to={`/services/${service.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                     {service.name}
                   </Link>
                 </h3>

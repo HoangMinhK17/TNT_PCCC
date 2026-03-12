@@ -69,7 +69,14 @@ const deleteProduct = async (req, res) => {
 
 const getPublicProductById = async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id).where({ isDeleted: false }).populate({ path: "categoryId", select: "name slug" });
+        const id = req.params.id;
+        const mongoose = await import('mongoose');
+        const query = mongoose.isValidObjectId(id) 
+            ? { $or: [{ _id: id }, { slug: id }], isDeleted: false }
+            : { slug: id, isDeleted: false };
+            
+        const product = await Product.findOne(query).populate({ path: "categoryId", select: "name slug" });
+        
         if (!product) {
             return res.status(404).json({ message: "Product not found" });
         }

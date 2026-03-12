@@ -11,7 +11,12 @@ import {
     FaConciergeBell,
     FaSignOutAlt,
     FaHome,
-    FaInfoCircle
+    FaInfoCircle,
+    FaTimes,
+    FaStar,
+    FaCogs,
+    FaHandshake,
+    FaBuilding
 } from 'react-icons/fa';
 import { getImageInformation } from '../utils/informationApi';
 
@@ -34,8 +39,9 @@ const AdminSidebar = () => {
         { label: 'Tin tức', path: '/admin/news', icon: <FaNewspaper /> },
         { label: 'Tuyển dụng', path: '/admin/recruitment', icon: <FaUserTie /> },
         { label: 'Liên hệ', path: '/admin/contacts', icon: <FaEnvelope /> },
-        { label: 'Đối tác', path: '/admin/partners', icon: <FaUserTie /> },
-        { label: 'Cấu hình hệ thống', path: '/admin/information', icon: <FaInfoCircle /> },
+        { label: 'Đối tác', path: '/admin/partners', icon: <FaHandshake /> },
+        { label: 'Đánh giá', path: '/admin/testimonial', icon: <FaStar /> },
+        { label: 'Cấu hình hệ thống', path: '/admin/information', icon: <FaCogs /> },
     ];
 
     const [information, setInformation] = useState(null);

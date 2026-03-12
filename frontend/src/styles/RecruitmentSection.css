@@ -278,7 +278,7 @@
 
 .benefits-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
     gap: 25px;
 }
 
@@ -389,25 +389,34 @@
 
 @media (max-width: 1024px) {
     .recruitment-content {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+        max-width: 100%;
     }
 
     .jobs-sidebar {
         order: 2;
+        width: 100%;
+        min-width: 0;
     }
 
     .job-details-view {
         order: 1;
+        width: 100%;
+        min-width: 0;
     }
 
     .jobs-container {
         flex-direction: row;
         overflow-x: auto;
         padding-bottom: 15px;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
     }
 
     .job-card-item {
         min-width: 280px;
+        scroll-snap-align: start;
     }
 }
 

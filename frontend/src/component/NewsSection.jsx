@@ -33,7 +33,7 @@ const NewsSection = () => {
 
             <article key={newsItem._id} className="news-card">
               <Link
-                to={`/news/${newsItem._id}`}
+                to={`/news/${newsItem.slug}`}
                 style={{ textDecoration: 'none', color: 'inherit' }}
               >
                 <div className="news-image-wrapper">

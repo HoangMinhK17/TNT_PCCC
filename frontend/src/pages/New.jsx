@@ -116,7 +116,7 @@ const New = () => {
         "itemListElement": currentItems.map((item, index) => ({
             "@type": "ListItem",
             "position": index + 1,
-            "url": `${window.location.origin}/news/${item._id}`,
+            "url": `${window.location.origin}/news/${item.slug}`,
             "name": item.title
         }))
     };
@@ -215,7 +215,7 @@ const New = () => {
                                             {previewItems.map(item => (
                                                 <Link
                                                     key={item._id}
-                                                    to={`/news/${item._id}`}
+                                                    to={`/news/${item.slug}`}
                                                     style={{ textDecoration: "none", color: "inherit" }}
                                                 >
                                                     <article className="product-card">
@@ -243,7 +243,7 @@ const New = () => {
                                         currentItems.map(item => (
                                             <Link
                                                 key={item._id}
-                                                to={`/news/${item._id}`}
+                                                to={`/news/${item.slug}`}
                                                 style={{ textDecoration: "none", color: "inherit" }}
                                             >
                                                 <article className="product-card">
