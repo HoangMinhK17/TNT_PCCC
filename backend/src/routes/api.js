@@ -19,8 +19,8 @@ import contactRecruitmentRouter from "./contactRecruitmentRoute.js";
 import headerRouter from "./headerRoute.js";
 import leaderRouter from "./leaderRoute.js";
 import testimonialRouter from "./testimonialRoute.js";
-
-
+import themeHeaderRouter from "./themeHeaderRoute.js";
+import themeFooterRouter from "./themeFooterRoute.js";
 const router = express.Router();
 //User
 router.use("/user", userRouter);
@@ -82,6 +82,12 @@ router.use("/leader", leaderRouter);
 
 //Testimonial
 router.use("/testimonial", testimonialRouter);
+
+//ThemeHeader
+router.use("/themeHeader", themeHeaderRouter);
+
+//ThemeFooter
+router.use("/themeFooter", themeFooterRouter);
 
 
 export default router;

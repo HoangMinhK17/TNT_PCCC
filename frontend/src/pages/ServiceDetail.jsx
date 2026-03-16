@@ -44,11 +44,13 @@ const ServiceDetail = () => {
         );
     }
 
+    const plainDescription = service.description ? service.description.replace(/<[^>]*>?/gm, "") : "";
+
     const structuredData = {
         "@context": "https://schema.org",
         "@type": "Service",
         "name": service.title,
-        "description": service.description,
+        "description": plainDescription,
         "image": service.image,
         "provider": { "@type": "Organization", "name": "TNT PCCC" }
     };
@@ -57,7 +59,7 @@ const ServiceDetail = () => {
         <div className="service-detail-page">
             <SEO
                 title={service.title}
-                description={service.description}
+                description={plainDescription}
                 keywords={`${service.title}, dịch vụ pccc, TNT PCCC`}
                 image={service.image}
                 url={`/services/${service._id}`}
@@ -80,7 +82,7 @@ const ServiceDetail = () => {
                         <p className="detail-description">{service.title}</p>
                         <hr />
                         <h3>Chi tiết</h3>
-                        <p className="detail-text">{service.description}</p>
+                        <div className="detail-text" dangerouslySetInnerHTML={{ __html: service.description }}></div>
 
                         <div className="cta-box">
                             <p>Bạn quan tâm đến dịch vụ này?</p>

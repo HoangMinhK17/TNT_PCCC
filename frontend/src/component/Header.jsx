@@ -8,6 +8,7 @@ import { getCategoryNews } from '../utils/categoryNewsApi';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { getImageInformation } from '../utils/informationApi';
 import { getAllHeader } from '../utils/headerApi';
+import { getThemeHeader } from '../utils/themeHeaderApi';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -17,6 +18,7 @@ const Header = () => {
     const [newsCategories, setNewsCategories] = useState([]);
     const [logo, setLogo] = useState([]);
     const [headerTitles, setHeaderTitles] = useState([]);
+    const [themeConfig, setThemeConfig] = useState(null);
 
     const languageGlobal = JSON.parse(localStorage.getItem("language")) || "vn";
     useEffect(() => {
@@ -57,7 +59,16 @@ const Header = () => {
                 console.error("Error fetching headers:", error);
             }
         };
+        const fetchTheme = async () => {
+            try {
+                const data = await getThemeHeader();
+                setThemeConfig(data);
+            } catch (error) {
+                console.error("Error fetching theme header:", error);
+            }
+        };
         fetchHeaders();
+        fetchTheme();
     }, []);
 
     const handleLanguageChange = (lang) => {
@@ -108,7 +119,12 @@ const Header = () => {
     });
 
     return (
-        <header className="header">
+        <header 
+            className="header" 
+            style={{ 
+                backgroundColor: themeConfig?.background_color || '#ffffff',
+            }}
+        >
 
             <div className="header-container">
                 <Link to="/" className="logo" onClick={closeMenu}>
@@ -128,7 +144,16 @@ const Header = () => {
                         {menuItems.map((item, index) => (
                             <li key={index} className={`menu-item ${activeSubmenu === index ? 'submenu-open' : ''}`}>
                                 <div className="menu-link-wrapper">
-                                    <Link to={item.path} onClick={closeMenu}>{item.label}</Link>
+                                    <Link 
+                                        to={item.path} 
+                                        onClick={closeMenu}
+                                        style={{ 
+                                            color: themeConfig?.text_color || '#333333', 
+                                            fontSize: themeConfig?.text_size || '16px' 
+                                        }}
+                                    >
+                                        {item.label}
+                                    </Link>
                                     {item.hasSubmenu && (
                                         <span
                                             className="submenu-toggle"

@@ -35,11 +35,13 @@ const ProjectDetail = () => {
         );
     }
 
+    const plainDescription = project.description ? project.description.replace(/<[^>]*>?/gm, "") : "";
+
     const structuredData = {
         "@context": "https://schema.org",
         "@type": "CreativeWork",
         "name": project.name,
-        "description": project.description,
+        "description": plainDescription,
         "image": project.image,
         "dateCreated": project.year,
         "author": { "@type": "Organization", "name": "TNT PCCC" }
@@ -49,7 +51,7 @@ const ProjectDetail = () => {
         <section className="project-detail-section">
             <SEO
                 title={project.name}
-                description={project.description}
+                description={plainDescription}
                 keywords={`${project.name}, dự án pccc, ${project.category}, TNT PCCC`}
                 image={project.image}
                 url={`/projects/${project.id}`}
@@ -69,7 +71,7 @@ const ProjectDetail = () => {
                         <div className="project-detail-content">
                             <p className="project-detail-description">{project.title}</p>
                             <h3>Chi tiết dự án</h3>
-                            <p>{project.description}</p>
+                            <div dangerouslySetInnerHTML={{ __html: project.description }}></div>
                         </div>
 
                         <Link to="/contact" className="contact-btn">Liên hệ tư vấn dự án tương tự</Link>

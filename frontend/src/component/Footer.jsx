@@ -3,29 +3,68 @@ import { Link } from 'react-router-dom';
 import '../styles/Footer.css';
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
 import { getInformation } from '../utils/informationApi';
+import { getThemeFooter } from '../utils/themeFooterApi';
 
 const Footer = () => {
   const [information, setInformation] = useState({});
+  const [themeFooter, setThemeFooter] = useState(null);
 
   useEffect(() => {
     const fetchInformation = async () => {
       try {
         const response = await getInformation();
-        console.log(response);
         setInformation(Array.isArray(response) ? response[0] || {} : response || {});
       } catch (error) {
         console.error("Error fetching information:", error);
       }
     };
+    const fetchTheme = async () => {
+      try {
+        const response = await getThemeFooter();
+        setThemeFooter(response);
+      } catch (error) {
+        console.error("Error fetching theme footer:", error);
+      }
+    };
     fetchInformation();
+    fetchTheme();
   }, []);
   return (
-    <footer className="footer">
-      <div className="container">
+    <>
+      {themeFooter && (
+        <style>
+          {`
+            .footer {
+              background-color: ${themeFooter.background_color || '#000'} !important;
+            }
+            .footer .footer-title {
+              color: ${themeFooter.text_title?.text_color || '#fff'} !important;
+              font-size: ${themeFooter.text_title?.text_size || '18px'} !important;
+            }
+            .footer .footer-section p {
+              color: ${themeFooter.text_p?.text_color || '#999'} !important;
+              font-size: ${themeFooter.text_p?.text_size || '14px'} !important;
+            }
+            .footer .footer-list li a {
+              color: ${themeFooter.text_a?.text_color || '#fff'} !important;
+              font-size: ${themeFooter.text_a?.text_size || '14px'} !important;
+            }
+            .footer .contact-item .icon {
+              color: ${themeFooter.icon_color || '#fff'} !important;
+            }
+            .footer .contact-item span:not(.icon) {
+              color: ${themeFooter.contact_text?.text_color || '#fff'} !important;
+              font-size: ${themeFooter.contact_text?.text_size || '14px'} !important;
+            }
+          `}
+        </style>
+      )}
+      <footer className="footer">
+        <div className="container">
         <div className="footer-content">
           <div className="footer-section">
             <h4 className="footer-title">{information?.name}</h4>
-            <p style={{ color: '#999', fontSize: '14px', marginBottom: '15px', lineHeight: '1.6' }}>
+            <p style={{ marginBottom: '15px', lineHeight: '1.6' }}>
               {information?.title}
             </p>
             <ul className="footer-list">
@@ -76,18 +115,10 @@ const Footer = () => {
 
         <div className="footer-divider"></div>
 
-        <div className="footer-bottom">
-          <p className="copyright">
-            &copy; 2026 TNT Company. Tất cả các quyền được bảo lưu.
-          </p>
-          <ul className="footer-links">
-            <li><a href="#">Điều khoản sử dụng</a></li>
-            <li><a href="#">Chính sách bảo mật</a></li>
-            <li><a href="#">Chính sách cookies</a></li>
-          </ul>
-        </div>
+
       </div>
-    </footer>
+      </footer>
+    </>
   );
 };
 

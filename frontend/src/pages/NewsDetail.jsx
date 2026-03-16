@@ -42,11 +42,13 @@ const NewsDetail = () => {
         );
     }
 
+    const plainDescription = newsItem.description ? newsItem.description.replace(/<[^>]*>?/gm, "") : "";
+
     const structuredData = {
         "@context": "https://schema.org",
         "@type": "NewsArticle",
         "headline": newsItem.title,
-        "description": newsItem.description,
+        "description": plainDescription,
         "image": newsItem.image,
         "datePublished": newsItem.date,
         "author": { "@type": "Organization", "name": "TNT PCCC" }
@@ -56,7 +58,7 @@ const NewsDetail = () => {
         <section className="news-detail-section">
             <SEO
                 title={newsItem.title}
-                description={newsItem.description}
+                description={plainDescription}
                 keywords={`${newsItem.categoryNewsId?.name || ''}, tin tức pccc, TNT PCCC`}
                 image={newsItem.image}
                 url={`/news/${newsItem._id}`}
@@ -76,7 +78,7 @@ const NewsDetail = () => {
 
                         <div className="news-detail-content">
                             <p className="news-detail-description" style={{ fontWeight: '600', marginBottom: '10px' }}>{newsItem.title}</p>
-                            <p className="news-detail-short-desc" style={{ color: '#555', marginBottom: '20px', fontStyle: 'italic' }}>{newsItem.description}</p>
+                            <div className="news-detail-short-desc" style={{ color: '#555', marginBottom: '20px', fontStyle: 'italic' }} dangerouslySetInnerHTML={{ __html: newsItem.description }}></div>
                             <div className="news-detail-body" dangerouslySetInnerHTML={{ __html: newsItem.content }}>
                             </div>
                         </div>

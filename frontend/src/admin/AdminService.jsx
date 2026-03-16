@@ -6,6 +6,7 @@ import {
 import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
+import CustomQuillEditor from '../component/CustomQuillEditor';
 
 import {
     createService, updateService, deleteService, getServicesForManage, searchService
@@ -247,8 +248,8 @@ const TabService = () => {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="description" label="Mô tả" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
-                        <TextArea rows={4} />
+                    <Form.Item name="description" label="Mô tả" rules={[{ required: true, message: 'Vui lòng không để trống!' }]}>
+                        <CustomQuillEditor folder="tnt_service" style={{ height: '250px', marginBottom: '50px' }} />
                     </Form.Item>
 
                     <Form.Item name="image" label="Hình ảnh">
@@ -425,8 +426,8 @@ const TabWhyChooseService = () => {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="description" label="Mô tả chi tiết" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
-                        <TextArea rows={4} />
+                    <Form.Item name="description" label="Mô tả chi tiết" rules={[{ required: true, message: 'Vui lòng không để trống!' }]}>
+                        <CustomQuillEditor folder="tnt_why_choose_service" style={{ height: '250px', marginBottom: '50px' }} />
                     </Form.Item>
 
                     <Form.Item name="status" label="Trạng thái">

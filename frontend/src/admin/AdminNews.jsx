@@ -7,6 +7,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
 import dayjs from 'dayjs';
+import CustomQuillEditor from '../component/CustomQuillEditor';
 
 import {
     getCategoryNewsForManage, createCategoryNews, updateCategoryNews, deleteCategoryNews, searchCategoryNews, getCategoryNews
@@ -84,6 +85,7 @@ const TabCategoryNews = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [pageSize, setPageSize] = useState(5);
     const [form] = Form.useForm();
+
 
     const fetchData = async (page = 1, limit = 5) => {
         setLoading(true);
@@ -263,6 +265,13 @@ const TabNews = () => {
     const [pageSize, setPageSize] = useState(5);
     const [filterCategory, setFilterCategory] = useState(null);
     const [form] = Form.useForm();
+    const currentCategoryId = Form.useWatch('categoryNewsId', form);
+
+    const getFolder = React.useMemo(() => {
+        const cate = categories.find(c => c._id === currentCategoryId);
+        return cate ? `tnt_news/${cate.slug}` : "tnt_news";
+    }, [currentCategoryId, categories]);
+
 
     const fetchData = async (page = 1, limit = 5) => {
         setLoading(true);
@@ -354,6 +363,7 @@ const TabNews = () => {
             const values = await form.validateFields();
             const cate = categories.find(c => c._id === values.categoryNewsId);
             const folder = cate ? `tnt_news/${cate.slug}` : "tnt_news";
+
 
             const imageItems = Array.isArray(values.images) ? values.images : [];
             const imageUrls = await Promise.all(imageItems.map(value => resolveImageUrl(value, folder)));
@@ -508,7 +518,7 @@ const TabNews = () => {
                     <div style={{ display: 'flex', gap: 16 }}>
                         <Form.Item name="categoryNewsId" label="Danh mục" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
                             <Select placeholder="Chọn danh mục">
-                                {categories.map(c => <Select.Option key={c._id} value={c._id} disabled={c.status === "inactive"}>{c.name } </Select.Option>)}
+                                {categories.map(c => <Select.Option key={c._id} value={c._id} disabled={c.status === "inactive"}>{c.name} </Select.Option>)}
                             </Select>
                         </Form.Item>
                         <Form.Item name="date" label="Ngày đăng" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
@@ -526,8 +536,12 @@ const TabNews = () => {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name="description" label="Mô tả " rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
-                        <TextArea rows={3} />
+                    <Form.Item
+                        name="description"
+                        label="Mô tả"
+                        rules={[{ required: true, message: 'Vui lòng không để trống!' }]}
+                    >
+                        <CustomQuillEditor folder={getFolder} style={{ height: '250px', marginBottom: '50px' }} />
                     </Form.Item>
 
                     <Form.Item name="images" label="Hình ảnh">

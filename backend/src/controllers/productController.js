@@ -125,7 +125,8 @@ const getProductByCategoryIdForManage = async (req, res) => {
             .populate({ path: "categoryId", select: "name slug" })
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({ createdAt: -1 });
 
         res.status(200).json({
             products,
@@ -155,7 +156,8 @@ const getProductByName = async (req, res) => {
         const products = await Product.find(filter)
             .populate({ path: "categoryId", select: "name slug" })
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({ createdAt: -1 });
 
         res.status(200).json({
             products,
@@ -186,7 +188,8 @@ const getProductByNameForManage = async (req, res) => {
         const products = await Product.find(filter)
             .populate({ path: "categoryId", select: "name slug" })
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({ createdAt: -1 });
 
         res.status(200).json({
             products,

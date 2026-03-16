@@ -748,7 +748,7 @@ const AdminRecruitment = () => {
                             },
                             {
                                 key: '3',
-                                label: 'Quản lý Ứng viên',
+                                label: 'Quản lý ứng viên',
                                 children: <TabContactRecruitment />,
                             }
                         ]}

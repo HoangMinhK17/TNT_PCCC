@@ -39,7 +39,8 @@ const getServicesForManage = async (req, res) => {
         const services = await Service.find(filter)
             .select("name image slug title status description")
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({ createdAt: -1 });
 
         res.status(200).json({
             services,
@@ -104,7 +105,8 @@ const searchService = async (req, res) => {
         const services = await Service.find({ name: { $regex: name, $options: "i" }, isDeleted: false })
             .select("name image slug title status")
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({ createdAt: -1 });
         res.status(200).json({
             services,
             totalPages: Math.ceil(totalServices / limit),

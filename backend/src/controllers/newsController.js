@@ -3,8 +3,9 @@ import News from "../models/News.js";
 export const getNews = async (req, res) => {
     try {
         const news = await News.find({ status: "active", isDeleted: false }).sort({ createdAt: -1 }).
-            select("name date title image slug ").populate("categoryNewsId", "name");
-        res.status(200).json(news);
+            select("name date title image slug ").populate({ path: "categoryNewsId", select: "name", match: { status: "active" } });
+        const filteredNews = news.filter(item => item.categoryNewsId !== null);
+        res.status(200).json(filteredNews);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

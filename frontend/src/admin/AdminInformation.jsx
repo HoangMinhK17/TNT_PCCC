@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Tabs, Button, Form, Input, Space, message, Typography, Upload, Image, Card, Row, Col, Divider, Table, Modal, Select, Pagination, Tag
+    Tabs, Button, Form, Input, Space, message, Typography, Upload, Image, Card, Row, Col, Divider, Table, Modal, Select, Pagination, Tag, ColorPicker
 } from 'antd';
 import { UploadOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
@@ -11,6 +11,8 @@ import {
 } from '../utils/informationApi';
 import { uploadImageToCloudinary } from '../utils/imageApi';
 import { getAllHeaderForManagement, updateHeader, findHeaderByName } from '../utils/headerApi';
+import { getThemeHeader, updateThemeHeader } from '../utils/themeHeaderApi';
+import { getThemeFooter, updateThemeFooter } from '../utils/themeFooterApi';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -90,6 +92,16 @@ const AdminInformation = () => {
     const [savingHeader, setSavingHeader] = useState(false);
     const [searchTimeout, setSearchTimeout] = useState(null);
 
+    const [themeHeaderData, setThemeHeaderData] = useState(null);
+    const [loadingThemeHeader, setLoadingThemeHeader] = useState(false);
+    const [savingThemeHeader, setSavingThemeHeader] = useState(false);
+    const [formThemeHeader] = Form.useForm();
+
+    const [themeFooterData, setThemeFooterData] = useState(null);
+    const [loadingThemeFooter, setLoadingThemeFooter] = useState(false);
+    const [savingThemeFooter, setSavingThemeFooter] = useState(false);
+    const [formThemeFooter] = Form.useForm();
+
     const fetchHeaders = async (page = 1, search = '') => {
         setHeaderLoading(true);
         try {
@@ -156,8 +168,6 @@ const AdminInformation = () => {
             const data = Array.isArray(res) ? res[0] : res;
             if (data) {
                 setInfoData(data);
-
-                // Set forms
                 formGen.setFieldsValue({
                     name: data.name,
                     title: data.title,
@@ -170,7 +180,7 @@ const AdminInformation = () => {
                 formImg.setFieldsValue({
                     logo: data.logo ? [data.logo] : [],
                     favicon: data.favicon ? [data.favicon] : [],
-                    backgroundImage: data.backgroundImage || [] // Array of strings
+                    backgroundImage: data.backgroundImage || [] 
                 });
 
                 formContact.resetFields();
@@ -185,9 +195,56 @@ const AdminInformation = () => {
         }
     };
 
+    const fetchThemeHeader = async () => {
+        setLoadingThemeHeader(true);
+        try {
+            const res = await getThemeHeader();
+            if (res) {
+                setThemeHeaderData(res);
+                formThemeHeader.setFieldsValue({
+                    background_color: res.background_color,
+                    text_color: res.text_color,
+                    text_size: res.text_size
+                });
+            }
+        } catch (error) {
+            message.error("Lỗi khi tải cấu hình Theme Header!");
+        } finally {
+            setLoadingThemeHeader(false);
+        }
+    };
+
+    const fetchThemeFooter = async () => {
+        setLoadingThemeFooter(true);
+        try {
+            const res = await getThemeFooter();
+            if (res) {
+                setThemeFooterData(res);
+                formThemeFooter.setFieldsValue({
+                    background_color: res.background_color,
+                    icon_color: res.icon_color,
+                    text_title_color: res.text_title?.text_color,
+                    text_title_size: res.text_title?.text_size,
+                    text_p_color: res.text_p?.text_color,
+                    text_p_size: res.text_p?.text_size,
+                    text_a_color: res.text_a?.text_color,
+                    text_a_size: res.text_a?.text_size,
+                    contact_text_color: res.contact_text?.text_color,
+                    contact_text_size: res.contact_text?.text_size,
+                });
+            }
+        } catch (error) {
+            message.error("Lỗi khi tải cấu hình Theme Footer!");
+        } finally {
+            setLoadingThemeFooter(false);
+        }
+    };
+
     useEffect(() => {
         fetchDetail();
         fetchHeaders(1, '');
+        fetchThemeHeader();
+        fetchThemeFooter();
     }, []);
 
     const handleSaveGeneral = async () => {
@@ -208,6 +265,46 @@ const AdminInformation = () => {
             message.error("Cập nhật thất bại!");
         } finally {
             setSavingGen(false);
+        }
+    };
+
+    const handleSaveThemeHeader = async () => {
+        try {
+            if (!themeHeaderData) return message.warning("Không tìm thấy ID dữ liệu Theme Header!");
+            setSavingThemeHeader(true);
+            const values = await formThemeHeader.validateFields();
+            await updateThemeHeader(themeHeaderData._id, values);
+            message.success("Cập nhật Theme Header thành công!");
+            fetchThemeHeader();
+        } catch (err) {
+            message.error("Cập nhật Theme Header thất bại!");
+        } finally {
+            setSavingThemeHeader(false);
+        }
+    };
+
+    const handleSaveThemeFooter = async () => {
+        try {
+            if (!themeFooterData) return message.warning("Không tìm thấy ID dữ liệu Theme Footer!");
+            setSavingThemeFooter(true);
+            const values = await formThemeFooter.validateFields();
+            
+            const payload = {
+                background_color: values.background_color,
+                icon_color: values.icon_color,
+                text_title: { text_color: values.text_title_color, text_size: values.text_title_size },
+                text_p: { text_color: values.text_p_color, text_size: values.text_p_size },
+                text_a: { text_color: values.text_a_color, text_size: values.text_a_size },
+                contact_text: { text_color: values.contact_text_color, text_size: values.contact_text_size },
+            };
+
+            await updateThemeFooter(themeFooterData._id, payload);
+            message.success("Cập nhật Theme Footer thành công!");
+            fetchThemeFooter();
+        } catch (err) {
+            message.error("Cập nhật Theme Footer thất bại!");
+        } finally {
+            setSavingThemeFooter(false);
         }
     };
 
@@ -496,6 +593,146 @@ const AdminInformation = () => {
                             </Form.Item>
                         </Form>
                     </Modal>
+                </div>
+            )
+        },
+        {
+            key: '5',
+            label: 'Cấu Hình Theme (Header & Footer)',
+            children: (
+                <div>
+                    <Title level={4} style={{ color: '#1A237E' }}>CẤU HÌNH HEADER</Title>
+                    <Form form={formThemeHeader} layout="vertical" onFinish={handleSaveThemeHeader}>
+                        {loadingThemeHeader ? (
+                            <div style={{ padding: 20, textAlign: 'center' }}>Đang tải cấu hình Header...</div>
+                        ) : (
+                            <>
+                                <Row gutter={16}>
+                                    <Col span={8}>
+                                        <Form.Item 
+                                            name="background_color" 
+                                            label="Màu nền (Background Color)" 
+                                            rules={[{ required: true, message: 'Bắt buộc!' }]}
+                                            getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}
+                                        >
+                                            <ColorPicker format="hex" showText />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={8}>
+                                        <Form.Item 
+                                            name="text_color" 
+                                            label="Màu chữ (Text Color)" 
+                                            rules={[{ required: true, message: 'Bắt buộc!' }]}
+                                            getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}
+                                        >
+                                            <ColorPicker format="hex" showText />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={8}>
+                                        <Form.Item name="text_size" label="Cỡ chữ (Text Size)" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                                            <Select placeholder="Chọn cỡ chữ">
+                                                <Select.Option value="12px">12px (Nhỏ)</Select.Option>
+                                                <Select.Option value="14px">14px (Thường)</Select.Option>
+                                                <Select.Option value="16px">16px (Vừa)</Select.Option>
+                                                <Select.Option value="18px">18px (Lớn)</Select.Option>
+                                                <Select.Option value="20px">20px (Rất lớn)</Select.Option>
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                                <Form.Item>
+                                    <Button type="primary" htmlType="submit" loading={savingThemeHeader}>Lưu Cấu Hình Header</Button>
+                                </Form.Item>
+                            </>
+                        )}
+                    </Form>
+
+                    <Divider />
+                    
+                    <Title level={4} style={{ color: '#1A237E' }}>CẤU HÌNH FOOTER</Title>
+                    <Form form={formThemeFooter} layout="vertical" onFinish={handleSaveThemeFooter}>
+                        {loadingThemeFooter ? (
+                            <div style={{ padding: 20, textAlign: 'center' }}>Đang tải cấu hình Footer...</div>
+                        ) : (
+                            <>
+                                <Row gutter={16}>
+                                    <Col span={8}>
+                                        <Form.Item 
+                                            name="background_color" 
+                                            label="Màu nền (Background Color)" 
+                                            rules={[{ required: true, message: 'Bắt buộc!' }]}
+                                            getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}
+                                        >
+                                            <ColorPicker format="hex" showText />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={8}>
+                                        <Form.Item 
+                                            name="icon_color" 
+                                            label="Màu sắc Icon (Icon Color)" 
+                                            rules={[{ required: true, message: 'Bắt buộc!' }]}
+                                            getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}
+                                        >
+                                            <ColorPicker format="hex" showText />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                                
+                                <Divider dashed orientation="left">Màu & Kích thước Chữ Footer</Divider>
+                                
+                                <Row gutter={16}>
+                                    {/* Tiêu đề */}
+                                    <Col span={6}>
+                                        <Card size="small" title="Tiêu đề Cột (Title)" bordered={false} style={{ background: '#fafafa' }}>
+                                            <Form.Item name="text_title_color" label="Màu chữ" rules={[{ required: true }]} getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}>
+                                                <ColorPicker format="hex" showText />
+                                            </Form.Item>
+                                            <Form.Item name="text_title_size" label="Cỡ chữ" rules={[{ required: true }]}>
+                                                <Select placeholder="Cỡ chữ"><Select.Option value="14px">14px</Select.Option><Select.Option value="16px">16px</Select.Option><Select.Option value="18px">18px</Select.Option><Select.Option value="20px">20px</Select.Option><Select.Option value="24px">24px</Select.Option></Select>
+                                            </Form.Item>
+                                        </Card>
+                                    </Col>
+                                    {/* Đoạn văn */}
+                                    <Col span={6}>
+                                        <Card size="small" title="Đoạn văn (Paragraph)" bordered={false} style={{ background: '#fafafa' }}>
+                                            <Form.Item name="text_p_color" label="Màu chữ" rules={[{ required: true }]} getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}>
+                                                <ColorPicker format="hex" showText />
+                                            </Form.Item>
+                                            <Form.Item name="text_p_size" label="Cỡ chữ" rules={[{ required: true }]}>
+                                                <Select placeholder="Cỡ chữ"><Select.Option value="12px">12px</Select.Option><Select.Option value="14px">14px</Select.Option><Select.Option value="16px">16px</Select.Option><Select.Option value="18px">18px</Select.Option></Select>
+                                            </Form.Item>
+                                        </Card>
+                                    </Col>
+                                    {/* Link ẩn */}
+                                    <Col span={6}>
+                                        <Card size="small" title="Đường dẫn (Links)" bordered={false} style={{ background: '#fafafa' }}>
+                                            <Form.Item name="text_a_color" label="Màu chữ" rules={[{ required: true }]} getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}>
+                                                <ColorPicker format="hex" showText />
+                                            </Form.Item>
+                                            <Form.Item name="text_a_size" label="Cỡ chữ" rules={[{ required: true }]}>
+                                                <Select placeholder="Cỡ chữ"><Select.Option value="12px">12px</Select.Option><Select.Option value="14px">14px</Select.Option><Select.Option value="16px">16px</Select.Option><Select.Option value="18px">18px</Select.Option></Select>
+                                            </Form.Item>
+                                        </Card>
+                                    </Col>
+                                    {/* Liên hệ */}
+                                    <Col span={6}>
+                                        <Card size="small" title="Thông tin Liên hệ" bordered={false} style={{ background: '#fafafa' }}>
+                                            <Form.Item name="contact_text_color" label="Màu chữ" rules={[{ required: true }]} getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}>
+                                                <ColorPicker format="hex" showText />
+                                            </Form.Item>
+                                            <Form.Item name="contact_text_size" label="Cỡ chữ" rules={[{ required: true }]}>
+                                                <Select placeholder="Cỡ chữ"><Select.Option value="12px">12px</Select.Option><Select.Option value="14px">14px</Select.Option><Select.Option value="16px">16px</Select.Option><Select.Option value="18px">18px</Select.Option></Select>
+                                            </Form.Item>
+                                        </Card>
+                                    </Col>
+                                </Row>
+
+                                <Form.Item style={{ marginTop: 24 }}>
+                                    <Button type="primary" htmlType="submit" loading={savingThemeFooter}>Lưu Cấu Hình Footer</Button>
+                                </Form.Item>
+                            </>
+                        )}
+                    </Form>
                 </div>
             )
         }

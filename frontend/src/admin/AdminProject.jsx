@@ -7,6 +7,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
 import dayjs from 'dayjs';
+import CustomQuillEditor from '../component/CustomQuillEditor';
 
 import {
     createProject, updateProject, deleteProject, getProjectsForManage, getProjectByName
@@ -61,6 +62,7 @@ const MultiCloudinaryUpload = ({ value = [], onChange, maxCount = 1 }) => {
         </Space>
     );
 };
+
 
 const AdminProject = () => {
     const [data, setData] = useState([]);
@@ -253,8 +255,8 @@ const AdminProject = () => {
                                 <Input />
                             </Form.Item>
 
-                            <Form.Item name="description" label="Mô tả" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
-                                <TextArea rows={4} />
+                            <Form.Item name="description" label="Mô tả" rules={[{ required: true, message: 'Vui lòng không để trống!' }]}>
+                                <CustomQuillEditor folder="tnt_project" style={{ height: '250px', marginBottom: '50px' }} />
                             </Form.Item>
 
                             <Form.Item name="images" label="Hình ảnh">

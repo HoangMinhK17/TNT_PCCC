@@ -48,3 +48,12 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
+/* Edit Quill Image constraints */
+.detail-text img,
+.news-detail-body img,
+.news-detail-short-desc img,
+.project-detail-content img {
+  max-width: 100%;
+  height: auto;
+}
