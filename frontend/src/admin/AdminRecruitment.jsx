@@ -70,7 +70,7 @@ const TabRecruitment = () => {
     const [saving, setSaving] = useState(false);
     const [searchText, setSearchText] = useState('');
     const [form] = Form.useForm();
-    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 6, total: 0 });
 
     const fetchData = async (page = pagination.current, limit = pagination.pageSize, search = searchText) => {
         setLoading(true);
@@ -87,7 +87,7 @@ const TabRecruitment = () => {
             } else {
                 setData([]);
             }
-            setPagination({ current: res.currentPage || page, pageSize: limit, total: res.total || 0 });
+            setPagination({ current: res.currentPage || page, pageSize: limit, total: res.totalRecruiments || res.total || 0 });
         } catch { message.error('Lấy dữ liệu tuyển dụng thất bại!'); }
         finally { setLoading(false); }
     };
@@ -504,7 +504,7 @@ const TabContactRecruitment = () => {
     const [searchText, setSearchText] = useState('');
     const [statusFilter, setStatusFilter] = useState(null);
     const [form] = Form.useForm();
-    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 6, total: 0 });
 
     const fetchData = async (page = pagination.current, limit = pagination.pageSize, search = searchText, status = statusFilter) => {
         setLoading(true);
@@ -690,17 +690,23 @@ const TabContactRecruitment = () => {
                             {currentRecord.cv ? (
                                 <div>
                                     <a href={currentRecord.cv} target="_blank" rel="noopener noreferrer">
-                                        Mở CV ở tab mới
+                                        Tải CV về máy
                                     </a>
 
                                     <div style={{ marginTop: 12, border: '1px solid #ddd', borderRadius: 8, overflow: 'hidden' }}>
-                                        <iframe
-                                            src={currentRecord.cv}
-                                            title="CV PDF"
-                                            width="100%"
-                                            height="500px"
-                                            style={{ border: 'none' }}
-                                        />
+                                        {currentRecord.cv.match(/\.(jpeg|jpg|gif|png)$/i) ? (
+                                            <div style={{ textAlign: 'center', backgroundColor: '#f5f5f5', padding: '10px' }}>
+                                                <Image src={currentRecord.cv} alt="CV" style={{ width: '100%', height: '500px', objectFit: 'contain' }} />
+                                            </div>
+                                        ) : (
+                                            <iframe
+                                                src={currentRecord.cv.endsWith('.pdf') ? currentRecord.cv : `https://docs.google.com/gview?url=${encodeURIComponent(currentRecord.cv)}&embedded=true`}
+                                                title="CV Viewer"
+                                                width="100%"
+                                                height="400px"
+                                                style={{ border: 'none' }}
+                                            />
+                                        )}
                                     </div>
                                 </div>
                             ) : (

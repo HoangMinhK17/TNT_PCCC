@@ -12,7 +12,6 @@ import '../styles/Dashboard.css';
 import {
     getAllIntroduction,
     updateIntroductionCompany,
-    deleteIntroductionCompany,
     getMissionVision,
     updateMissionVision,
     getCoreValues,
@@ -39,7 +38,6 @@ const { TextArea } = Input;
 const resolveImageUrl = async (value) => {
     if (!value) return '';
     if (typeof value === 'string') return value;
-    // là File object → upload thật
     return await uploadImageToCloudinary(value, "tnt_introduct");
 };
 
@@ -47,7 +45,7 @@ const resolveImageUrl = async (value) => {
 // value: string URL (ảnh cũ) hoặc File object (ảnh mới chưa upload)
 // onChange: hàm antd Form truyền vào để cập nhật giá trị form
 const CloudinaryUpload = ({ value, onChange }) => {
-    // Tạo preview URL cục bộ nếu value là File
+    // Tạo preview URL cục bộ nếu value là File 
     const previewSrc = value instanceof File
         ? URL.createObjectURL(value)
         : (typeof value === 'string' ? value : null);
@@ -84,8 +82,7 @@ const CloudinaryUpload = ({ value, onChange }) => {
     );
 };
 
-// ───────────── UPLOAD NHIỀU ẢNH (tối đa maxCount) ──────────────────
-// value: array chứa mỗi phần tử là string URL HOẶC File object
+
 const MultiCloudinaryUpload = ({ value = [], onChange, maxCount = 2 }) => {
     const items = Array.isArray(value) ? value : (value ? [value] : []);
 
@@ -159,7 +156,7 @@ const TabIntroduct = () => {
                 'title.titleIcon': record.title?.titleIcon || '',
                 'description.descriptionName': record.description?.descriptionName,
                 'description.descriptionIcon': record.description?.descriptionIcon || '',
-                images: record.image || [],  // mảng URL ảnh cũ
+                images: record.image || [],  
             });
         }
         setModalVisible(true);
@@ -193,13 +190,7 @@ const TabIntroduct = () => {
         } finally { setSaving(false); }
     };
 
-    const handleDelete = async (id) => {
-        try {
-            await deleteIntroductionCompany(id);
-            message.success('Xóa thành công!');
-            fetchData();
-        } catch { message.error('Xóa thất bại!'); }
-    };
+
 
     const columns = [
         { title: 'Tên công ty', dataIndex: 'name', key: 'name' },
@@ -277,7 +268,7 @@ const TabIntroduct = () => {
                         <Input />
                     </Form.Item>
                     <Form.Item name="title.titleName" label="Tiêu đề" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
-                        <Input />
+                        <TextArea rows={4} />
                     </Form.Item>
                     <Form.Item name="title.titleIcon" label="Icon tiêu đề (upload ảnh)">
                         <CloudinaryUpload />

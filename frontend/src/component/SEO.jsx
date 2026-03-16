@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
 import { Helmet } from 'react-helmet-async';
+import { getAllIntroduction } from '../utils/introductApi';
 
 const SEO = ({ title, description, keywords, image, url, type = 'website', schema }) => {
-    const siteTitle = 'TNT PCCC - Thiết bị PCCC & Cứu Hộ ';
-    const defaultDescription = 'Chuyên cung cấp thiết bị phòng cháy chữa cháy, hệ thống báo cháy, và bảo hộ lao động uy tín, chất lượng.';
-    const defaultKeywords = 'pccc, thiết bị chữa cháy, báo cháy, bảo hộ lao động, TNT Project';
-    const defaultImage = '/assets/logo.png'; 
-    const siteUrl = 'https://tnt-pccc.com'; 
+    const [introduction, setIntroduction] = useState(null);
+    useEffect(() => {
+        const fetchIntroduction = async () => {
+            const res = await getAllIntroduction();
+            setIntroduction(Array.isArray(res) ? (res[0] ?? null) : res);
+        };
+        fetchIntroduction();
+    }, []);
+    const siteTitle = introduction?.name || '';
+    const defaultDescription = introduction?.description?.descriptionName || '';
+    const defaultKeywords = introduction?.title?.titleName || '';
+    const defaultImage = introduction?.image[0] || '';
+    const siteUrl = introduction?.url || '';
 
     const metaTitle = title ? `${title} | ${siteTitle}` : siteTitle;
     const metaDescription = description || defaultDescription;

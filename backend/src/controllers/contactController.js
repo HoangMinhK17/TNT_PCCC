@@ -9,7 +9,11 @@ const getContactsForManage = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
         const total = await Contact.countDocuments({ isDeleted: false });
-        const contacts = await Contact.find({ isDeleted: false }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+        const contacts = await Contact.find({ isDeleted: false })
+            .populate("productId", "name slug")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
         res.status(200).json({ contacts, total, totalPage: Math.ceil(total / limit), currentPage: page });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -21,7 +25,7 @@ const getContactById = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const contact = await Contact.findById(req.params.id);
+        const contact = await Contact.findById(req.params.id).populate("productId", "name slug");
         if (!contact) {
             return res.status(404).json({ message: "Contact not found" });
         }
@@ -81,7 +85,11 @@ const findContactByNameOrPhone = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
         const total = await Contact.countDocuments({ $or: [{ name: { $regex: search, $options: "i" } }, { phone: { $regex: search, $options: "i" } }], isDeleted: false });
-        const contacts = await Contact.find({ $or: [{ name: { $regex: search, $options: "i" } }, { phone: { $regex: search, $options: "i" } }], isDeleted: false }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+        const contacts = await Contact.find({ $or: [{ name: { $regex: search, $options: "i" } }, { phone: { $regex: search, $options: "i" } }], isDeleted: false })
+            .populate("productId", "name slug")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
         res.status(200).json({ contacts, total, totalPage: Math.ceil(total / limit), currentPage: page });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -97,7 +105,11 @@ const filterByStatus = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
         const total = await Contact.countDocuments({ status: req.body.status, isDeleted: false });
-        const contacts = await Contact.find({ status: req.body.status, isDeleted: false }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+        const contacts = await Contact.find({ status: req.body.status, isDeleted: false })
+            .populate("productId", "name slug")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
         res.status(200).json({ contacts, total, totalPage: Math.ceil(total / limit), currentPage: page });
     } catch (error) {
         res.status(500).json({ message: error.message });

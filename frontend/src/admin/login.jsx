@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "../styles/Login.css";
 import { loginUser } from "../utils/userApi";
+import { getImageInformation } from "../utils/informationApi";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -19,6 +20,20 @@ const Login = () => {
             [id]: value
         }));
     };
+
+    const [information, setInformation] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await getImageInformation();
+                setInformation(Array.isArray(data) ? data[0] : data);
+            } catch (error) {
+                console.error('Error fetching information:', error);
+            }
+        };
+        fetchData();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -45,7 +60,7 @@ const Login = () => {
         <div className="login-container">
             <div className="login-card">
                 <Link to="/">
-                    <img src="/src/uploads/tnt.jpg" alt="TNT Logo" className="login-logo" />
+                    <img src={information?.logo} alt="TNT Logo" className="login-logo" />
                 </Link>
                 <h2>Đăng nhập Admin</h2>
 

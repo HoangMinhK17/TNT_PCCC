@@ -17,7 +17,7 @@ const LeadershipSection = () => {
 
   return (
     <section className="leadership-section">
-      <div className="container">
+      <div className="container" data-aos="fade-up">
         <h2 className="section-title">Lãnh Đạo Công Ty</h2>
         <p className="section-subtitle">Đội ngũ ban lãnh đạo giàu kinh nghiệm, tận tâm và chuyên nghiệp</p>
         

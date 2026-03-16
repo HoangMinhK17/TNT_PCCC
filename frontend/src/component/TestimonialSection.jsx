@@ -27,7 +27,7 @@ const TestimonialSection = () => {
 
   return (
     <section className="testimonial-section">
-      <div className="container">
+      <div className="container" data-aos="fade-up">
         <h2 className="section-title">Khách Hàng Nói Gì Về Chúng Tôi</h2>
         <p className="section-subtitle">Niềm tin của khách hàng là thước đo thành công của {getInfor[0]?.name}</p>
         

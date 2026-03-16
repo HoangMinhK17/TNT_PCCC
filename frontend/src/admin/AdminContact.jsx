@@ -27,7 +27,7 @@ const AdminContact = () => {
     const [statusFilter, setStatusFilter] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(8);
     const [form] = Form.useForm();
 
     const fetchData = async (page = 1, limit = 10) => {
@@ -153,6 +153,10 @@ const AdminContact = () => {
         { title: 'Email', dataIndex: 'email', key: 'email' },
         { title: 'SĐT', dataIndex: 'phone', key: 'phone' },
         {
+            title: 'Sản phẩm', key: 'product',
+            render: (_, record) => record.productId?.name ? <Tag color="cyan">{record.productId.name}</Tag> : <Tag color="gray">Không có</Tag>
+        },
+        {
             title: 'Ngày gửi', dataIndex: 'createdAt', key: 'createdAt',
             render: (date) => dayjs(date).format('DD/MM/YYYY HH:mm')
         },
@@ -243,8 +247,7 @@ const AdminContact = () => {
                             </Form.Item>
                         </Form>
                     </Modal>
-
-                    {/* View Modal */}
+                    
                     <Modal title="Chi tiết liên hệ" open={viewModalVisible}
                         onCancel={() => setViewModalVisible(false)} footer={<Button onClick={() => setViewModalVisible(false)}>Đóng</Button>} width={700}>
                         {currentRecord && (
@@ -254,6 +257,11 @@ const AdminContact = () => {
                                 <Descriptions.Item label="Số điện thoại">{currentRecord.phone}</Descriptions.Item>
                                 <Descriptions.Item label="Ngày gửi">{dayjs(currentRecord.createdAt).format('DD/MM/YYYY HH:mm')}</Descriptions.Item>
                                 <Descriptions.Item label="Trạng thái">{renderStatus(currentRecord.status)}</Descriptions.Item>
+                                {currentRecord.productId && (
+                                    <Descriptions.Item label="Sản phẩm quan tâm" >
+                                        <span style={{ color: '#e8aa0dff' }}>{currentRecord.productId.name}</span>
+                                    </Descriptions.Item>
+                                )}
                                 <Descriptions.Item label="Tiêu đề">{currentRecord.title}</Descriptions.Item>
                                 <Descriptions.Item label="Nội dung gửi"><div style={{ whiteSpace: 'pre-wrap' }}>{currentRecord.message}</div></Descriptions.Item>
                                 {currentRecord.status !== 'pending' && (

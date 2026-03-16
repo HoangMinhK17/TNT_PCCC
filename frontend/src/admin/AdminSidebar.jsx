@@ -42,6 +42,7 @@ const AdminSidebar = () => {
         { label: 'Đối tác', path: '/admin/partners', icon: <FaHandshake /> },
         { label: 'Đánh giá', path: '/admin/testimonial', icon: <FaStar /> },
         { label: 'Cấu hình hệ thống', path: '/admin/information', icon: <FaCogs /> },
+        
     ];
 
     const [information, setInformation] = useState(null);
@@ -62,7 +63,7 @@ const AdminSidebar = () => {
         <aside className="admin-sidebar">
             <div className="admin-sidebar-header">
                 <img src={information?.logo} alt="TNT Logo" className="admin-logo" />
-                <h4>{information?.name}</h4>
+                <h4>FMS Website Builder - {information?.name}</h4>
             </div>
 
             <ul className="admin-sidebar-menu">

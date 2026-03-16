@@ -164,7 +164,7 @@ const AdminProject = () => {
 
     const columns = [
         { title: 'Tên dự án', dataIndex: 'name', key: 'name', width: '25%' },
-        { title: 'Mô tả', dataIndex: 'description', key: 'description' },
+        { title: 'Mô tả', dataIndex: 'description', key: 'description', render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} /> },
         {
             title: 'Ngày dự án', dataIndex: 'date', key: 'date',
             render: (date) => date ? dayjs(date).format('DD/MM/YYYY') : '---'

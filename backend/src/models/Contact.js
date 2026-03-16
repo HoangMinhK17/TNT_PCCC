@@ -39,8 +39,12 @@ const contactSchema = new mongoose.Schema({
     isDeleted: {
         type: Boolean,
         default: false
-    }
-    
+    },
+    productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+        default: null
+    } 
 },
 {
     timestamps: true

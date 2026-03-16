@@ -681,7 +681,6 @@ const AdminInformation = () => {
                                 <Divider dashed orientation="left">Màu & Kích thước Chữ Footer</Divider>
                                 
                                 <Row gutter={16}>
-                                    {/* Tiêu đề */}
                                     <Col span={6}>
                                         <Card size="small" title="Tiêu đề Cột (Title)" bordered={false} style={{ background: '#fafafa' }}>
                                             <Form.Item name="text_title_color" label="Màu chữ" rules={[{ required: true }]} getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}>
@@ -692,7 +691,6 @@ const AdminInformation = () => {
                                             </Form.Item>
                                         </Card>
                                     </Col>
-                                    {/* Đoạn văn */}
                                     <Col span={6}>
                                         <Card size="small" title="Đoạn văn (Paragraph)" bordered={false} style={{ background: '#fafafa' }}>
                                             <Form.Item name="text_p_color" label="Màu chữ" rules={[{ required: true }]} getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}>
@@ -703,7 +701,6 @@ const AdminInformation = () => {
                                             </Form.Item>
                                         </Card>
                                     </Col>
-                                    {/* Link ẩn */}
                                     <Col span={6}>
                                         <Card size="small" title="Đường dẫn (Links)" bordered={false} style={{ background: '#fafafa' }}>
                                             <Form.Item name="text_a_color" label="Màu chữ" rules={[{ required: true }]} getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}>
@@ -714,7 +711,6 @@ const AdminInformation = () => {
                                             </Form.Item>
                                         </Card>
                                     </Col>
-                                    {/* Liên hệ */}
                                     <Col span={6}>
                                         <Card size="small" title="Thông tin Liên hệ" bordered={false} style={{ background: '#fafafa' }}>
                                             <Form.Item name="contact_text_color" label="Màu chữ" rules={[{ required: true }]} getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}>

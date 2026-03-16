@@ -59,7 +59,7 @@ useEffect(() => {
         <form onSubmit={handleSearch} className="search-form">
           <input
             type="text"
-            placeholder="Tìm kiếm sản phẩm, dịch vụ..."
+            placeholder="Tìm kiếm sản phẩm..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"

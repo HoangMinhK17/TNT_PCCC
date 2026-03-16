@@ -3,7 +3,7 @@ import Product from "../models/Product.js";
 const getPublicProducts = async (req, res) => {
     try {
         const products = await Product.find({ isDeleted: false, status: "active" }).sort({ createdAt: -1 })
-            .select("name title  image slug status")
+            .select("name title image slug status")
             .populate({ path: "categoryId", select: "name slug status", match: { status: "active" } });
 
         const filteredProducts = products.filter(p => p.categoryId !== null);

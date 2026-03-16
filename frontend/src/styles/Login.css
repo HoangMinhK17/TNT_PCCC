@@ -11,7 +11,7 @@
     background: var(--white, #ffffff);
     width: 100%;
     max-width: 400px;
-    padding: 40px;
+    padding: 0 40px 40px 40px;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     text-align: center;
@@ -32,7 +32,7 @@
 
 .login-logo {
     width: 120px;
-    margin-bottom: 10px;
+    height: auto;
 }
 
 .login-card h2 {

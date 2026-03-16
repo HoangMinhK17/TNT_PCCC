@@ -25,7 +25,8 @@ export const getNewsForManage = async (req, res) => {
         res.status(200).json({
             news,
             totalPages: Math.ceil(totalNews / limit),
-            currentPage: page
+            currentPage: page,
+            totalNews
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

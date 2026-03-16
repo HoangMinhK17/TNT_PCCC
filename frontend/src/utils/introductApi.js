@@ -33,14 +33,6 @@ export const updateIntroductionCompany = async (id, data) => {
     return response.data;
 };
 
-export const deleteIntroductionCompany = async (id) => {
-    const token = localStorage.getItem("token");
-    const response = await api.delete(`/introduct/delete-introduct-company/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-};
-
 export const updateMissionVision = async (id, data) => {
     const token = localStorage.getItem("token");
     const response = await api.put(`/introduct/update-mission-vision/${id}`, data, {

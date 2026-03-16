@@ -22,7 +22,7 @@ const PartnersSection = () => {
 
   return (
     <section className="partners-section">
-      <div className="container">
+      <div className="container" data-aos="fade-up">
         <h2 className="section-title">Đối tác & Khách hàng</h2>
         <p className="section-subtitle">Chúng tôi tự hào được hợp tác với các công ty hàng đầu</p>
 

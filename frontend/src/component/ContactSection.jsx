@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock } from 'react-icons/fa';
 import '../styles/ContactSection.css';
 import { getInformation } from '../utils/informationApi';
@@ -6,14 +7,18 @@ import { createContact } from '../utils/contactApi';
 import { toast } from 'react-toastify';
 
 const ContactSection = () => {
+  const location = useLocation();
+  const { productId, productName } = location.state || {};
+
   const [information, setInformation] = useState({});
 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    title: '',
-    message: ''
+    title: productName ? `Tư vấn sản phẩm: ${productName} ` : '',
+    message: '',
+    productId: productId || null
   });
 
   const address = information?.address || "";
@@ -44,8 +49,9 @@ const ContactSection = () => {
           name: '',
           email: '',
           phone: '',
-          title: '',
-          message: ''
+          title: productName ? `Tư vấn sản phẩm: ${productName}` : '',
+          message: '',
+          productId: productId || null
         });
         setSubmitted(false);
       }, 2000);
@@ -124,6 +130,7 @@ const ContactSection = () => {
                   value={formData.title}
                   onChange={handleChange}
                   placeholder="Nhập tiêu đề"
+                  readOnly={productName ? true : false}
                   required
                 />
               </div>
