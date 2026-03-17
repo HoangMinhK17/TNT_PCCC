@@ -334,12 +334,10 @@ const TabWhyChooseService = () => {
             const folder = "tnt_why_choose_service";
 
             const iconUrl = await resolveImageUrl(values.icon, folder);
-            const processedDescription = await processRichTextContent(values.description, folder);
 
             const payload = {
                 ...values,
                 icon: iconUrl || "",
-                description: processedDescription
             };
 
             if (editing) {
@@ -435,7 +433,7 @@ const TabWhyChooseService = () => {
                     </Form.Item>
 
                     <Form.Item name="description" label="Mô tả chi tiết" rules={[{ required: true, message: 'Vui lòng không để trống!' }]}>
-                        <CustomQuillEditor folder="tnt_why_choose_service" style={{ height: '250px', marginBottom: '50px' }} />
+                        <TextArea rows={4} />
                     </Form.Item>
 
                     <Form.Item name="status" label="Trạng thái">

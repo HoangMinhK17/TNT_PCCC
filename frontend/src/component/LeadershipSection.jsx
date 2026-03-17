@@ -21,20 +21,22 @@ const LeadershipSection = () => {
         <h2 className="section-title">Lãnh Đạo Công Ty</h2>
         <p className="section-subtitle">Đội ngũ ban lãnh đạo giàu kinh nghiệm, tận tâm và chuyên nghiệp</p>
         
-        <div className="leadership-grid">
-          {getLeaders.map(leader => (
-            <div key={leader.id} className="leader-card">
-              <div className="leader-image-wrapper">
-                <img src={leader.image} className="leader-image" />
+        <div className="leadership-carousel-container">
+          <div className="leadership-carousel">
+            {[...getLeaders, ...getLeaders].map((leader, index) => (
+              <div key={`${leader.id}-${index}`} className="leader-card carousel-leader">
+                <div className="leader-image-wrapper">
+                  <img src={leader.image} className="leader-image" alt={leader.name} />
+                </div>
+                <div className="leader-info">
+                  <h3 className="leader-name">{leader.name}</h3>
+                  <p className="leader-position">{leader.position}</p>
+                  <div className="leader-divider"></div>
+                  <p className="leader-description">{leader.description}</p>
+                </div>
               </div>
-              <div className="leader-info">
-                <h3 className="leader-name">{leader.name}</h3>
-                <p className="leader-position">{leader.position}</p>
-                <div className="leader-divider"></div>
-                <p className="leader-description">{leader.description}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

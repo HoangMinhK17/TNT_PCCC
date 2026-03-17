@@ -112,12 +112,18 @@ const ProductDetail = () => {
                             )}
                         </div>
                         <div className="product-actions">
-                            <Link 
-                                to="/contact" 
-                                state={{ productId: product._id, productName: product.name }} 
+                            <Link
+                                to="/contact"
                                 className="contact-btn"
                             >
                                 Liên hệ tư vấn
+                            </Link>
+                            <Link
+                                to="/contact"
+                                state={{ productId: product._id, productName: product.name, productImage: product.image[0] }}
+                                className="contact-btn buy-btn"
+                            >
+                                Đăng kí mua hàng
                             </Link>
                         </div>
                     </div>

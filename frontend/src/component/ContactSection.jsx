@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 
 const ContactSection = () => {
   const location = useLocation();
-  const { productId, productName } = location.state || {};
+  const { productId, productName, productImage } = location.state || {};
 
   const [information, setInformation] = useState({});
 
@@ -81,6 +81,19 @@ const ContactSection = () => {
 
         <div className="contact-content">
           <div className="contact-form-wrapper" data-aos="fade-up">
+            {productName && (
+              <div className="product-preview-container">
+                <div className="product-preview-info">
+                  <span className="product-preview-label">Đang đăng ký mua cho sản phẩm:</span>
+                  <h3 className="product-preview-name">{productName}</h3>
+                </div>
+                {productImage && (
+                  <div className="product-preview-image-wrapper">
+                    <img src={productImage} alt={productName} className="product-preview-image" />
+                  </div>
+                )}
+              </div>
+            )}
             <form className="contact-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="name">Họ và tên *</label>

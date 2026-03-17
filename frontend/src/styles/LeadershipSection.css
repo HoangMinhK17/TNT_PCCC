@@ -3,22 +3,37 @@
   background-color: #f9f9f9;
 }
 
-.leadership-grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 30px;
+.leadership-carousel-container {
+  width: 100%;
+  overflow: hidden;
   margin-top: 40px;
+  padding: 10px 0;
 }
 
-@media (min-width: 768px) {
-  .leadership-grid {
-    grid-template-columns: repeat(2, 1fr);
+.leadership-carousel {
+  display: flex;
+  gap: 30px;
+  animation: slideLeaders 30s linear infinite;
+  width: max-content;
+}
+
+/* khi trỏ chuột vào sẽ dừng */
+.leadership-carousel:hover {
+  animation-play-state: paused;
+}
+
+.carousel-leader {
+  flex: 0 0 300px;
+  min-width: 300px;
+}
+
+@keyframes slideLeaders {
+  0% {
+    transform: translateX(0);
   }
-}
 
-@media (min-width: 992px) {
-  .leadership-grid {
-    grid-template-columns: repeat(4, 1fr);
+  100% {
+    transform: translateX(-50%);
   }
 }
 
@@ -33,7 +48,8 @@
 
 .leader-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 10px 25px rgba(226, 40, 40, 0.15); /* Main brand color hint */
+  box-shadow: 0 10px 25px rgba(226, 40, 40, 0.15);
+  /* Main brand color hint */
 }
 
 .leader-image-wrapper {
@@ -67,7 +83,8 @@
 
 .leader-position {
   font-size: 14px;
-  color: #e22828; /* Assuming red is the brand color based on TNT PCCC */
+  color: #e22828;
+  /* Assuming red is the brand color based on TNT PCCC */
   font-weight: 600;
   margin-bottom: 15px;
   text-transform: uppercase;

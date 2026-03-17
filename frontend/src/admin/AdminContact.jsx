@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
     Table, Button, Modal, Form, Input, Space,
     Popconfirm, message, Typography, Tag, Select, Descriptions
@@ -154,7 +155,11 @@ const AdminContact = () => {
         { title: 'SĐT', dataIndex: 'phone', key: 'phone' },
         {
             title: 'Sản phẩm', key: 'product',
-            render: (_, record) => record.productId?.name ? <Tag color="cyan">{record.productId.name}</Tag> : <Tag color="gray">Không có</Tag>
+            render: (_, record) => record.productId?.name ? (
+                <Link to={`/products/${record.productId._id}`} target="_blank">
+                    <Tag color="cyan" style={{ cursor: 'pointer' }}>{record.productId.name}</Tag>
+                </Link>
+            ) : <Tag color="gray">Không có</Tag>
         },
         {
             title: 'Ngày gửi', dataIndex: 'createdAt', key: 'createdAt',
@@ -259,7 +264,9 @@ const AdminContact = () => {
                                 <Descriptions.Item label="Trạng thái">{renderStatus(currentRecord.status)}</Descriptions.Item>
                                 {currentRecord.productId && (
                                     <Descriptions.Item label="Sản phẩm quan tâm" >
-                                        <span style={{ color: '#e8aa0dff' }}>{currentRecord.productId.name}</span>
+                                        <Link to={`/products/${currentRecord.productId._id}`} target="_blank">
+                                            <span style={{ color: '#e8aa0dff', fontWeight: 'bold' }}>{currentRecord.productId.name}</span>
+                                        </Link>
                                     </Descriptions.Item>
                                 )}
                                 <Descriptions.Item label="Tiêu đề">{currentRecord.title}</Descriptions.Item>

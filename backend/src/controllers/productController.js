@@ -86,6 +86,7 @@ const getPublicProductById = async (req, res) => {
     }
 };
 
+
 const getPublicProductByCategoryId = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
