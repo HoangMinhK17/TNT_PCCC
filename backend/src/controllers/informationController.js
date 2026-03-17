@@ -9,8 +9,6 @@ const getInformation = async (req, res) => {
     }
 }
 
-
-
 const getImageInformation = async (req, res) => {
     try {
         const information = await Information.find().select("name backgroundImage logo favicon");

@@ -23,6 +23,20 @@ body {
   overflow-x: hidden;
 }
 
+main {
+  min-height: 70vh;
+  animation: pageFadeIn 0.3s ease-in-out;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;

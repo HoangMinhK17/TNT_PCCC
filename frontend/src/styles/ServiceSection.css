@@ -77,7 +77,7 @@
 .service-highlight {
     background: transparent;
     /* Remove background container */
-    padding: 20px 0;
+    padding: 20px 0 0 0;
     margin-top: 20px;
     box-shadow: none;
 }

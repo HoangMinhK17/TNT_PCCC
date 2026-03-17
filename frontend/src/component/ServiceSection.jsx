@@ -52,7 +52,7 @@ const ServiceSection = () => {
 
         <div className="services-grid">
           {loading ? (
-            <div style={{ textAlign: 'center', width: '100%', padding: '20px' }}>Đang tải dịch vụ...</div>
+            <div style={{ textAlign: 'center', width: '100%', padding: '100px 20px', minHeight: '400px' }}>Đang tải dịch vụ...</div>
           ) : services.length > 0 ? (
             services.map(service => (
               <div key={service._id} className="service-card">

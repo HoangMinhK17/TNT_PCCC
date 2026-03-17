@@ -3,6 +3,7 @@
     padding: 20px 0;
     background: var(--light-bg);
     width: 100%;
+    min-height: 70vh;
 }
 
 .projects-carousel-container {

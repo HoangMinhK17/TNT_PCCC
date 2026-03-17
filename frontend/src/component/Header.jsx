@@ -119,9 +119,9 @@ const Header = () => {
     });
 
     return (
-        <header 
-            className="header" 
-            style={{ 
+        <header
+            className="header"
+            style={{
                 backgroundColor: themeConfig?.background_color || '#ffffff',
             }}
         >
@@ -144,12 +144,12 @@ const Header = () => {
                         {menuItems.map((item, index) => (
                             <li key={index} className={`menu-item ${activeSubmenu === index ? 'submenu-open' : ''}`}>
                                 <div className="menu-link-wrapper">
-                                    <Link 
-                                        to={item.path} 
+                                    <Link
+                                        to={item.path}
                                         onClick={closeMenu}
-                                        style={{ 
-                                            color: themeConfig?.text_color || '#333333', 
-                                            fontSize: themeConfig?.text_size || '16px' 
+                                        style={{
+                                            color: themeConfig?.text_color || '#333333',
+                                            fontSize: themeConfig?.text_size || '16px'
                                         }}
                                     >
                                         {item.label}

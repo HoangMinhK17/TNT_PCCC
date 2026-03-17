@@ -12,7 +12,7 @@ import CustomQuillEditor from '../component/CustomQuillEditor';
 import {
     createProject, updateProject, deleteProject, getProjectsForManage, getProjectByName
 } from '../utils/projectApi';
-import { uploadImageToCloudinary } from '../utils/imageApi';
+import { uploadImageToCloudinary, processRichTextContent } from '../utils/imageApi';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -104,20 +104,22 @@ const AdminProject = () => {
     const openModal = (record = null) => {
         setEditing(record);
         form.resetFields();
-        if (record) {
-            form.setFieldsValue({
-                name: record.name,
-                title: record.title,
-                description: record.description,
-                slug: record.slug,
-                status: record.status || 'active',
-                date: record.date ? dayjs(record.date) : null,
-                images: record.image ? [record.image] : [],
-            });
-        } else {
-            form.setFieldsValue({ status: 'active' });
-        }
         setModalVisible(true);
+        setTimeout(() => {
+            if (record) {
+                form.setFieldsValue({
+                    name: record.name,
+                    title: record.title,
+                    description: record.description,
+                    slug: record.slug,
+                    status: record.status || 'active',
+                    date: record.date ? dayjs(record.date) : null,
+                    images: record.image ? [record.image] : [],
+                });
+            } else {
+                form.setFieldsValue({ status: 'active' });
+            }
+        }, 100);
     };
 
     const handleSave = async () => {
@@ -130,9 +132,11 @@ const AdminProject = () => {
 
             const imageItems = Array.isArray(values.images) ? values.images : [];
             const imageUrls = await Promise.all(imageItems.map(value => resolveImageUrl(value, folder)));
+            const processedDescription = await processRichTextContent(values.description, folder);
 
             const payload = {
                 ...values,
+                description: processedDescription,
                 date: values.date ? values.date.toISOString() : null,
                 image: imageUrls.length > 0 ? imageUrls[0] : ""
             };

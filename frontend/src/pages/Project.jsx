@@ -55,7 +55,7 @@ const Project = () => {
                 url="/projects"
                 schema={structuredData}
             />
-            <div className="container" data-aos="fade-up">
+            <div className="container">
                 <h1 className="section-title">Dự án tiêu biểu</h1>
 
                 <div className="projects-layout">
@@ -67,7 +67,7 @@ const Project = () => {
                             {!loading ? (
                                 projectsData.projects.length > 0 ? (
                                     projectsData.projects.map((project) => (
-                                        <div key={project._id} className="project-card">
+                                        <div key={project._id} className="project-card" data-aos="fade-up">               
                                             <Link
                                                 to={`/projects/${project.slug}`}
                                                 style={{ textDecoration: "none", color: "inherit", display: 'flex', flexDirection: 'column', height: '100%' }}
@@ -88,7 +88,7 @@ const Project = () => {
                                     <p className="no-products">Không tìm thấy dự án phù hợp.</p>
                                 )
                             ) : (
-                                <div className="loading">Đang tải...</div>
+                                <div className="loading" style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Đang tải...</div>
                             )}
                         </div>
 

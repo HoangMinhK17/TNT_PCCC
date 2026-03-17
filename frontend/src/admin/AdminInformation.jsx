@@ -420,13 +420,18 @@ const AdminInformation = () => {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item name="title" label="Tiêu đề (Slogan)" rules={[{ required: true, whitespace: true, message: 'Bắt buộc!' }]}>
+                            <Form.Item name="email" label="Email liên hệ" rules={[{ required: true, whitespace: true, message: 'Bắt buộc!' }]}>
                                 <Input />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item name="email" label="Email liên hệ" rules={[{ required: true, whitespace: true, message: 'Bắt buộc!' }]}>
-                                <Input />
+                            <Form.Item name="title" label="Tiêu đề (Slogan)" rules={[{ required: true, whitespace: true, message: 'Bắt buộc!' }]}>
+                                <TextArea rows={4} />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item name="timeWork" label="Giờ làm việc (Mỗi dòng là một mục)" rules={[{ required: true, whitespace: true, message: 'Bắt buộc!' }]}>
+                                <TextArea rows={4} placeholder="Ví dụ:\nThứ 2 - Thứ 6: 08:00 - 17:00\nThứ 7: 08:00 - 12:00" />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
@@ -434,14 +439,9 @@ const AdminInformation = () => {
                                 <Input />
                             </Form.Item>
                         </Col>
-                        <Col span={24}>
+                        <Col span={12}>
                             <Form.Item name="address" label="Địa chỉ" rules={[{ required: true, whitespace: true, message: 'Bắt buộc!' }]}>
                                 <Input />
-                            </Form.Item>
-                        </Col>
-                        <Col span={24}>
-                            <Form.Item name="timeWork" label="Giờ làm việc (Mỗi dòng là một mục)" rules={[{ required: true, whitespace: true, message: 'Bắt buộc!' }]}>
-                                <TextArea rows={4} placeholder="Ví dụ:\nThứ 2 - Thứ 6: 08:00 - 17:00\nThứ 7: 08:00 - 12:00" />
                             </Form.Item>
                         </Col>
                     </Row>

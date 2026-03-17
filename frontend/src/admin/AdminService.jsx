@@ -14,7 +14,7 @@ import {
 import {
     createWhyChooseService, updateWhyChooseService, deleteWhyChooseService, getWhyChooseServiceForManage, searchWhyChooseService
 } from '../utils/whyChooseServiceApi';
-import { uploadImageToCloudinary } from '../utils/imageApi';
+import { uploadImageToCloudinary, processRichTextContent } from '../utils/imageApi';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -54,7 +54,7 @@ const SingleCloudinaryUpload = ({ value, onChange }) => {
                     <Image src={src} height={80} width={80} style={{ objectFit: 'cover', borderRadius: 4 }} />
                     <Button size="small" danger
                         style={{ position: 'absolute', top: 2, right: 2, padding: '0 4px', minWidth: 'auto' }}
-                        onClick={removeItem}>✕</Button>
+                        onClick={removeItem}>✕</Button> 
                 </div>
             )}
         </Space>
@@ -107,19 +107,21 @@ const TabService = () => {
     const openModal = (record = null) => {
         setEditing(record);
         form.resetFields();
-        if (record) {
-            form.setFieldsValue({
-                name: record.name,
-                title: record.title,
-                description: record.description,
-                slug: record.slug,
-                status: record.status || 'active',
-                image: record.image || null,
-            });
-        } else {
-            form.setFieldsValue({ status: 'active' });
-        }
         setModalVisible(true);
+        setTimeout(() => {
+            if (record) {
+                form.setFieldsValue({
+                    name: record.name,
+                    title: record.title,
+                    description: record.description,
+                    slug: record.slug,
+                    status: record.status || 'active',
+                    image: record.image || null,
+                });
+            } else {
+                form.setFieldsValue({ status: 'active' });
+            }
+        }, 100);
     };
 
     const handleSave = async () => {
@@ -129,10 +131,12 @@ const TabService = () => {
             const folder = "tnt_service";
 
             const imageUrl = await resolveImageUrl(values.image, folder);
+            const processedDescription = await processRichTextContent(values.description, folder);
 
             const payload = {
                 ...values,
-                image: imageUrl || ""
+                image: imageUrl || "",
+                description: processedDescription
             };
 
             if (editing) {
@@ -308,17 +312,19 @@ const TabWhyChooseService = () => {
     const openModal = (record = null) => {
         setEditing(record);
         form.resetFields();
-        if (record) {
-            form.setFieldsValue({
-                title: record.title,
-                description: record.description,
-                icon: record.icon || null,
-                status: record.status || 'active',
-            });
-        } else {
-            form.setFieldsValue({ status: 'active' });
-        }
         setModalVisible(true);
+        setTimeout(() => {
+            if (record) {
+                form.setFieldsValue({
+                    title: record.title,
+                    description: record.description,
+                    icon: record.icon || null,
+                    status: record.status || 'active',
+                });
+            } else {
+                form.setFieldsValue({ status: 'active' });
+            }
+        }, 100);
     };
 
     const handleSave = async () => {
@@ -328,10 +334,12 @@ const TabWhyChooseService = () => {
             const folder = "tnt_why_choose_service";
 
             const iconUrl = await resolveImageUrl(values.icon, folder);
+            const processedDescription = await processRichTextContent(values.description, folder);
 
             const payload = {
                 ...values,
-                icon: iconUrl || ""
+                icon: iconUrl || "",
+                description: processedDescription
             };
 
             if (editing) {

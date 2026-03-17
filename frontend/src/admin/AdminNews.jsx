@@ -17,7 +17,7 @@ import {
     getNewsForManage, createNews, updateNews, deleteNews, getNewsByName, getNewsByCategoryIdAdmin
 } from '../utils/newsApi';
 
-import { uploadImageToCloudinary } from '../utils/imageApi';
+import { uploadImageToCloudinary, processRichTextContent } from '../utils/imageApi';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -225,7 +225,7 @@ const TabCategoryNews = () => {
             />
 
             <Modal title={editing ? "Sửa danh mục" : "Thêm mới danh mục"} open={modalVisible}
-                onOk={handleSave} onCancel={() => setModalVisible(false)}
+                onOk={handleSave} onCancel={() => setModalVisible(false)} destroyOnClose
                 okText={saving ? 'Đang lưu...' : 'Lưu'} okButtonProps={{ loading: saving }} cancelText="Hủy">
                 <Form form={form} layout="vertical">
                     <Form.Item name="name" label="Tên danh mục" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
@@ -340,21 +340,23 @@ const TabNews = () => {
     const openModal = (record = null) => {
         setEditing(record);
         form.resetFields();
-        if (record) {
-            form.setFieldsValue({
-                name: record.name,
-                title: record.title,
-                description: record.description,
-                categoryNewsId: record.categoryNewsId?._id || record.categoryNewsId,
-                slug: record.slug,
-                status: record.status || 'active',
-                date: record.date ? dayjs(record.date) : null,
-                images: record.image ? [record.image] : [],
-            });
-        } else {
-            form.setFieldsValue({ status: 'active' });
-        }
         setModalVisible(true);
+        setTimeout(() => {
+            if (record) {
+                form.setFieldsValue({
+                    name: record.name,
+                    title: record.title,
+                    description: record.description,
+                    categoryNewsId: record.categoryNewsId?._id || record.categoryNewsId,
+                    slug: record.slug,
+                    status: record.status || 'active',
+                    date: record.date ? dayjs(record.date) : null,
+                    images: record.image ? [record.image] : [],
+                });
+            } else {
+                form.setFieldsValue({ status: 'active' });
+            }
+        }, 100);
     };
 
     const handleSave = async () => {
@@ -368,8 +370,11 @@ const TabNews = () => {
             const imageItems = Array.isArray(values.images) ? values.images : [];
             const imageUrls = await Promise.all(imageItems.map(value => resolveImageUrl(value, folder)));
 
+            const processedDescription = await processRichTextContent(values.description, folder);
+
             const payload = {
                 ...values,
+                description: processedDescription,
                 date: values.date ? values.date.toISOString() : null,
                 image: imageUrls.length > 0 ? imageUrls[0] : ""
             };
@@ -498,7 +503,7 @@ const TabNews = () => {
             />
 
             <Modal title={editing ? "Sửa Tin tức" : "Thêm mới Tin tức"} open={modalVisible}
-                onOk={handleSave} onCancel={() => setModalVisible(false)}
+                onOk={handleSave} onCancel={() => setModalVisible(false)} destroyOnClose
                 okText={saving ? 'Đang lưu...' : 'Lưu'} okButtonProps={{ loading: saving }} cancelText="Hủy" width={850}>
                 <Form form={form} layout="vertical">
                     <div style={{ display: 'flex', gap: 16 }}>
@@ -541,7 +546,7 @@ const TabNews = () => {
                         label="Mô tả"
                         rules={[{ required: true, message: 'Vui lòng không để trống!' }]}
                     >
-                        <CustomQuillEditor folder={getFolder} style={{ height: '250px', marginBottom: '50px' }} />
+                        <CustomQuillEditor folder="tnt_news" style={{ height: '250px', marginBottom: '50px' }} />
                     </Form.Item>
 
                     <Form.Item name="images" label="Hình ảnh">

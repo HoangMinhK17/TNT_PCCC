@@ -39,7 +39,7 @@ const ProjectsSection = () => {
                   </div>
                   <div className="project-info">
                     <h3 className="project-name">{project.name}</h3>
-                    <p className="project-description">{project.description}</p>
+                    <p className="project-description" dangerouslySetInnerHTML={{ __html: project.description }}></p>
                     <p className="project-year">Năm: {new Date(project.date).getFullYear()}
                     </p>
                   </div>

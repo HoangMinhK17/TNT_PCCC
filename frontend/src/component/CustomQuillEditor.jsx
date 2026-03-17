@@ -13,21 +13,18 @@ const CustomQuillEditor = ({ value, onChange, folder = "tnt_shared_uploads", sty
         input.setAttribute('accept', 'image/*');
         input.click();
 
-        input.onchange = async () => {
+        input.onchange = () => {
             const file = input.files[0];
             if (file) {
-                const hide = message.loading('Đang tải ảnh lên...', 0);
-                try {
-                    const url = await uploadImageToCloudinary(file, folder);
-                    hide();
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const base64 = e.target.result;
                     const quill = quillRef.current.getEditor();
                     const range = quill.getSelection(true);
-                    quill.insertEmbed(range.index, 'image', url);
+                    quill.insertEmbed(range.index, 'image', base64);
                     quill.setSelection(range.index + 1);
-                } catch (error) {
-                    hide();
-                    message.error("Tải ảnh thất bại!");
-                }
+                };
+                reader.readAsDataURL(file);
             }
         };
     };
@@ -48,14 +45,28 @@ const CustomQuillEditor = ({ value, onChange, folder = "tnt_shared_uploads", sty
     }), [folder]);
 
     return (
-        <ReactQuill 
-            ref={quillRef} 
-            theme="snow" 
-            modules={modules} 
-            value={value || ''} 
-            onChange={onChange} 
-            style={style} 
-        />
+        <div className="custom-quill-container">
+            <style>
+                {`
+                    .custom-quill-container .ql-editor img {
+                        width: calc(50% - 10px);
+                        height: auto;
+                        display: inline-block;
+                        vertical-align: top;
+                        margin: 5px;
+                        box-sizing: border-box;
+                    }
+                `}
+            </style>
+            <ReactQuill 
+                ref={quillRef} 
+                theme="snow" 
+                modules={modules} 
+                value={value || ''} 
+                onChange={onChange} 
+                style={style} 
+            />
+        </div>
     );
 };
 

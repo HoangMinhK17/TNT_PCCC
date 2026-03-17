@@ -94,6 +94,15 @@
     text-align: justify;
 }
 
+.detail-text img {
+    width: calc(50% - 10px);
+    height: auto;
+    display: inline-block;
+    vertical-align: top;
+    margin: 5px;
+    box-sizing: border-box;
+}
+
 .cta-box {
     background: #f0f0f0;
     padding: 20px;
