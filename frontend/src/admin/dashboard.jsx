@@ -49,8 +49,8 @@ const Dashboard = () => {
             setLoading(true);
             try {
                 const response = await getProductForManage();
-                if (response && response.length > 0) {
-                    setTotalProducts(response.length);
+                if (response && response.totalProducts !== undefined) {
+                    setTotalProducts(response.totalProducts);
                 } 
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -82,9 +82,9 @@ const Dashboard = () => {
         const fetchNews = async () => {
             setLoading(true);
             try {
-                const response = await getNewsForManage(1, 5);
-                if (response && response.news) {
-                    setTotalNews(response.totalNews || 0);
+                const response = await getNewsForManage({ page: 1, limit: 5 });
+                if (response && response.totalNews !== undefined) {
+                    setTotalNews(response.totalNews);
                 } 
             } catch (error) {
                 console.error('Error fetching news:', error);
@@ -116,7 +116,10 @@ const Dashboard = () => {
         {
             title: 'Sản phẩm quan tâm',
             key: 'subject',
-            render: (_, record) => record.productId?.name ? <Tag color="cyan">{record.productId.name}</Tag> : <Tag color="gray">Không có</Tag>
+            render: (_, record) => record.productId?.name ? 
+            <Link to={`/products/${record.productId._id}`} target="_blank">
+                <Tag color="cyan" style={{ cursor: 'pointer' }}>{record.productId.name}</Tag>
+            </Link> : <Tag color="gray">Không có</Tag>
         },
         {
             title: 'Trạng thái',

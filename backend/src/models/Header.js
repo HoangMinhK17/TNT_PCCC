@@ -17,9 +17,11 @@ const headerSchema = new mongoose.Schema({
     status : {
         type : String,
         default : "active"
+    },
+    show_home : {
+        type : String,
+        default : "active"
     }
-
-    
     
 },
 {

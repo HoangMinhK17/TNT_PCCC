@@ -273,10 +273,13 @@ const TabNews = () => {
     }, [currentCategoryId, categories]);
 
 
-    const fetchData = async (page = 1, limit = 5) => {
+    const fetchData = async (page = 1, limit = 5, name = searchText, categoryNewsId = filterCategory) => {
         setLoading(true);
         try {
-            const [newsRes, catRes] = await Promise.all([getNewsForManage(page, limit), getCategoryNewsForManage()]);
+            const [newsRes, catRes] = await Promise.all([
+                getNewsForManage({ page, limit, name, categoryNewsId }), 
+                getCategoryNewsForManage()
+            ]);
             setData(newsRes?.news ? newsRes.news.map(d => ({ ...d, key: d._id })) : []);
             setTotalPages(newsRes?.totalPages || 1);
             setCurrentPage(newsRes?.currentPage || 1);
@@ -287,54 +290,17 @@ const TabNews = () => {
 
     useEffect(() => { fetchData(currentPage, pageSize); }, [currentPage, pageSize]);
 
-    const fetchAllNews = async (page = 1, limit = 5) => {
-        setLoading(true);
-        try {
-            const res = await getNewsForManage(page, limit);
-            setData(res?.news ? res.news.map(d => ({ ...d, key: d._id })) : []);
-            setTotalPages(res?.totalPages || 1);
-            setCurrentPage(res?.currentPage || 1);
-        } catch { message.error('Lấy dữ liệu thất bại!'); }
-        finally { setLoading(false); }
+    const handleSearch = (value) => {
+        const trimmedValue = value?.trim() || "";
+        setSearchText(trimmedValue);
+        setCurrentPage(1);
+        fetchData(1, pageSize, trimmedValue, filterCategory);
     };
 
-    const handleSearch = async (value, page = 1, limit = 5) => {
-        setSearchText(value);
-        if (!value || !value.trim()) {
-            fetchAllNews(page, limit);
-            return;
-        }
-        setLoading(true);
-        try {
-            const res = await getNewsByName(value.trim(), page, limit);
-            setData(res?.news ? res.news.map(d => ({ ...d, key: d._id })) : []);
-            setTotalPages(res?.totalPages || 1);
-            setCurrentPage(res?.currentPage || 1);
-        } catch {
-            message.error('Tìm kiếm thất bại!');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleFilterCategory = async (categoryId, page = 1, limit = 5) => {
+    const handleFilterCategory = (categoryId) => {
         setFilterCategory(categoryId);
-        if (!categoryId) {
-            fetchAllNews(page, limit);
-            return;
-        }
-        setSearchText('');
-        setLoading(true);
-        try {
-            const res = await getNewsByCategoryIdAdmin(categoryId, page, limit);
-            setData(res?.news ? res.news.map(d => ({ ...d, key: d._id })) : []);
-            setTotalPages(res?.totalPages || 1);
-            setCurrentPage(res?.currentPage || 1);
-        } catch {
-            message.error('Lọc thất bại!');
-        } finally {
-            setLoading(false);
-        }
+        setCurrentPage(1);
+        fetchData(1, pageSize, searchText, categoryId);
     };
 
     const openModal = (record = null) => {
@@ -491,13 +457,6 @@ const TabNews = () => {
                     onChange: (page, size) => {
                         setCurrentPage(page);
                         setPageSize(size);
-                        if (searchText) {
-                            handleSearch(searchText, page, size);
-                        } else if (filterCategory) {
-                            handleFilterCategory(filterCategory, page, size);
-                        } else {
-                            fetchAllNews(page, size);
-                        }
                     }
                 }}
             />

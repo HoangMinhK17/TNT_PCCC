@@ -17,8 +17,8 @@ const Header = () => {
     const [categories, setCategories] = useState([]);
     const [newsCategories, setNewsCategories] = useState([]);
     const [logo, setLogo] = useState([]);
-    const [headerTitles, setHeaderTitles] = useState([]);
     const [themeConfig, setThemeConfig] = useState(null);
+    const [getHeaderTitle, setGetHeaderTitle] = useState([]);
 
     const languageGlobal = JSON.parse(localStorage.getItem("language")) || "vn";
     useEffect(() => {
@@ -34,6 +34,19 @@ const Header = () => {
         };
         fetchLogo();
     }, []);
+
+    useEffect(() => {
+        const fetchHeaderTitle = async () => {
+            try {
+                const data = await getAllHeader();
+                setGetHeaderTitle(Array.isArray(data) ? data : []);
+            } catch (error) {
+                console.error("Error fetching header title:", error);
+            }
+        };
+        fetchHeaderTitle();
+    }, []);
+
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -51,14 +64,6 @@ const Header = () => {
     }, []);
 
     useEffect(() => {
-        const fetchHeaders = async () => {
-            try {
-                const data = await getAllHeader();
-                setHeaderTitles(data);
-            } catch (error) {
-                console.error("Error fetching headers:", error);
-            }
-        };
         const fetchTheme = async () => {
             try {
                 const data = await getThemeHeader();
@@ -67,9 +72,9 @@ const Header = () => {
                 console.error("Error fetching theme header:", error);
             }
         };
-        fetchHeaders();
         fetchTheme();
     }, []);
+
 
     const handleLanguageChange = (lang) => {
         i18n.changeLanguage(lang);
@@ -108,7 +113,7 @@ const Header = () => {
         management: { path: '/management', hasSubmenu: false, key: 'management' }
     };
 
-    const menuItems = headerTitles.map(header => {
+    const menuItems = getHeaderTitle.map(header => {
         const enKey = header.key?.toLowerCase() || '';
         const mapInfo = PATH_MAP[enKey] || { path: '/', hasSubmenu: false, key: enKey };
         const label = languageGlobal === 'vn' ? header.name_vn : header.name_en;

@@ -9,20 +9,23 @@ import NewsSection from '../component/NewsSection'
 import RecruitmentSection from '../component/RecruitmentSection'
 import ContactSection from '../component/ContactSection'
 import LeadershipSection from '../component/LeadershipSection'
+import { useHeader } from '../context/HeaderContext'
+
 const Home = () => {
+    const { isSectionVisible } = useHeader();
+
     return (
         <>
             <SearchBar />
-            <CompanyIntro />
-
-            <ProductSection />
-            <ServiceSection />
-            <ProjectsSection />
-            <PartnersSection />
-            <LeadershipSection />
-            <TestimonialSection />
-            <NewsSection />
-            <ContactSection />
+            {isSectionVisible('about') && <CompanyIntro />}
+            {isSectionVisible('products') && <ProductSection />}
+            {isSectionVisible('services') && <ServiceSection />}
+            {isSectionVisible('projects') && <ProjectsSection />}
+            {isSectionVisible('partners') && <PartnersSection />}
+            {isSectionVisible('management') && <LeadershipSection />}
+            {isSectionVisible('feedback') && <TestimonialSection />}
+            {isSectionVisible('news') && <NewsSection />}
+            {isSectionVisible('contact') && <ContactSection />}
         </>
     )
 }

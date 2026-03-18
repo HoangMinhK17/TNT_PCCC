@@ -22,4 +22,18 @@ const updateThemeHeader = async (id, themeHeader) => {
     }
 }
 
-export { getThemeHeader, updateThemeHeader };
+const createThemeHeader = async (themeHeader) => {
+    try {
+        const response = await api.post("/themeHeader/create-theme-header", themeHeader, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error creating theme header:", error);
+    }
+}
+
+export { getThemeHeader, updateThemeHeader, createThemeHeader };

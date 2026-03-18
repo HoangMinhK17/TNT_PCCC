@@ -18,9 +18,32 @@ const getProductForManage = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const products = await Product.find({ isDeleted: false }).sort({ createdAt: -1 })
-            .populate({ path: "categoryId", select: "name slug status" });
-        res.status(200).json(products);
+        const { name, categoryId } = req.query;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10; 
+        const skip = (page - 1) * limit;
+
+        const filter = { isDeleted: false };
+        if (name) {
+            filter.name = { $regex: name, $options: "i" };
+        }
+        if (categoryId && categoryId !== "null" && categoryId !== "undefined") {
+            filter.categoryId = categoryId;
+        }
+
+        const totalProducts = await Product.countDocuments(filter);
+        const products = await Product.find(filter)
+            .sort({ createdAt: -1 })
+            .populate({ path: "categoryId", select: "name slug status" })
+            .skip(skip)
+            .limit(limit);
+
+        res.status(200).json({
+            products,
+            totalPages: Math.ceil(totalProducts / limit),
+            currentPage: page,
+            totalProducts
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

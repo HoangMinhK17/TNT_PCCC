@@ -16,7 +16,6 @@ api.interceptors.response.use(
             console.log(error.response.data);
             console.log(error.response.status);
             console.log(error.response.headers);
-            
             if (error.response.status === 401 || error.response.status === 403) {
                 const msg = error.response.data?.message?.toLowerCase() || "";
                 if (msg.includes("token") || msg.includes("forbidden") || msg.includes("unauthorized") || error.response.status === 401) {
@@ -36,6 +35,5 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-console.log("API URL: ", api.defaults.baseURL);
 
 export default api;

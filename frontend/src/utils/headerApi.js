@@ -55,5 +55,16 @@ export const findHeaderByName = async (name, page, limit) => {
     }
 }
 
+export const getAllHeaderForShowHome = async () => {
+    try {
+        const response = await api.get("/header/get-all-header-for-show-home");
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching headers:", error);
+        throw error;
+    }
+}
+
+
 
 

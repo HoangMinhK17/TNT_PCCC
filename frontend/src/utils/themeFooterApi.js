@@ -17,6 +17,16 @@ export const updateThemeFooter = async (id, data) => {
     return response.data;
 }
 
+export const createThemeFooter = async (data) => {
+    const response = await api.post(`/themeFooter/create-theme-footer`, data, 
+        {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+        }
+    );
+    return response.data;
+}
 
-
-export default { getThemeFooter, updateThemeFooter };
+export default { getThemeFooter, updateThemeFooter, createThemeFooter };

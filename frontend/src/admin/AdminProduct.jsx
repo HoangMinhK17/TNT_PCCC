@@ -200,61 +200,38 @@ const TabProduct = () => {
     const [filterCategory, setFilterCategory] = useState(null);
     const [form] = Form.useForm();
 
-    const fetchData = async () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+
+    const fetchData = async (page = 1, limit = 5, name = searchText, categoryId = filterCategory) => {
         setLoading(true);
         try {
-            const [prodRes, catRes] = await Promise.all([getProductForManage(), getCategoryProductForManage()]);
-            setData(prodRes.map(d => ({ ...d, key: d._id })));
+            const [prodRes, catRes] = await Promise.all([
+                getProductForManage({ page, limit, name, categoryId }),
+                getCategoryProductForManage()
+            ]);
+            setData(prodRes.products.map(d => ({ ...d, key: d._id })));
+            setTotalPages(prodRes.totalPages || 1);
+            setCurrentPage(prodRes.currentPage || 1);
             setCategories(catRes);
         } catch { message.error('Lấy dữ liệu thất bại!'); }
         finally { setLoading(false); }
     };
 
-    useEffect(() => { fetchData(); }, []);
+    useEffect(() => { fetchData(currentPage, pageSize); }, [currentPage, pageSize]);
 
-    const fetchAllProducts = async () => {
-        setLoading(true);
-        try {
-            const res = await getProductForManage();
-            setData(res.map(d => ({ ...d, key: d._id })));
-        } catch { message.error('Lấy dữ liệu thất bại!'); }
-        finally { setLoading(false); }
+    const handleSearch = (value) => {
+        const trimmedValue = value?.trim() || "";
+        setSearchText(trimmedValue);
+        setCurrentPage(1);
+        fetchData(1, pageSize, trimmedValue, filterCategory);
     };
 
-    const handleSearch = async (value) => {
-        setSearchText(value);
-        if (!value || !value.trim()) {
-            fetchAllProducts();
-            return;
-        }
-        setFilterCategory(null);
-        setLoading(true);
-        try {
-            const res = await getProductByNameForManage(value.trim(), 1, 1000);
-            setData(res.products.map(d => ({ ...d, key: d._id })));
-        } catch {
-            message.error('Tìm kiếm thất bại!');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleFilterCategory = async (categoryId) => {
+    const handleFilterCategory = (categoryId) => {
         setFilterCategory(categoryId);
-        if (!categoryId) {
-            fetchAllProducts();
-            return;
-        }
-        setSearchText('');
-        setLoading(true);
-        try {
-            const res = await getProductByCategoryIdForManage(categoryId, 1, 1000);
-            setData(res.products.map(d => ({ ...d, key: d._id })));
-        } catch {
-            message.error('Lọc thất bại!');
-        } finally {
-            setLoading(false);
-        }
+        setCurrentPage(1);
+        fetchData(1, pageSize, searchText, categoryId);
     };
 
     const openModal = (record = null) => {
@@ -387,7 +364,21 @@ const TabProduct = () => {
                 </Select>
             </div>
 
-            <Table columns={columns} dataSource={data} loading={loading} bordered pagination={{ pageSize: 5 }} />
+            <Table 
+                columns={columns} 
+                dataSource={data} 
+                loading={loading} 
+                bordered 
+                pagination={{ 
+                    current: currentPage,
+                    pageSize: pageSize,
+                    total: totalPages * pageSize,
+                    onChange: (page, size) => {
+                        setCurrentPage(page);
+                        setPageSize(size);
+                    }
+                }} 
+            />
 
             <Modal title={editing ? "Sửa Sản phẩm" : "Thêm mới Sản phẩm"} open={modalVisible}
                 onOk={handleSave} onCancel={() => setModalVisible(false)}

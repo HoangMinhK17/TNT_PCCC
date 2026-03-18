@@ -85,12 +85,16 @@ export const getNewsBySearch = async (searchTerm, page = 1, limit = 10) => {
     }
 };
 
-export const getNewsForManage = async (page, limit) => {
+export const getNewsForManage = async (params = {}) => {
     try {
-        const response = await api.get(`/news/get-news-for-manage?page=${page}&limit=${limit}`,{
+        const cleanedParams = Object.fromEntries(
+            Object.entries(params).filter(([_, v]) => v != null && v !== "" && v !== "null" && v !== "undefined")
+        );
+        const query = new URLSearchParams(cleanedParams).toString();
+        const response = await api.get(`/news/get-news-for-manage?${query}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json", 
+                "Content-Type": "application/json",
             },
         });
         return response.data;

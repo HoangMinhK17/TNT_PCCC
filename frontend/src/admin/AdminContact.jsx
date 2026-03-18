@@ -246,7 +246,6 @@ const AdminContact = () => {
                                     <Select.Option value="rejected">Từ chối</Select.Option>
                                 </Select>
                             </Form.Item>
-
                             <Form.Item name="repliedMessage" label="Nội dung phản hồi / Ghi chú (Nếu có)">
                                 <TextArea rows={4} placeholder="Nhập tin nhắn phản hồi đã gửi cho khách hàng..." />
                             </Form.Item>
@@ -272,9 +271,12 @@ const AdminContact = () => {
                                 <Descriptions.Item label="Tiêu đề">{currentRecord.title}</Descriptions.Item>
                                 <Descriptions.Item label="Nội dung gửi"><div style={{ whiteSpace: 'pre-wrap' }}>{currentRecord.message}</div></Descriptions.Item>
                                 {currentRecord.status !== 'pending' && (
-                                    <Descriptions.Item label="Ghi chú xử lý / Nội dung phản hồi">
-                                        <div style={{ whiteSpace: 'pre-wrap' }}>{currentRecord.repliedMessage || "(Không có)"}</div>
-                                    </Descriptions.Item>
+                                    <>
+                                        <Descriptions.Item label="Ghi chú xử lý / Nội dung phản hồi">
+                                            <div style={{ whiteSpace: 'pre-wrap' }}>{currentRecord.repliedMessage || "(Không có)"}</div>
+                                        </Descriptions.Item>
+                                        <Descriptions.Item label="Ngày phản hồi">{dayjs(currentRecord.updatedAt).format('DD/MM/YYYY HH:mm')}</Descriptions.Item>
+                                    </>
                                 )}
                             </Descriptions>
                         )}

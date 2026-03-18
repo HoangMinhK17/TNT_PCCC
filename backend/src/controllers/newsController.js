@@ -16,11 +16,21 @@ export const getNewsForManage = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+        const { name, categoryNewsId } = req.query;
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const totalNews = await News.countDocuments({ isDeleted: false });
-        const news = await News.find({ isDeleted: false }).sort({ createdAt: -1 }).
+
+        const filter = { isDeleted: false };
+        if (name) {
+            filter.name = { $regex: name, $options: "i" };
+        }
+        if (categoryNewsId && categoryNewsId !== "null" && categoryNewsId !== "undefined") {
+            filter.categoryNewsId = categoryNewsId;
+        }
+
+        const totalNews = await News.countDocuments(filter);
+        const news = await News.find(filter).sort({ createdAt: -1 }).
             select("name date title image slug description status").populate("categoryNewsId", "name").skip(skip).limit(limit);
         res.status(200).json({
             news,

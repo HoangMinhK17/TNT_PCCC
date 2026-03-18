@@ -38,6 +38,8 @@ import { getImageInformation } from './utils/informationApi'
 
 const imageModules = import.meta.glob('./uploads/**/*.{png,jpg,jpeg,svg,webp,ico}', { eager: true, query: '?url', import: 'default' });
 
+import { HeaderProvider } from './context/HeaderContext'
+
 function App() {
   useEffect(() => {
     AOS.init({
@@ -85,119 +87,122 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <Routes>
-        {/* Main Site Routes */}
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Product />} />
-          <Route path="/products/:id" element={<ProductDetail />} />
-          <Route path="/projects/:id" element={<ProjectDetail />} />
-          <Route path="/news/:id" element={<NewsDetail />} />
-          <Route path="/about" element={<IntroductionCompany />} />
-          <Route path="/projects" element={<Project />} />
-          <Route path="/news" element={<New />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/services" element={<Service />} />
-          <Route path="/services/:id" element={<ServiceDetail />} />
-          <Route path="/recruitment" element={<Recruiment />} />
-        </Route>
+    <HeaderProvider>
+      <Router>
+        <Routes>
+          {/* Main Site Routes */}
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/products" element={<Product />} />
+            <Route path="/products/:id" element={<ProductDetail />} />
+            <Route path="/projects/:id" element={<ProjectDetail />} />
+            <Route path="/news/:id" element={<NewsDetail />} />
+            <Route path="/about" element={<IntroductionCompany />} />
+            <Route path="/projects" element={<Project />} />
+            <Route path="/news" element={<New />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/services" element={<Service />} />
+            <Route path="/services/:id" element={<ServiceDetail />} />
+            <Route path="/recruitment" element={<Recruiment />} />
+          </Route>
 
-        {/* Admin Routes */}
-        <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin/forget-password" element={<ForgetPassword />} />
-        <Route
-          path="/admin/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/about"
-          element={
-            <ProtectedRoute>
-              <AdminIntroduction />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/products"
-          element={
-            <ProtectedRoute>
-              <AdminProduct />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/projects"
-          element={
-            <ProtectedRoute>
-              <AdminProject />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/services"
-          element={
-            <ProtectedRoute>
-              <AdminService />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/news"
-          element={
-            <ProtectedRoute>
-              <AdminNews />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/recruitment"
-          element={
-            <ProtectedRoute>
-              <AdminRecruitment />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/partners"
-          element={
-            <ProtectedRoute>
-              <AdminPartner />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/contacts"
-          element={
-            <ProtectedRoute>
-              <AdminContact />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/testimonial"
-          element={
-            <ProtectedRoute>
-              <AdminTestimonial />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/information"
-          element={
-            <ProtectedRoute>
-              <AdminInformation />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
-    </Router>
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<Login />} />
+          <Route path="/admin/forget-password" element={<ForgetPassword />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/about"
+            element={
+              <ProtectedRoute>
+                <AdminIntroduction />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/products"
+            element={
+              <ProtectedRoute>
+                <AdminProduct />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/projects"
+            element={
+              <ProtectedRoute>
+                <AdminProject />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/services"
+            element={
+              <ProtectedRoute>
+                <AdminService />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/news"
+            element={
+              <ProtectedRoute>
+                <AdminNews />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/recruitment"
+            element={
+              <ProtectedRoute>
+                <AdminRecruitment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/partners"
+            element={
+              <ProtectedRoute>
+                <AdminPartner />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/contacts"
+            element={
+              <ProtectedRoute>
+                <AdminContact />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/testimonial"
+            element={
+              <ProtectedRoute>
+                <AdminTestimonial />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/information"
+            element={
+              <ProtectedRoute>
+                <AdminInformation />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+        <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
+      </Router>
+    </HeaderProvider>
   )
 }
+
 
 export default App

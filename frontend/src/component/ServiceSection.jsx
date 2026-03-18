@@ -48,7 +48,6 @@ const ServiceSection = () => {
     <section id="services" className="services-section">
       <div className="container" data-aos="fade-up">
         <h1 className="section-title">Dịch vụ của chúng tôi</h1>
-        <p className="section-subtitle">Cung cấp giải pháp phòng chữa cháy toàn diện cho mọi loại công trình</p>
 
         <div className="services-grid">
           {loading ? (

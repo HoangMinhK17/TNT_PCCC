@@ -5,10 +5,14 @@ export const getPublicProducts = async () => {
     return response.data;
 };
 
-export const getProductForManage = async () => {
+export const getProductForManage = async (params = {}) => {
     const token = localStorage.getItem("token");
-    console.log("token", token);
-    const response = await api.get("/product/getProductForManage", {
+    // Clean params: remove null, undefined, or empty strings
+    const cleanedParams = Object.fromEntries(
+        Object.entries(params).filter(([_, v]) => v != null && v !== "" && v !== "null" && v !== "undefined")
+    );
+    const query = new URLSearchParams(cleanedParams).toString();
+    const response = await api.get(`/product/getProductForManage?${query}`, {
         headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;

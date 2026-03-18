@@ -11,8 +11,8 @@ import {
 } from '../utils/informationApi';
 import { uploadImageToCloudinary } from '../utils/imageApi';
 import { getAllHeaderForManagement, updateHeader, findHeaderByName } from '../utils/headerApi';
-import { getThemeHeader, updateThemeHeader } from '../utils/themeHeaderApi';
-import { getThemeFooter, updateThemeFooter } from '../utils/themeFooterApi';
+import { getThemeHeader, updateThemeHeader, createThemeHeader } from '../utils/themeHeaderApi';
+import { getThemeFooter, updateThemeFooter, createThemeFooter } from '../utils/themeFooterApi';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -141,7 +141,8 @@ const AdminInformation = () => {
         formHeader.setFieldsValue({
             name_en: record.name_en,
             name_vn: record.name_vn,
-            status: record.status
+            status: record.status,
+            show_home: record.show_home
         });
         setIsHeaderModalVisible(true);
     };
@@ -180,7 +181,7 @@ const AdminInformation = () => {
                 formImg.setFieldsValue({
                     logo: data.logo ? [data.logo] : [],
                     favicon: data.favicon ? [data.favicon] : [],
-                    backgroundImage: data.backgroundImage || [] 
+                    backgroundImage: data.backgroundImage || []
                 });
 
                 formContact.resetFields();
@@ -270,10 +271,14 @@ const AdminInformation = () => {
 
     const handleSaveThemeHeader = async () => {
         try {
-            if (!themeHeaderData) return message.warning("Không tìm thấy ID dữ liệu Theme Header!");
             setSavingThemeHeader(true);
             const values = await formThemeHeader.validateFields();
-            await updateThemeHeader(themeHeaderData._id, values);
+            
+            if (!themeHeaderData) {
+                await createThemeHeader(values);
+            } else {
+                await updateThemeHeader(themeHeaderData._id, values);
+            }
             message.success("Cập nhật Theme Header thành công!");
             fetchThemeHeader();
         } catch (err) {
@@ -285,10 +290,9 @@ const AdminInformation = () => {
 
     const handleSaveThemeFooter = async () => {
         try {
-            if (!themeFooterData) return message.warning("Không tìm thấy ID dữ liệu Theme Footer!");
             setSavingThemeFooter(true);
             const values = await formThemeFooter.validateFields();
-            
+
             const payload = {
                 background_color: values.background_color,
                 icon_color: values.icon_color,
@@ -298,7 +302,11 @@ const AdminInformation = () => {
                 contact_text: { text_color: values.contact_text_color, text_size: values.contact_text_size },
             };
 
-            await updateThemeFooter(themeFooterData._id, payload);
+            if (!themeFooterData) {
+                await createThemeFooter(payload);
+            } else {
+                await updateThemeFooter(themeFooterData._id, payload);
+            }
             message.success("Cập nhật Theme Footer thành công!");
             fetchThemeFooter();
         } catch (err) {
@@ -385,12 +393,22 @@ const AdminInformation = () => {
             key: 'name_vn',
         },
         {
-            title: 'Trạng thái',
+            title: 'Hiển thị trên Header',
             dataIndex: 'status',
             key: 'status',
             render: (status) => (
                 <Tag color={status === 'active' ? 'green' : 'red'}>
-                    {status === 'active' ? 'Hoạt động' : 'Tạm ẩn'}
+                    {status === 'active' ? 'Hiển thị' : 'Tạm ẩn'}
+                </Tag>
+            )
+        },
+        {
+            title: 'Hiển thị trên UI Home',
+            dataIndex: 'show_home',
+            key: 'show_home',
+            render: (show_home) => (
+                <Tag color={show_home === 'active' ? 'green' : 'red'}>
+                    {show_home === 'active' ? 'Hiển thị' : 'Tạm ẩn'}
                 </Tag>
             )
         },
@@ -585,9 +603,15 @@ const AdminInformation = () => {
                             <Form.Item name="name_vn" label="Tên Tiếng Việt (VN)" rules={[{ required: true, message: 'Vui lòng nhập tên tiếng Việt!' }]}>
                                 <Input />
                             </Form.Item>
-                            <Form.Item name="status" label="Trạng thái" rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}>
+                            <Form.Item name="status" label="Hiển thị trên Header" rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}>
                                 <Select>
-                                    <Select.Option value="active">Hoạt động</Select.Option>
+                                    <Select.Option value="active">Hiển thị</Select.Option>
+                                    <Select.Option value="inactive">Tạm ẩn</Select.Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item name="show_home" label="Hiển thị UI Home" rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}>
+                                <Select>
+                                    <Select.Option value="active">Hiển thị</Select.Option>
                                     <Select.Option value="inactive">Tạm ẩn</Select.Option>
                                 </Select>
                             </Form.Item>
@@ -609,9 +633,9 @@ const AdminInformation = () => {
                             <>
                                 <Row gutter={16}>
                                     <Col span={8}>
-                                        <Form.Item 
-                                            name="background_color" 
-                                            label="Màu nền (Background Color)" 
+                                        <Form.Item
+                                            name="background_color"
+                                            label="Màu nền (Background Color)"
                                             rules={[{ required: true, message: 'Bắt buộc!' }]}
                                             getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}
                                         >
@@ -619,9 +643,9 @@ const AdminInformation = () => {
                                         </Form.Item>
                                     </Col>
                                     <Col span={8}>
-                                        <Form.Item 
-                                            name="text_color" 
-                                            label="Màu chữ (Text Color)" 
+                                        <Form.Item
+                                            name="text_color"
+                                            label="Màu chữ (Text Color)"
                                             rules={[{ required: true, message: 'Bắt buộc!' }]}
                                             getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}
                                         >
@@ -648,7 +672,7 @@ const AdminInformation = () => {
                     </Form>
 
                     <Divider />
-                    
+
                     <Title level={4} style={{ color: '#1A237E' }}>CẤU HÌNH FOOTER</Title>
                     <Form form={formThemeFooter} layout="vertical" onFinish={handleSaveThemeFooter}>
                         {loadingThemeFooter ? (
@@ -657,9 +681,9 @@ const AdminInformation = () => {
                             <>
                                 <Row gutter={16}>
                                     <Col span={8}>
-                                        <Form.Item 
-                                            name="background_color" 
-                                            label="Màu nền (Background Color)" 
+                                        <Form.Item
+                                            name="background_color"
+                                            label="Màu nền (Background Color)"
                                             rules={[{ required: true, message: 'Bắt buộc!' }]}
                                             getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}
                                         >
@@ -667,9 +691,9 @@ const AdminInformation = () => {
                                         </Form.Item>
                                     </Col>
                                     <Col span={8}>
-                                        <Form.Item 
-                                            name="icon_color" 
-                                            label="Màu sắc Icon (Icon Color)" 
+                                        <Form.Item
+                                            name="icon_color"
+                                            label="Màu sắc Icon (Icon Color)"
                                             rules={[{ required: true, message: 'Bắt buộc!' }]}
                                             getValueFromEvent={(color) => typeof color === 'string' ? color : color.toHexString()}
                                         >
@@ -677,9 +701,9 @@ const AdminInformation = () => {
                                         </Form.Item>
                                     </Col>
                                 </Row>
-                                
+
                                 <Divider dashed orientation="left">Màu & Kích thước Chữ Footer</Divider>
-                                
+
                                 <Row gutter={16}>
                                     <Col span={6}>
                                         <Card size="small" title="Tiêu đề Cột (Title)" bordered={false} style={{ background: '#fafafa' }}>

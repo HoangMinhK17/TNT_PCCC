@@ -4,9 +4,10 @@ import VisionMission from "../component/VisionMission";
 import Achievements from "../component/Achievements";
 import LeadershipSection from "../component/LeadershipSection";
 import SEO from '../component/SEO';
+import { useHeader } from "../context/HeaderContext";
 
 const IntroductionCompany = () => {
-
+    const { isSectionVisible } = useHeader();
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -30,7 +31,7 @@ const IntroductionCompany = () => {
             <CompanyIntro />
             <VisionMission />
             <Achievements />
-            <LeadershipSection />
+            {isSectionVisible('management') && <LeadershipSection />}
         </div>
     );
 }
