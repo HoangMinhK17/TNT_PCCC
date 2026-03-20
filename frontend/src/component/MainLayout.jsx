@@ -7,7 +7,7 @@ import Breadcrumbs from './Breadcrumbs'
 
 const MainLayout = () => {
     return (
-        <>
+        <div className="public-layout">
             <Header />
             <ContactButtons />
             <Breadcrumbs />
@@ -15,7 +15,7 @@ const MainLayout = () => {
                 <Outlet />
             </main>
             <Footer />
-        </>
+        </div>
     )
 }
 

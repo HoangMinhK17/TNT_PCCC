@@ -42,11 +42,43 @@ const loginUser = async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                theme: user.theme
             }
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
-export { createUser, getAllUsers, loginUser };
+const updateTheme = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Không có quyền" });
+        }
+        const { theme } = req.body;
+        const userId = req.user.id;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng" });
+        }
+
+        user.theme = theme;
+        await user.save();
+
+        res.status(200).json({ message: "Cập nhật theme thành công", theme: user.theme });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const getAdminTheme = async (req, res) => {
+    try {
+        const admin = await User.findOne({ role: "admin" }).select('theme');
+        res.status(200).json({ theme: admin ? admin.theme : 'light' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export { createUser, getAllUsers, loginUser, updateTheme, getAdminTheme };

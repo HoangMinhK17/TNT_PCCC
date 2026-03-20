@@ -57,3 +57,123 @@ button:focus-visible {
   max-width: 100%;
   height: auto;
 }
+
+/* User Themes Configuration */
+:root {
+  --theme-bg: #ffffff;
+  --theme-text: #333333;
+  --theme-header-bg: transparent;
+}
+
+
+
+body.theme-dark .public-layout {
+  --theme-bg: #ffffff !important;
+  --theme-text: #16d800 !important;
+  --theme-header-bg: #111827 !important;
+  font-size: 1.05rem;
+  background-color: var(--theme-bg);
+  color: var(--theme-text);
+  min-height: 100vh;
+}
+
+body.theme-blue .public-layout {
+  --theme-bg: #f0f5ff !important;
+  --theme-text: #003a8c !important;
+  --theme-header-bg: #e6f4ff !important;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--theme-bg);
+  color: var(--theme-text);
+  min-height: 100vh;
+}
+
+body.theme-green .public-layout {
+  --theme-bg: #f6ffed !important;
+  --theme-text: #135200 !important;
+  --theme-header-bg: #d9f7be !important;
+  font-family: 'Lora', serif;
+  font-size: 1.1rem;
+  background-color: var(--theme-bg);
+  color: var(--theme-text);
+  min-height: 100vh;
+}
+
+/* Force override component backgrounds for Dark Mode */
+body.theme-dark .public-layout main .testimonial-section::before {
+  background: none !important;
+}
+
+body.theme-dark .public-layout main section,
+body.theme-dark .public-layout main .news-item,
+body.theme-dark .public-layout main .product-item,
+body.theme-dark .public-layout main .contact-container,
+body.theme-dark .public-layout main .menu,
+body.theme-dark .public-layout main .dropdown {
+  background-color: var(--theme-header-bg) !important;
+  color: var(--theme-text) !important;
+}
+
+body.theme-dark .public-layout main a,
+body.theme-dark .public-layout main h1,
+body.theme-dark .public-layout main h2,
+body.theme-dark .public-layout main h3,
+body.theme-dark .public-layout main h4,
+body.theme-dark .public-layout main h5,
+body.theme-dark .public-layout main h6,
+body.theme-dark .public-layout main p,
+body.theme-dark .public-layout main span,
+body.theme-dark .public-layout main div,
+body.theme-dark .public-layout main li {
+  color: var(--theme-text);
+  border-color: #333 !important;
+}
+
+/* Force override component backgrounds for Blue Mode */
+body.theme-blue .public-layout main .testimonial-section::before {
+  background: none !important;
+}
+
+body.theme-blue .public-layout main section,
+body.theme-blue .public-layout main .news-item,
+body.theme-blue .public-layout main .product-item,
+body.theme-blue .public-layout main .contact-container,
+body.theme-blue .public-layout main .menu,
+body.theme-blue .public-layout main .dropdown {
+  background-color: var(--theme-header-bg) !important;
+  color: var(--theme-text) !important;
+}
+
+body.theme-blue .public-layout main a,
+body.theme-blue .public-layout main h1,
+body.theme-blue .public-layout main h2,
+body.theme-blue .public-layout main p,
+body.theme-blue .public-layout main span,
+body.theme-blue .public-layout main div,
+body.theme-blue .public-layout main li {
+  color: var(--theme-text);
+}
+
+/* Force override component backgrounds for Green Mode */
+body.theme-green .public-layout main .testimonial-section::before {
+  background: none !important;
+}
+
+body.theme-green .public-layout main section,
+body.theme-green .public-layout main .news-item,
+body.theme-green .public-layout main .product-item,
+body.theme-green .public-layout main .contact-container,
+body.theme-green .public-layout main .menu,
+body.theme-green .public-layout main .dropdown {
+  background-color: var(--theme-header-bg) !important;
+  color: var(--theme-text) !important;
+}
+
+body.theme-green .public-layout main a,
+body.theme-green .public-layout main h1,
+body.theme-green .public-layout main h2,
+body.theme-green .public-layout main p,
+body.theme-green .public-layout main span,
+body.theme-green .public-layout main div,
+body.theme-green .public-layout main li {
+  color: var(--theme-text);
+}

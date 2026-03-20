@@ -40,6 +40,8 @@ const imageModules = import.meta.glob('./uploads/**/*.{png,jpg,jpeg,svg,webp,ico
 
 import { HeaderProvider } from './context/HeaderContext'
 
+import { ThemeProvider } from './context/ThemeContext'
+
 function App() {
   useEffect(() => {
     AOS.init({
@@ -87,10 +89,11 @@ function App() {
   }, []);
 
   return (
-    <HeaderProvider>
-      <Router>
-        <Routes>
-          {/* Main Site Routes */}
+    <ThemeProvider>
+      <HeaderProvider>
+        <Router>
+          <Routes>
+            {/* Main Site Routes */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<Product />} />
@@ -201,6 +204,7 @@ function App() {
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
       </Router>
     </HeaderProvider>
+  </ThemeProvider>
   )
 }
 

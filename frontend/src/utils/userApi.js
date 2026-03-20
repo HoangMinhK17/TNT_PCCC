@@ -30,3 +30,25 @@ export const getAllUsers = async () => {
         throw error;
     }
 };
+
+export const updateThemeAPI = async (theme) => {
+    try {
+        const response = await api.put("/user/update-theme", { theme }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getAdminThemeAPI = async () => {
+    try {
+        const response = await api.get("/user/admin-theme");
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

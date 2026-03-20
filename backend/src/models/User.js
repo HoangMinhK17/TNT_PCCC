@@ -22,6 +22,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["active", "inactive"],
         default: "active"
+    },
+    theme: {
+        type: String,
+        enum: ['light', 'dark', 'blue', 'green'],
+        default: 'light'
     }
 },
 {

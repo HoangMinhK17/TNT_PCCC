@@ -9,6 +9,7 @@ import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { getImageInformation } from '../utils/informationApi';
 import { getAllHeader } from '../utils/headerApi';
 import { getThemeHeader } from '../utils/themeHeaderApi';
+import { updateThemeAPI } from '../utils/userApi';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -17,8 +18,8 @@ const Header = () => {
     const [categories, setCategories] = useState([]);
     const [newsCategories, setNewsCategories] = useState([]);
     const [logo, setLogo] = useState([]);
-    const [themeConfig, setThemeConfig] = useState(null);
     const [getHeaderTitle, setGetHeaderTitle] = useState([]);
+    const [themeConfig, setThemeConfig] = useState(null);
 
     const languageGlobal = JSON.parse(localStorage.getItem("language")) || "vn";
     useEffect(() => {
@@ -131,7 +132,7 @@ const Header = () => {
             }}
         >
 
-            <div className="header-container">
+            <div className="header-container" style={{ position: 'relative' }}>
                 <Link to="/" className="logo" onClick={closeMenu}>
                     <img src={logo} alt="Logo" className="logo-img" />
                 </Link>

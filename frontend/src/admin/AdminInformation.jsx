@@ -13,6 +13,8 @@ import { uploadImageToCloudinary } from '../utils/imageApi';
 import { getAllHeaderForManagement, updateHeader, findHeaderByName } from '../utils/headerApi';
 import { getThemeHeader, updateThemeHeader, createThemeHeader } from '../utils/themeHeaderApi';
 import { getThemeFooter, updateThemeFooter, createThemeFooter } from '../utils/themeFooterApi';
+import { updateThemeAPI } from '../utils/userApi';
+import { useThemeSettings } from '../context/ThemeContext';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -101,6 +103,9 @@ const AdminInformation = () => {
     const [loadingThemeFooter, setLoadingThemeFooter] = useState(false);
     const [savingThemeFooter, setSavingThemeFooter] = useState(false);
     const [formThemeFooter] = Form.useForm();
+
+    const { userTheme, updateThemeState } = useThemeSettings();
+    const [savingUserTheme, setSavingUserTheme] = useState(false);
 
     const fetchHeaders = async (page = 1, search = '') => {
         setHeaderLoading(true);
@@ -247,6 +252,27 @@ const AdminInformation = () => {
         fetchThemeHeader();
         fetchThemeFooter();
     }, []);
+
+    const handleSaveUserTheme = async () => {
+        try {
+            setSavingUserTheme(true);
+            await updateThemeAPI(userTheme);
+            
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                const userObj = JSON.parse(userStr);
+                userObj.theme = userTheme;
+                localStorage.setItem('user', JSON.stringify(userObj));
+            }
+            updateThemeState(userTheme);
+            
+            message.success("Cập nhật Theme UI thành công!");
+        } catch (err) {
+            message.error("Cập nhật Theme UI thất bại!");
+        } finally {
+            setSavingUserTheme(false);
+        }
+    };
 
     const handleSaveGeneral = async () => {
         try {
@@ -753,6 +779,55 @@ const AdminInformation = () => {
                             </>
                         )}
                     </Form>
+                </div>
+            )
+        },
+        {
+            key: '6',
+            label: 'Cấu hình Theme UI',
+            children: (
+                <div>
+                     <Title level={4} style={{ color: '#1A237E' }}>CHỌN GIAO DIỆN THEME (GLOBAL)</Title>
+                     <Card bordered={false} style={{ background: '#fafafa' }}>
+                         <div style={{ marginBottom: 16 }}>
+                             Vui lòng chọn 1 trong 4 màu sắc chủ đạo bên dưới để đổi giao diện Website:
+                         </div>
+                         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                             {[
+                                 { id: 'light', label: 'Light', color: '#ffffff', textColor: '#333' },
+                                 { id: 'dark', label: 'Dark', color: '#121212', textColor: '#fff' },
+                                 { id: 'blue', label: 'Blue', color: '#e6f4ff', textColor: '#003a8c' },
+                                 { id: 'green', label: 'Green', color: '#d9f7be', textColor: '#135200' },
+                             ].map((t) => (
+                                 <div
+                                     key={t.id}
+                                     onClick={() => updateThemeState(t.id)}
+                                     style={{
+                                         width: '120px',
+                                         height: '120px',
+                                         background: t.color,
+                                         border: userTheme === t.id ? '4px solid #1677ff' : '1px solid #d9d9d9',
+                                         borderRadius: '8px',
+                                         display: 'flex',
+                                         alignItems: 'center',
+                                         justifyContent: 'center',
+                                         cursor: 'pointer',
+                                         fontSize: '16px',
+                                         fontWeight: 'bold',
+                                         color: t.textColor,
+                                         boxShadow: userTheme === t.id ? '0 0 10px rgba(0,0,0,0.1)' : 'none',
+                                         position: 'relative'
+                                     }}
+                                 >
+                                     {t.label}
+                                     {userTheme === t.id && <span style={{position:'absolute', top: 5, right: 10, fontSize: '18px', color: '#1677ff'}}>✓</span>}
+                                 </div>
+                             ))}
+                         </div>
+                         <Button type="primary" onClick={handleSaveUserTheme} loading={savingUserTheme} style={{ marginTop: 24 }}>
+                              Lưu Giao Diện
+                         </Button>
+                     </Card>
                 </div>
             )
         }
