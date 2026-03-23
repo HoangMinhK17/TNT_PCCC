@@ -18,11 +18,9 @@ const whyChooseCompanySchema = new mongoose.Schema({
     whyChooseUs: {
         title: {
             type: String,
-            required: true
         },
         description: {
             type: String,
-            required: true
         }
     }, 
     status: {

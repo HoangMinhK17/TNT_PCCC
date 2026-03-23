@@ -135,9 +135,8 @@ const ContactSection = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="title">Tiêu đề *</label>
-                <input
-                  type="text"
+                <label htmlFor="title">Nội dung gửi *</label>
+                <textarea
                   id="title"
                   name="title"
                   value={formData.title}
@@ -145,10 +144,11 @@ const ContactSection = () => {
                   placeholder="Nhập tiêu đề"
                   readOnly={productName ? true : false}
                   required
+                  rows="5"
                 />
               </div>
 
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label htmlFor="message">Nội dung *</label>
                 <textarea
                   id="message"
@@ -159,7 +159,7 @@ const ContactSection = () => {
                   rows="5"
                   required
                 ></textarea>
-              </div>
+              </div> */}
 
               <button type="submit" className="btn-submit">
                 Gửi yêu cầu
@@ -206,7 +206,7 @@ const ContactSection = () => {
                   <p><a href={`mailto:${information.email}`}>{information.email}</a></p>
                 </div>
               </div>
-
+              {information?.timeWork?.length > 0 && (
               <div className="info-item">
                 <div className="info-icon">
                   <FaClock />
@@ -218,6 +218,7 @@ const ContactSection = () => {
                   ))}
                 </div>
               </div>
+              )}
 
             </div>
           </div>

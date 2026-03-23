@@ -48,7 +48,7 @@ const informationSchema = new mongoose.Schema({
     } ,
     timeWork : {
         type : [String],
-        required : true
+        required : false
     },
     favicon : {
         type : String,

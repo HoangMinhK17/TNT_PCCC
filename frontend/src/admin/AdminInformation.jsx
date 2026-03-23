@@ -474,8 +474,8 @@ const AdminInformation = () => {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item name="timeWork" label="Giờ làm việc (Mỗi dòng là một mục)" rules={[{ required: true, whitespace: true, message: 'Bắt buộc!' }]}>
-                                <TextArea rows={4} placeholder="Ví dụ:\nThứ 2 - Thứ 6: 08:00 - 17:00\nThứ 7: 08:00 - 12:00" />
+                            <Form.Item name="timeWork" label="Giờ làm việc (Để trống sẽ ẩn hiển thị)">
+                                <TextArea rows={4} placeholder={`Thứ 2 - Thứ 6: 08:00 - 17:00\nThứ 7: 08:00 - 12:00`} />
                             </Form.Item>
                         </Col>
                         <Col span={12}>

@@ -17,10 +17,7 @@ const contactSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    message: {
-        type: String,
-        required: true
-    },
+
     status: {
         type: String,
         enum: ["pending", "replied", "rejected"],

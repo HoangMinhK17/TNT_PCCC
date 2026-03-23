@@ -276,6 +276,7 @@ const RecruitmentSection = () => {
           )}
         </div>
 
+         {whyChooseCompany?.benefits?.length > 0 && (
         <section className="benefits-section">
           <header className="benefits-header">
             <h3>Quyền lợi & Phúc lợi</h3>
@@ -293,7 +294,8 @@ const RecruitmentSection = () => {
             ))}
           </div>
         </section>
-
+        )}
+        {whyChooseCompany?.whyChooseUs?.title && (
         <section className="why-join-modern glass-effect">
           <div className="why-join-content">
             <h3>{whyChooseCompany?.whyChooseUs?.title}</h3>
@@ -303,6 +305,7 @@ const RecruitmentSection = () => {
 
           </div>
         </section>
+        )}
       </div>
 
       {/* Modal Ứng Tuyển */}

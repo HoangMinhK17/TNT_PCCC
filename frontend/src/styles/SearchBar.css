@@ -53,8 +53,8 @@
     z-index: 2;
 }
 
-.search-container h2 {
-    color: white;
+.search-container .search-title {
+    color: white !important;
     font-size: 28px;
     margin: 0;
     text-align: center;
@@ -130,7 +130,7 @@
         height: 250px;
     }
 
-    .search-container h2 {
+    .search-container .search-title {
         font-size: 20px;
     }
 

@@ -86,7 +86,7 @@ const ServiceSection = () => {
             ))}
           </div>
         )}
-
+        {whyChooseService.length > 0 && (
         <div className="service-highlight">
           <h3>Tại sao chọn dịch vụ của chúng tôi?</h3>
           <div className="highlight-grid">
@@ -101,6 +101,7 @@ const ServiceSection = () => {
             ))}
           </div>
         </div>
+        )}
       </div>
     </section>
   );

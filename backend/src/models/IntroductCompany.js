@@ -19,11 +19,11 @@ const introductCompanySchema = new mongoose.Schema({
     description: {
         descriptionName: {
           type: String,
-          required: true
+          required: false
         },
         descriptionIcon: {
           type: String,
-          required: true
+          required: false
         }
         
     },

@@ -89,7 +89,7 @@ const CompanyIntro = () => {
       <div className="container">
         <div className="company-intro-content">
           <div className="company-text" data-aos="fade-up">
-            <h1 className="section-title"> {introduction?.name}</h1>
+            <h2 className="section-title"> {introduction?.name}</h2>
             <div className="intro-item">
               <img src={introduction?.title?.titleIcon} alt="Icon 1" className="intro-icon" />
               <p className="company-description">
@@ -97,12 +97,14 @@ const CompanyIntro = () => {
               </p>
             </div>
 
-            <div className="intro-item">
-              <img src={introduction?.description?.descriptionIcon} alt="Icon 3" className="intro-icon" />
-              <p className="company-description">
-                {introduction?.description?.descriptionName}
-              </p>
-            </div>
+            {introduction?.description?.descriptionName?.trim() && (
+              <div className="intro-item">
+                <img src={introduction?.description?.descriptionIcon} alt="Icon 3" className="intro-icon" />
+                <p className="company-description">
+                  {introduction?.description?.descriptionName}
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="company-image" data-aos="fade-up">

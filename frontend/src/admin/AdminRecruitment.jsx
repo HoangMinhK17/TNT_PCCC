@@ -348,8 +348,8 @@ const TabWhyChooseCompany = () => {
 
             const payload = {
                 whyChooseUs: {
-                    title: values.title,
-                    description: values.description
+                    title: values.title.trim(),
+                    description: values.description.trim()
                 },
                 benefits: benefitsWithUpload,
                 status: values.status
@@ -426,7 +426,7 @@ const TabWhyChooseCompany = () => {
                 <Form form={form} layout="vertical">
 
                     <div style={{ display: 'flex', gap: 16 }}>
-                        <Form.Item name="title" label="Tiêu đề chính (Why Choose Us)" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 2 }}>
+                        <Form.Item name="title" label="Tiêu đề chính (Why Choose Us)" style={{ flex: 2 }} >
                             <Input />
                         </Form.Item>
                         <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>

@@ -268,8 +268,8 @@ const AdminContact = () => {
                                         </Link>
                                     </Descriptions.Item>
                                 )}
-                                <Descriptions.Item label="Tiêu đề">{currentRecord.title}</Descriptions.Item>
-                                <Descriptions.Item label="Nội dung gửi"><div style={{ whiteSpace: 'pre-wrap' }}>{currentRecord.message}</div></Descriptions.Item>
+                                <Descriptions.Item label="Nội dung gửi">{currentRecord.title}</Descriptions.Item>
+                                {/* <Descriptions.Item label="Nội dung gửi"><div style={{ whiteSpace: 'pre-wrap' }}>{currentRecord.message}</div></Descriptions.Item> */}
                                 {currentRecord.status !== 'pending' && (
                                     <>
                                         <Descriptions.Item label="Ghi chú xử lý / Nội dung phản hồi">

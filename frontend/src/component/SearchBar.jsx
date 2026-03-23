@@ -55,7 +55,7 @@ useEffect(() => {
       <div className="search-overlay"></div>
 
       <div className="search-container">
-        <h2 className="search-title">{name}</h2>
+        <h1 className="search-title">{name}</h1>
         <form onSubmit={handleSearch} className="search-form">
           <input
             type="text"

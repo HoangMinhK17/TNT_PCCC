@@ -195,15 +195,11 @@ const TabIntroduct = () => {
     const columns = [
         { title: 'Tên công ty', dataIndex: 'name', key: 'name' },
         {
-            title: 'Tiêu đề',
+            title: 'Tiêu đề', width: '30%',
             key: 'title',
             render: (_, r) => <Text>{r.title?.titleName}</Text>,
         },
-        {
-            title: 'Mô tả',
-            key: 'desc',
-            render: (_, r) => <Text >{r.description?.descriptionName}</Text>,
-        },
+
         {
             title: 'Icon',
             key: 'icon',
@@ -273,7 +269,7 @@ const TabIntroduct = () => {
                     <Form.Item name="title.titleIcon" label="Icon tiêu đề (upload ảnh)">
                         <CloudinaryUpload />
                     </Form.Item>
-                    <Form.Item name="description.descriptionName" label="Mô tả" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                    <Form.Item name="description.descriptionName" label="Mô tả" rules={[{ whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <TextArea rows={4} />
                     </Form.Item>
                     <Form.Item name="description.descriptionIcon" label="Icon mô tả (upload ảnh)">
