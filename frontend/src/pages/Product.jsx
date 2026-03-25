@@ -20,7 +20,7 @@ const Product = () => {
   const [activeSearchTerm, setActiveSearchTerm] = useState(searchQueryParam || '');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const productsPerPage = 2;
+  const productsPerPage = 8;
 
   useEffect(() => {
     const fetchCategories = async () => {

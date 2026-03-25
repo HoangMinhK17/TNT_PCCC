@@ -2,64 +2,84 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/ProductSection.css';
 import { getPublicProducts } from '../utils/productApi';
+import { getCategoryProducts } from '../utils/categoryProductApi';
 
 const ProductSection = () => {
+    const [categories, setCategories] = useState([]);
+    const [visibleCategories, setVisibleCategories] = useState([]);
     const [products, setProducts] = useState([]);
-    const [visibleProducts, setVisibleProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchData = async () => {
             try {
                 setLoading(true);
-                const data = await getPublicProducts();
-                setProducts(data);
-                setVisibleProducts(data);
+                const [categoriesData, productsData] = await Promise.all([
+                    getCategoryProducts(),
+                    getPublicProducts()
+                ]);
+                const validCategories = Array.isArray(categoriesData) ? categoriesData : [];
+                const validProducts = Array.isArray(productsData) ? productsData : [];
+                setCategories(validCategories);
+                setVisibleCategories(validCategories);
+                setProducts(validProducts);
             } catch (error) {
-                console.error("Error fetching products:", error);
+                console.error("Error fetching data:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchProducts();
+        fetchData();
     }, []);
 
     useEffect(() => {
-        if (products.length === 0) return;
+        if (categories.length === 0) return;
 
         const interval = setInterval(() => {
-            setVisibleProducts(prev => {
+            setVisibleCategories(prev => {
                 if (prev.length <= 1) return prev;
-                const newProducts = [...prev];
-                const firstProduct = newProducts.shift();
-                newProducts.push(firstProduct);
-                return newProducts;
+                const newCategories = [...prev];
+                const firstCategory = newCategories.shift();
+                newCategories.push(firstCategory);
+                return newCategories;
             });
         }, 5000);
 
         return () => clearInterval(interval);
-    }, [products]);
+    }, [categories]);
 
     if (loading) return null;
 
     return (
         <section id="products" className="products-section">
             <div className="container" data-aos="fade-up">
-                <h2 className="section-title">Danh sách sản phẩm nổi bật</h2>
+                <h2 className="section-title">Danh mục sản phẩm</h2>
                 <div className="products-grid">
-                    {visibleProducts.slice(0, 4).map(product => (
-                        <Link
-                            key={product._id}
-                            to={`/products/${product.slug}`}
-                            style={{ textDecoration: "none", color: "inherit" }}
-                        >
-                            <div className="product-card">
-                                <img src={product.image[0]} alt={product.name} className="product-image" />
-                                <h3 className="product-name">{product.name}</h3>
-                                <p className="product-description">{product.title}</p>
-                            </div>
-                        </Link>
-                    ))}
+                    {visibleCategories.slice(0, 4).map(category => {
+                        const categoryProducts = products.filter(
+                            p => p.categoryId?._id === category._id || p.categoryId === category._id
+                        );
+                        
+                        return (
+                            <Link
+                                key={category._id}
+                                to={`/products?category=${category.name}&categoryId=${category._id}`}
+                                style={{ textDecoration: "none", color: "inherit" }}
+                            >
+                                <div className="product-card">
+                                    {categoryProducts.length > 0 && categoryProducts[0].image && categoryProducts[0].image.length > 0 ? (
+                                        <img src={categoryProducts[0].image[0]} alt={category.name} className="product-image" />
+                                    ) : (
+                                        <div className="product-image" style={{display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f0f0f0', height: '200px', width: '100%', objectFit: 'cover'}}>
+                                            <span style={{color: '#999'}}>Không có ảnh</span>
+                                        </div>
+                                    )}
+                                    <h3 className="product-name" style={{ textAlign: 'center', marginTop: '15px' }}>{category.name}</h3>
+                                    <p className="product-description" style={{ textAlign: 'center' }}>{categoryProducts.length} sản phẩm</p>
+                                </div>
+                            </Link>
+                        );
+                    })}
                 </div>
             </div>
         </section>
