@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import slugify from "slugify";
 import {
     Tabs, Table, Button, Modal, Form, Input, Space,
     Popconfirm, message, Typography, Upload, Image, Tag, Select
@@ -168,7 +169,14 @@ const TabCategoryProduct = () => {
                     <Form.Item name="name" label="Tên danh mục" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input onChange={(e) => {
                             if (!editing && form.getFieldValue('name')) {
-                                const slug = e.target.value.toLowerCase().trim().replace(/[\s\W-]+/g, '-');
+                                const value = e.target.value;
+
+                                const slug = slugify(value, {
+                                    lower: true,
+                                    strict: true,
+                                    locale: "vi",
+                                });
+
                                 form.setFieldsValue({ slug });
                             }
                         }} />
@@ -364,12 +372,12 @@ const TabProduct = () => {
                 </Select>
             </div>
 
-            <Table 
-                columns={columns} 
-                dataSource={data} 
-                loading={loading} 
-                bordered 
-                pagination={{ 
+            <Table
+                columns={columns}
+                dataSource={data}
+                loading={loading}
+                bordered
+                pagination={{
                     current: currentPage,
                     pageSize: pageSize,
                     total: totalPages * pageSize,
@@ -377,7 +385,7 @@ const TabProduct = () => {
                         setCurrentPage(page);
                         setPageSize(size);
                     }
-                }} 
+                }}
             />
 
             <Modal title={editing ? "Sửa Sản phẩm" : "Thêm mới Sản phẩm"} open={modalVisible}
@@ -388,7 +396,11 @@ const TabProduct = () => {
                         <Form.Item name="name" label="Tên sản phẩm" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
                             <Input onChange={(e) => {
                                 if (!editing) {
-                                    const slug = e.target.value.toLowerCase().trim().replace(/[\s\W-]+/g, '-');
+                                    const slug = slugify(e.target.value, {
+                                        lower: true,
+                                        strict: true,
+                                        locale: "vi",
+                                    });
                                     form.setFieldsValue({ slug });
                                 }
                             }} />
@@ -433,14 +445,14 @@ const TabProduct = () => {
                                         <Form.Item
                                             {...restField}
                                             name={[name, 'title']}
-                                            rules={[{ required: true,whitespace:true , message: 'Nhập tiêu đề' }]}
+                                            rules={[{ required: true, whitespace: true, message: 'Nhập tiêu đề' }]}
                                         >
                                             <Input placeholder="Tên thông số (Vd: Khối lượng)" style={{ width: 250 }} />
                                         </Form.Item>
                                         <Form.Item
                                             {...restField}
                                             name={[name, 'description']}
-                                            rules={[{ required: true,whitespace:true , message: 'Nhập giá trị' }]}
+                                            rules={[{ required: true, whitespace: true, message: 'Nhập giá trị' }]}
                                         >
                                             <Input placeholder="Giá trị (Vd: 3kg)" style={{ width: 350 }} />
                                         </Form.Item>

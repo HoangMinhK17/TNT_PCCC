@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import slugify from 'slugify';
 import {
     Tabs, Table, Button, Modal, Form, Input, Space,
     Popconfirm, message, Typography, Tag, Select, InputNumber, Upload, Image, Descriptions
@@ -217,7 +218,11 @@ const TabRecruitment = () => {
                         <Form.Item name="name" label="Tên công việc" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
                             <Input onChange={(e) => {
                                 if (!editing) {
-                                    const slug = e.target.value.toLowerCase().trim().replace(/[\s\W-]+/g, '-');
+                                    const slug = slugify(e.target.value, {
+                                        lower: true,
+                                        strict: true,
+                                        locale: "vi",
+                                    });
                                     form.setFieldsValue({ slug });
                                 }
                             }} />
@@ -229,10 +234,10 @@ const TabRecruitment = () => {
 
                     <div style={{ display: 'flex', gap: 16 }}>
                         <Form.Item name="level" label="Cấp bậc (Level)" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input placeholder="Vd: Intern, Junior, Senior" />
+                            <Input />
                         </Form.Item>
                         <Form.Item name="location" label="Địa điểm" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input placeholder="Vd: Hà Nội, Hồ Chí Minh" />
+                            <Input />
                         </Form.Item>
                     </div>
 
@@ -269,7 +274,7 @@ const TabRecruitment = () => {
                                                 noStyle
                                                 rules={[{ required: true, whitespace: true, message: 'Nhập nội dung yêu cầu hoặc xóa dòng trống' }]}
                                             >
-                                                <Input placeholder="Vd: Có 1 năm kinh nghiệm ReactJS..." style={{ flex: 1 }} />
+                                                <Input style={{ flex: 1 }} />
                                             </Form.Item>
                                             {fields.length > 1 ? (
                                                 <MinusCircleOutlined

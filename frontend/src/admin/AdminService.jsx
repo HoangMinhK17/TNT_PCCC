@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import slugify from 'slugify';
 import {
     Tabs, Table, Button, Modal, Form, Input, Space,
     Popconfirm, message, Typography, Upload, Image, Tag, Select
@@ -231,7 +232,11 @@ const TabService = () => {
                         <Form.Item name="name" label="Tên dịch vụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
                             <Input onChange={(e) => {
                                 if (!editing) {
-                                    const slug = e.target.value.toLowerCase().trim().replace(/[\s\W-]+/g, '-');
+                                    const slug = slugify(e.target.value, {
+                                        lower: true,
+                                        strict: true,
+                                        locale: "vi",
+                                    });
                                     form.setFieldsValue({ slug });
                                 }
                             }} />

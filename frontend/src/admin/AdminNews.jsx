@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import slugify from 'slugify';
 import {
     Tabs, Table, Button, Modal, Form, Input, Space,
     Popconfirm, message, Typography, Upload, Image, Tag, Select, DatePicker
@@ -231,7 +232,11 @@ const TabCategoryNews = () => {
                     <Form.Item name="name" label="Tên danh mục" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input onChange={(e) => {
                             if (!editing && form.getFieldValue('name')) {
-                                const slug = e.target.value.toLowerCase().trim().replace(/[\s\W-]+/g, '-');
+                                const slug = slugify(e.target.value, {
+                                    lower: true,
+                                    strict: true,
+                                    locale: "vi",
+                                });
                                 form.setFieldsValue({ slug });
                             }
                         }} />
@@ -469,7 +474,11 @@ const TabNews = () => {
                         <Form.Item name="name" label="Tên bài viết" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
                             <Input onChange={(e) => {
                                 if (!editing) {
-                                    const slug = e.target.value.toLowerCase().trim().replace(/[\s\W-]+/g, '-');
+                                    const slug = slugify(e.target.value, {
+                                        lower: true,
+                                        strict: true,
+                                        locale: "vi",
+                                    });
                                     form.setFieldsValue({ slug });
                                 }
                             }} />
