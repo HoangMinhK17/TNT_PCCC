@@ -28,10 +28,10 @@ const Achievements = () => {
     }
 
     return (
+        achievements.length > 0 && (    
         <section className="achievements-section">
-            <div className="container">
+            <div className="container" >
                 <h2 className="section-title text-center" data-aos="fade-up">Thành Tựu Của Chúng Tôi</h2>
-
                 <div className="achievements-grid">
                     {achievements.map((item, index) => (
                         <div key={index} className="achievement-card" data-aos="fade-up" data-aos-delay={index * 100}>
@@ -46,6 +46,7 @@ const Achievements = () => {
                 </div>
             </div>
         </section>
+        )
     );
 };
 

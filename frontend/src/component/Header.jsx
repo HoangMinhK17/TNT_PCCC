@@ -10,6 +10,7 @@ import { getImageInformation } from '../utils/informationApi';
 import { getAllHeader } from '../utils/headerApi';
 import { getThemeHeader } from '../utils/themeHeaderApi';
 import { updateThemeAPI } from '../utils/userApi';
+import { useThemeSettings } from '../context/ThemeContext';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -20,6 +21,7 @@ const Header = () => {
     const [logo, setLogo] = useState([]);
     const [getHeaderTitle, setGetHeaderTitle] = useState([]);
     const [themeConfig, setThemeConfig] = useState(null);
+    const { themeLayout } = useThemeSettings();
 
     const languageGlobal = JSON.parse(localStorage.getItem("language")) || "vn";
     useEffect(() => {
@@ -126,7 +128,7 @@ const Header = () => {
 
     return (
         <header
-            className="header"
+            className={`header header-style-${themeLayout?.header || 'classic'}`}
             style={{
                 backgroundColor: themeConfig?.background_color || '#ffffff',
             }}

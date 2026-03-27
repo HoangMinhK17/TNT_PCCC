@@ -1,7 +1,7 @@
 /* Achievements */
 .achievements-section {
     padding: 30px 0;
-    background-color: var(--white);
+    background-color: var(--theme-bg);
 }
 
 .section-title.text-center {
@@ -16,7 +16,7 @@
 }
 
 .achievement-card {
-    background: #fff;
+    background: var(--theme-card-bg, #fff);
     padding: 20px;
     border-radius: var(--border-radius);
     text-align: center;

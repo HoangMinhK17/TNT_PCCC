@@ -30,36 +30,57 @@ const informationSchema = new mongoose.Schema({
         type: [String],
         required: true
     },
-    socialLinks: [  {
+    socialLinks: [{
         name: {
             type: String,
         },
         url: {
             type: String,
         },
-        icon : {
-            type : String,
+        icon: {
+            type: String,
         }
     }],
-    updateBy : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
-        default : null
-    } ,
-    timeWork : {
-        type : [String],
-        required : false
+    updateBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: null
     },
-    favicon : {
-        type : String,
-      
-    }
-    
+    timeWork: {
+        type: [String],
+        required: false
+    },
+    favicon: {
+        type: String,
 
-},  
-{
-    timestamps: true
-}
+    },
+    chatConfig: {
+        scriptUrl: {
+            type: String,
+            default: ""
+        },
+        token: {
+            type: String,
+            default: ""
+        },
+        imageChat: {
+            type: String,
+        },
+        enable: {
+            type: Boolean,
+            default: true
+        },
+        name: {
+            type: String,
+            default: "Chat Hỗ Trợ"
+        }
+    }
+
+
+},
+    {
+        timestamps: true
+    }
 );
 
 export default mongoose.model("Information", informationSchema);

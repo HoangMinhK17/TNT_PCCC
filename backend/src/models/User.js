@@ -25,8 +25,14 @@ const userSchema = new mongoose.Schema({
     },
     theme: {
         type: String,
-        enum: ['light', 'dark', 'blue', 'green'],
-        default: 'light'
+        enum: [
+            // New theme IDs
+            'corporate-red', 'ocean-blue', 'forest-green',
+            'midnight-dark', 'warm-gold', 'pure-minimal',
+            // Legacy theme IDs (backward compat)
+            'light', 'dark', 'blue', 'green', 'ocean', 'forest', 'sunset', 'minimal'
+        ],
+        default: 'corporate-red'
     }
 },
 {

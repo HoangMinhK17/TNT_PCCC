@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Tabs, Button, Form, Input, Space, message, Typography, Upload, Image, Card, Row, Col, Divider, Table, Modal, Select, Pagination, Tag, ColorPicker
+    Tabs, Button, Form, Input, Space, message, Typography, Upload, Image, Card, Row, Col, Divider, Table, Modal, Select, Pagination, Tag, ColorPicker, Switch
 } from 'antd';
-import { UploadOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { UploadOutlined, PlusOutlined, DeleteOutlined, EditOutlined, CheckCircleFilled } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
+import { UI_THEMES } from '../utils/themes';
+import ThemePreviewCard from '../component/ThemePreviewCard';
 
 import {
-    updateInformation, updateImageInformation, updateContactInformation, getAllInformation
+    updateInformation, updateImageInformation, updateContactInformation, getAllInformation, updateChatConfig
 } from '../utils/informationApi';
 import { uploadImageToCloudinary } from '../utils/imageApi';
 import { getAllHeaderForManagement, updateHeader, findHeaderByName } from '../utils/headerApi';
@@ -81,6 +83,9 @@ const AdminInformation = () => {
     const [formGen] = Form.useForm();
     const [formImg] = Form.useForm();
     const [formContact] = Form.useForm();
+    const [formChat] = Form.useForm();
+
+    const [savingChat, setSavingChat] = useState(false);
 
     const [headerData, setHeaderData] = useState([]);
     const [headerLoading, setHeaderLoading] = useState(false);
@@ -106,6 +111,7 @@ const AdminInformation = () => {
 
     const { userTheme, updateThemeState } = useThemeSettings();
     const [savingUserTheme, setSavingUserTheme] = useState(false);
+    const [hoverTheme, setHoverTheme] = useState(null);
 
     const fetchHeaders = async (page = 1, search = '') => {
         setHeaderLoading(true);
@@ -189,9 +195,16 @@ const AdminInformation = () => {
                     backgroundImage: data.backgroundImage || []
                 });
 
-                formContact.resetFields();
                 formContact.setFieldsValue({
                     socialLinks: data.socialLinks || []
+                });
+
+                formChat.setFieldsValue({
+                    enable: data.chatConfig?.enable ?? true,
+                    name: data.chatConfig?.name || "Chat Hỗ Trợ",
+                    scriptUrl: data.chatConfig?.scriptUrl || "",
+                    token: data.chatConfig?.token || "",
+                    imageChat: data.chatConfig?.imageChat ? [data.chatConfig.imageChat] : []
                 });
             }
         } catch {
@@ -257,7 +270,7 @@ const AdminInformation = () => {
         try {
             setSavingUserTheme(true);
             await updateThemeAPI(userTheme);
-            
+
             const userStr = localStorage.getItem('user');
             if (userStr) {
                 const userObj = JSON.parse(userStr);
@@ -265,7 +278,7 @@ const AdminInformation = () => {
                 localStorage.setItem('user', JSON.stringify(userObj));
             }
             updateThemeState(userTheme);
-            
+
             message.success("Cập nhật Theme UI thành công!");
         } catch (err) {
             message.error("Cập nhật Theme UI thất bại!");
@@ -299,7 +312,7 @@ const AdminInformation = () => {
         try {
             setSavingThemeHeader(true);
             const values = await formThemeHeader.validateFields();
-            
+
             if (!themeHeaderData) {
                 await createThemeHeader(values);
             } else {
@@ -402,6 +415,34 @@ const AdminInformation = () => {
             message.error("Cập nhật liên kết thất bại!");
         } finally {
             setSavingContact(false);
+        }
+    };
+
+    const handleSaveChatConfig = async () => {
+        try {
+            if (!infoData) return;
+            setSavingChat(true);
+            const values = await formChat.validateFields();
+
+            const imageChatItems = Array.isArray(values.imageChat) ? values.imageChat : [];
+            const imageChatUrls = await Promise.all(imageChatItems.map(item => resolveImageUrl(item, "tnt_info/chat")));
+
+            const payload = {
+                chatConfig: {
+                    enable: values.enable,
+                    name: values.name,
+                    scriptUrl: values.scriptUrl,
+                    token: values.token,
+                    imageChat: imageChatUrls.length > 0 ? imageChatUrls[0] : ""
+                }
+            };
+            await updateChatConfig(infoData._id, payload);
+            message.success("Cập nhật cấu hình ChatBox thành công!");
+            fetchDetail();
+        } catch (err) {
+            message.error("Cập nhật cấu hình ChatBox thất bại!");
+        } finally {
+            setSavingChat(false);
         }
     };
 
@@ -783,53 +824,160 @@ const AdminInformation = () => {
             )
         },
         {
+            key: '7',
+            label: 'Chatbox',
+            children: (
+                <Form form={formChat} layout="vertical" onFinish={handleSaveChatConfig}>
+                    <Card title="Cấu hình Chatbox" size="small">
+                        <Row gutter={16}>
+                            <Col span={24}>
+                                <Form.Item name="enable" label="Bật/Tắt Chatbox" valuePropName="checked">
+                                    <Switch checkedChildren="Bật" unCheckedChildren="Tắt" />
+                                </Form.Item>
+                            </Col>
+                             <Col span={12}>
+                                <Form.Item name="name" label="Tên hiển thị Chatbox" rules={[{ required: true, message: 'Bắt buộc!' }]}>
+                                    <Input placeholder="VD: Chat Hỗ Trợ" />
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item name="scriptUrl" label="Script URL">
+                                    <Input placeholder="https://chat.com/webchat.cjs" />
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item name="token" label="Token">
+                                    <Input placeholder="0ffd97e7-8563-45d3-b596" />
+                                </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                                <Form.Item name="imageChat" label="Icon Chat">
+                                    <MultiCloudinaryUpload maxCount={1} />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Divider />
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit" loading={savingChat}>Lưu Cấu Hình</Button>
+                        </Form.Item>
+                    </Card>
+                </Form>
+            )
+        },
+        {
             key: '6',
             label: 'Cấu hình Theme UI',
-            children: (
-                <div>
-                     <Title level={4} style={{ color: '#1A237E' }}>CHỌN GIAO DIỆN THEME (GLOBAL)</Title>
-                     <Card bordered={false} style={{ background: '#fafafa' }}>
-                         <div style={{ marginBottom: 16 }}>
-                             Vui lòng chọn 1 trong 4 màu sắc chủ đạo bên dưới để đổi giao diện Website:
-                         </div>
-                         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                             {[
-                                 { id: 'light', label: 'Light', color: '#ffffff', textColor: '#333' },
-                                 { id: 'dark', label: 'Dark', color: '#121212', textColor: '#fff' },
-                                 { id: 'blue', label: 'Blue', color: '#e6f4ff', textColor: '#003a8c' },
-                                 { id: 'green', label: 'Green', color: '#d9f7be', textColor: '#135200' },
-                             ].map((t) => (
-                                 <div
-                                     key={t.id}
-                                     onClick={() => updateThemeState(t.id)}
-                                     style={{
-                                         width: '120px',
-                                         height: '120px',
-                                         background: t.color,
-                                         border: userTheme === t.id ? '4px solid #1677ff' : '1px solid #d9d9d9',
-                                         borderRadius: '8px',
-                                         display: 'flex',
-                                         alignItems: 'center',
-                                         justifyContent: 'center',
-                                         cursor: 'pointer',
-                                         fontSize: '16px',
-                                         fontWeight: 'bold',
-                                         color: t.textColor,
-                                         boxShadow: userTheme === t.id ? '0 0 10px rgba(0,0,0,0.1)' : 'none',
-                                         position: 'relative'
-                                     }}
-                                 >
-                                     {t.label}
-                                     {userTheme === t.id && <span style={{position:'absolute', top: 5, right: 10, fontSize: '18px', color: '#1677ff'}}>✓</span>}
-                                 </div>
-                             ))}
-                         </div>
-                         <Button type="primary" onClick={handleSaveUserTheme} loading={savingUserTheme} style={{ marginTop: 24 }}>
-                              Lưu Giao Diện
-                         </Button>
-                     </Card>
-                </div>
-            )
+            children: (() => {
+                const activeTheme = UI_THEMES.find(t => t.id === userTheme) || UI_THEMES[0];
+                const previewTheme = hoverTheme ? UI_THEMES.find(t => t.id === hoverTheme) : null;
+                const displayTheme = previewTheme || activeTheme;
+
+                return (
+                    <div>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            justifyContent: 'space-between',
+                            marginBottom: 28,
+                            flexWrap: 'wrap',
+                            gap: 16,
+                        }}>
+                            <div>
+                                <Title level={4} style={{ color: '#1A237E', margin: 0 }}>
+                                    CHỌN GIAO DIỆN WEBSITE
+                                </Title>
+                                <p style={{ color: '#6b7280', margin: '6px 0 0', fontSize: 14 }}>
+                                    Chọn 1 trong 6 giao diện mẫu. Giao diện sẽ thay đổi toàn bộ màu sắc, font chữ, kiểu dáng khung & nút.
+                                </p>
+                            </div>
+
+                            <div style={{
+                                background: displayTheme.previewColors.header,
+                                color: '#fff',
+                                borderRadius: 10,
+                                padding: '10px 18px',
+                                fontSize: 13,
+                                fontWeight: 600,
+                                minWidth: 200,
+                                boxShadow: `0 4px 16px ${displayTheme.previewColors.accent}33`,
+                                transition: 'all 0.25s ease',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 10,
+                            }}>
+                                <span style={{ fontSize: 20 }}>🎨</span>
+                                <div>
+                                    <div style={{ fontSize: 11, opacity: 0.8, marginBottom: 2 }}>
+                                        {previewTheme ? 'Đang xem trước:' : 'Đang dùng:'}
+                                    </div>
+                                    <div>{displayTheme.labelVn}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(3, 1fr)',
+                            gap: 20,
+                            marginBottom: 32,
+                        }}>
+                            {UI_THEMES.map(theme => (
+                                <ThemePreviewCard
+                                    key={theme.id}
+                                    themeId={theme.id}
+                                    selected={userTheme === theme.id}
+                                    onSelect={(id) => {
+                                        updateThemeState(id);
+                                        setHoverTheme(null);
+                                    }}
+                                    onHover={(id) => setHoverTheme(id)}
+                                    onLeave={() => setHoverTheme(null)}
+                                />
+                            ))}
+                        </div>
+
+                        <div style={{
+                            background: 'linear-gradient(135deg, #f8faff 0%, #fff5f5 100%)',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: 12,
+                            padding: '20px 24px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: 16,
+                            flexWrap: 'wrap',
+                        }}>
+                            <div>
+                                <div style={{ fontWeight: 600, color: '#374151', marginBottom: 4 }}>
+                                    <CheckCircleFilled style={{ color: activeTheme.previewColors.accent, marginRight: 8 }} />
+                                    Đang áp dụng: <span style={{ color: activeTheme.previewColors.accent }}>{activeTheme.labelVn}</span>
+                                </div>
+                                <div style={{ fontSize: 13, color: '#9ca3af' }}>
+                                    Nhấn "Lưu Giao Diện" để lưu cài đặt vào hệ thống.
+                                </div>
+                            </div>
+                            <Button
+                                type="primary"
+                                size="large"
+                                onClick={handleSaveUserTheme}
+                                loading={savingUserTheme}
+                                style={{
+                                    background: activeTheme.previewColors.accent,
+                                    borderColor: activeTheme.previewColors.accent,
+                                    borderRadius: 8,
+                                    fontWeight: 600,
+                                    padding: '8px 32px',
+                                    height: 'auto',
+                                    boxShadow: `0 4px 16px ${activeTheme.previewColors.accent}44`,
+                                    transition: 'all 0.2s ease',
+                                }}
+                            >
+                                Lưu Giao Diện
+                            </Button>
+                        </div>
+                    </div>
+                );
+            })()
         }
     ];
 

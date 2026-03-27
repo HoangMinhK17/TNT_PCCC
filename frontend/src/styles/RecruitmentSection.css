@@ -1,7 +1,7 @@
 /* Recruitment Section Modern Styling */
 .recruitment-section {
     padding: 20px 0;
-    background-color: #f8fafc;
+    background-color: var(--theme-bg);
     width: 100%;
     overflow: hidden;
 }
@@ -46,7 +46,7 @@
 }
 
 .job-card-item {
-    background: white;
+    background: var(--theme-card-bg, #fff);
     padding: 20px;
     border-radius: 16px;
     cursor: pointer;
@@ -241,7 +241,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #f1f5f9;
+    background: var(--theme-surface, #f1f5f9);
     border-radius: 24px;
     border: 2px dashed #cbd5e1;
     color: #94a3b8;
@@ -283,7 +283,7 @@
 }
 
 .benefit-card-modern {
-    background: white;
+    background: var(--theme-card-bg, #fff);
     padding: 40px 30px;
     border-radius: 20px;
     text-align: center;
@@ -430,7 +430,7 @@
     align-items: center;
     justify-content: center;
     padding: 80px 20px;
-    background: white;
+    background: var(--theme-card-bg, #fff);
     border-radius: 24px;
     border: 1px solid #e2e8f0;
     text-align: center;

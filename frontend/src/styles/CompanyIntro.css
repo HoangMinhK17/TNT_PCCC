@@ -1,7 +1,7 @@
 /* Company Introduction */
 .company-intro-section {
     padding: 20px 0;
-    background: var(--white);
+    background: var(--theme-bg);
     width: 100%;
 }
 

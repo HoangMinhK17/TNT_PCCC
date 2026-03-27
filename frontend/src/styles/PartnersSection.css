@@ -1,7 +1,7 @@
 /* Partners Section */
 .partners-section {
     padding: 20px 0;
-    background: var(--white);
+    background: var(--theme-bg);
     width: 100%;
 }
 
@@ -31,7 +31,7 @@
 .partner-item {
     text-align: center;
     padding: 20px;
-    background: var(--light-bg);
+    background: var(--theme-surface, #f8f9fa);
     border-radius: var(--border-radius);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }

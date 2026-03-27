@@ -90,6 +90,21 @@ export const getAllInformation = async () => {
     }
 };
 
+export const updateChatConfig = async (id, data) => {
+    try {
+        const response = await api.put(`/information/update-chat-config/${id}`, data, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error updating chat config:", error);
+        throw error;
+    }
+};
+
 
 
 

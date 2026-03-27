@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import '../styles/ServiceSection.css';
 import { getPublicServices } from '../utils/serviceApi';
 import { getWhyChooseService } from '../utils/whyChooseServiceApi';
+import { useThemeSettings } from '../context/ThemeContext';
 
 const ServiceSection = () => {
   const [services, setServices] = React.useState([]);
@@ -10,6 +11,8 @@ const ServiceSection = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [totalPages, setTotalPages] = React.useState(1);
   const [whyChooseService, setWhyChooseService] = React.useState([]);
+  const { themeLayout } = useThemeSettings();
+  const variant = themeLayout?.service || 'card-image';
 
   const itemsPerPage = 4;
 
@@ -33,7 +36,6 @@ const ServiceSection = () => {
     const fetchWhyChooseService = async () => {
       try {
         const response = await getWhyChooseService();
-        console.log("Why choose service:", response);
         setWhyChooseService(Array.isArray(response) ? response : []);
       } catch (error) {
         console.error("Error fetching why choose service:", error);
@@ -44,11 +46,72 @@ const ServiceSection = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const WhyChooseBlock = () => whyChooseService.length > 0 ? (
+    <div className="service-highlight">
+      <h3>Tại sao chọn dịch vụ của chúng tôi?</h3>
+      <div className="highlight-grid">
+        {whyChooseService.map((item, index) => (
+          <div key={index} className="highlight-item">
+            <div className="highlight-icon"><img src={item.icon} alt={item.title} /></div>
+            <h4>{item.title}</h4>
+            <p>{item.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  ) : null;
+
+  const PaginationBlock = () => totalPages > 1 ? (
+    <div className="pagination">
+      {Array.from({ length: totalPages }).map((_, index) => (
+        <button
+          key={index}
+          onClick={() => paginate(index + 1)}
+          className={`page-number ${currentPage === index + 1 ? 'active' : ''}`}
+        >{index + 1}</button>
+      ))}
+    </div>
+  ) : null;
+
+  if (variant === 'list') {
+    return (
+      <section id="services" className="services-section">
+        <div className="container" data-aos="fade-up">
+          <h1 className="section-title">Dịch vụ của chúng tôi</h1>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '80px 20px', minHeight: '300px' }}>Đang tải...</div>
+          ) : (
+            <div className="services-list">
+              {services.map((service, idx) => (
+                <Link key={service._id} to={`/services/${service.slug}`} className="service-list-row">
+                  <span className="service-list-row__num">0{idx + 1}</span>
+                  <div className="service-list-row__info">
+                    <h3 className="service-list-row__name">{service.name}</h3>
+                    {service.shortDescription && (
+                      <p className="service-list-row__desc">{service.shortDescription}</p>
+                    )}
+                  </div>
+                  {service.image && (
+                    <div className="service-list-row__img">
+                      <img src={service.image} alt={service.name} />
+                    </div>
+                  )}
+                  <span className="service-list-row__arrow">→</span>
+                </Link>
+              ))}
+            </div>
+          )}
+          <PaginationBlock />
+          <WhyChooseBlock />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="services" className="services-section">
       <div className="container" data-aos="fade-up">
         <h1 className="section-title">Dịch vụ của chúng tôi</h1>
-
         <div className="services-grid">
           {loading ? (
             <div style={{ textAlign: 'center', width: '100%', padding: '100px 20px', minHeight: '400px' }}>Đang tải dịch vụ...</div>
@@ -61,9 +124,7 @@ const ServiceSection = () => {
                   </div>
                 </Link>
                 <h3 className="service-title">
-                  <Link to={`/services/${service.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    {service.name}
-                  </Link>
+                  <Link to={`/services/${service.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>{service.name}</Link>
                 </h3>
                 <Link to={`/contact`} className="service-link">Liên hệ</Link>
               </div>
@@ -72,36 +133,8 @@ const ServiceSection = () => {
             <div style={{ textAlign: 'center', width: '100%', padding: '20px' }}>Không có dịch vụ nào.</div>
           )}
         </div>
-
-        {totalPages > 1 && (
-          <div className="pagination">
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => paginate(index + 1)}
-                className={`page-number ${currentPage === index + 1 ? 'active' : ''}`}
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
-        )}
-        {whyChooseService.length > 0 && (
-        <div className="service-highlight">
-          <h3>Tại sao chọn dịch vụ của chúng tôi?</h3>
-          <div className="highlight-grid">
-            {whyChooseService.map((item, index) => (
-              <div key={index} className="highlight-item">
-                <div className="highlight-icon">
-                  <img src={item.icon} alt={item.title} />
-                </div>
-                <h4>{item.title}</h4>
-                <p>{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-        )}
+        <PaginationBlock />
+        <WhyChooseBlock />
       </div>
     </section>
   );

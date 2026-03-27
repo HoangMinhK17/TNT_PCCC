@@ -20,7 +20,7 @@ const getImageInformation = async (req, res) => {
 
 const getContactInformation = async (req, res) => {
     try {
-        const information = await Information.find().select("socialLinks");
+        const information = await Information.find().select("socialLinks chatConfig");
         res.status(200).json(information);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -109,4 +109,21 @@ const updateContactInformation = async (req, res) => {
     }
 }
 
-export { getInformation, getImageInformation, getContactInformation, getAllInformation, createInformation, updateInformation, upadateImageInformation, updateContactInformation };
+const updateChatConfig = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const information = await Information.findByIdAndUpdate(req.params.id, {
+            chatConfig: req.body.chatConfig
+        }, { new: true });
+        if (!information) {
+            return res.status(404).json({ message: "Information not found" });
+        }
+        res.status(200).json(information);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export { getInformation, getImageInformation, getContactInformation, getAllInformation, createInformation, updateInformation, upadateImageInformation, updateContactInformation, updateChatConfig };

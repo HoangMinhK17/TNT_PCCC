@@ -1,7 +1,6 @@
-/* Projects Section */
 .projects-section {
     padding: 20px 0;
-    background: var(--light-bg);
+    background: var(--theme-bg);
     width: 100%;
     min-height: 70vh;
 }
@@ -24,7 +23,7 @@
 }
 
 .project-card {
-    background: var(--white);
+    background: var(--theme-card-bg, #fff);
     border-radius: var(--border-radius);
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -185,7 +184,7 @@
     width: 45px;
     height: 45px;
     border: 2px solid #eee;
-    background: var(--white);
+    background: var(--theme-card-bg, #fff);
     color: var(--text-color);
     border-radius: 8px;
     cursor: pointer;

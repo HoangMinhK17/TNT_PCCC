@@ -1,7 +1,7 @@
 /* Contact Section */
 .contact-section {
     padding: 20px 0;
-    background: var(--white);
+    background: var(--theme-bg);
     width: 100%;
 }
 
@@ -23,7 +23,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #fff;
+    background: var(--theme-card-bg, #fff);
     padding: 15px 20px;
     border-radius: var(--border-radius);
     margin-bottom: 20px;
@@ -150,7 +150,7 @@
 }
 
 .contact-info-box {
-    background: var(--white);
+    background: var(--theme-card-bg, #fff);
     padding: 40px;
     border-radius: var(--border-radius);
     border: 1px solid var(--border-color);
