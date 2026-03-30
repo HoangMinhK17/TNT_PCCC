@@ -276,6 +276,7 @@
     flex-direction: column;
     border-top: 1px solid var(--theme-border, #eee);
     margin-bottom: 24px;
+    
 }
 
 .service-list-row {
@@ -339,4 +340,4 @@
     .services-icon-grid { grid-template-columns: repeat(2, 1fr); }
     .service-list-row__num { font-size: 22px; min-width: 36px; }
     .service-list-row__img { display: none; }
-}
+}

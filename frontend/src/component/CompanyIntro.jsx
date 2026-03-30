@@ -88,36 +88,44 @@ const CompanyIntro = () => {
     <section id="about" className="company-intro-section">
       <div className="container">
         <div className="company-intro-content">
-          <div className="company-text" data-aos="fade-up">
+          <div className="company-text" data-aos="fade-right">
             <h2 className="section-title"> {introduction?.name}</h2>
-            <div className="intro-item">
-              <img src={introduction?.title?.titleIcon} alt="Icon 1" className="intro-icon" />
-              <p className="company-description">
-                {introduction?.title?.titleName}
-              </p>
-            </div>
-
-            {introduction?.description?.descriptionName?.trim() && (
+            
+            <div className="intro-content-wrapper">
               <div className="intro-item">
-                <img src={introduction?.description?.descriptionIcon} alt="Icon 3" className="intro-icon" />
+                <div className="intro-icon-box">
+                  <img src={introduction?.title?.titleIcon} alt="Icon 1" className="intro-icon" />
+                </div>
                 <p className="company-description">
-                  {introduction?.description?.descriptionName}
+                  {introduction?.title?.titleName}
                 </p>
               </div>
-            )}
+
+              {introduction?.description?.descriptionName?.trim() && (
+                <div className="intro-item">
+                  <div className="intro-icon-box">
+                    <img src={introduction?.description?.descriptionIcon} alt="Icon 3" className="intro-icon" />
+                  </div>
+                  <p className="company-description">
+                    {introduction?.description?.descriptionName}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="company-image" data-aos="fade-up">
-            <img
-              key={currentImageIndex}
-              src={images[currentImageIndex]}
-              alt="Công ty PCCC TNT"
-              className="intro-image fade-in"
-            />
+          <div className="company-image-container" data-aos="fade-left">
+            <div className="image-decoration"></div>
+            <div className="company-image">
+              <img
+                key={currentImageIndex}
+                src={images[currentImageIndex]}
+                alt="Công ty PCCC TNT"
+                className="intro-image fade-in"
+              />
+            </div>
           </div>
         </div>
-
-
       </div>
     </section>
   );

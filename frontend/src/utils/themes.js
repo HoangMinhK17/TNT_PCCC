@@ -1,7 +1,3 @@
-/**
- * UI Theme Definitions
- * Mỗi theme chứa đầy đủ CSS variables + layout variant để thay đổi toàn bộ giao diện.
- */
 
 export const UI_THEMES = [
     {
@@ -201,7 +197,7 @@ export const UI_THEMES = [
             header: 'floating',        // Khối bo tròn lơ lửng, menu giữa
         },
         variables: {
-            '--theme-bg': '#0f0f1a',
+            '--theme-bg': '#0f0f1a', 
             '--theme-surface': '#1e1b4b',
             '--theme-primary': '#7c3aed',
             '--theme-primary-hover': '#6d28d9',

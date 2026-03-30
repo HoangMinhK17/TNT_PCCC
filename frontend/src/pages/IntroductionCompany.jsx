@@ -23,8 +23,8 @@ const IntroductionCompany = () => {
         <div>
             <SEO
                 title="Giới thiệu công ty"
-                description="TNT PCCC - Công ty chuyên cung cấp thiết bị PCCC uy tín. Tìm hiểu về lịch sử, tầm nhìn, sứ mệnh và thành tựu của chúng tôi."
-                keywords="giới thiệu TNT PCCC, về chúng tôi, công ty pccc, lịch sử TNT"
+                description=""
+                keywords=""
                 url="/about"
                 schema={schema}
             />

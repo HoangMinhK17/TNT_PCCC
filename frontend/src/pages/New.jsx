@@ -195,7 +195,7 @@ const New = () => {
                                 const categoryItems = newsItems.filter(n => n.categoryNewsId?._id === category._id || n.categoryNewsId === category._id);
                                 if (categoryItems.length === 0) return null;
 
-                                const previewItems = categoryItems.slice(0, 3);
+                                const previewItems = categoryItems.slice(0, 4);
 
                                 return (
                                     <div key={category._id || index} className="category-section" style={{ marginBottom: '50px' }}>
