@@ -44,7 +44,7 @@ const ProjectDetail = () => {
         "description": plainDescription,
         "image": project.image,
         "dateCreated": project.year,
-        "author": { "@type": "Organization", "name": "TNT PCCC" }
+        "author": { "@type": "Organization", "name": "" }
     };
 
     return (
@@ -52,7 +52,7 @@ const ProjectDetail = () => {
             <SEO
                 title={project.name}
                 description={plainDescription}
-                keywords={`${project.name}, dự án pccc, ${project.category}, TNT PCCC`}
+                keywords={`${project.name}, dự án , ${project.category}, `}
                 image={project.image}
                 url={`/projects/${project.id}`}
                 schema={structuredData}

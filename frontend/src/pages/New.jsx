@@ -105,10 +105,10 @@ const New = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     const pageTitle = selectedCategory === 'Tất cả tin tức'
-        ? 'Tin tức & Sự kiện '
-        : `${selectedCategory} `;
+        ? 'Tin tức'
+        : `${selectedCategory}`;
 
-    const pageDescription = `Cập nhật tin tức mới nhất về ${selectedCategory === 'Tất cả tin tức' ? 'phòng cháy chữa cháy' : selectedCategory.toLowerCase()} từ TNT PCCC.`;
+    const pageDescription = `Cập nhật tin tức mới nhất về ${selectedCategory === 'Tất cả tin tức' ? 'phòng cháy chữa cháy' : selectedCategory.toLowerCase()}`;
 
     const structuredData = {
         "@context": "https://schema.org",

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import '../styles/ProductSection.css';
 import SEO from '../component/SEO';
-import { FaChevronDown, FaChevronUp, FaSearch } from 'react-icons/fa';
 import { getPublicProducts, getPublicProductByCategoryId, getProductByName } from '../utils/productApi';
 import { getCategoryProducts } from '../utils/categoryProductApi';
 
@@ -109,7 +108,7 @@ const Product = () => {
       ? 'Danh sách sản phẩm '
       : `${selectedCategory} `;
 
-  const pageDescription = `TNT PCCC cung cấp sản phẩm phòng cháy chữa cháy chất lượng. ${activeSearchTerm ? `Kết quả tìm kiếm cho ${activeSearchTerm}.` : `Xem danh mục ${selectedCategory}.`}`;
+  const pageDescription = ` cung cấp sản phẩm chất lượng. ${activeSearchTerm ? `Kết quả tìm kiếm cho ${activeSearchTerm}.` : `Xem danh mục ${selectedCategory}.`}`;
 
   const structuredData = {
     "@context": "https://schema.org",

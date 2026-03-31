@@ -1,10 +1,6 @@
 import React from 'react';
 import { UI_THEMES } from '../utils/themes';
 
-/**
- * Mini mockup preview card cho từng theme.
- * Hiển thị: header bar + 2 card content + button mẫu.
- */
 const ThemePreviewCard = ({ themeId, selected, onSelect, onHover, onLeave }) => {
     const theme = UI_THEMES.find(t => t.id === themeId);
     if (!theme) return null;
@@ -39,7 +35,6 @@ const ThemePreviewCard = ({ themeId, selected, onSelect, onHover, onLeave }) => 
                 userSelect: 'none',
             }}
         >
-            {/* Mini Browser Chrome */}
             <div style={{
                 background: '#f3f4f6',
                 padding: '6px 10px',
@@ -60,7 +55,6 @@ const ThemePreviewCard = ({ themeId, selected, onSelect, onHover, onLeave }) => 
                 }} />
             </div>
 
-            {/* Mini Header */}
             <div style={{
                 background: p.header,
                 padding: '8px 12px',
@@ -82,7 +76,6 @@ const ThemePreviewCard = ({ themeId, selected, onSelect, onHover, onLeave }) => 
                 </div>
             </div>
 
-            {/* Mini Content */}
             <div style={{
                 background: p.bg,
                 padding: '10px',
@@ -91,7 +84,6 @@ const ThemePreviewCard = ({ themeId, selected, onSelect, onHover, onLeave }) => 
                 gap: 8,
                 fontFamily: fontFamily,
             }}>
-                {/* Hero strip */}
                 <div style={{
                     background: `linear-gradient(90deg, ${p.accent}22 0%, ${p.bg} 100%)`,
                     borderRadius: radius,
@@ -118,7 +110,6 @@ const ThemePreviewCard = ({ themeId, selected, onSelect, onHover, onLeave }) => 
                     </div>
                 </div>
 
-                {/* Two mini cards */}
                 <div style={{ display: 'flex', gap: 6 }}>
                     {[0, 1].map(i => (
                         <div key={i} style={{
@@ -140,7 +131,6 @@ const ThemePreviewCard = ({ themeId, selected, onSelect, onHover, onLeave }) => 
                     ))}
                 </div>
 
-                {/* Mini footer strip */}
                 <div style={{
                     background: vars['--theme-footer-bg'] || '#1a1a2e',
                     borderRadius: `0 0 ${radius} ${radius}`,
@@ -154,7 +144,6 @@ const ThemePreviewCard = ({ themeId, selected, onSelect, onHover, onLeave }) => 
                 </div>
             </div>
 
-            {/* Theme Label */}
             <div style={{
                 padding: '10px 14px 12px',
                 background: '#fff',

@@ -84,7 +84,6 @@ const ServiceSection = () => {
             <div className="services-list">
               {services.map((service, idx) => (
                 <Link key={service._id} to={`/services/${service.slug}`} className="service-list-row">
-                  <span className="service-list-row__num">0{idx + 1}</span>
                   <div className="service-list-row__info">
                     <h3 className="service-list-row__name">{service.name}</h3>
                     {service.shortDescription && (
@@ -96,7 +95,6 @@ const ServiceSection = () => {
                       <img src={service.image} alt={service.name} />
                     </div>
                   )}
-                  <span className="service-list-row__arrow">→</span>
                 </Link>
               ))}
             </div>

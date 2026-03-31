@@ -47,19 +47,19 @@ const NewsDetail = () => {
     const structuredData = {
         "@context": "https://schema.org",
         "@type": "NewsArticle",
-        "headline": newsItem.title,
+        "headline": newsItem.name,
         "description": plainDescription,
         "image": newsItem.image,
         "datePublished": newsItem.date,
-        "author": { "@type": "Organization", "name": "TNT PCCC" }
+        "author": { "@type": "Organization", "name": "" }
     };
 
     return (
         <section className="news-detail-section">
             <SEO
-                title={newsItem.title}
+                title={newsItem.name}
                 description={plainDescription}
-                keywords={`${newsItem.categoryNewsId?.name || ''}, tin tức pccc, TNT PCCC`}
+                keywords={`${newsItem.categoryNewsId?.name || ''}, tin tức `}
                 image={newsItem.image}
                 url={`/news/${newsItem._id}`}
                 type="article"
@@ -68,7 +68,7 @@ const NewsDetail = () => {
             <div className="container">
                 <div className="news-detail-container">
                     <div className="news-detail-image-wrapper">
-                        <img src={newsItem.image} alt={newsItem.title} className="news-detail-image" />
+                        <img src={newsItem.image} alt={newsItem.name} className="news-detail-image" />
                     </div>
 
                     <div className="news-detail-info">
@@ -82,7 +82,6 @@ const NewsDetail = () => {
                             <div className="news-detail-body" dangerouslySetInnerHTML={{ __html: newsItem.content }}>
                             </div>
                         </div>
-
 
                         <div className="news-detail-footer">
                             <Link to="/news" className="btn-back">Quay lại danh sách</Link>

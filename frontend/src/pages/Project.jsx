@@ -50,8 +50,8 @@ const Project = () => {
         <section className="projects-section">
             <SEO
                 title="Dự án tiêu biểu"
-                description="Các dự án phòng cháy chữa cháy tiêu biểu đã được TNT PCCC thực hiện. Thi công, lắp đặt hệ thống PCCC cho các công trình lớn."
-                keywords="dự án pccc, thi công pccc, lắp đặt hệ thống pccc, TNT PCCC"
+                description="Các dự án  tiêu biểu đã được thực hiện."
+                keywords="dự án , thi công , lắp đặt hệ thống "
                 url="/projects"
                 schema={structuredData}
             />

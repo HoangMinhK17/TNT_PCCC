@@ -51,7 +51,7 @@ const ProductDetail = () => {
         "description": product.description,
         "image": product.image[0],
         "category": product.categoryId?.name,
-        "brand": { "@type": "Organization", "name": "TNT PCCC" }
+        "brand": { "@type": "Organization", "name": "" }
     };
 
     return (
@@ -59,7 +59,7 @@ const ProductDetail = () => {
             <SEO
                 title={product.name}
                 description={product.description}
-                keywords={`${product.name}, ${product.categoryId?.name}, pccc, TNT PCCC`}
+                keywords={`${product.name}, ${product.categoryId?.name}`}
                 image={product.image[0]}
                 url={`/products/${product._id}`}
                 schema={structuredData}

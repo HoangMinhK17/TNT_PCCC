@@ -114,7 +114,6 @@ const RecruitmentSection = () => {
     fetchJobs();
   }, []);
 
-  // Schema.org JobPosting Structured Data
   const structuredData = useMemo(() => ({
     "@context": "https://schema.org/",
     "@type": "ItemList",
@@ -159,8 +158,8 @@ const RecruitmentSection = () => {
     <section id="recruitment" className="recruitment-section">
       <Helmet>
         <title>Tuyển dụng | TNT Company - Cơ hội nghề nghiệp ngành PCCC</title>
-        <meta name="description" content="Gia nhập đội ngũ TNT Company. Chúng tôi đang tuyển dụng các vị trí kỹ sư PCCC, nhân viên lắp đặt, chuyên viên kinh doanh với mức lương hấp dẫn và môi trường chuyên nghiệp." />
-        <meta name="keywords" content="tuyển dụng pccc, kỹ sư pccc, việc làm pccc hồ chí minh, tnt company tuyển dụng" />
+        <meta name="description" content="Gia nhập đội ngũ với mức lương hấp dẫn và môi trường chuyên nghiệp." />
+        <meta name="keywords" content="tuyển dụng" />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
@@ -308,7 +307,6 @@ const RecruitmentSection = () => {
         )}
       </div>
 
-      {/* Modal Ứng Tuyển */}
       <Modal
         title={`Ứng tuyển vị trí: ${selectedJob?.name}`}
         open={applyModalVisible}

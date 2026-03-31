@@ -9,17 +9,17 @@ const Recruiment = () => {
     const schema = {
         "@context": "https://schema.org",
         "@type": "WebPage",
-        "name": "Tuyển dụng TNT PCCC",
-        "description": "Cơ hội việc làm tại TNT PCCC.",
-        "url": "https://tnt-pccc.com/recruitment"
+        "name": "Tuyển dụng ",
+        "description": "Cơ hội việc .",
+        "url": ""
     };
 
     return (
         <div>
             <SEO
                 title="Tuyển dụng"
-                description="Cơ hội việc làm tại TNT PCCC - Tuyển dụng nhân sự ngành phòng cháy chữa cháy, kỹ thuật viên, nhân viên kinh doanh."
-                keywords="tuyển dụng pccc, việc làm pccc, tuyển dụng TNT PCCC"
+                description="Cơ hội việc làm  - Tuyển dụng nhân sự."
+                keywords="tuyển dụng , việc làm , tuyển dụng "
                 url="/recruitment"
                 schema={schema}
             />

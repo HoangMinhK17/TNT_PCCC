@@ -9,7 +9,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 50px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .contact-form {
@@ -247,7 +247,7 @@
 
 .map-section h3 {
     font-size: 24px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-align: center;
     color: var(--text-color);
 }

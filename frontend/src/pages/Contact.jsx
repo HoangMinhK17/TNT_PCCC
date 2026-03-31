@@ -9,17 +9,17 @@ const Contact = () => {
     const schema = {
         "@context": "https://schema.org",
         "@type": "ContactPage",
-        "name": "Liên hệ TNT PCCC",
-        "description": "Thông tin liên hệ TNT PCCC - Tư vấn và báo giá thiết bị PCCC.",
-        "url": "https://tnt-pccc.com/contact"
+        "name": "Liên hệ ",
+        "description": "Thông tin liên hệ ",
+        "url": ""
     };
 
     return (
         <div>
             <SEO
                 title="Liên hệ"
-                description="Liên hệ TNT PCCC để được tư vấn và báo giá thiết bị phòng cháy chữa cháy, hệ thống báo cháy, bảo hộ lao động."
-                keywords="liên hệ, tư vấn pccc, báo giá pccc, TNT PCCC"
+                description="Liên hệ  để được tư vấn và báo giá thiết bị "
+                keywords="liên hệ, tư vấn , báo giá"
                 url="/contact"
                 schema={schema}
             />

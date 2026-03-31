@@ -10,8 +10,8 @@ const Service = () => {
         <div>
             <SEO
                 title="Dịch vụ"
-                description="Dịch vụ phòng cháy chữa cháy của TNT PCCC - Thi công, lắp đặt, bảo trì hệ thống PCCC chuyên nghiệp."
-                keywords="dịch vụ pccc, thi công pccc, lắp đặt báo cháy, bảo trì pccc, TNT PCCC"
+                description="Dịch vụ  lắp đặt, bảo trì hệ thống chuyên nghiệp."
+                keywords="dịch vụ , thi công , lắp đặt , bảo trì "
                 url="/services"
             />
             <ServiceSection />

@@ -120,7 +120,7 @@ const CompanyIntro = () => {
               <img
                 key={currentImageIndex}
                 src={images[currentImageIndex]}
-                alt="Công ty PCCC TNT"
+                alt="Công ty"
                 className="intro-image fade-in"
               />
             </div>

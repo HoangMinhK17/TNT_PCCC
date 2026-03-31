@@ -49,18 +49,18 @@ const ServiceDetail = () => {
     const structuredData = {
         "@context": "https://schema.org",
         "@type": "Service",
-        "name": service.title,
+        "name": service.name,
         "description": plainDescription,
         "image": service.image,
-        "provider": { "@type": "Organization", "name": "TNT PCCC" }
+        "provider": { "@type": "Organization", "name": "" }
     };
 
     return (
         <div className="service-detail-page">
             <SEO
-                title={service.title}
+                title={service.name}
                 description={plainDescription}
-                keywords={`${service.title}, dịch vụ pccc, TNT PCCC`}
+                keywords={`${service.name}, dịch vụ `}
                 image={service.image}
                 url={`/services/${service._id}`}
                 schema={structuredData}
@@ -74,7 +74,7 @@ const ServiceDetail = () => {
 
             <div className="container service-detail-content">
                 <div className="detail-row">
-                    <div className="detail-image" data-aos="fade-up">
+                    <div className="detail-image" data-aos="fade-up"> 
                         <img src={service.image} alt={service.title} />
                     </div>
                     <div className="detail-info" data-aos="fade-up">

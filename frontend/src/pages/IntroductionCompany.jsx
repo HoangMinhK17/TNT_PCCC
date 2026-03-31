@@ -14,9 +14,9 @@ const IntroductionCompany = () => {
     const schema = {
         "@context": "https://schema.org",
         "@type": "AboutPage",
-        "name": "Giới thiệu TNT PCCC",
-        "description": "Thông tin về công ty TNT PCCC - Lịch sử hình thành, tầm nhìn và sứ mệnh.",
-        "url": "https://tnt-pccc.com/about"
+        "name": "Giới thiệu ",
+        "description": "Thông tin về công ty - Lịch sử hình thành, tầm nhìn và sứ mệnh.",
+        "url": ""
     };
 
     return (

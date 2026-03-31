@@ -54,9 +54,10 @@ const ProductSection = () => {
     const getCategoryImage = (category) => {
         const categoryProducts = products.filter(
             p => p.categoryId?._id === category._id || p.categoryId === category._id
-        );
-        return categoryProducts.length > 0 && categoryProducts[0].image?.length > 0
-            ? categoryProducts[0].image[0]
+        )
+        const lastProduct = categoryProducts[categoryProducts.length - 1];
+        return lastProduct?.image?.length > 0
+            ? lastProduct.image[0]
             : null;
     };
 
@@ -117,7 +118,6 @@ const ProductSection = () => {
                                             ? <img src={img} alt={category.name} className="product-image" />
                                             : <div className="product-image product-image--placeholder"></div>
                                         }
-                                        <div className="product-card__badge">{count} SP</div>
                                     </div>
                                     <h3 className="product-name">{category.name}</h3>
                                     <p className="product-description">{count} sản phẩm</p>
