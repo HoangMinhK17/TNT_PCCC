@@ -50,10 +50,11 @@ const loginUser = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 const updateTheme = async (req, res) => {
     try {
         if (req.user.role !== "admin") {
-            return res.status(403).json({ message: "Không có quyền" });
+            return res.status(403).json({ message: "Forbidden" });
         }
         const { theme } = req.body;
         const userId = req.user.id;
@@ -84,7 +85,7 @@ const getAdminTheme = async (req, res) => {
 const changePassword = async (req, res) => {
     try {
         if (req.user.role !== "admin" && req.user.role !== "user") {
-            return res.status(403).json({ message: "forbidden" });
+            return res.status(403).json({ message: "Forbidden" });
         }
         const { password, newPassword } = req.body;
         const userId = req.user.id;
@@ -105,7 +106,7 @@ const changePassword = async (req, res) => {
         user.password = hashedPassword;
         await user.save();
 
-        res.status(200).json({ message: "Đổi mật khẩu thành công" });
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -113,8 +114,8 @@ const changePassword = async (req, res) => {
 
 const updateInfo = async (req, res) => {
     try {
-        if (req.user.role !== "admin" && req.user.role !== "user") { 
-            return res.status(403).json({ message: "forbidden" });
+        if (req.user.role !== "admin" && req.user.role !== "user") {
+            return res.status(403).json({ message: "Forbidden" });
         }
         const { name } = req.body;
         const userId = req.user.id;
@@ -127,7 +128,7 @@ const updateInfo = async (req, res) => {
         user.name = name;
         await user.save();
 
-        res.status(200).json({ message: "Cập nhật thông tin thành công", user: { name: user.name } });
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

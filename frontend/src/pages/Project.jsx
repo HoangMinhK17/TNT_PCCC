@@ -50,8 +50,8 @@ const Project = () => {
         <section className="projects-section">
             <SEO
                 title="Dự án tiêu biểu"
-                description="Các dự án  tiêu biểu đã được thực hiện."
-                keywords="dự án , thi công , lắp đặt hệ thống "
+                description="Các dự án tiêu biểu đã được thực hiện."
+                keywords="dự án, thi công, lắp đặt hệ thống"
                 url="/projects"
                 schema={structuredData}
             />

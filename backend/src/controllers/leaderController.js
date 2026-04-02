@@ -11,10 +11,10 @@ export const getAllLeaders = async (req, res) => {
 
 export const getAllLeadersForManagement = async (req, res) => {
     try {
-        if(req.user.role !== "admin") {
+        if (req.user.role !== "admin") {
             return res.status(401).json({ message: "Unauthorized" });
         }
-        const   page = parseInt(req.query.page) || 1;
+        const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
         const leaders = await Leader.find({ isDeleted: false }).sort({ createdAt: -1 }).skip(skip).limit(limit);
@@ -27,7 +27,7 @@ export const getAllLeadersForManagement = async (req, res) => {
 
 export const findLeaderByName = async (req, res) => {
     try {
-        if(req.user.role !== "admin") {
+        if (req.user.role !== "admin") {
             return res.status(401).json({ message: "Unauthorized" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -43,7 +43,7 @@ export const findLeaderByName = async (req, res) => {
 
 export const createLeader = async (req, res) => {
     try {
-        if(req.user.role !== "admin") {
+        if (req.user.role !== "admin") {
             return res.status(401).json({ message: "Unauthorized" });
         }
         const leader = new Leader(req.body);
@@ -56,7 +56,7 @@ export const createLeader = async (req, res) => {
 
 export const updateLeader = async (req, res) => {
     try {
-        if(req.user.role !== "admin") {
+        if (req.user.role !== "admin") {
             return res.status(401).json({ message: "Unauthorized" });
         }
         const leader = await Leader.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -68,7 +68,7 @@ export const updateLeader = async (req, res) => {
 
 export const deleteLeader = async (req, res) => {
     try {
-        if(req.user.role !== "admin") {
+        if (req.user.role !== "admin") {
             return res.status(401).json({ message: "Unauthorized" });
         }
         const leader = await Leader.findByIdAndUpdate(req.params.id, { isDeleted: true });

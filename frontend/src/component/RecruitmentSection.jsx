@@ -7,7 +7,7 @@ import { Modal, Form, Input, Button, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import '../styles/RecruitmentSection.css';
 import {
-  FaMoneyBillWave, FaHeartbeat, FaGraduationCap, FaGift,
+  FaMoneyBillWave,
   FaMapMarkerAlt, FaUserTie, FaBriefcase, FaCheckCircle, FaSpinner
 } from 'react-icons/fa';
 import { getWhyChooseCompany } from '../utils/whyChooseCompanyApi';
@@ -60,14 +60,14 @@ const RecruitmentSection = () => {
       };
 
       const res = await createContactRecruitment(payload);
-      if (res?.message === "Liên hệ đã được gửi thành công!" || res?._id) { 
-         message.success('Ứng tuyển thành công! Cảm ơn bạn đã quan tâm.');
-         setApplyModalVisible(false);
+      if (res?.status === 200 || res?._id) {
+        message.success('Ứng tuyển thành công! Cảm ơn bạn đã quan tâm.');
+        setApplyModalVisible(false);
       } else if (res?.message) {
-         message.error(res.message);
+        message.error(res.message);
       } else {
-         message.success('Ứng tuyển thành công! Cảm ơn bạn đã quan tâm.');
-         setApplyModalVisible(false);
+        message.success('Ứng tuyển thành công! Cảm ơn bạn đã quan tâm.');
+        setApplyModalVisible(false);
       }
     } catch (err) {
       console.log(err);
@@ -126,12 +126,12 @@ const RecruitmentSection = () => {
         "title": job.name,
         "description": job.description || job.name,
         "datePosted": job.createdAt ? new Date(job.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-        "validThrough": "2025-12-31",
+        "validThrough": "",
         "employmentType": job.time === 'Toàn thời gian' ? "FULL_TIME" : "OTHER",
         "hiringOrganization": {
           "@type": "Organization",
-          "name": "TNT Company",
-          "sameAs": "https://tntpccc.com"
+          "name": "",
+          "sameAs": ""
         },
         "jobLocation": {
           "@type": "Place",
@@ -157,7 +157,7 @@ const RecruitmentSection = () => {
   return (
     <section id="recruitment" className="recruitment-section">
       <Helmet>
-        <title>Tuyển dụng | TNT Company - Cơ hội nghề nghiệp ngành PCCC</title>
+        <title>Tuyển dụng - Cơ hội nghề nghiệp</title>
         <meta name="description" content="Gia nhập đội ngũ với mức lương hấp dẫn và môi trường chuyên nghiệp." />
         <meta name="keywords" content="tuyển dụng" />
         <script type="application/ld+json">
@@ -275,35 +275,35 @@ const RecruitmentSection = () => {
           )}
         </div>
 
-         {whyChooseCompany?.benefits?.length > 0 && (
-        <section className="benefits-section">
-          <header className="benefits-header">
-            <h3>Quyền lợi & Phúc lợi</h3>
-            <p>Chúng tôi mang đến môi trường làm việc tốt nhất cho bạn</p>
-          </header>
-          <div className="benefits-grid">
-            {whyChooseCompany?.benefits?.map((benefit, idx) => (
-              <div key={idx} className="benefit-card-modern" data-aos="zoom-in" data-aos-delay={idx * 100}>
-                <div className="benefit-icon-wrapper">{
-                  <img src={benefit?.icon} alt="" />
-                }</div>
-                <h4>{benefit?.title}</h4>
-                <p>{benefit?.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        {whyChooseCompany?.benefits?.length > 0 && (
+          <section className="benefits-section">
+            <header className="benefits-header">
+              <h3>Quyền lợi & Phúc lợi</h3>
+              <p>Chúng tôi mang đến môi trường làm việc tốt nhất cho bạn</p>
+            </header>
+            <div className="benefits-grid">
+              {whyChooseCompany?.benefits?.map((benefit, idx) => (
+                <div key={idx} className="benefit-card-modern" data-aos="zoom-in" data-aos-delay={idx * 100}>
+                  <div className="benefit-icon-wrapper">{
+                    <img src={benefit?.icon} alt="" />
+                  }</div>
+                  <h4>{benefit?.title}</h4>
+                  <p>{benefit?.description}</p>
+                </div>
+              ))}
+            </div>
+          </section>
         )}
         {whyChooseCompany?.whyChooseUs?.title && (
-        <section className="why-join-modern glass-effect">
-          <div className="why-join-content">
-            <h3>{whyChooseCompany?.whyChooseUs?.title}</h3>
-            <p>
-              {whyChooseCompany?.whyChooseUs?.description}
-            </p>
+          <section className="why-join-modern glass-effect">
+            <div className="why-join-content">
+              <h3>{whyChooseCompany?.whyChooseUs?.title}</h3>
+              <p>
+                {whyChooseCompany?.whyChooseUs?.description}
+              </p>
 
-          </div>
-        </section>
+            </div>
+          </section>
         )}
       </div>
 

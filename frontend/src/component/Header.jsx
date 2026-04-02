@@ -9,7 +9,6 @@ import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { getImageInformation } from '../utils/informationApi';
 import { getAllHeader } from '../utils/headerApi';
 import { getThemeHeader } from '../utils/themeHeaderApi';
-import { updateThemeAPI } from '../utils/userApi';
 import { useThemeSettings } from '../context/ThemeContext';
 
 const Header = () => {

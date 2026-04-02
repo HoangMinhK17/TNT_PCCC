@@ -835,7 +835,7 @@ const AdminInformation = () => {
                                     <Switch checkedChildren="Bật" unCheckedChildren="Tắt" />
                                 </Form.Item>
                             </Col>
-                             <Col span={12}>
+                            <Col span={12}>
                                 <Form.Item name="name" label="Tên hiển thị Chatbox" rules={[{ required: true, message: 'Bắt buộc!' }]}>
                                     <Input placeholder="VD: Chat Hỗ Trợ" />
                                 </Form.Item>
@@ -960,11 +960,11 @@ const AdminInformation = () => {
                                     </div>
                                 </div>
                             </div>
-                            <iframe 
-                                src={`/?previewTheme=${activeTheme.id}`} 
-                                width="100%" 
-                                height="100%" 
-                                style={{ border: 'none', flex: 1 }} 
+                            <iframe
+                                src={`/?previewTheme=${activeTheme.id}`}
+                                width="100%"
+                                height="100%"
+                                style={{ border: 'none', flex: 1 }}
                                 title="Website Preview"
                             />
                         </div>

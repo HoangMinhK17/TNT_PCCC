@@ -10,7 +10,7 @@ const getThemeHeader = async () => {
 
 const updateThemeHeader = async (id, themeHeader) => {
     try {
-        const response = await api.put(`/themeHeader/update-theme-header/${id}`, themeHeader,{
+        const response = await api.put(`/themeHeader/update-theme-header/${id}`, themeHeader, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("token")}`,

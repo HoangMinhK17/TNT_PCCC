@@ -36,13 +36,13 @@ const ForgetPassword = () => {
                     </div>
 
                     <button type="submit" className="login-btn">
-                        Gửi yêu cầu 
+                        Gửi yêu cầu
                     </button>
                 </form>
 
                 <div style={{ display: "flex", justifyContent: "center" }}>
                     <Link to="/admin/login" className="back-to-site">
-                     Quay lại đăng nhập
+                        Quay lại đăng nhập
                     </Link>
                 </div>
             </div>

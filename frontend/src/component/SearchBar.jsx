@@ -10,24 +10,24 @@ const SearchBar = () => {
   const [imageInformation, setImageInformation] = useState([]);
   const [name, setName] = useState('');
 
-useEffect(() => {
-  const fetchImageInformation = async () => {
-    try {
-      const res = await getImageInformation();
+  useEffect(() => {
+    const fetchImageInformation = async () => {
+      try {
+        const res = await getImageInformation();
 
-      const obj = Array.isArray(res) ? res[0] : res; 
-      const imgs = obj?.backgroundImage;
-      const name = obj?.name;
+        const obj = Array.isArray(res) ? res[0] : res;
+        const imgs = obj?.backgroundImage;
+        const name = obj?.name;
 
-      setName(name);
-      setImageInformation(Array.isArray(imgs) ? imgs : []); 
-    } catch (e) {
-      console.error(e);
-      setImageInformation([]);
-    }
-  };
-  fetchImageInformation();
-}, []);
+        setName(name);
+        setImageInformation(Array.isArray(imgs) ? imgs : []);
+      } catch (e) {
+        console.error(e);
+        setImageInformation([]);
+      }
+    };
+    fetchImageInformation();
+  }, []);
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageInformation.length);

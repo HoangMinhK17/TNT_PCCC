@@ -18,8 +18,8 @@ const Recruiment = () => {
         <div>
             <SEO
                 title="Tuyển dụng"
-                description="Cơ hội việc làm  - Tuyển dụng nhân sự."
-                keywords="tuyển dụng , việc làm , tuyển dụng "
+                description="Cơ hội việc làm - Tuyển dụng nhân sự."
+                keywords="tuyển dụng, việc làm, tuyển dụng"
                 url="/recruitment"
                 schema={schema}
             />

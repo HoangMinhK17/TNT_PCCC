@@ -12,10 +12,10 @@ export const getNews = async () => {
 
 export const createNews = async (news) => {
     try {
-        const response = await api.post("/news/create-news", news,{
+        const response = await api.post("/news/create-news", news, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json", 
+                "Content-Type": "application/json",
             },
         });
         return response.data;
@@ -27,10 +27,10 @@ export const createNews = async (news) => {
 
 export const updateNews = async (id, news) => {
     try {
-        const response = await api.put(`/news/update-news/${id}`, news,{
+        const response = await api.put(`/news/update-news/${id}`, news, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json", 
+                "Content-Type": "application/json",
             },
         });
         return response.data;
@@ -42,10 +42,10 @@ export const updateNews = async (id, news) => {
 
 export const deleteNews = async (id) => {
     try {
-        const response = await api.delete(`/news/delete-news/${id}`,{
+        const response = await api.delete(`/news/delete-news/${id}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json", 
+                "Content-Type": "application/json",
             },
         });
         return response.data;
@@ -106,10 +106,10 @@ export const getNewsForManage = async (params = {}) => {
 
 export const getNewsByName = async (name, page, limit) => {
     try {
-        const response = await api.get(`/news/get-news-by-name/${name}?page=${page}&limit=${limit}`,{  
+        const response = await api.get(`/news/get-news-by-name/${name}?page=${page}&limit=${limit}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json", 
+                "Content-Type": "application/json",
             },
         });
         return response.data;
@@ -121,10 +121,10 @@ export const getNewsByName = async (name, page, limit) => {
 
 export const getNewsByCategoryIdAdmin = async (categoryNewsId, page, limit) => {
     try {
-        const response = await api.get(`/news/get-news-by-category-id-admin/${categoryNewsId}?page=${page}&limit=${limit}`,{
+        const response = await api.get(`/news/get-news-by-category-id-admin/${categoryNewsId}?page=${page}&limit=${limit}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json", 
+                "Content-Type": "application/json",
             },
         });
         return response.data;

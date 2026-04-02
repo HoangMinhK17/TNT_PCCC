@@ -156,7 +156,7 @@ const TabIntroduct = () => {
                 'title.titleIcon': record.title?.titleIcon || '',
                 'description.descriptionName': record.description?.descriptionName,
                 'description.descriptionIcon': record.description?.descriptionIcon || '',
-                images: record.image || [],  
+                images: record.image || [],
             });
         }
         setModalVisible(true);
@@ -573,12 +573,12 @@ const TabLeaders = () => {
         setEditing(record);
         form.resetFields();
         if (record) {
-            form.setFieldsValue({ 
-                name: record.name, 
-                position: record.position, 
-                description: record.description, 
-                image: record.image || '', 
-                status: record.status || 'active' 
+            form.setFieldsValue({
+                name: record.name,
+                position: record.position,
+                description: record.description,
+                image: record.image || '',
+                status: record.status || 'active'
             });
         }
         setModalVisible(true);
@@ -591,12 +591,12 @@ const TabLeaders = () => {
             setSaving(true);
             const values = await form.validateFields();
             const imageUrl = await resolveImageUrl(values.image);
-            const payload = { 
-                name: values.name, 
-                position: values.position, 
-                description: values.description, 
-                image: imageUrl || '', 
-                status: values.status || 'active' 
+            const payload = {
+                name: values.name,
+                position: values.position,
+                description: values.description,
+                image: imageUrl || '',
+                status: values.status || 'active'
             };
             if (editing) {
                 await updateLeader(editing.key, payload);
@@ -634,9 +634,9 @@ const TabLeaders = () => {
             key: 'image',
             render: (img) => img ? <Image src={img} height={68} width={68} style={{ borderRadius: 4, objectFit: 'cover' }} /> : <Tag>Chưa có</Tag>,
         },
-        { 
-            title: 'Trạng thái', 
-            dataIndex: 'status', 
+        {
+            title: 'Trạng thái',
+            dataIndex: 'status',
             key: 'status',
             render: (status) => <Tag color={status === 'active' ? 'green' : 'red'}>{status === 'active' ? 'Hoạt động' : 'Tạm ẩn'}</Tag>
         },
@@ -658,21 +658,21 @@ const TabLeaders = () => {
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
                 <Title level={4} style={{ margin: 0 }}>Danh sách lãnh đạo</Title>
-                
+
                 <Space>
                     <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}
                     >
                         Thêm mới
                     </Button>
                 </Space>
-                
+
             </div>
             <Input.Search
-                        placeholder="Tìm kiếm theo tên..."
-                        onSearch={handleSearch}
-                        style={{ width: 250, marginBottom: 16 }}
-                        allowClear
-                    />
+                placeholder="Tìm kiếm theo tên..."
+                onSearch={handleSearch}
+                style={{ width: 250, marginBottom: 16 }}
+                allowClear
+            />
             <Table columns={columns} dataSource={data} loading={loading} bordered pagination={pagination} onChange={handleTableChange} />
 
             <Modal title={editing ? 'Chỉnh sửa Lãnh đạo' : 'Thêm mới Lãnh đạo'}
@@ -692,7 +692,7 @@ const TabLeaders = () => {
                         <CloudinaryUpload />
                     </Form.Item>
                     <Form.Item name="status" label="Trạng thái">
-                        <Select options={[{value: 'active', label: 'Hoạt động'}, {value: 'inactive', label: 'Tạm ẩn'}]} />
+                        <Select options={[{ value: 'active', label: 'Hoạt động' }, { value: 'inactive', label: 'Tạm ẩn' }]} />
                     </Form.Item>
                 </Form>
             </Modal>

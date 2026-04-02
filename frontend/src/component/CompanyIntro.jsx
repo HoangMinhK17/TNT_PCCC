@@ -90,7 +90,7 @@ const CompanyIntro = () => {
         <div className="company-intro-content">
           <div className="company-text" data-aos="fade-right">
             <h2 className="section-title"> {introduction?.name}</h2>
-            
+
             <div className="intro-content-wrapper">
               <div className="intro-item">
                 <div className="intro-icon-box">

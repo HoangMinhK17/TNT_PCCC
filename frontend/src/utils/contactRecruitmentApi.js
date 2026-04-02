@@ -35,7 +35,7 @@ export const getContactRecruitmentByNameOrPhone = async (nameOrPhone, page, limi
     } catch (error) {
         return error.response.data;
     }
-  
+
 }
 
 export const getContactRecruitmentByStatus = async (status, page, limit) => {

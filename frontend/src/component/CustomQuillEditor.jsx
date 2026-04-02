@@ -34,7 +34,7 @@ const CustomQuillEditor = ({ value, onChange, folder = "tnt_shared_uploads", sty
             container: [
                 [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
                 ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
                 ['link', 'image', 'video'],
                 ['clean']
             ],
@@ -58,13 +58,13 @@ const CustomQuillEditor = ({ value, onChange, folder = "tnt_shared_uploads", sty
                     }
                 `}
             </style>
-            <ReactQuill 
-                ref={quillRef} 
-                theme="snow" 
-                modules={modules} 
-                value={value || ''} 
-                onChange={onChange} 
-                style={style} 
+            <ReactQuill
+                ref={quillRef}
+                theme="snow"
+                modules={modules}
+                value={value || ''}
+                onChange={onChange}
+                style={style}
             />
         </div>
     );

@@ -22,7 +22,7 @@ const whyChooseCompanySchema = new mongoose.Schema({
         description: {
             type: String,
         }
-    }, 
+    },
     status: {
         type: String,
         enum: ["active", "inactive"],

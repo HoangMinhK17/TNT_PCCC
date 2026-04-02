@@ -55,7 +55,7 @@ const SingleCloudinaryUpload = ({ value, onChange }) => {
                     <Image src={src} height={80} width={80} style={{ objectFit: 'cover', borderRadius: 4 }} />
                     <Button size="small" danger
                         style={{ position: 'absolute', top: 2, right: 2, padding: '0 4px', minWidth: 'auto' }}
-                        onClick={removeItem}>✕</Button> 
+                        onClick={removeItem}>✕</Button>
                 </div>
             )}
         </Space>

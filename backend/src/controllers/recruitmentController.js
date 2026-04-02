@@ -11,10 +11,10 @@ export const getRecruiments = async (req, res) => {
 
 export const createRecruiment = async (req, res) => {
     try {
-        if(req.user.role !== "admin") {
+        if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        if(req.body.slug){
+        if (req.body.slug) {
             const existingProduct = await Recruitment.findOne({ slug: req.body.slug });
             if (existingProduct) {
                 return res.status(400).json({ message: "Slug already exists" });
@@ -30,10 +30,10 @@ export const createRecruiment = async (req, res) => {
 
 export const updateRecruiment = async (req, res) => {
     try {
-        if(req.user.role !== "admin") {
+        if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        if(req.body.slug){
+        if (req.body.slug) {
             const existingProduct = await Recruitment.findOne({ slug: req.body.slug, _id: { $ne: req.params.id } });
             if (existingProduct) {
                 return res.status(400).json({ message: "Slug already exists" });
@@ -48,7 +48,7 @@ export const updateRecruiment = async (req, res) => {
 
 export const deleteRecruiment = async (req, res) => {
     try {
-        if(req.user.role !== "admin") {
+        if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const recruiment = await Recruitment.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
@@ -60,7 +60,7 @@ export const deleteRecruiment = async (req, res) => {
 
 export const getRecruimentsForManage = async (req, res) => {
     try {
-        if(req.user.role !== "admin") {
+        if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;

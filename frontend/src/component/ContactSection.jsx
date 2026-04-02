@@ -207,17 +207,17 @@ const ContactSection = () => {
                 </div>
               </div>
               {information?.timeWork?.length > 0 && (
-              <div className="info-item">
-                <div className="info-icon">
-                  <FaClock />
+                <div className="info-item">
+                  <div className="info-icon">
+                    <FaClock />
+                  </div>
+                  <div className="info-content">
+                    <h4>Giờ làm việc</h4>
+                    {information.timeWork?.map((time, index) => (
+                      <p key={index}>{time}</p>
+                    ))}
+                  </div>
                 </div>
-                <div className="info-content">
-                  <h4>Giờ làm việc</h4>
-                  {information.timeWork?.map((time, index) => (
-                    <p key={index}>{time}</p>
-                  ))}
-                </div>
-              </div>
               )}
 
             </div>

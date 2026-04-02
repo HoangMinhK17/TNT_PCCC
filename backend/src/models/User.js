@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         unique: true
-    },  
+    },
     password: {
         type: String,
         required: true
@@ -33,9 +33,9 @@ const userSchema = new mongoose.Schema({
         default: 'corporate-red'
     }
 },
-{
-    timestamps: true
-}
+    {
+        timestamps: true
+    }
 );
 
 export default mongoose.model("User", userSchema);

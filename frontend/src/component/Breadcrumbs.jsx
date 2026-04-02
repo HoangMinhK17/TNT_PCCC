@@ -4,7 +4,7 @@ import '../styles/Breadcrumbs.css';
 
 import { getPublicProducts } from '../utils/productApi.js';
 import { getNews } from '../utils/newsApi.js';
-import { getAllHeader } from '../utils/headerApi.js'; 
+import { getAllHeader } from '../utils/headerApi.js';
 import { getPublicServices } from '../utils/serviceApi.js';
 import { getProjects } from '../utils/projectApi.js';
 
@@ -85,15 +85,15 @@ const Breadcrumbs = () => {
 
     const getName = (path) => {
         const matchingHeader = headers.find(h => {
-             if (!h || !h.key) return false;
-             return h.key === path;
+            if (!h || !h.key) return false;
+            return h.key === path;
         });
-        
+
         return matchingHeader ? matchingHeader.name_vn : path.charAt(0).toUpperCase() + path.slice(1);
     };
 
     if (pathnames[0] === 'products') {
-        const productHeaderName = getName('products'); 
+        const productHeaderName = getName('products');
         breadcrumbs.push({ name: productHeaderName === 'Products' ? 'Sản phẩm' : productHeaderName, path: '/products' });
         if (pathnames[1]) {
             const id = pathnames[1];
@@ -116,7 +116,7 @@ const Breadcrumbs = () => {
         }
     }
     else if (pathnames[0] === 'news') {
-        const newsHeaderName = getName('news'); 
+        const newsHeaderName = getName('news');
         breadcrumbs.push({ name: newsHeaderName === 'News' ? 'Tin tức' : newsHeaderName, path: '/news' });
 
         if (pathnames[1]) {

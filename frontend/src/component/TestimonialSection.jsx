@@ -37,7 +37,7 @@ const TestimonialSection = () => {
               Khách hàng nói gì <span className="highlight-text">về {getInfor[0]?.name || 'Chúng Tôi'}</span>
             </h2>
           </div>
-          
+
           <div className="testimonial-ai-grid">
             {testimonials.map((testimonial) => (
               <div key={testimonial.id} className="testimonial-ai-card">
@@ -79,11 +79,11 @@ const TestimonialSection = () => {
       <div className="container" data-aos="fade-up">
         <h2 className="section-title">Khách Hàng Nói Gì Về Chúng Tôi</h2>
         <p className="section-subtitle">Niềm tin của khách hàng là thước đo thành công của {getInfor[0]?.name}</p>
-        
+
         <div className="testimonial-slider">
           {testimonials.map((testimonial, index) => (
-            <div 
-              key={testimonial.id} 
+            <div
+              key={testimonial.id}
               className={`testimonial-item ${index === currentIndex ? 'active' : ''}`}
             >
               <div className="testimonial-content-wrapper">
@@ -105,11 +105,11 @@ const TestimonialSection = () => {
             </div>
           ))}
         </div>
-        
+
         <div className="testimonial-dots">
           {testimonials.map((_, index) => (
-            <button 
-              key={index} 
+            <button
+              key={index}
               className={`dot ${index === currentIndex ? 'active' : ''}`}
               onClick={() => setCurrentIndex(index)}
               aria-label={`Go to slide ${index + 1}`}

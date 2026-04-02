@@ -108,7 +108,7 @@ const Product = () => {
       ? 'Danh sách sản phẩm '
       : `${selectedCategory} `;
 
-  const pageDescription = ` cung cấp sản phẩm chất lượng. ${activeSearchTerm ? `Kết quả tìm kiếm cho ${activeSearchTerm}.` : `Xem danh mục ${selectedCategory}.`}`;
+  const pageDescription = `Cung cấp sản phẩm chất lượng. ${activeSearchTerm ? `Kết quả tìm kiếm cho ${activeSearchTerm}.` : `Xem danh mục ${selectedCategory}.`}`;
 
   const structuredData = {
     "@context": "https://schema.org",

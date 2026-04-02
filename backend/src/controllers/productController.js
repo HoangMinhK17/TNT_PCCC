@@ -20,7 +20,7 @@ const getProductForManage = async (req, res) => {
         }
         const { name, categoryId } = req.query;
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10; 
+        const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
         const filter = { isDeleted: false };
@@ -59,7 +59,7 @@ const createProduct = async (req, res) => {
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
- 
+
         const product = await Product.create({ name, title, description, image, technical, categoryId, slug, status });
         res.status(200).json(product);
     } catch (error) {
@@ -101,12 +101,12 @@ const getPublicProductById = async (req, res) => {
     try {
         const id = req.params.id;
         const mongoose = await import('mongoose');
-        const query = mongoose.isValidObjectId(id) 
+        const query = mongoose.isValidObjectId(id)
             ? { $or: [{ _id: id }, { slug: id }], isDeleted: false }
             : { slug: id, isDeleted: false };
-            
+
         const product = await Product.findOne(query).populate({ path: "categoryId", select: "name slug" });
-        
+
         if (!product) {
             return res.status(404).json({ message: "Product not found" });
         }

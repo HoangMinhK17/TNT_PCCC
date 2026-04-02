@@ -7,7 +7,6 @@ export const getPublicProducts = async () => {
 
 export const getProductForManage = async (params = {}) => {
     const token = localStorage.getItem("token");
-    // Clean params: remove null, undefined, or empty strings
     const cleanedParams = Object.fromEntries(
         Object.entries(params).filter(([_, v]) => v != null && v !== "" && v !== "null" && v !== "undefined")
     );

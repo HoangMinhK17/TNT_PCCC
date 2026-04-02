@@ -282,7 +282,7 @@ const TabNews = () => {
         setLoading(true);
         try {
             const [newsRes, catRes] = await Promise.all([
-                getNewsForManage({ page, limit, name, categoryNewsId }), 
+                getNewsForManage({ page, limit, name, categoryNewsId }),
                 getCategoryNewsForManage()
             ]);
             setData(newsRes?.news ? newsRes.news.map(d => ({ ...d, key: d._id })) : []);

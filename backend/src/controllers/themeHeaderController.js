@@ -11,7 +11,7 @@ export const getThemeHeader = async (req, res) => {
 
 export const updateThemeHeader = async (req, res) => {
     try {
-        if(req.user.role !== "admin"){
+        if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const themeHeader = await ThemeHeader.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -23,7 +23,7 @@ export const updateThemeHeader = async (req, res) => {
 
 export const createThemeHeader = async (req, res) => {
     try {
-        if(req.user.role !== "admin"){
+        if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const themeHeader = await ThemeHeader.create(req.body);

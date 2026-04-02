@@ -10,13 +10,10 @@ import {
     FaEnvelope,
     FaConciergeBell,
     FaSignOutAlt,
-    FaHome,
     FaInfoCircle,
-    FaTimes,
     FaStar,
     FaCogs,
     FaHandshake,
-    FaBuilding
 } from 'react-icons/fa';
 import { getImageInformation } from '../utils/informationApi';
 
@@ -42,7 +39,7 @@ const AdminSidebar = () => {
         { label: 'Đối tác', path: '/admin/partners', icon: <FaHandshake /> },
         { label: 'Đánh giá', path: '/admin/testimonial', icon: <FaStar /> },
         { label: 'Cấu hình hệ thống', path: '/admin/information', icon: <FaCogs /> },
-        
+
     ];
 
     const [information, setInformation] = useState(null);

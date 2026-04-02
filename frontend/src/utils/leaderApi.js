@@ -1,5 +1,5 @@
 import api from "./api";
- 
+
 const getAllLeaders = async () => {
     const response = await api.get("/leader/get-all-leaders");
     return response.data;

@@ -34,12 +34,12 @@ const categoryNewsSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    
-    
+
+
 },
-{
-    timestamps: true
-}
+    {
+        timestamps: true
+    }
 );
 
 export default mongoose.model("CategoryNews", categoryNewsSchema);

@@ -119,7 +119,7 @@ const AdminTestimonial = () => {
                 role: record.role,
                 company: record.company,
                 content: record.content,
-                rating: record.rating || 5, 
+                rating: record.rating || 5,
                 status: record.status || 'active',
                 images: record.avatar ? [record.avatar] : [],
             });
@@ -184,8 +184,8 @@ const AdminTestimonial = () => {
         },
         { title: 'Chức vụ', dataIndex: 'role', key: 'role' },
         { title: 'Công ty', dataIndex: 'company', key: 'company' },
-        { 
-            title: 'Đánh giá', dataIndex: 'rating', key: 'rating', 
+        {
+            title: 'Đánh giá', dataIndex: 'rating', key: 'rating',
             render: (rating) => <Rate disabled defaultValue={rating} />
         },
         {
@@ -246,8 +246,8 @@ const AdminTestimonial = () => {
                                     handleSearch(searchText, page, size);
                                 } else {
                                     fetchData(page, size);
-                                } 
-                            } 
+                                }
+                            }
                         }}
                     />
 
@@ -265,12 +265,12 @@ const AdminTestimonial = () => {
 
                             <Form.Item name="company" label="Công ty" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                                 <Input />
-                            </Form.Item> 
+                            </Form.Item>
 
                             <Form.Item name="content" label="Nội dung" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                                 <Input.TextArea rows={4} />
                             </Form.Item>
-                            
+
                             <Form.Item name="rating" label="Số sao" rules={[{ required: true, message: 'Vui lòng chọn số sao!' }]}>
                                 <Rate />
                             </Form.Item>

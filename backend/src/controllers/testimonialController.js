@@ -2,7 +2,7 @@ import Testimonial from "../models/Testimonial.js";
 
 const getPublicTestimonials = async (req, res) => {
     try {
-        const testimonials = await Testimonial.find({isDeleted: false , status: "active"})
+        const testimonials = await Testimonial.find({ isDeleted: false, status: "active" })
             .select("name role company content rating avatar")
             .sort({ createdAt: -1 })
 

@@ -18,8 +18,8 @@ const Contact = () => {
         <div>
             <SEO
                 title="Liên hệ"
-                description="Liên hệ  để được tư vấn và báo giá thiết bị "
-                keywords="liên hệ, tư vấn , báo giá"
+                description="Liên hệ để được tư vấn và báo giá thiết bị "
+                keywords="liên hệ, tư vấn, báo giá"
                 url="/contact"
                 schema={schema}
             />

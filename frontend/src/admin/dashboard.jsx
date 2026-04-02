@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Layout, Row, Col, Card, Typography, Table, Tag, Statistic, Dropdown, Modal, Form, Input, Button, message } from 'antd';
-import { ArrowUpOutlined, ArrowDownOutlined, DownOutlined, KeyOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
+import { Row, Col, Card, Typography, Table, Tag, Statistic, Dropdown, Modal, Form, Input, Button, message } from 'antd';
+import { DownOutlined, KeyOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
 import { getContactsForManage } from '../utils/contactApi.js';
@@ -10,7 +10,6 @@ import { getProjectsForManage } from '../utils/projectApi.js';
 import { getNewsForManage } from '../utils/newsApi.js';
 import { changePasswordAPI, updateInfoAPI } from '../utils/userApi.js';
 
-const { Content } = Layout;
 const { Title } = Typography;
 const Dashboard = () => {
     const [user, setUser] = useState(() => {
@@ -38,7 +37,10 @@ const Dashboard = () => {
             label: 'Cập nhật thông tin',
             icon: <UserOutlined />,
             onClick: () => {
-                infoForm.setFieldsValue({ name: user?.name || "" });
+                infoForm.setFieldsValue({
+                    name: user?.name || "",
+                    email: user?.email || ""
+                });
                 setIsInfoModalVisible(true);
             }
         },
@@ -251,7 +253,6 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* Password Modal */}
                 <Modal
                     title="Đổi mật khẩu"
                     open={isPasswordModalVisible}
@@ -302,7 +303,6 @@ const Dashboard = () => {
                     </Form>
                 </Modal>
 
-                {/* Info Modal */}
                 <Modal
                     title="Cập nhật thông tin"
                     open={isInfoModalVisible}
@@ -316,6 +316,12 @@ const Dashboard = () => {
                             rules={[{ required: true, message: 'Vui lòng nhập họ và tên!' }]}
                         >
                             <Input placeholder="Nhập họ và tên" />
+                        </Form.Item>
+                        <Form.Item
+                            name="email"
+                            label="Email"
+                        >
+                            <Input placeholder="Nhập email" readOnly />
                         </Form.Item>
                         <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
                             <Button onClick={() => setIsInfoModalVisible(false)} style={{ marginRight: 8 }}>

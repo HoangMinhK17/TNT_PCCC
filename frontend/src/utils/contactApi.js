@@ -1,7 +1,7 @@
 import api from "./api";
 
 const getContactsForManage = async (page, limit) => {
-    const response = await api.get(`/contact/get-contact-for-manage?page=${page}&limit=${limit}`,{
+    const response = await api.get(`/contact/get-contact-for-manage?page=${page}&limit=${limit}`, {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -11,7 +11,7 @@ const getContactsForManage = async (page, limit) => {
 };
 
 const getContactById = async (id) => {
-    const response = await api.get(`/contact/get-contact-by-id/${id}`,{
+    const response = await api.get(`/contact/get-contact-by-id/${id}`, {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`

@@ -6,7 +6,7 @@ const getPublicServices = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
-        const filter = { isDeleted: false , status: "active" };
+        const filter = { isDeleted: false, status: "active" };
         const totalServices = await Service.countDocuments(filter);
         const services = await Service.find(filter)
             .select("name image slug title status")
@@ -58,7 +58,7 @@ const createService = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, description, title, image, slug, status} = req.body;
+        const { name, description, title, image, slug, status } = req.body;
         const existingProduct = await Service.findOne({ slug });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
@@ -75,7 +75,7 @@ const updateService = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, description, title, image, slug, status} = req.body;
+        const { name, description, title, image, slug, status } = req.body;
         const existingProduct = await Service.findOne({ slug, _id: { $ne: req.params.id } });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
@@ -130,10 +130,10 @@ const getPublicServiceById = async (req, res) => {
     try {
         const id = req.params.id;
         const mongoose = await import('mongoose');
-        const query = mongoose.isValidObjectId(id) 
+        const query = mongoose.isValidObjectId(id)
             ? { $or: [{ _id: id }, { slug: id }], isDeleted: false }
             : { slug: id, isDeleted: false };
-            
+
         const service = await Service.findOne(query);
         if (!service) {
             return res.status(404).json({ message: "Service not found" });

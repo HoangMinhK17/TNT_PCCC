@@ -17,12 +17,12 @@ const productSchema = new mongoose.Schema({
         type: [String]
     },
     technical: [{
-         title: {
+        title: {
             type: String,
-         },
-         description: {
+        },
+        description: {
             type: String,
-         }
+        }
     }],
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -58,11 +58,11 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-   
+
 },
-{
-    timestamps: true
-}
+    {
+        timestamps: true
+    }
 );
 
 export default mongoose.model("Product", productSchema);

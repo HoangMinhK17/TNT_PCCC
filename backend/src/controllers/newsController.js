@@ -93,12 +93,12 @@ export const getNewsById = async (req, res) => {
     try {
         const id = req.params.id;
         const mongoose = await import('mongoose');
-        const query = mongoose.isValidObjectId(id) 
+        const query = mongoose.isValidObjectId(id)
             ? { $or: [{ _id: id }, { slug: id }], status: "active", isDeleted: false }
             : { slug: id, status: "active", isDeleted: false };
-            
+
         const news = await News.findOne(query).select("name date title image description content slug ").populate("categoryNewsId", "name");
-        
+
         if (!news) {
             return res.status(404).json({ message: "News not found" });
         }

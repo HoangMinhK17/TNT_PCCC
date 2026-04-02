@@ -169,7 +169,7 @@ const AdminPartner = () => {
             title: 'Ảnh logo', dataIndex: 'image', key: 'image',
             render: (img) => img ? (
                 <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                    <Image src={img} height={58} width={68} style={{ borderRadius: 4, objectFit: 'contain' }}  />
+                    <Image src={img} height={58} width={68} style={{ borderRadius: 4, objectFit: 'contain' }} />
                 </div>
             ) : <Tag>Chưa có</Tag>
         },
@@ -213,7 +213,7 @@ const AdminPartner = () => {
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
                         />
-                     
+
                     </div>
 
                     <Table

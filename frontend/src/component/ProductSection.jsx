@@ -146,7 +146,7 @@ const ProductSection = () => {
                                         ? <img src={img} alt={category.name} className="product-image" />
                                         : <div className="product-image" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f0f0f0', height: '200px' }}>
                                             <span style={{ color: '#999' }}>Không có ảnh</span>
-                                          </div>
+                                        </div>
                                     }
                                     <h3 className="product-name" style={{ textAlign: 'center', marginTop: '15px' }}>{category.name}</h3>
                                     <p className="product-description" style={{ textAlign: 'center' }}>{count} sản phẩm</p>

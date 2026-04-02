@@ -12,7 +12,7 @@ const categoryProductSchema = new mongoose.Schema({
         unique: true,
         index: true
     },
-    status: { 
+    status: {
         type: String,
         enum: ["active", "inactive"],
         default: "active"
@@ -39,9 +39,9 @@ const categoryProductSchema = new mongoose.Schema({
 
 
 },
-{
-    timestamps: true
-}
+    {
+        timestamps: true
+    }
 );
 
 export default mongoose.model("CategoryProduct", categoryProductSchema);

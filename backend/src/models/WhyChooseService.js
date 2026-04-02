@@ -36,11 +36,11 @@ const whyChooseServiceSchema = new mongoose.Schema({
         type: Date,
         default: null
     }
-  
+
 },
-{   
-    timestamps: true
-}
+    {
+        timestamps: true
+    }
 );
 
 export default mongoose.model("WhyChooseService", whyChooseServiceSchema);

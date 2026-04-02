@@ -2,7 +2,7 @@ import CategoryProduct from "../models/CategoryProduct.js";
 
 const getCategoryProducts = async (req, res) => {
     try {
-        const categoryProducts = await CategoryProduct.find({isDeleted : false , status : "active"}).sort({ createdAt: -1 });
+        const categoryProducts = await CategoryProduct.find({ isDeleted: false, status: "active" }).sort({ createdAt: -1 });
         res.status(200).json(categoryProducts);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -23,9 +23,9 @@ const createCategoryProduct = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        if(slug){
-            const categoryProduct =  await CategoryProduct.findOne({slug : slug});
-            if(categoryProduct){
+        if (slug) {
+            const categoryProduct = await CategoryProduct.findOne({ slug: slug });
+            if (categoryProduct) {
                 return res.status(400).json({ message: "Slug already exists" });
             }
         }

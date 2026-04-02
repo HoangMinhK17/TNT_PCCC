@@ -17,7 +17,7 @@ const projectSchema = new mongoose.Schema({
         type: String
     },
     date: {
-        type: Date 
+        type: Date
     },
     slug: {
         type: String,
@@ -49,9 +49,9 @@ const projectSchema = new mongoose.Schema({
         default: false
     }
 },
-{
-    timestamps: true
-}
+    {
+        timestamps: true
+    }
 );
 
 export default mongoose.model("Project", projectSchema);

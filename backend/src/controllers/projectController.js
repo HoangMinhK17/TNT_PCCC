@@ -101,10 +101,10 @@ const getProjectById = async (req, res) => {
     try {
         const id = req.params.id;
         const mongoose = await import('mongoose');
-        const query = mongoose.isValidObjectId(id) 
+        const query = mongoose.isValidObjectId(id)
             ? { $or: [{ _id: id }, { slug: id }], isDeleted: false }
             : { slug: id, isDeleted: false };
-            
+
         const project = await Project.findOne(query).select("name slug title description image date status");
         if (!project) {
             return res.status(404).json({ message: "Project not found" });

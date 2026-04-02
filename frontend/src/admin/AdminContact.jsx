@@ -251,7 +251,7 @@ const AdminContact = () => {
                             </Form.Item>
                         </Form>
                     </Modal>
-                    
+
                     <Modal title="Chi tiết liên hệ" open={viewModalVisible}
                         onCancel={() => setViewModalVisible(false)} footer={<Button onClick={() => setViewModalVisible(false)}>Đóng</Button>} width={700}>
                         {currentRecord && (

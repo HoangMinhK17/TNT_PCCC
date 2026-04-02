@@ -6,7 +6,7 @@ export const getThemeFooter = async () => {
 }
 
 export const updateThemeFooter = async (id, data) => {
-    const response = await api.put(`/themeFooter/update-theme-footer/${id}`, data, 
+    const response = await api.put(`/themeFooter/update-theme-footer/${id}`, data,
         {
             headers: {
                 "Content-Type": "application/json",
@@ -18,7 +18,7 @@ export const updateThemeFooter = async (id, data) => {
 }
 
 export const createThemeFooter = async (data) => {
-    const response = await api.post(`/themeFooter/create-theme-footer`, data, 
+    const response = await api.post(`/themeFooter/create-theme-footer`, data,
         {
             headers: {
                 "Content-Type": "application/json",
