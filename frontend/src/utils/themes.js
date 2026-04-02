@@ -18,6 +18,9 @@ export const UI_THEMES = [
             news: 'magazine',          // 1 bài lớn + 2 nhỏ phải
             product: 'grid-4',         // 4 card đứng
             service: 'card-image',     // Card có ảnh
+            project: 'masonry',        // Lưới thẻ dự án bất đối xứng
+            leader: 'grid-carousel',   // Băng chuyền cuộn ngang
+            partner: 'marquee',      // Lưới tĩnh viền bao quanh
             section_style: 'sharp',    // Vuông (ít bo góc)
             section_spacing: 'normal', // Khoảng cách bình thường
             header: 'classic',         // Menu sát logo, khối chữ nhật tràn viền
@@ -76,6 +79,9 @@ export const UI_THEMES = [
             news: 'grid',              // 3 card đứng đều nhau
             product: 'grid-3',         // 3 card lớn hơn
             service: 'card-image',      // Icon + tên + mô tả (không ảnh)
+            project: 'slider-3d',      // Slide lướt hiệu ứng xoay góc
+            leader: 'card-modern',     // Lưới tĩnh, thẻ ảnh lãnh đạo nổi nhẹ
+            partner: 'marquee',        // Viền logo chạy liên tục năng động
             section_style: 'rounded',  // Bo góc vừa
             section_spacing: 'normal',
             header: 'floating',        // Khối bo tròn lơ lửng, menu giữa
@@ -132,8 +138,11 @@ export const UI_THEMES = [
         },
         layout: {
             news: 'list',              // Danh sách ngang: ảnh trái, text phải
-            product: 'grid-3',         // 3 card lớn
+            product: 'list-horizontal',         // 3 card lớn
             service: 'card-image',     // Card có ảnh
+            project: 'slider-3d',   // Lưới tĩnh, info đổ bóng nằm trong ảnh dự án
+            leader: 'circle-avatar',   // Thẻ ban quản trị dùng ảnh tròn gần gũi
+            partner: 'logo-static',    // Logo đối tác xếp lưới nhưng ko viền trống
             section_style: 'rounded',
             section_spacing: 'airy',   // Khoảng cách rộng rãi
             header: 'boxed',           // Khối bo góc nhẹ, lơ lửng, menu phải
@@ -192,12 +201,15 @@ export const UI_THEMES = [
             news: 'magazine',          // Magazine layout
             product: 'grid-3',         // 3 card lớn
             service: 'card-image',      // Icon card
+            project: 'glow-cards',     // Viền neon bao quanh grid card
+            leader: 'dark-glass',      // Hiệu ứng Glassmorphism đổ bóng làm mịn ảnh
+            partner: 'logo-opacity',   // Logo bị xám mờ và hiện rực nếu hover chuột
             section_style: 'pill',     // Bo góc nhiều (pill-shape)
             section_spacing: 'compact', // Compact
             header: 'floating',        // Khối bo tròn lơ lửng, menu giữa
         },
         variables: {
-            '--theme-bg': '#0f0f1a', 
+            '--theme-bg': '#0f0f1a',
             '--theme-surface': '#1e1b4b',
             '--theme-primary': '#7c3aed',
             '--theme-primary-hover': '#6d28d9',
@@ -250,9 +262,12 @@ export const UI_THEMES = [
             news: 'magazine',           // Magazine style
             product: 'list-horizontal', // Card ngang: ảnh trái, info phải
             service: 'card-image',       // Icon card
+            project: 'classic-grid',    // Lưới dự án đóng vai kẻ khung trang trọng
+            leader: 'elegant-profile',  // Hồ sơ lãnh đạo nét chữ mạ vàng thanh mảnh
+            partner: 'marquee',  // Bộ logo đối tác được tinh chỉnh hiệu ứng mạ vàng
             section_style: 'sharp',
             section_spacing: 'airy',
-            header: 'classic-right',   // Khối chữ nhật tràn viền, menu phải
+            header: 'floating',   // Khối chữ nhật tràn viền, menu phải
         },
         variables: {
             '--theme-bg': '#fffbeb',
@@ -308,6 +323,9 @@ export const UI_THEMES = [
             news: 'list',               // List ngang
             product: 'list-horizontal', // Card ngang
             service: 'list',            // Full-width list
+            project: 'minimal-grid',    // Thuần túy không border không boxshadow - tập trung ảnh
+            leader: 'text-focus',       // Highlight chức danh, giấu hình để gọn trang web
+            partner: 'logo-mono',       // Logo luôn full màu đen/xám tăng độ tương phản
             section_style: 'sharp',
             section_spacing: 'compact',
             header: 'minimal',         // Khối phẳng, không viền mờ, menu giữa
@@ -346,6 +364,69 @@ export const UI_THEMES = [
             '--theme-input-focus': '#111827',
             '--theme-divider': '#e5e7eb',
             '--theme-overlay': 'rgba(0,0,0,0.04)',
+        }
+    },
+    {
+        id: 'ai-teal',
+        label: 'AI Teal',
+        labelVn: 'AI Hiện Đại',
+        description: 'Phong cách AI hiện đại, teal gradient',
+        tag: 'AI Mới',
+        tagColor: '#0d9488',
+        previewColors: {
+            header: 'rgba(255,255,255,0.9)',
+            bg: '#F9FAFB',
+            card: 'rgba(255,255,255,0.95)',
+            accent: '#55CCC2',
+            text: '#011E1A',
+        },
+        layout: {
+            news: 'grid',              // 3 card đứng đều
+            product: 'grid-3',         // 3 card lớn bo tròn nhiều
+            service: 'card-image',     // Card có ảnh
+            project: 'classic-grid',   // Lưới dự án info gradient bên trong
+            leader: 'circle-avatar',   // Avatar tròn thân thiện kiểu AI companion
+            partner: 'logo-grid',      // Lưới logo với border nhẹ
+            section_style: 'pill',     // Bo góc nhiều - pill shape
+            section_spacing: 'airy',   // Khoảng cách rộng rãi, thoáng đãng
+            header: 'floating',        // Header nổi, kiểu pill glassmorphism
+        },
+        variables: {
+            '--theme-bg': '#F9FAFB',
+            '--theme-surface': '#FFFFFF',
+            '--theme-primary': '#55CCC2',
+            '--theme-primary-hover': '#45B8AE',
+            '--theme-primary-light': 'rgba(85,204,194,0.15)',
+            '--theme-secondary': '#FFCF4D',
+            '--theme-text': '#374151',
+            '--theme-text-muted': '#4B5563',
+            '--theme-border': '#E5E7EB',
+            '--theme-border-hover': '#55CCC2',
+            '--theme-radius': '20px',
+            '--theme-radius-lg': '24px',
+            '--theme-font': "'Be Vietnam Pro', system-ui, sans-serif",
+            '--theme-font-heading': "'Be Vietnam Pro', system-ui, sans-serif",
+            '--theme-shadow': '0 10px 15px -3px rgba(0,0,0,0.1)',
+            '--theme-shadow-hover': '-1px 4px 24px rgba(85,204,194,0.3)',
+            '--theme-btn-bg': '#55CCC2',
+            '--theme-btn-text': '#FFFFFF',
+            '--theme-btn-radius': '9999px',
+            '--theme-btn-shadow': '0 4px 20px rgba(85,204,194,0.40)',
+            '--theme-card-bg': '#FFFFFF',
+            '--theme-card-shadow': '0 8px 32px rgba(0,0,0,0.05)',
+            '--theme-card-radius': '24px',
+            '--theme-header-bg': 'rgba(255,255,255,0.90)',
+            '--theme-header-text': '#011E1A',
+            '--theme-footer-bg': '#011E1A',
+            '--theme-footer-text': '#D1D5DB',
+            '--theme-section-alt': '#FFFFFF',
+            '--theme-input-bg': 'rgba(255,255,255,0.9)',
+            '--theme-input-border': '#E5E7EB',
+            '--theme-input-focus': '#55CCC2',
+            '--theme-divider': '#FDE68A',
+            '--theme-overlay': 'rgba(85,204,194,0.06)',
+            '--theme-glow': '0 0 60px rgba(85,204,194,0.20)',
+            '--theme-glass': 'backdrop-filter: blur(12px)',
         }
     },
 ];

@@ -4,7 +4,7 @@ const createIntroductCompany = async (req, res) => {
     try {
         const { name, title, description, image, mission, vision, coreValues } = req.body;
         const introductCompany = await IntroductCompany.create({ name, title, description, image, mission, vision, coreValues });
-        res.status(201).json(introductCompany);
+        res.status(200).json(introductCompany);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

@@ -29,6 +29,13 @@ export const ThemeProvider = ({ children }) => {
     useEffect(() => {
         const fetchTheme = async () => {
             try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const previewTheme = urlParams.get('previewTheme');
+                if (previewTheme) {
+                    applyTheme(previewTheme);
+                    return;
+                }
+
                 const res = await getAdminThemeAPI();
                 if (res && res.theme) {
                     applyTheme(res.theme);

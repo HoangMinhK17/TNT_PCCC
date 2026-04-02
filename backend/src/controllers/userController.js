@@ -10,7 +10,7 @@ const createUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         const user = await User.create({ name, email, password: hashedPassword });
-        res.status(201).json({ message: "User created successfully" });
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -75,10 +75,62 @@ const updateTheme = async (req, res) => {
 const getAdminTheme = async (req, res) => {
     try {
         const admin = await User.findOne({ role: "admin" }).select('theme');
-        res.status(200).json({ theme: admin ? admin.theme : 'light' });
+        res.status(200).json({ theme: admin ? admin.theme : 'corporate-red' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-export { createUser, getAllUsers, loginUser, updateTheme, getAdminTheme };
+const changePassword = async (req, res) => {
+    try {
+        if (req.user.role !== "admin" && req.user.role !== "user") {
+            return res.status(403).json({ message: "forbidden" });
+        }
+        const { password, newPassword } = req.body;
+        const userId = req.user.id;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng" });
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(404).json({ message: "Mật khẩu cũ không đúng" });
+        }
+        if (password === newPassword) {
+            return res.status(404).json({ message: "Mật khẩu mới không được trùng với mật khẩu cũ" });
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({ message: "Đổi mật khẩu thành công" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const updateInfo = async (req, res) => {
+    try {
+        if (req.user.role !== "admin" && req.user.role !== "user") { 
+            return res.status(403).json({ message: "forbidden" });
+        }
+        const { name } = req.body;
+        const userId = req.user.id;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng" });
+        }
+
+        user.name = name;
+        await user.save();
+
+        res.status(200).json({ message: "Cập nhật thông tin thành công", user: { name: user.name } });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export { createUser, getAllUsers, loginUser, updateTheme, getAdminTheme, changePassword, updateInfo };

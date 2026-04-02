@@ -12,9 +12,9 @@ const createContactRecruitment = async (req, res) => {
             recruitmentId
         });
         await contactRecruitment.save();
-        res.status(201).json({ message: "Liên hệ đã được gửi thành công!" });
+        res.status(200).json(contactRecruitment);
     } catch (error) {
-        res.status(500).json({ message: "Có lỗi xảy ra!" });
+        res.status(500).json({ message: error.message });
     }
 }
 
@@ -30,7 +30,7 @@ const getContactRecruitment = async (req, res) => {
         const contactRecruitment = await ContactRecruitment.find({ isDeleted: false }).populate('recruitmentId', 'name slug').sort({ createdAt: -1 }).skip(skip).limit(limit);
         res.status(200).json({ contactRecruitment, total, totalPage: Math.ceil(total / limit), currentPage: page });
     } catch (error) {
-        res.status(500).json({ message: "Có lỗi xảy ra!" });
+        res.status(500).json({ message: error.message });
     }
 }
 
@@ -47,7 +47,7 @@ const getContactRecruitmentByNameOrPhone = async (req, res) => {
         const contactRecruitment = await ContactRecruitment.find({ $or: [{ name: { $regex: search, $options: "i" } }, { phone: { $regex: search, $options: "i" } }], isDeleted: false }).populate('recruitmentId', 'name slug').sort({ createdAt: -1 }).skip(skip).limit(limit);
         res.status(200).json({ contactRecruitment, total, totalPage: Math.ceil(total / limit), currentPage: page });
     } catch (error) {
-        res.status(500).json({ message: "Có lỗi xảy ra!" });
+        res.status(500).json({ message: error.message });
     }
 }
 
@@ -64,7 +64,7 @@ const getContactRecruitmentByStatus = async (req, res) => {
         const contactRecruitment = await ContactRecruitment.find({ status, isDeleted: false }).populate('recruitmentId', 'name slug').sort({ createdAt: -1 }).skip(skip).limit(limit);
         res.status(200).json({ contactRecruitment, total, totalPage: Math.ceil(total / limit), currentPage: page });
     } catch (error) {
-        res.status(500).json({ message: "Có lỗi xảy ra!" });
+        res.status(500).json({ message: error.message });
     }
 }
 
@@ -76,7 +76,7 @@ const getContactRecruitmentById = async (req, res) => {
         const contactRecruitment = await ContactRecruitment.findById(req.params.id).populate('recruitmentId', 'name slug');
         res.status(200).json(contactRecruitment);
     } catch (error) {
-        res.status(500).json({ message: "Có lỗi xảy ra!" });
+        res.status(500).json({ message: error.message });
     }
 }
 
@@ -98,7 +98,7 @@ const updateContactRecruitment = async (req, res) => {
         }, { new: true });
         res.status(200).json(contactRecruitment);
     } catch (error) {
-        res.status(500).json({ message: "Có lỗi xảy ra!" });
+        res.status(500).json({ message: error.message });
     }
 }
 
@@ -110,7 +110,7 @@ const deleteContactRecruitment = async (req, res) => {
         const contactRecruitment = await ContactRecruitment.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
         res.status(200).json(contactRecruitment);
     } catch (error) {
-        res.status(500).json({ message: "Có lỗi xảy ra!" });
+        res.status(500).json({ message: error.message });
     }
 }
 

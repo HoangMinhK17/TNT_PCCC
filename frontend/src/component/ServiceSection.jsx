@@ -11,7 +11,7 @@ const ServiceSection = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [totalPages, setTotalPages] = React.useState(1);
   const [whyChooseService, setWhyChooseService] = React.useState([]);
-  const { themeLayout } = useThemeSettings();
+  const { themeLayout, userTheme } = useThemeSettings();
   const variant = themeLayout?.service || 'card-image';
 
   const itemsPerPage = 4;
@@ -124,7 +124,16 @@ const ServiceSection = () => {
                 <h3 className="service-title">
                   <Link to={`/services/${service.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>{service.name}</Link>
                 </h3>
-                <Link to={`/contact`} className="service-link">Liên hệ</Link>
+                {userTheme === 'ai-teal' ? (
+                  <Link to={`/contact`} className="ai-arrow-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </Link>
+                ) : (
+                  <Link to={`/contact`} className="service-link">Liên hệ</Link>
+                )}
               </div>
             ))
           ) : (

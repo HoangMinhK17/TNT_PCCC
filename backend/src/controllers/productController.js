@@ -55,9 +55,13 @@ const createProduct = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+        const existingProduct = await Product.findOne({ slug });
+        if (existingProduct) {
+            return res.status(400).json({ message: "Slug already exists" });
+        }
  
         const product = await Product.create({ name, title, description, image, technical, categoryId, slug, status });
-        res.status(201).json(product);
+        res.status(200).json(product);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -69,7 +73,10 @@ const updateProduct = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
- 
+        const existingProduct = await Product.findOne({ slug, _id: { $ne: req.params.id } });
+        if (existingProduct) {
+            return res.status(400).json({ message: "Slug already exists" });
+        }
 
         const product = await Product.findByIdAndUpdate(req.params.id, { name, title, description, image, technical, categoryId, slug, status }, { new: true });
         res.status(200).json(product);

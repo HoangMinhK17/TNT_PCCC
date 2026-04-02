@@ -48,7 +48,7 @@ export const createLeader = async (req, res) => {
         }
         const leader = new Leader(req.body);
         await leader.save();
-        res.status(201).json(leader);
+        res.status(200).json(leader);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

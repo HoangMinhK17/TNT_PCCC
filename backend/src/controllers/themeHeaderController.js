@@ -27,7 +27,7 @@ export const createThemeHeader = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const themeHeader = await ThemeHeader.create(req.body);
-        res.status(201).json(themeHeader);
+        res.status(200).json(themeHeader);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

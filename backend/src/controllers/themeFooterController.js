@@ -27,7 +27,7 @@ const createThemeFooter = async (req, res) => {
             return res.status(401).json({ error: "Unauthorized" });
         }
         const themeFooter = await ThemeFooter.create(req.body);
-        res.status(201).json(themeFooter);
+        res.status(200).json(themeFooter);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

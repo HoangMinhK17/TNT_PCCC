@@ -6,7 +6,7 @@ export const createHeader = async (req, res) => {
             return res.status(403).json({ error: "Forbidden" });
         }
         const header = await Header.create(req.body);
-        res.status(201).json(header);
+        res.status(200).json(header);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

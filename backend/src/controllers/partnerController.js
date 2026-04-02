@@ -16,7 +16,7 @@ export const createPartner = async (req, res) => {
         }
         const partner = new Partner(req.body);
         await partner.save();
-        res.status(201).json(partner);
+        res.status(200).json(partner);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

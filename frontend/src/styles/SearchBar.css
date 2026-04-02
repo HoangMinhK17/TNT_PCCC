@@ -71,7 +71,7 @@
     width: 100%;
     max-width: 600px;
     background: white;
-    border-radius: 30px;
+    border-radius: 20px;
     /* More rounded for modern look */
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);

@@ -49,7 +49,7 @@ const createTestimonial = async (req, res) => {
         }
         const { name, role, company, content, rating, avatar } = req.body;
         const testimonial = await Testimonial.create({ name, role, company, content, rating, avatar });
-        res.status(201).json(testimonial);
+        res.status(200).json(testimonial);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

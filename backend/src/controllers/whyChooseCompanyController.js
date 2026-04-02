@@ -16,7 +16,7 @@ export const createWhyChooseCompany = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const whyChooseCompany = await WhyChooseCompany.create(req.body);
-        res.status(201).json(whyChooseCompany);
+        res.status(200).json(whyChooseCompany);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

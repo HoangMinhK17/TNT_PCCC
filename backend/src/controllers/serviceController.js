@@ -59,8 +59,12 @@ const createService = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, description, title, image, slug, status} = req.body;
+        const existingProduct = await Service.findOne({ slug });
+        if (existingProduct) {
+            return res.status(400).json({ message: "Slug already exists" });
+        }
         const service = await Service.create({ name, description, title, image, slug, status });
-        res.status(201).json(service);
+        res.status(200).json(service);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -72,6 +76,10 @@ const updateService = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, description, title, image, slug, status} = req.body;
+        const existingProduct = await Service.findOne({ slug, _id: { $ne: req.params.id } });
+        if (existingProduct) {
+            return res.status(400).json({ message: "Slug already exists" });
+        }
         const service = await Service.findByIdAndUpdate(req.params.id, { name, description, title, image, slug, status }, { new: true });
         res.status(200).json(service);
     } catch (error) {

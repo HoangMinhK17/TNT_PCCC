@@ -45,7 +45,7 @@ const createInformation = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const information = await Information.create(req.body);
-        res.status(201).json(information);
+        res.status(200).json(information);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

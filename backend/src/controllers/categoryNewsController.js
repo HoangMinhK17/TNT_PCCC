@@ -56,8 +56,13 @@ export const createCategoryNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+        const { name, slug, status } = req.body;
+        const existingProduct = await CategoryNew.findOne({ slug });
+        if (existingProduct) {
+            return res.status(400).json({ message: "Slug already exists" });
+        }
 
-        const categoryNew = await CategoryNew.create(req.body);
+        const categoryNew = await CategoryNew.create({ name, slug, status });
         res.status(201).json(categoryNew);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -69,8 +74,12 @@ export const updateCategoryNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-   
-        const categoryNew = await CategoryNew.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const { name, slug, status } = req.body;
+        const existingProduct = await CategoryNew.findOne({ slug, _id: { $ne: req.params.id } });
+        if (existingProduct) {
+            return res.status(400).json({ message: "Slug already exists" });
+        }
+        const categoryNew = await CategoryNew.findByIdAndUpdate(req.params.id, { name, slug, status }, { new: true });
         res.status(200).json(categoryNew);
     } catch (error) {
         res.status(500).json({ message: error.message });

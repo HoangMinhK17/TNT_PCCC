@@ -414,7 +414,7 @@
         box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important;
     }
     .header.header-style-boxed .menu-items {
-        justify-content: center;
+        justify-content: start;
     }
 
     /* 3. Classic Right */

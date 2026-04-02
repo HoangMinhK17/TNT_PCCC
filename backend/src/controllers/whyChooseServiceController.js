@@ -9,7 +9,7 @@ export const createWhyChooseService = async (req, res) => {
         const { title, description, icon, status } = req.body;
         const whyChooseService = new WhyChooseService({ title, description, icon, status });
         await whyChooseService.save();
-        res.status(201).json(whyChooseService);
+        res.status(200).json(whyChooseService);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

@@ -59,9 +59,6 @@ const Project = () => {
                 <h1 className="section-title">Dự án tiêu biểu</h1>
 
                 <div className="projects-layout">
-
-
-
                     <div className="projects-content">
                         <div className="projects-grid">
                             {!loading ? (

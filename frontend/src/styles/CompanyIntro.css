@@ -39,7 +39,7 @@
     margin-bottom: 25px;
     padding: 20px;
     background: var(--theme-card-bg, #fff);
-    border-radius: 12px;
+    border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     transition: transform 0.3s ease;
     border: 1px solid var(--theme-border, #f0f0f0);

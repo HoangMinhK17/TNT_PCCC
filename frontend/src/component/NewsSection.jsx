@@ -30,7 +30,7 @@ const NewsSection = () => {
 
   // ── Layout: MAGAZINE ──────────────────────────────────────────
   if (variant === 'magazine') {
-    const [main, ...rest] = newsItems.slice(0, 3);
+    const [main, ...rest] = newsItems.slice(0, 5);
     return (
       <section id="news" className="news-section">
         <div className="container" data-aos="fade-up">
@@ -50,7 +50,7 @@ const NewsSection = () => {
                 </div>
               </Link>
             )}
-            {/* 2 bài nhỏ */}
+            {/* bài nhỏ */}
             <div className="news-magazine__side">
               {rest.map(item => (
                 <Link key={item._id} to={`/news/${item.slug}`} className="news-magazine__side-item">

@@ -48,10 +48,13 @@ export const createNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-
-   
-        const news = await News.create(req.body);
-        res.status(201).json(news);
+        const { name, slug, title, description, image, date, status, categoryNewsId } = req.body;
+        const existingProduct = await News.findOne({ slug });
+        if (existingProduct) {
+            return res.status(400).json({ message: "Slug already exists" });
+        }
+        const news = await News.create({ name, slug, title, description, image, date, status, categoryNewsId });
+        res.status(200).json(news);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -62,8 +65,12 @@ export const updateNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-    
-        const news = await News.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const { name, slug, title, description, image, date, status, categoryNewsId } = req.body;
+        const existingProduct = await News.findOne({ slug, _id: { $ne: req.params.id } });
+        if (existingProduct) {
+            return res.status(400).json({ message: "Slug already exists" });
+        }
+        const news = await News.findByIdAndUpdate(req.params.id, { name, slug, title, description, image, date, status, categoryNewsId }, { new: true });
         res.status(200).json(news);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -80,8 +87,6 @@ export const deleteNews = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-
-
 }
 
 export const getNewsById = async (req, res) => {

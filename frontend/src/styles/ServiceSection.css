@@ -73,6 +73,25 @@
     color: #B71C1C;
 }
 
+.ai-arrow-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 40px;
+    background-color: var(--theme-primary, var(--primary-color));
+    color: #fff;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.ai-arrow-btn:hover {
+    background-color: var(--theme-primary-hover, #B71C1C);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
 /* Highlight Section */
 .service-highlight {
     background: transparent;

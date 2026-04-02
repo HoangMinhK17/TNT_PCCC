@@ -1,6 +1,6 @@
 /* Partners Section */
 .partners-section {
-    padding: 20px 0;
+    padding: 20px 0 0 0;
     background: var(--theme-bg);
     width: 100%;
 }
@@ -57,8 +57,79 @@
     }
 }
 
+/* Dynamic Grid Layouts */
+.partners-dynamic-grid {
+    display: grid;
+    gap: 30px;
+    grid-template-columns: repeat(6, 1fr);
+    margin-top: 20px;
+}
+.static-partner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    box-shadow: none;
+    padding: 10px;
+}
+.static-partner:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Variant: logo-grid */
+.variant-logo-grid .static-partner {
+    background: var(--theme-surface, #fff);
+    border: 1px solid var(--theme-border, #eee);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+.variant-logo-grid .static-partner:hover {
+    border-color: var(--theme-primary, #000);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Variant: logo-opacity */
+.variant-logo-opacity .static-partner .partner-logo,
+.variant-logo-opacity .carousel-partner .partner-logo {
+    opacity: 0.5;
+    filter: grayscale(100%);
+    transition: all 0.3s ease;
+}
+.variant-logo-opacity .static-partner:hover .partner-logo,
+.variant-logo-opacity .carousel-partner:hover .partner-logo {
+    opacity: 1;
+    filter: grayscale(0%);
+}
+
+/* Variant: logo-gold-tint */
+.variant-logo-gold-tint .partner-logo {
+    filter: sepia(100%) hue-rotate(10deg) saturate(200%) brightness(95%);
+    transition: all 0.3s ease;
+}
+.variant-logo-gold-tint .partner-item:hover .partner-logo {
+    filter: none;
+}
+
+/* Variant: logo-mono */
+.variant-logo-mono .partner-logo {
+    filter: grayscale(100%) contrast(120%);
+}
+.variant-logo-mono .partner-item:hover .partner-logo {
+    filter: grayscale(100%) contrast(150%);
+}
+
+@media (max-width: 992px) {
+    .partners-dynamic-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
 @media (max-width: 768px) {
-    .partners-grid {
+    .partners-grid, .partners-dynamic-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media (max-width: 576px) {
+    .partners-dynamic-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }

@@ -887,7 +887,7 @@ const AdminInformation = () => {
                                     CHỌN GIAO DIỆN WEBSITE
                                 </Title>
                                 <p style={{ color: '#6b7280', margin: '6px 0 0', fontSize: 14 }}>
-                                    Chọn 1 trong 6 giao diện mẫu. Giao diện sẽ thay đổi toàn bộ màu sắc, font chữ, kiểu dáng khung & nút.
+                                    Chọn 1 trong {UI_THEMES.length} giao diện mẫu. Giao diện sẽ thay đổi toàn bộ màu sắc, font chữ, kiểu dáng khung & nút.
                                 </p>
                             </div>
 
@@ -905,7 +905,7 @@ const AdminInformation = () => {
                                 alignItems: 'center',
                                 gap: 10,
                             }}>
-                                <span style={{ fontSize: 20 }}>🎨</span>
+                                <span style={{ fontSize: 20 }}></span>
                                 <div>
                                     <div style={{ fontSize: 11, opacity: 0.8, marginBottom: 2 }}>
                                         {previewTheme ? 'Đang xem trước:' : 'Đang dùng:'}
@@ -917,7 +917,7 @@ const AdminInformation = () => {
 
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(3, 1fr)',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
                             gap: 20,
                             marginBottom: 32,
                         }}>
@@ -934,6 +934,39 @@ const AdminInformation = () => {
                                     onLeave={() => setHoverTheme(null)}
                                 />
                             ))}
+                        </div>
+
+                        <div style={{
+                            width: '100%',
+                            height: '500px',
+                            border: '1px solid #ddd',
+                            borderRadius: '12px',
+                            overflow: 'hidden',
+                            marginBottom: '32px',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            background: '#fff',
+                        }}>
+                            <div style={{ height: '36px', background: '#f8f9fa', borderBottom: '1px solid #eaeaea', display: 'flex', alignItems: 'center', padding: '0 16px' }}>
+                                <div style={{ display: 'flex', gap: 6 }}>
+                                    <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#fc5c65' }} />
+                                    <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#fdcb6e' }} />
+                                    <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#26de81' }} />
+                                </div>
+                                <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+                                    <div style={{ background: '#fff', padding: '2px 14px', borderRadius: 4, fontSize: 13, color: '#666', border: '1px solid #eaeaea', minWidth: 200, textAlign: 'center' }}>
+                                        Live Preview: {activeTheme.labelVn}
+                                    </div>
+                                </div>
+                            </div>
+                            <iframe 
+                                src={`/?previewTheme=${activeTheme.id}`} 
+                                width="100%" 
+                                height="100%" 
+                                style={{ border: 'none', flex: 1 }} 
+                                title="Website Preview"
+                            />
                         </div>
 
                         <div style={{

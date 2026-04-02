@@ -1,12 +1,12 @@
 .leadership-section {
-  padding: 30px 0;
+  padding: 20px 0 0 0;
   background-color: var(--theme-bg);
 }
 
 .leadership-carousel-container {
   width: 100%;
   overflow: hidden;
-  margin-top: 40px;
+  margin-top: 20px;
   padding: 10px 0;
 }
 
@@ -103,4 +103,80 @@
   font-size: 14px;
   color: #666;
   line-height: 1.6;
+}
+
+/* Dynamic Grid Layouts */
+.leadership-dynamic-grid {
+    display: grid;
+    gap: 30px;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: 30px;
+}
+
+/* Variant: card-modern */
+.variant-card-modern .grid-leader {
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+.variant-card-modern .leader-image-wrapper {
+    height: 300px;
+}
+
+/* Variant: circle-avatar */
+.variant-circle-avatar .leader-image-wrapper {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin: 20px auto 0;
+    overflow: hidden;
+    border: 4px solid var(--theme-border, #eee);
+}
+.variant-circle-avatar .leader-card {
+    background: transparent;
+    box-shadow: none;
+    text-align: center;
+}
+.variant-circle-avatar .leader-card:hover {
+    box-shadow: none;
+}
+.variant-circle-avatar .leader-card:hover .leader-image-wrapper {
+    border-color: var(--theme-primary, #D32F2F);
+}
+
+/* Variant: dark-glass */
+.variant-dark-glass .grid-leader {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.variant-dark-glass .leader-name { color: var(--theme-text, #fff); }
+.variant-dark-glass .leader-description { color: var(--theme-text-muted, #ccc); }
+
+/* Variant: elegant-profile */
+.variant-elegant-profile .grid-leader {
+    border-radius: 0;
+    border: 1px solid var(--theme-border, #d4af37);
+}
+.variant-elegant-profile .leader-name {
+    font-family: serif;
+    color: var(--theme-text, #d4af37);
+}
+.variant-elegant-profile .leader-divider {
+    background: var(--theme-primary, #d4af37);
+}
+
+/* Variant: text-focus */
+.variant-text-focus .leader-image-wrapper {
+    display: none;
+}
+.variant-text-focus .grid-leader {
+    padding: 30px;
+    border-left: 4px solid var(--theme-primary, #333);
+}
+
+@media (max-width: 992px) {
+    .leadership-dynamic-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 576px) {
+    .leadership-dynamic-grid { grid-template-columns: 1fr; }
 }

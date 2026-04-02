@@ -57,8 +57,12 @@ const createProject = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, slug, title, description, image, date } = req.body;
+        const existingProduct = await Project.findOne({ slug });
+        if (existingProduct) {
+            return res.status(400).json({ message: "Slug already exists" });
+        }
         const project = await Project.create({ name, slug, title, description, image, date });
-        res.status(201).json(project);
+        res.status(200).json(project);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -70,6 +74,10 @@ const updateProject = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, slug, title, description, image, date, status } = req.body;
+        const existingProduct = await Project.findOne({ slug, _id: { $ne: req.params.id } });
+        if (existingProduct) {
+            return res.status(400).json({ message: "Slug already exists" });
+        }
         const project = await Project.findByIdAndUpdate(req.params.id, { name, slug, title, description, image, date, status }, { new: true });
         res.status(200).json(project);
     } catch (error) {

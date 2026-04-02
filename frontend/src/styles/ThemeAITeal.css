@@ -1,0 +1,364 @@
+/* ===================================================
+   THEME: AI Teal - Phong cách AI hiện đại
+   Mô phỏng: ai.osp.vn - Glassmorphism + Teal Gradient
+   =================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ─── Global body theme class ─── */
+.theme-ai-teal .public-layout {
+    background: #F9FAFB;
+    font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+    color: #011E1A;
+    min-height: 100vh;
+}
+
+/* Subtle animated background blobs */
+.theme-ai-teal .public-layout::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    right: -200px;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(85, 204, 194, 0.12) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+    animation: floatBlob1 12s ease-in-out infinite;
+}
+
+.theme-ai-teal .public-layout::after {
+    content: '';
+    position: fixed;
+    bottom: -150px;
+    left: -150px;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(85, 204, 194, 0.08) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+    animation: floatBlob2 15s ease-in-out infinite;
+}
+
+@keyframes floatBlob1 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(-40px, 60px) scale(1.1);
+    }
+}
+
+@keyframes floatBlob2 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(50px, -40px) scale(1.05);
+    }
+}
+
+/* ─── Header AI Teal - Glassmorphism Pill ─── */
+.theme-ai-teal .public-layout .header {
+    background: rgba(255, 255, 255, 0.90) !important;
+    backdrop-filter: blur(14px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+    border-bottom: 1px solid rgba(85, 204, 194, 0.15) !important;
+    box-shadow: 0 4px 30px rgba(85, 204, 194, 0.10) !important;
+}
+
+/* Floating header pill glassmorphism */
+.theme-ai-teal .public-layout .header.header-style-floating {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(85, 204, 194, 0.20) !important;
+    box-shadow: 0 8px 40px rgba(85, 204, 194, 0.15) !important;
+}
+
+.theme-ai-teal .public-layout .menu-items a {
+    color: #374151;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.theme-ai-teal .public-layout .menu-items a:hover {
+    color: #55CCC2;
+    border-bottom-color: #55CCC2;
+}
+
+/* ─── Section Title ─── */
+.theme-ai-teal .public-layout .section-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: 700;
+    color: #011E1A;
+    margin-bottom: 20px;
+}
+
+.theme-ai-teal .public-layout .section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: #55CCC2;
+    border-radius: 9999px;
+    margin: 12px auto 0;
+}
+
+.theme-ai-teal .public-layout .section-subtitle {
+    color: #6b7280;
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+/* ─── Buttons AI Style ─── */
+.theme-ai-teal .public-layout .btn,
+.theme-ai-teal .public-layout button[class*="btn"],
+.theme-ai-teal .public-layout .theme-btn {
+    background: #55CCC2;
+    color: white;
+    border-radius: 20px;
+    border: none;
+    padding: 12px 28px;
+    font-weight: 600;
+    font-size: 15px;
+    box-shadow: 0 4px 20px rgba(85, 204, 194, 0.40);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+}
+
+.theme-ai-teal .public-layout .btn:hover,
+.theme-ai-teal .public-layout .theme-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(85, 204, 194, 0.55);
+    background: #45B8AE;
+}
+
+/* ─── Cards - Glassmorphism ─── */
+.theme-ai-teal .public-layout .card,
+.theme-ai-teal .public-layout .project-card,
+.theme-ai-teal .public-layout .product-card,
+.theme-ai-teal .public-layout .service-card,
+.theme-ai-teal .public-layout .leader-card,
+.theme-ai-teal .public-layout .news-card {
+    background: white !important;
+    border: 1px solid rgba(85, 204, 194, 0.15) !important;
+    border-radius: 24px !important;
+    box-shadow: -1px 4px 24px rgba(85, 204, 194, 0.08) !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    overflow: hidden;
+}
+
+.theme-ai-teal .public-layout .card:hover,
+.theme-ai-teal .public-layout .project-card:hover,
+.theme-ai-teal .public-layout .product-card:hover,
+.theme-ai-teal .public-layout .service-card:hover,
+.theme-ai-teal .public-layout .leader-card:hover,
+.theme-ai-teal .public-layout .news-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: -1px 4px 24px rgba(85, 204, 194, 0.20) !important;
+    border-color: rgba(85, 204, 194, 0.35) !important;
+}
+
+/* ─── Projects Section ─── */
+.theme-ai-teal .public-layout .projects-section {
+    background: transparent;
+}
+
+.theme-ai-teal .public-layout .project-image-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(6, 78, 59, 0.70), transparent);
+    transition: height 0.3s ease;
+}
+
+.theme-ai-teal .public-layout .project-name {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 700;
+}
+
+.theme-ai-teal .public-layout .project-year {
+    background: rgba(85, 204, 194, 0.12);
+    color: #55CCC2;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+    width: 50px;
+    text-align: center;
+}
+
+/* ─── Leadership Section ─── */
+.theme-ai-teal .public-layout .leadership-section {
+    background: transparent;
+}
+
+.theme-ai-teal .public-layout .leader-image-wrapper {
+    width: 160px !important;
+    height: 160px !important;
+    border-radius: 50% !important;
+    margin: 24px auto 0 !important;
+    overflow: hidden !important;
+    border: 4px solid transparent !important;
+    background-clip: padding-box !important;
+    box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.25), 0 8px 24px rgba(20, 184, 166, 0.20) !important;
+    transition: all 0.4s ease !important;
+}
+
+.theme-ai-teal .public-layout .leader-card:hover .leader-image-wrapper {
+    box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.60), 0 12px 32px rgba(20, 184, 166, 0.35) !important;
+    transform: scale(1.05);
+}
+
+.theme-ai-teal .public-layout .leader-name {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #011E1A;
+}
+
+.theme-ai-teal .public-layout .leader-position {
+    color: #55CCC2;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.theme-ai-teal .public-layout .leader-divider {
+    background: #55CCC2 !important;
+    height: 3px;
+    border-radius: 9999px;
+    width: 40px;
+    margin: 10px auto;
+}
+
+/* ─── Partners Section ─── */
+.theme-ai-teal .public-layout .partners-section {
+    background: transparent;
+}
+
+.theme-ai-teal .public-layout .partner-item.static-partner {
+    background: rgba(255, 255, 255, 0.80) !important;
+    border: 1px solid rgba(20, 184, 166, 0.20) !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(8px) !important;
+    transition: all 0.3s ease !important;
+}
+
+.theme-ai-teal .public-layout .partner-item.static-partner:hover {
+    border-color: rgba(20, 184, 166, 0.55) !important;
+    box-shadow: 0 8px 30px rgba(20, 184, 166, 0.15) !important;
+    transform: translateY(-4px) !important;
+}
+
+/* ─── News Section ─── */
+.theme-ai-teal .public-layout .news-section,
+.theme-ai-teal .public-layout .news-section-bg {
+    background: transparent !important;
+}
+
+/* ─── Products Section ─── */
+.theme-ai-teal .public-layout .products-section {
+    background: transparent !important;
+}
+
+.theme-ai-teal .public-layout .product-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-ai-teal .public-layout .product-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #14b8a6, #06b6d4, #818cf8);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.theme-ai-teal .public-layout .product-card:hover::before {
+    opacity: 1;
+}
+
+.theme-ai-teal .public-layout .product-name,
+.theme-ai-teal .public-layout .products-list-h__name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+}
+
+/* ─── Service Section ─── */
+.theme-ai-teal .public-layout .service-section {
+    background: linear-gradient(135deg, #e6fffa 0%, #f0fdfb 50%, #e0f2fe 100%) !important;
+    border-radius: 32px;
+}
+
+/* ─── Input fields ─── */
+.theme-ai-teal .public-layout input,
+.theme-ai-teal .public-layout textarea,
+.theme-ai-teal .public-layout select {
+    background: rgba(255, 255, 255, 0.90) !important;
+    border: 1.5px solid rgba(20, 184, 166, 0.30) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease;
+}
+
+.theme-ai-teal .public-layout input:focus,
+.theme-ai-teal .public-layout textarea:focus,
+.theme-ai-teal .public-layout select:focus {
+    border-color: #14b8a6 !important;
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15) !important;
+    outline: none;
+}
+
+/* ─── Scrollbar ─── */
+.theme-ai-teal .public-layout ::-webkit-scrollbar {
+    width: 8px;
+}
+
+.theme-ai-teal .public-layout ::-webkit-scrollbar-track {
+    background: #f0fdfb;
+}
+
+.theme-ai-teal .public-layout ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #14b8a6, #06b6d4);
+    border-radius: 4px;
+}
+
+/* ─── Highlight accent text ─── */
+.theme-ai-teal .public-layout .text-primary,
+.theme-ai-teal .public-layout .accent-text {
+    background: linear-gradient(135deg, #14b8a6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ─── Responsive fine-tune ─── */
+@media (max-width: 768px) {
+
+    .theme-ai-teal .public-layout::before,
+    .theme-ai-teal .public-layout::after {
+        display: none;
+    }
+
+    .theme-ai-teal .public-layout .card,
+    .theme-ai-teal .public-layout .project-card,
+    .theme-ai-teal .public-layout .product-card {
+        border-radius: 14px !important;
+    }
+}
