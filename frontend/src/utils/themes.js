@@ -324,7 +324,7 @@ export const UI_THEMES = [
             product: 'list-horizontal', // Card ngang
             service: 'list',            // Full-width list
             project: 'minimal-grid',    // Thuần túy không border không boxshadow - tập trung ảnh
-            leader: 'text-focus',       // Highlight chức danh, giấu hình để gọn trang web
+            leader: 'circle-avatar',       // Highlight chức danh, giấu hình để gọn trang web
             partner: 'logo-mono',       // Logo luôn full màu đen/xám tăng độ tương phản
             section_style: 'sharp',
             section_spacing: 'compact',
@@ -398,7 +398,7 @@ export const UI_THEMES = [
             '--theme-primary-hover': '#45B8AE',
             '--theme-primary-light': 'rgba(85,204,194,0.15)',
             '--theme-secondary': '#FFCF4D',
-            '--theme-text': '#374151',
+            '--theme-text': '#000000ff',
             '--theme-text-muted': '#4B5563',
             '--theme-border': '#E5E7EB',
             '--theme-border-hover': '#55CCC2',

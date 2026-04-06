@@ -31,9 +31,9 @@ const MultiCloudinaryUpload = ({ value = [], onChange, maxCount = 1, ratioDesc }
     const items = Array.isArray(value) ? value : (value ? [value] : []);
 
     const beforeUpload = (file) => {
-        const isLt5M = file.size / 1024 / 1024 < 5;
-        if (!isLt5M) {
-            message.error('Kích thước ảnh phải nhỏ hơn 5MB!');
+        const isLt10M = file.size / 1024 / 1024 < 10;
+        if (!isLt10M) {
+            message.error('Kích thước ảnh phải nhỏ hơn 10MB!');
             return false;
         }
         if (items.length >= maxCount) {
@@ -559,7 +559,7 @@ const AdminInformation = () => {
                         <Col span={24}>
                             <Card title="Banner Trang Chủ (Background Images)" size="small">
                                 <Form.Item name="backgroundImage" rules={[{ required: true, message: 'Chọn ít nhất 1 ảnh!' }]}>
-                                    <MultiCloudinaryUpload maxCount={5} ratioDesc="(Khuyến nghị ảnh ngang 1920x1080, tối đa 5 ảnh slide)" />
+                                    <MultiCloudinaryUpload maxCount={1} ratioDesc="(Khuyến nghị ảnh ngang 1920x1080)" />
                                 </Form.Item>
                             </Card>
                         </Col>
@@ -893,7 +893,7 @@ const AdminInformation = () => {
 
                             <div style={{
                                 background: displayTheme.previewColors.header,
-                                color: '#fff',
+                                color: displayTheme.id === 'ai-teal' ? '#000000ff' : '#fff',
                                 borderRadius: 10,
                                 padding: '10px 18px',
                                 fontSize: 13,
