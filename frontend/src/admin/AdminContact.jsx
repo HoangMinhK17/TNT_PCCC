@@ -28,7 +28,7 @@ const AdminContact = () => {
     const [statusFilter, setStatusFilter] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [pageSize, setPageSize] = useState(8);
+    const [pageSize, setPageSize] = useState(6);
     const [form] = Form.useForm();
 
     const fetchData = async (page = 1, limit = 10) => {
@@ -281,7 +281,6 @@ const AdminContact = () => {
                             </Descriptions>
                         )}
                     </Modal>
-
                 </div>
             </main>
         </div>

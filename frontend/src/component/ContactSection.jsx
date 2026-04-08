@@ -41,6 +41,20 @@ const ContactSection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim() || !formData.title.trim()) {
+        toast.error("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      if (!formData.phone.match(/^0[0-9]{9}$/)) {
+        toast.error("Số điện thoại không đúng định dạng!");
+        return;
+      }
+
+      // if(!formData.email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+      //   toast.error("Email không đúng định dạng!");
+      //   return;
+      // }
       await createContact({
         ...formData
       });
@@ -103,9 +117,8 @@ const ContactSection = () => {
                   type="text"
                   id="name"
                   name="name"
-                  value={formData.name}
+                  value={formData.name.trim()}
                   onChange={handleChange}
-                  placeholder={t('section_name_send')}
                   required
                 />
               </div>
@@ -117,9 +130,8 @@ const ContactSection = () => {
                     type="email"
                     id="email"
                     name="email"
-                    value={formData.email}
+                    value={formData.email.trim()}
                     onChange={handleChange}
-                    placeholder={t('section_email')}
                     required
                   />
                 </div>
@@ -129,9 +141,9 @@ const ContactSection = () => {
                     type="tel"
                     id="phone"
                     name="phone"
-                    value={formData.phone}
+                    value={formData.phone.trim()}
                     onChange={handleChange}
-                    placeholder={t('section_phone')}
+                    required
                   />
                 </div>
               </div>
@@ -141,9 +153,8 @@ const ContactSection = () => {
                 <textarea
                   id="title"
                   name="title"
-                  value={formData.title}
+                  value={formData.title.trim()}
                   onChange={handleChange}
-                  placeholder={t('section_content_send')}
                   readOnly={productName ? true : false}
                   required
                   rows="5"

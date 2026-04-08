@@ -112,7 +112,6 @@ const Footer = () => {
 
           <div className="footer-divider"></div>
 
-
         </div>
       </footer>
     </>

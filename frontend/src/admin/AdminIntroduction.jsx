@@ -278,7 +278,6 @@ const TabIntroduct = () => {
                     <Form.Item
                         name="images"
                         label="Ảnh đại diện (tối đa 2 ảnh)"
-                        help="Chọn tối đa 2 ảnh. Ảnh chỉ được upload khi bấm Lưu."
                     >
                         <MultiCloudinaryUpload maxCount={2} />
                     </Form.Item>
@@ -337,21 +336,11 @@ const TabMissionVision = () => {
     };
 
     const flatData = data.flatMap(doc => [
-        { key: `${doc._id}_mission`, docId: doc._id, type: 'mission', typeLabel: 'Sứ mệnh', ...(doc.mission || {}) },
-        { key: `${doc._id}_vision`, docId: doc._id, type: 'vision', typeLabel: 'Tầm nhìn', ...(doc.vision || {}) },
+        { key: `${doc._id}_mission`, docId: doc._id, type: 'mission', ...(doc.mission || {}) },
+        { key: `${doc._id}_vision`, docId: doc._id, type: 'vision', ...(doc.vision || {}) },
     ]);
 
     const columns = [
-        {
-            title: 'Loại',
-            dataIndex: 'typeLabel',
-            key: 'typeLabel',
-            render: (text, row) => (
-                <Tag color={row.type === 'mission' ? 'blue' : 'green'} style={{ fontWeight: 600 }}>
-                    {text}
-                </Tag>
-            ),
-        },
         {
             title: 'Tiêu đề',
             dataIndex: 'title',
