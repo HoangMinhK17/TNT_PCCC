@@ -22,6 +22,7 @@ import ServiceDetail from './pages/ServiceDetail'
 import Login from './admin/login'
 import MainLayout from './component/MainLayout'
 import ForgetPassword from './admin/ForgetPassword'
+import ResetPassword from './admin/ResetPassword'
 import Dashboard from './admin/dashboard'
 import AdminIntroduction from './admin/AdminIntroduction'
 import AdminProduct from './admin/AdminProduct'
@@ -113,6 +114,7 @@ function App() {
           {/* Admin Routes */}
           <Route path="/admin/login" element={<Login />} />
           <Route path="/admin/forget-password" element={<ForgetPassword />} />
+          <Route path="/admin/reset-password/:retoken" element={<ResetPassword />} />
           <Route
             path="/admin/dashboard"
             element={

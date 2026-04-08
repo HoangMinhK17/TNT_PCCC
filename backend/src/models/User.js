@@ -31,6 +31,14 @@ const userSchema = new mongoose.Schema({
 
         ],
         default: 'corporate-red'
+    },
+    passwordResetToken: {
+        type: String,
+        default: null
+    },
+    passwordResetExpires: {
+        type: Date,
+        default: null
     }
 },
     {

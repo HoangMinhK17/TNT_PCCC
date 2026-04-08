@@ -80,3 +80,29 @@ export const updateInfoAPI = async (name) => {
         throw error;
     }
 };
+
+export const forgotPasswordAPI = async (email) => {
+    try {
+        const response = await api.post("/user/forgot-password", { email }, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const resetPasswordAPI = async (token, newPassword) => {
+    try {
+        const response = await api.post("/user/reset-password", { token, newPassword }, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

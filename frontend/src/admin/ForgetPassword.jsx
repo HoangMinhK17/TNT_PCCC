@@ -1,21 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { forgotPasswordAPI } from '../utils/userApi';
 import "../styles/Login.css";
+import { getImageInformation } from '../utils/informationApi';
 
 const ForgetPassword = () => {
     const [email, setEmail] = useState("");
-
-    const handleSubmit = (e) => {
+    const [loading, setLoading] = useState(false);
+    const [logo, setLogo] = useState("/src/uploads/tnt.jpg");
+    useEffect(() => {
+        const fetchLogo = async () => {
+            try {
+                const data = await getImageInformation();
+                setLogo(Array.isArray(data) ? data[0]?.logo : data?.logo);
+            } catch (error) {
+                console.error("Error fetching logo:", error);
+            }
+        };
+        fetchLogo();
+    }, []);
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Reset password for:", email);
-        alert("Yêu cầu đặt lại mật khẩu đã được gửi đến email của bạn.");
+        setLoading(true);
+        try {
+            await forgotPasswordAPI(email);
+            toast.success("Yêu cầu đặt lại mật khẩu đã được gửi đến email của bạn.");
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="login-container">
             <div className="login-card">
                 <Link to="/">
-                    <img src="/src/uploads/tnt.jpg" alt="TNT Logo" className="login-logo" />
+                    <img src={logo} alt="TNT Logo" className="login-logo" />
                 </Link>
                 <h2>Quên mật khẩu</h2>
                 <p style={{ color: "#666", marginBottom: "20px", fontSize: "16px" }}>
@@ -35,8 +57,8 @@ const ForgetPassword = () => {
                         />
                     </div>
 
-                    <button type="submit" className="login-btn">
-                        Gửi yêu cầu
+                    <button type="submit" className="login-btn" disabled={loading}>
+                        {loading ? 'Đang gửi...' : 'Gửi yêu cầu'}
                     </button>
                 </form>
 
