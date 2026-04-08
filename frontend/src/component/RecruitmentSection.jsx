@@ -11,12 +11,15 @@ import {
   FaMapMarkerAlt, FaUserTie, FaBriefcase, FaCheckCircle, FaSpinner
 } from 'react-icons/fa';
 import { getWhyChooseCompany } from '../utils/whyChooseCompanyApi';
+import { useTranslation } from 'react-i18next';
+
 const RecruitmentSection = () => {
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [whyChooseCompany, setWhyChooseCompany] = useState([]);
+  const { t } = useTranslation();
 
   const [applyModalVisible, setApplyModalVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -157,8 +160,8 @@ const RecruitmentSection = () => {
   return (
     <section id="recruitment" className="recruitment-section">
       <Helmet>
-        <title>Tuyển dụng - Cơ hội nghề nghiệp</title>
-        <meta name="description" content="Gia nhập đội ngũ với mức lương hấp dẫn và môi trường chuyên nghiệp." />
+        <title>{t('recruitment_title')}</title>
+        <meta name="description" content={t('recruitment_subtitle')} />
         <meta name="keywords" content="tuyển dụng" />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
@@ -166,8 +169,8 @@ const RecruitmentSection = () => {
       </Helmet>
 
       <div className="container" data-aos="fade-up">
-        <h1 className="section-title">Tuyển dụng - Gia nhập đội ngũ chúng tôi</h1>
-        <p className="section-subtitle">Chúng tôi luôn tìm kiếm những nhân tài giỏi để cùng phát triển công ty</p>
+        <h1 className="section-title">{t('recruitment_title')}</h1>
+        <p className="section-subtitle">{t('recruitment_subtitle')}</p>
 
         <div className="recruitment-content">
           {loading ? (
@@ -187,7 +190,7 @@ const RecruitmentSection = () => {
           ) : (
             <>
               <aside className="jobs-sidebar">
-                <h3>Các vị trí đang tuyển</h3>
+                <h3>{t('recruitment_list_title')}</h3>
                 <div className="jobs-container">
                   {jobs.map(job => (
                     <article
@@ -217,35 +220,35 @@ const RecruitmentSection = () => {
                       <div className="detail-item">
                         <FaMapMarkerAlt className="detail-icon" />
                         <div>
-                          <span className="detail-label">Địa điểm</span>
+                          <span className="detail-label">{t('recruitment_location')}</span>
                           <p>{selectedJob.location}</p>
                         </div>
                       </div>
                       <div className="detail-item">
                         <FaUserTie className="detail-icon" />
                         <div>
-                          <span className="detail-label">Cấp độ</span>
+                          <span className="detail-label">{t('recruitment_experience')}</span>
                           <p>{selectedJob.level}</p>
                         </div>
                       </div>
                       <div className="detail-item">
                         <FaMoneyBillWave className="detail-icon" />
                         <div>
-                          <span className="detail-label">Mức lương</span>
+                          <span className="detail-label">{t('recruitment_salary')}</span>
                           <p className="highlight-salary">{selectedJob.salary}</p>
                         </div>
                       </div>
                       <div className="detail-item">
                         <FaBriefcase className="detail-icon" />
                         <div>
-                          <span className="detail-label">Loại hình</span>
+                          <span className="detail-label">{t('recruitment_time')}</span>
                           <p>{selectedJob.time}</p>
                         </div>
                       </div>
                     </div>
 
                     <div className="requirements-box">
-                      <h4>Yêu cầu công việc</h4>
+                      <h4>{t('recruitment_requirements')}</h4>
                       <ul className="requirements-list">
                         {selectedJob.requirements && Array.isArray(selectedJob.requirements) ? (
                           selectedJob.requirements.map((req, idx) => (
@@ -260,7 +263,7 @@ const RecruitmentSection = () => {
                       </ul>
                     </div>
 
-                    <button className="btn-primary-apply" onClick={handleApplyClick}>Ứng tuyển ngay</button>
+                    <button className="btn-primary-apply" onClick={handleApplyClick}>{t('recruitment_button_apply')}</button>
                   </div>
                 ) : (
                   <div className="no-selection-placeholder">
@@ -278,8 +281,8 @@ const RecruitmentSection = () => {
         {whyChooseCompany?.benefits?.length > 0 && (
           <section className="benefits-section">
             <header className="benefits-header">
-              <h3>Quyền lợi & Phúc lợi</h3>
-              <p>Chúng tôi mang đến môi trường làm việc tốt nhất cho bạn</p>
+              <h3>{t('recruitment_benefits')}</h3>
+              <p>{t('recruitment_benefits_description')}</p>
             </header>
             <div className="benefits-grid">
               {whyChooseCompany?.benefits?.map((benefit, idx) => (
@@ -308,36 +311,36 @@ const RecruitmentSection = () => {
       </div>
 
       <Modal
-        title={`Ứng tuyển vị trí: ${selectedJob?.name}`}
+        title={`${t('recruitment_modal_title')} ${selectedJob?.name}`}
         open={applyModalVisible}
         onCancel={() => setApplyModalVisible(false)}
         footer={null}
       >
         <Form form={form} layout="vertical" onFinish={handleApplySubmit}>
-          <Form.Item name="name" label="Họ và tên" rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}>
+          <Form.Item name="name" label= {t('recruitment_modal_name')} rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}>
             <Input placeholder="Nhập họ và tên của bạn" />
           </Form.Item>
-          <Form.Item name="phone" label="Số điện thoại" rules={[{ required: true, message: 'Vui lòng nhập số điện thoại' }]}>
+          <Form.Item name="phone" label={t('recruitment_modal_phone')} rules={[{ required: true, message: 'Vui lòng nhập số điện thoại' }]}>
             <Input placeholder="Nhập số điện thoại" />
           </Form.Item>
-          <Form.Item name="email" label="Email" rules={[
+          <Form.Item name="email" label={t('recruitment_modal_email')} rules={[
             { required: true, message: 'Vui lòng nhập Email' },
             { type: 'email', message: 'Email không hợp lệ' }
           ]}>
             <Input placeholder="Nhập địa chỉ Email" />
           </Form.Item>
-          <Form.Item name="address" label="Địa chỉ hiện tại">
+          <Form.Item name="address" label={t('recruitment_modal_address')}>
             <Input.TextArea rows={2} placeholder="Nhập địa chỉ của bạn" />
           </Form.Item>
-          <Form.Item label="CV Đính kèm (Bắt buộc PDF < 5MB)" required>
+          <Form.Item label={t('recruitment_modal_cv')} required>
             <Upload beforeUpload={beforeUpload} maxCount={1} accept=".pdf">
               <Button icon={<UploadOutlined />}>Tải lên CV (PDF)</Button>
             </Upload>
             {cvFile && <span style={{ marginLeft: 10, color: 'blue' }}>{cvFile.name}</span>}
           </Form.Item>
           <Form.Item style={{ marginTop: 24, textAlign: 'right' }}>
-            <Button onClick={() => setApplyModalVisible(false)} style={{ marginRight: 8 }}>Hủy</Button>
-            <Button type="primary" htmlType="submit" loading={submitting}>Nộp Hồ Sơ</Button>
+            <Button onClick={() => setApplyModalVisible(false)} style={{ marginRight: 8 }}>{t('recruitment_modal_button_cancel')}</Button>
+            <Button type="primary" htmlType="submit" loading={submitting}>{t('recruitment_modal_button_apply')}</Button>
           </Form.Item>
         </Form>
       </Modal>

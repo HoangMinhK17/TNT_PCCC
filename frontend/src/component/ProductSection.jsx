@@ -4,6 +4,7 @@ import '../styles/ProductSection.css';
 import { getPublicProducts } from '../utils/productApi';
 import { getCategoryProducts } from '../utils/categoryProductApi';
 import { useThemeSettings } from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 const ProductSection = () => {
     const [categories, setCategories] = useState([]);
@@ -12,6 +13,7 @@ const ProductSection = () => {
     const [loading, setLoading] = useState(true);
     const { themeLayout } = useThemeSettings();
     const variant = themeLayout?.product || 'grid-4';
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -74,7 +76,7 @@ const ProductSection = () => {
         return (
             <section id="products" className="products-section">
                 <div className="container" data-aos="fade-up">
-                    <h2 className="section-title">Danh mục sản phẩm</h2>
+                    <h2 className="section-title">{t('section_products')}</h2>
                     <div className="products-list-h">
                         {visibleCategories.slice(0, 4).map(category => {
                             const img = getCategoryImage(category);
@@ -89,8 +91,8 @@ const ProductSection = () => {
                                     </div>
                                     <div className="products-list-h__body">
                                         <h3 className="products-list-h__name">{category.name}</h3>
-                                        <p className="products-list-h__count">{count} sản phẩm</p>
-                                        <span className="products-list-h__cta">Xem ngay →</span>
+                                        <p className="products-list-h__count">{count} {t('section_products_count')}</p>
+                                        <span className="products-list-h__cta">{t('section_view_now')}</span>
                                     </div>
                                 </Link>
                             );
@@ -106,7 +108,7 @@ const ProductSection = () => {
         return (
             <section id="products" className="products-section">
                 <div className="container" data-aos="fade-up">
-                    <h2 className="section-title">Danh mục sản phẩm</h2>
+                    <h2 className="section-title">{t('section_products')}</h2>
                     <div className="products-grid products-grid--3">
                         {visibleCategories.slice(0, 3).map(category => {
                             const img = getCategoryImage(category);
@@ -120,7 +122,7 @@ const ProductSection = () => {
                                         }
                                     </div>
                                     <h3 className="product-name">{category.name}</h3>
-                                    <p className="product-description">{count} sản phẩm</p>
+                                    <p className="product-description">{count} {t('section_products_count')}</p>
                                 </Link>
                             );
                         })}
@@ -134,7 +136,7 @@ const ProductSection = () => {
     return (
         <section id="products" className="products-section">
             <div className="container" data-aos="fade-up">
-                <h2 className="section-title">Danh mục sản phẩm</h2>
+                <h2 className="section-title">{t('section_products')}</h2>
                 <div className="products-grid">
                     {visibleCategories.slice(0, 4).map(category => {
                         const img = getCategoryImage(category);
@@ -145,11 +147,11 @@ const ProductSection = () => {
                                     {img
                                         ? <img src={img} alt={category.name} className="product-image" />
                                         : <div className="product-image" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f0f0f0', height: '200px' }}>
-                                            <span style={{ color: '#999' }}>Không có ảnh</span>
+                                            <span style={{ color: '#999' }}>-</span>
                                         </div>
                                     }
                                     <h3 className="product-name" style={{ textAlign: 'center', marginTop: '15px' }}>{category.name}</h3>
-                                    <p className="product-description" style={{ textAlign: 'center' }}>{count} sản phẩm</p>
+                                    <p className="product-description" style={{ textAlign: 'center' }}>{count} {t('section_products_count')}</p>
                                 </div>
                             </Link>
                         );

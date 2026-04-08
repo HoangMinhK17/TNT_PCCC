@@ -3,8 +3,10 @@ import { useParams, Link } from 'react-router-dom';
 import { getProjectById } from '../utils/projectApi';
 import '../styles/ProjectDetail.css';
 import SEO from '../component/SEO';
+import { useTranslation } from 'react-i18next';
 
 const ProjectDetail = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -65,16 +67,16 @@ const ProjectDetail = () => {
 
                     <div className="project-detail-info">
                         <h1 className="project-detail-title">{project.name}</h1>
-                        <p className="project-detail-year">Năm thực hiện: {new Date(project.date).getFullYear()}
+                        <p className="project-detail-year">{t('project_year')}: {new Date(project.date).getFullYear()}
                         </p>
 
                         <div className="project-detail-content">
                             <p className="project-detail-description">{project.title}</p>
-                            <h3>Chi tiết dự án</h3>
+                            <h3>{t('project_detail')}</h3>
                             <div dangerouslySetInnerHTML={{ __html: project.description }}></div>
                         </div>
 
-                        <Link to="/contact" className="contact-btn">Liên hệ tư vấn dự án tương tự</Link>
+                        <Link to="/contact" className="contact-btn">{t('project_button_contact')}</Link>
                     </div>
                 </div>
             </div>

@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { getProjects } from '../utils/projectApi';
 import '../styles/ProjectsSection.css';
 import SEO from '../component/SEO';
+import { useTranslation } from 'react-i18next';
 
 const Project = () => {
+    const { t } = useTranslation();
     const [projectsData, setProjectsData] = useState({
         projects: [],
         currentPage: 1,
@@ -15,6 +17,7 @@ const Project = () => {
     const projectsPerPage = 6;
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         fetchProjects(projectsData.currentPage);
     }, [projectsData.currentPage]);
 
@@ -32,7 +35,6 @@ const Project = () => {
 
     const paginate = (pageNumber) => {
         setProjectsData(prev => ({ ...prev, currentPage: pageNumber }));
-        window.scrollTo(0, 0);
     };
 
     const structuredData = {
@@ -56,7 +58,7 @@ const Project = () => {
                 schema={structuredData}
             />
             <div className="container">
-                <h1 className="section-title">Dự án tiêu biểu</h1>
+                <h1 className="section-title">{t('project_header')}</h1>
 
                 <div className="projects-layout">
                     <div className="projects-content">
@@ -75,7 +77,7 @@ const Project = () => {
                                                 <div className="project-info">
                                                     <h3 className="project-name">{project.name}</h3>
                                                     <p className="project-description">{project.title}</p>
-                                                    <p className="project-year">  Năm: {new Date(project.date).getFullYear()}
+                                                    <p className="project-year">  {t('project_year')}: {new Date(project.date).getFullYear()}
                                                     </p>
                                                 </div>
                                             </Link>

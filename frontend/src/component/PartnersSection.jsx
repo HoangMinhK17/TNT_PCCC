@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { getPartners } from '../utils/partnerApi';
 import { useThemeSettings } from '../context/ThemeContext';
 import '../styles/PartnersSection.css';
+import { useTranslation } from 'react-i18next';
 
 const PartnersSection = () => {
   const [partners, setPartners] = useState([]);
   const { themeLayout } = useThemeSettings();
   const variant = themeLayout?.partner || 'logo-grid';
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchPartners = async () => {
@@ -48,8 +50,8 @@ const PartnersSection = () => {
   return (
     <section className={`partners-section variant-${variant}`}>
       <div className="container" data-aos="fade-up">
-        <h2 className="section-title">Đối tác & Khách hàng</h2>
-        <p className="section-subtitle">Chúng tôi tự hào được hợp tác với các công ty hàng đầu</p>
+        <h2 className="section-title">{t('section_partner')}</h2>
+        <p className="section-subtitle">{t('section_partner_subtitle')}</p>
 
         {variant === 'marquee' || variant === 'carousel' ? renderMarquee() : renderGrid()}
       </div>

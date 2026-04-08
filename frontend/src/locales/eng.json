@@ -1,12 +1,100 @@
 {
-   "home" : "Home",
-   "about" : "About",
-   "products" : "Products",
-   "services" : "Services",
-   "projects" : "Projects",
-   "recruitment" : "Recruitment",
-   "news" : "News",
-   "contact" : "Contact"
+   "home": "Home",
+   "about": "About Us",
+   "products": "Products",
+   "services": "Services",
+   "projects": "Projects",
+   "recruitment": "Recruitment",
+   "news": "News",
+   "contact": "Contact",
+   "feedback": "What Customers Say About You?",
+   "management": "Company Leadership",
+
+   "introduct_achievements": "Our Achievements",
+
+   "section_products": "Product Categories",
+   "section_services": "Our Services",
+   "section_projects": "Featured Projects",
+   "section_news": "Latest News",
+
+   "section_leadership": "Company Leadership",
+   "section_leadership_subtitle": "Experienced, dedicated and professional leadership team",
+
+   "section_feedback": "What Our Customers Say About Us",
+   "section_feedback_subtitle": "Customer trust is the measure of success of",
+   
+   "section_contact": "Contact Us",
+   "section_why_choose": "Why Choose Our Services?",
+   "section_contact_info": "Contact Information",
+   "section_address": "Address",
+   "section_phone": "Phone",
+   "section_email": "Email",
+   "section_working_hours": "Working Hours",
+   "section_content_send": "Content", 
+   "section_button_send": "Send",
+   "section_name_send": "Name",
+   "section_our_location": "Our Location",
+   "section_loading_map": "Loading map...",
+   "section_products_count": "products",
+   "section_view_now": "View Now",
+   "section_view_all_news": "View All News",
+   "section_year": "Year",
+   
+   "section_partner": "Partners & Customers",
+   "section_partner_subtitle": "We are proud to cooperate with leading companies",
+   "section_follow_product": "Registering to buy for product:",
+
+
+   "breadcrumb_home": "Home",
+   "breadcrumb_detail": "Detail",
+   "breadcrumb_product_detail": "Product Detail",
+   "breadcrumb_news_detail": "News Detail",
+   "breadcrumb_service_detail": "Service Detail",
+   "breadcrumb_project_detail": "Project Detail",
+
+   "product_detail_des" : "Detail product",
+   "product_detail_spec" : "Specification",
+   "product_detail_register" : "Register to purchase",
+   "product_detail_button_contact" : "Contact us for consultation",
+   "product_view_all": "View all",
+   "product_all": "All products",
+
+   "service_detail_des" : "Detail service",
+   "service_detail_overview" : "Overview",
+   "service_detail_interested" : "Are you interested in this service?",
+   "service_detail_button_contact" : "Contact us for a quote now.",
+
+   "news_detail_button_back" : "Back to news list",
+   "news_all": "All news",
+   "news_view_all": "View all",
+
+   "project_header": "Featured Projects",
+   "project_year": "Year",
+   "project_detail": "Project Detail",
+   "project_button_contact": "Contact us for consultation on similar projects",
+
+   "recruitment_title" : "Recruitment - Join our team",
+   "recruitment_subtitle" : "We are always looking for talented people to join our company",
+   "recruitment_position" : "Position",
+   "recruitment_location" : "Location",
+   "recruitment_salary" : "Salary",
+   "recruitment_experience" : "Experience",
+   "recruitment_time" : "Working Time",
+   "recruitment_requirements" : "Job Requirements",
+   "recruitment_button_apply" : "Apply",
+
+   "recruitment_modal_title" : "Apply for position:",
+   "recruitment_modal_name" : "Full Name",
+   "recruitment_modal_phone" : "Phone Number",
+   "recruitment_modal_email" : "Email",
+   "recruitment_modal_address" : "Address",
+   "recruitment_modal_cv" : "CV Attachment (Required PDF < 5MB)",
+   "recruitment_modal_button_apply" : "Submit CV",
+   "recruitment_modal_button_cancel" : "Cancel",
+
+   "recruitment_list_title" : "Open Positions",
+   "recruitment_benefits" : "Benefits & Welfare",
+   "recruitment_benefits_description" : "We offer the best working environment for you"
 
 
 }

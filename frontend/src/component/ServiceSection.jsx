@@ -4,6 +4,7 @@ import '../styles/ServiceSection.css';
 import { getPublicServices } from '../utils/serviceApi';
 import { getWhyChooseService } from '../utils/whyChooseServiceApi';
 import { useThemeSettings } from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 const ServiceSection = () => {
   const [services, setServices] = React.useState([]);
@@ -13,6 +14,7 @@ const ServiceSection = () => {
   const [whyChooseService, setWhyChooseService] = React.useState([]);
   const { themeLayout, userTheme } = useThemeSettings();
   const variant = themeLayout?.service || 'card-image';
+  const { t } = useTranslation();
 
   const itemsPerPage = 4;
 
@@ -48,7 +50,7 @@ const ServiceSection = () => {
 
   const WhyChooseBlock = () => whyChooseService.length > 0 ? (
     <div className="service-highlight">
-      <h3>Tại sao chọn dịch vụ của chúng tôi?</h3>
+      <h3>{t('section_why_choose')}</h3>
       <div className="highlight-grid">
         {whyChooseService.map((item, index) => (
           <div key={index} className="highlight-item">
@@ -77,7 +79,7 @@ const ServiceSection = () => {
     return (
       <section id="services" className="services-section">
         <div className="container" data-aos="fade-up">
-          <h1 className="section-title">Dịch vụ của chúng tôi</h1>
+          <h1 className="section-title">{t('section_services')}</h1>
           {loading ? (
             <div style={{ textAlign: 'center', padding: '80px 20px', minHeight: '300px' }}>Đang tải...</div>
           ) : (
@@ -109,7 +111,7 @@ const ServiceSection = () => {
   return (
     <section id="services" className="services-section">
       <div className="container" data-aos="fade-up">
-        <h1 className="section-title">Dịch vụ của chúng tôi</h1>
+        <h1 className="section-title">{t('section_services')}</h1>
         <div className="services-grid">
           {loading ? (
             <div style={{ textAlign: 'center', width: '100%', padding: '100px 20px', minHeight: '400px' }}>Đang tải dịch vụ...</div>

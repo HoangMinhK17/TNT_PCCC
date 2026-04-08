@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Achievements.css';
 import { getCoreValues } from '../utils/introductApi';
+import { useTranslation } from 'react-i18next';
 
 const Achievements = () => {
+    const { t } = useTranslation();
     const [achievements, setAchievements] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -31,7 +33,7 @@ const Achievements = () => {
         achievements.length > 0 && (
             <section className="achievements-section">
                 <div className="container" >
-                    <h2 className="section-title text-center" data-aos="fade-up">Thành Tựu Của Chúng Tôi</h2>
+                    <h2 className="section-title text-center" data-aos="fade-up">{t('introduct_achievements')}</h2>
                     <div className="achievements-grid">
                         {achievements.map((item, index) => (
                             <div key={index} className="achievement-card" data-aos="fade-up" data-aos-delay={index * 100}>

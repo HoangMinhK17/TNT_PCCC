@@ -3,11 +3,13 @@ import { useParams, Link } from 'react-router-dom';
 import { getPublicServiceById } from '../utils/serviceApi';
 import '../styles/ServiceDetail.css';
 import SEO from '../component/SEO';
+import { useTranslation } from 'react-i18next';
 
 const ServiceDetail = () => {
     const { id } = useParams();
     const [service, setService] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchService = async () => {
@@ -78,15 +80,15 @@ const ServiceDetail = () => {
                         <img src={service.image} alt={service.title} />
                     </div>
                     <div className="detail-info" data-aos="fade-up">
-                        <h2>Tổng quan dịch vụ</h2>
+                        <h2>{t('service_detail_overview')}</h2>
                         <p className="detail-description">{service.title}</p>
                         <hr />
-                        <h3>Chi tiết</h3>
+                        <h3>{t('service_detail_des')}</h3>
                         <div className="detail-text" dangerouslySetInnerHTML={{ __html: service.description }}></div>
 
                         <div className="cta-box">
-                            <p>Bạn quan tâm đến dịch vụ này?</p>
-                            <Link to="/contact" className="cta-button">Liên hệ báo giá ngay</Link>
+                            <p>{t('service_detail_interested')}</p>
+                            <Link to="/contact" className="cta-button">{t('service_detail_button_contact')}</Link>
                         </div>
                     </div>
                 </div>

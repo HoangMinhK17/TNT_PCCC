@@ -5,10 +5,12 @@ import '../styles/ContactSection.css';
 import { getInformation } from '../utils/informationApi';
 import { createContact } from '../utils/contactApi';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 
 const ContactSection = () => {
   const location = useLocation();
   const { productId, productName, productImage } = location.state || {};
+  const { t } = useTranslation();
 
   const [information, setInformation] = useState({});
 
@@ -77,14 +79,14 @@ const ContactSection = () => {
   return (
     <section id="contact" className="contact-section">
       <div className="container">
-        <h1 className="section-title" data-aos="fade-up">Liên hệ với chúng tôi</h1>
+        <h1 className="section-title" data-aos="fade-up">{t('section_contact')}</h1>
 
         <div className="contact-content">
           <div className="contact-form-wrapper" data-aos="fade-up">
             {productName && (
               <div className="product-preview-container">
                 <div className="product-preview-info">
-                  <span className="product-preview-label">Đang đăng ký mua cho sản phẩm:</span>
+                  <span className="product-preview-label">{t('section_follow_product')}</span>
                   <h3 className="product-preview-name">{productName}</h3>
                 </div>
                 {productImage && (
@@ -96,52 +98,52 @@ const ContactSection = () => {
             )}
             <form className="contact-form" onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="name">Họ và tên *</label>
+                <label htmlFor="name">{t('section_name_send')} *</label>
                 <input
                   type="text"
                   id="name"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Nhập họ và tên"
+                  placeholder={t('section_name_send')}
                   required
                 />
               </div>
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="email">Email *</label>
+                  <label htmlFor="email">{t('section_email')} *</label>
                   <input
                     type="email"
                     id="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="Nhập email"
+                    placeholder={t('section_email')}
                     required
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="phone">Điện thoại</label>
+                  <label htmlFor="phone">{t('section_phone')}</label>
                   <input
                     type="tel"
                     id="phone"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="Nhập số điện thoại"
+                    placeholder={t('section_phone')}
                   />
                 </div>
               </div>
 
               <div className="form-group">
-                <label htmlFor="title">Nội dung gửi *</label>
+                <label htmlFor="title">{t('section_content_send')} *</label>
                 <textarea
                   id="title"
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
-                  placeholder="Nhập tiêu đề"
+                  placeholder={t('section_content_send')}
                   readOnly={productName ? true : false}
                   required
                   rows="5"
@@ -162,7 +164,7 @@ const ContactSection = () => {
               </div> */}
 
               <button type="submit" className="btn-submit">
-                Gửi yêu cầu
+                {t('section_button_send')}
               </button>
 
               {submitted && (
@@ -175,14 +177,14 @@ const ContactSection = () => {
 
           <div className="contact-info-wrapper" data-aos="fade-up">
             <div className="contact-info-box">
-              <h3>Thông tin liên hệ</h3>
+              <h3>{t('section_contact_info')}</h3>
 
               <div className="info-item">
                 <div className="info-icon">
                   <FaMapMarkerAlt />
                 </div>
                 <div className="info-content">
-                  <h4>Địa chỉ</h4>
+                  <h4>{t('section_address')}</h4>
                   <p>{information.address}</p>
                 </div>
               </div>
@@ -192,7 +194,7 @@ const ContactSection = () => {
                   <FaPhoneAlt />
                 </div>
                 <div className="info-content">
-                  <h4>Điện thoại</h4>
+                  <h4>{t('section_phone')}</h4>
                   <p><a href="tel:0912345678">{information.phone}</a></p>
                 </div>
               </div>
@@ -202,7 +204,7 @@ const ContactSection = () => {
                   <FaEnvelope />
                 </div>
                 <div className="info-content">
-                  <h4>Email</h4>
+                  <h4>{t('section_email')}</h4>
                   <p><a href={`mailto:${information.email}`}>{information.email}</a></p>
                 </div>
               </div>
@@ -212,7 +214,7 @@ const ContactSection = () => {
                     <FaClock />
                   </div>
                   <div className="info-content">
-                    <h4>Giờ làm việc</h4>
+                    <h4>{t('section_working_hours')}</h4>
                     {information.timeWork?.map((time, index) => (
                       <p key={index}>{time}</p>
                     ))}
@@ -225,7 +227,7 @@ const ContactSection = () => {
         </div>
 
         <div className="map-section" data-aos="fade-up">
-          <h3>Vị trí của chúng tôi</h3>
+          <h3>{t('section_our_location')}</h3>
           <div className="map-container">
             {information.address ? (
               <iframe

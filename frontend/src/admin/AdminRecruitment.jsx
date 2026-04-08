@@ -431,8 +431,8 @@ const TabWhyChooseCompany = () => {
                 <Form form={form} layout="vertical">
 
                     <div style={{ display: 'flex', gap: 16 }}>
-                        <Form.Item name="title" label="Tiêu đề chính (Why Choose Us)" style={{ flex: 2 }} >
-                            <Input />
+                        <Form.Item name="title" label="Tiêu đề chính (Bỏ trống tiêu đề sẽ không hiển thị phần này)" style={{ flex: 2 }} >
+                            <Input placeholder='Tiêu đề'/>
                         </Form.Item>
                         <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>
                             <Select>

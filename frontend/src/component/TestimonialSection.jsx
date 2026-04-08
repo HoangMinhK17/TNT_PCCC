@@ -3,12 +3,14 @@ import '../styles/TestimonialSection.css';
 import { getPublicTestimonials } from '../utils/testimonialApi';
 import { getInformation } from '../utils/informationApi';
 import { useThemeSettings } from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 const TestimonialSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [testimonials, setTestimonials] = useState([]);
   const [getInfor, setGetInfor] = useState([]);
   const { userTheme } = useThemeSettings();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchTestimonials = async () => {
@@ -34,7 +36,7 @@ const TestimonialSection = () => {
         <div className="container" data-aos="fade-up">
           <div className="text-center ai-header-container">
             <h2 className="ai-title">
-              Khách hàng nói gì <span className="highlight-text">về {getInfor[0]?.name || 'Chúng Tôi'}</span>
+              {t('section_feedback')} <span className="highlight-text">{getInfor[0]?.name || 'Chúng Tôi'}</span>
             </h2>
           </div>
 
@@ -77,8 +79,8 @@ const TestimonialSection = () => {
   return (
     <section className="testimonial-section">
       <div className="container" data-aos="fade-up">
-        <h2 className="section-title">Khách Hàng Nói Gì Về Chúng Tôi</h2>
-        <p className="section-subtitle">Niềm tin của khách hàng là thước đo thành công của {getInfor[0]?.name}</p>
+        <h2 className="section-title">{t('section_feedback')}</h2>
+        <p className="section-subtitle">{t('section_feedback_subtitle')} {getInfor[0]?.name}</p>
 
         <div className="testimonial-slider">
           {testimonials.map((testimonial, index) => (

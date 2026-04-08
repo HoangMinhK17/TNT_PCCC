@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getProjects } from '../utils/projectApi';
 import { useThemeSettings } from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import '../styles/ProjectsSection.css';
 
 const ProjectsSection = () => {
@@ -9,6 +10,7 @@ const ProjectsSection = () => {
   const [loading, setLoading] = useState(true);
   const { themeLayout } = useThemeSettings();
   const variant = themeLayout?.project || 'masonry';
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -69,7 +71,7 @@ const ProjectsSection = () => {
   return (
     <section id="projects" className={`projects-section variant-${variant}`}>
       <div className="container" data-aos="fade-up">
-        <h2 className="section-title">Các dự án nổi bật</h2>
+        <h2 className="section-title">{t('section_projects')}</h2>
         {variant === 'slider-3d' || variant === 'carousel' ? renderCarousel() : renderGrid()}
       </div>
     </section>

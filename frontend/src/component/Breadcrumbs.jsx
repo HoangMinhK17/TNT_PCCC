@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import '../styles/Breadcrumbs.css';
+import { useTranslation } from 'react-i18next';
 
 import { getPublicProducts } from '../utils/productApi.js';
 import { getNews } from '../utils/newsApi.js';
@@ -14,6 +15,8 @@ const Breadcrumbs = () => {
     const location = useLocation();
     const [searchParams] = useSearchParams();
     const categoryParam = searchParams.get('category');
+    const { t, i18n } = useTranslation();
+    const currentLang = i18n.language;
     const [products, setProducts] = useState([]);
     const [news, setNews] = useState([]);
     const [headers, setHeaders] = useState([]);
@@ -81,7 +84,7 @@ const Breadcrumbs = () => {
     const pathnames = location.pathname.split('/').filter((x) => x);
     const breadcrumbs = [];
 
-    breadcrumbs.push({ name: 'Trang chủ', path: '/' });
+    breadcrumbs.push({ name: t('breadcrumb_home'), path: '/' });
 
     const getName = (path) => {
         const matchingHeader = headers.find(h => {
@@ -89,12 +92,15 @@ const Breadcrumbs = () => {
             return h.key === path;
         });
 
-        return matchingHeader ? matchingHeader.name_vn : path.charAt(0).toUpperCase() + path.slice(1);
+        if (matchingHeader) {
+            return (currentLang === 'en' && matchingHeader.name_en) ? matchingHeader.name_en : matchingHeader.name_vn;
+        }
+        return path.charAt(0).toUpperCase() + path.slice(1);
     };
 
     if (pathnames[0] === 'products') {
         const productHeaderName = getName('products');
-        breadcrumbs.push({ name: productHeaderName === 'Products' ? 'Sản phẩm' : productHeaderName, path: '/products' });
+        breadcrumbs.push({ name: productHeaderName, path: '/products' });
         if (pathnames[1]) {
             const id = pathnames[1];
             const product = products.find(p => p._id === id || p.id === id || p.slug === id);
@@ -109,7 +115,7 @@ const Breadcrumbs = () => {
                 }
                 breadcrumbs.push({ name: product.name, path: null });
             } else {
-                breadcrumbs.push({ name: 'Chi tiết sản phẩm', path: null });
+                breadcrumbs.push({ name: t('breadcrumb_product_detail'), path: null });
             }
         } else if (categoryParam && categoryParam !== 'Tất cả') {
             breadcrumbs.push({ name: categoryParam, path: null });
@@ -117,7 +123,7 @@ const Breadcrumbs = () => {
     }
     else if (pathnames[0] === 'news') {
         const newsHeaderName = getName('news');
-        breadcrumbs.push({ name: newsHeaderName === 'News' ? 'Tin tức' : newsHeaderName, path: '/news' });
+        breadcrumbs.push({ name: newsHeaderName, path: '/news' });
 
         if (pathnames[1]) {
             const id = pathnames[1];
@@ -133,7 +139,7 @@ const Breadcrumbs = () => {
                 }
                 breadcrumbs.push({ name: newsItem.name || newsItem.title, path: null });
             } else {
-                breadcrumbs.push({ name: 'Chi tiết tin tức', path: null });
+                breadcrumbs.push({ name: t('breadcrumb_news_detail'), path: null });
             }
         } else if (categoryParam && categoryParam !== 'Tất cả') {
             breadcrumbs.push({ name: categoryParam, path: null });
@@ -141,7 +147,7 @@ const Breadcrumbs = () => {
     }
     else if (pathnames[0] === 'services') {
         const serviceHeaderName = getName('services');
-        breadcrumbs.push({ name: serviceHeaderName === 'Services' ? 'Dịch vụ' : serviceHeaderName, path: '/services' });
+        breadcrumbs.push({ name: serviceHeaderName, path: '/services' });
 
         if (pathnames[1]) {
             const id = pathnames[1];
@@ -156,7 +162,7 @@ const Breadcrumbs = () => {
                     breadcrumbs.push({ name: categoryParam, path: null });
                 }
             } else {
-                breadcrumbs.push({ name: 'Chi tiết dịch vụ', path: null });
+                breadcrumbs.push({ name: t('breadcrumb_service_detail'), path: null });
             }
         } else if (categoryParam && categoryParam !== 'Tất cả') {
             breadcrumbs.push({ name: categoryParam, path: null });
@@ -164,7 +170,7 @@ const Breadcrumbs = () => {
     }
     else if (pathnames[0] === 'projects') {
         const projectHeaderName = getName('projects');
-        breadcrumbs.push({ name: projectHeaderName === 'Projects' ? 'Dự án' : projectHeaderName, path: '/projects' });
+        breadcrumbs.push({ name: projectHeaderName, path: '/projects' });
 
         if (pathnames[1]) {
             const id = pathnames[1];
@@ -179,7 +185,7 @@ const Breadcrumbs = () => {
                     breadcrumbs.push({ name: categoryParam, path: null });
                 }
             } else {
-                breadcrumbs.push({ name: 'Chi tiết dự án', path: null });
+                breadcrumbs.push({ name: t('breadcrumb_project_detail'), path: null });
             }
         } else if (categoryParam && categoryParam !== 'Tất cả') {
             breadcrumbs.push({ name: categoryParam, path: null });
@@ -191,7 +197,7 @@ const Breadcrumbs = () => {
             const isLast = index === pathnames.length - 1;
 
             if (!isNaN(value)) {
-                breadcrumbs.push({ name: 'Chi tiết', path: isLast ? null : to });
+                breadcrumbs.push({ name: t('breadcrumb_detail'), path: isLast ? null : to });
             } else {
                 breadcrumbs.push({ name: getName(value), path: isLast ? null : to });
             }

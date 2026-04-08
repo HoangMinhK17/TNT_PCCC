@@ -3,11 +3,13 @@ import { useParams, Link } from 'react-router-dom';
 import '../styles/NewsDetail.css';
 import SEO from '../component/SEO';
 import { getNewsById } from '../utils/newsApi';
+import { useTranslation } from 'react-i18next';
 
 const NewsDetail = () => {
     const { id } = useParams();
     const [newsItem, setNewsItem] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchNewsDetail = async () => {
@@ -84,7 +86,7 @@ const NewsDetail = () => {
                         </div>
 
                         <div className="news-detail-footer">
-                            <Link to="/news" className="btn-back">Quay lại danh sách</Link>
+                            <Link to="/news" className="btn-back">{t('news_detail_button_back')}</Link>
                         </div>
                     </div>
                 </div>

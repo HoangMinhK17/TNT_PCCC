@@ -10,11 +10,13 @@ import { getImageInformation } from '../utils/informationApi';
 import { getAllHeader } from '../utils/headerApi';
 import { getThemeHeader } from '../utils/themeHeaderApi';
 import { useThemeSettings } from '../context/ThemeContext';
+import vnFlag from '../uploads/language/vietnam.png';
+import enFlag from '../uploads/language/united-kingdom.png';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const [activeSubmenu, setActiveSubmenu] = useState(null);
-    const [language, setLanguage] = useState("");
+    const [language, setLanguage] = useState(JSON.parse(localStorage.getItem("language")) || "vn");
     const [categories, setCategories] = useState([]);
     const [newsCategories, setNewsCategories] = useState([]);
     const [logo, setLogo] = useState([]);
@@ -22,7 +24,8 @@ const Header = () => {
     const [themeConfig, setThemeConfig] = useState(null);
     const { themeLayout } = useThemeSettings();
 
-    const languageGlobal = JSON.parse(localStorage.getItem("language")) || "vn";
+    const { t, i18n } = useTranslation();
+
     useEffect(() => {
         const fetchLogo = async () => {
             try {
@@ -100,8 +103,6 @@ const Header = () => {
         setActiveSubmenu(activeSubmenu === index ? null : index);
     };
 
-    const { t, i18n } = useTranslation();
-
     const PATH_MAP = {
         home: { path: '/', hasSubmenu: false, key: 'home' },
         about: { path: '/about', hasSubmenu: false, key: 'about' },
@@ -118,7 +119,7 @@ const Header = () => {
     const menuItems = getHeaderTitle.map(header => {
         const enKey = header.key?.toLowerCase() || '';
         const mapInfo = PATH_MAP[enKey] || { path: '/', hasSubmenu: false, key: enKey };
-        const label = languageGlobal === 'vn' ? header.name_vn : header.name_en;
+        const label = language === 'en' ? (header.name_en || header.name_vn) : header.name_vn;
         return {
             ...mapInfo,
             label: label
@@ -179,7 +180,7 @@ const Header = () => {
                                                     to={`/products?category=${encodeURIComponent(category.name)}&categoryId=${category._id}`}
                                                     onClick={closeMenu}
                                                 >
-                                                    {category.name}
+                                                    {language === 'en' ? (category.name_en || category.name) : category.name}
                                                 </Link>
                                             </li>
                                         ))}
@@ -193,7 +194,7 @@ const Header = () => {
                                                     to={`/news?category=${encodeURIComponent(category.name)}&categoryId=${category._id}`}
                                                     onClick={closeMenu}
                                                 >
-                                                    {category.name}
+                                                    {language === 'en' ? (category.name_en || category.name) : category.name}
                                                 </Link>
                                             </li>
                                         ))}
@@ -203,21 +204,21 @@ const Header = () => {
                         ))}
                     </ul>
                 </nav>
-                {/* <div className="language-switcher">
+                <div className="language-switcher">
                     <img
-                        src="src/uploads/language/vietnam.png"
+                        src={vnFlag}
                         alt="VN"
-                        className={`language-flag ${languageGlobal === 'vn' ? 'active' : ''}`}
+                        className={`language-flag ${language === 'vn' ? 'active' : ''}`}
                         onClick={() => handleLanguageChange('vn')}
                     />
                     <img
-                        src="src/uploads/language/united-kingdom.png"
+                        src={enFlag}
                         alt="EN"
-                        className={`language-flag ${languageGlobal === 'en' ? 'active' : ''}`}
+                        className={`language-flag ${language === 'en' ? 'active' : ''}`}
                         onClick={() => handleLanguageChange('en')}
                     />
              
-                </div> */}
+                </div>
             </div>
         </header>
     );

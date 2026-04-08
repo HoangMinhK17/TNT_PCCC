@@ -3,12 +3,14 @@ import { useParams, Link } from 'react-router-dom';
 import '../styles/ProductDetail.css';
 import SEO from '../component/SEO';
 import { getPublicProductById } from '../utils/productApi';
+import { useTranslation } from 'react-i18next';
 
 const ProductDetail = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [activeImage, setActiveImage] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -92,12 +94,12 @@ const ProductDetail = () => {
                         </div>
 
                         <div className="product-specs">
-                            <h3>Chi tiết sản phẩm</h3>
+                            <h3>{t('product_detail_des')}</h3>
                             <p>{product.description}</p>
 
                             {product.technical && product.technical.length > 0 && (
                                 <div className="specs-container">
-                                    <h4>Thông số kỹ thuật</h4>
+                                    <h4>{t('product_detail_spec')}</h4>
                                     <table className="specs-table">
                                         <tbody>
                                             {product.technical.map((spec, index) => (
@@ -116,14 +118,14 @@ const ProductDetail = () => {
                                 to="/contact"
                                 className="contact-btn"
                             >
-                                Liên hệ tư vấn
+                                {t('product_detail_button_contact')}
                             </Link>
                             <Link
                                 to="/contact"
                                 state={{ productId: product._id, productName: product.name, productImage: product.image[0] }}
                                 className="contact-btn buy-btn"
                             >
-                                Đăng kí mua hàng
+                                {t('product_detail_register')}
                             </Link>
                         </div>
                     </div>

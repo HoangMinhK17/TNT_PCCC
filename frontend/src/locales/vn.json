@@ -1,12 +1,103 @@
 {
-    "home" : "Trang chủ",
-    "about" : "Giới thiệu",
-    "products" : "Sản phẩm",
-    "services" : "Dịch vụ",
-    "projects" : "Dự án",
-    "recruitment" : "Tuyển dụng",
-    "news" : "Tin tức",
-    "contact" : "Liên hệ",
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "products": "Sản phẩm",
+    "services": "Dịch vụ",
+    "projects": "Dự án",
+    "recruitment": "Tuyển dụng",
+    "news": "Tin tức",
+    "contact": "Liên hệ",
     "feedback": "Khách hàng nói gì về bạn?",
-    "management": "Lãnh đạo công ty"
+    "management": "Lãnh đạo công ty",
+
+    "introduct_achievements": "Thành Tựu Của Chúng Tôi",
+
+    "section_products": "Danh mục sản phẩm",
+    "section_services": "Dịch vụ của chúng tôi",
+    "section_projects": "Các dự án nổi bật",
+    "section_news": "Tin tức mới nhất",
+
+
+    "section_leadership": "Lãnh Đạo Công Ty",
+    "section_leadership_subtitle": "Đội ngũ ban lãnh đạo giàu kinh nghiệm, tận tâm và chuyên nghiệp",
+
+
+    "section_feedback": "Khách Hàng Nói Gì Về Chúng Tôi",
+    "section_feedback_subtitle": "Niềm tin của khách hàng là thước đo thành công của",
+
+    "section_contact": "Liên hệ với chúng tôi",
+    "section_why_choose": "Tại sao chọn dịch vụ của chúng tôi?",
+    "section_contact_info": "Thông tin liên hệ",
+    "section_address": "Địa chỉ",
+    "section_phone": "Điện thoại",
+    "section_email": "Email",
+    "section_working_hours": "Giờ làm việc",
+    "section_our_location": "Vị trí của chúng tôi",
+    "section_loading_map": "Đang tải bản đồ...",
+
+
+    "section_products_count": "sản phẩm",
+    "section_view_now": "Xem ngay",
+    "section_view_all_news": "Xem tất cả tin tức",
+    "section_year": "Năm",
+    "section_partner": "Đối tác & Khách hàng",
+    "section_partner_subtitle": "Chúng tôi tự hào được hợp tác với các công ty hàng đầu",
+    "section_content_send": "Nội dung gửi",
+    "section_button_send": "Gửi yêu cầu",
+    "section_name_send": "Họ và tên",
+    "section_follow_product": "Đang đăng ký mua cho sản phẩm:",
+    "breadcrumb_home": "Trang chủ",
+    "breadcrumb_detail": "Chi tiết",
+    "breadcrumb_product_detail": "Chi tiết sản phẩm",
+    "breadcrumb_news_detail": "Chi tiết tin tức",
+    "breadcrumb_service_detail": "Chi tiết dịch vụ",
+    "breadcrumb_project_detail": "Chi tiết dự án",
+
+    "product_detail_des": "Chi tiết sản phẩm",
+    "product_detail_spec": "Thông số kỹ thuật",
+    "product_detail_register": "Đăng ký mua hàng",
+    "product_detail_button_contact": "Liên hệ tư vấn",
+    "product_view_all": "Xem tất cả",
+    "product_all": "Tất cả sản phẩm",
+
+
+    "service_detail_des": "Chi tiết dịch vụ",
+    "service_detail_overview": "Tổng quan dịch vụ",
+    "service_detail_interested": "Bạn quan tâm đến dịch vụ này?",
+    "service_detail_button_contact": "Liên hệ báo giá ngay",
+
+    "news_detail_button_back": "Quay lại danh sách tin tức",
+    "news_all": "Tất cả tin tức",
+    "news_view_all": "xem tất cả",
+
+    "project_header": "Dự án tiêu biểu",
+    "project_year": "Năm",
+    "project_detail": "Chi tiết dự án",
+    "project_button_contact": "Liên hệ tư vấn dự án tương tự",
+
+
+    "recruitment_title" : "Tuyển dụng - Gia nhập đội ngũ chúng tôi",
+    "recruitment_subtitle" : "Chúng tôi luôn tìm kiếm những nhân tài giỏi để cùng phát triển công ty",
+    "recruitment_position" : "Vị trí",
+    "recruitment_location" : "Địa điểm",
+    "recruitment_salary" : "Mức lương",
+    "recruitment_experience" : "Kinh nghiệm",
+    "recruitment_time" : "Thời gian làm việc",
+    "recruitment_requirements" : "Yêu cầu công việc",
+    "recruitment_button_apply" : "Ứng tuyển",
+
+    "recruitment_modal_title" : "Ứng tuyển vị trí:",
+    "recruitment_modal_name" : "Họ và tên",
+    "recruitment_modal_phone" : "Số điện thoại",
+    "recruitment_modal_email" : "Email",
+    "recruitment_modal_address" : "Địa chỉ",
+    "recruitment_modal_cv" : "CV Đính kèm (Bắt buộc PDF < 5MB)",
+    "recruitment_modal_button_apply" : "Gửi hồ sơ",
+    "recruitment_modal_button_cancel" : "Hủy",
+
+    "recruitment_list_title" : "Các vị trí đang tuyển",
+    "recruitment_benefits" : "Quyền lợi & Phúc lợi",
+    "recruitment_benefits_description" : "Chúng tôi mang đến môi trường làm việc tốt nhất cho bạn"
+
+    
 }

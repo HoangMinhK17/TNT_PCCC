@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getNews } from '../utils/newsApi';
 import { useThemeSettings } from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import '../styles/NewsSection.css';
 
 const NewsSection = () => {
@@ -9,6 +10,7 @@ const NewsSection = () => {
   const [loading, setLoading] = useState(true);
   const { themeLayout } = useThemeSettings();
   const variant = themeLayout?.news || 'grid';
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -34,7 +36,7 @@ const NewsSection = () => {
     return (
       <section id="news" className="news-section">
         <div className="container" data-aos="fade-up">
-          <h2 className="section-title">Tin tức mới nhất</h2>
+          <h2 className="section-title">{t('section_news')}</h2>
           <div className="news-magazine">
             {/* Bài chính lớn */}
             {main && (
@@ -67,7 +69,7 @@ const NewsSection = () => {
             </div>
           </div>
           <div className="view-all-news">
-            <Link to="/news" className="btn-primary" style={{ textDecoration: 'none' }}>Xem tất cả tin tức</Link>
+            <Link to="/news" className="btn-primary" style={{ textDecoration: 'none' }}>{t('section_view_all_news')}</Link>
           </div>
         </div>
       </section>
@@ -79,7 +81,7 @@ const NewsSection = () => {
     return (
       <section id="news" className="news-section">
         <div className="container" data-aos="fade-up">
-          <h2 className="section-title">Tin tức mới nhất</h2>
+          <h2 className="section-title">{t('section_news')}</h2>
           <div className="news-list">
             {newsItems.slice(0, 4).map(item => (
               <Link key={item._id} to={`/news/${item.slug}`} className="news-list__item">
@@ -98,7 +100,7 @@ const NewsSection = () => {
             ))}
           </div>
           <div className="view-all-news">
-            <Link to="/news" className="btn-primary" style={{ textDecoration: 'none' }}>Xem tất cả tin tức</Link>
+            <Link to="/news" className="btn-primary" style={{ textDecoration: 'none' }}>{t('section_view_all_news')}</Link>
           </div>
         </div>
       </section>
@@ -109,7 +111,7 @@ const NewsSection = () => {
   return (
     <section id="news" className="news-section">
       <div className="container" data-aos="fade-up">
-        <h2 className="section-title">Tin tức mới nhất</h2>
+        <h2 className="section-title">{t('section_news')}</h2>
         <div className="news-grid">
           {newsItems.slice(0, 3).map(newsItem => (
             <article key={newsItem._id} className="news-card">
@@ -128,7 +130,7 @@ const NewsSection = () => {
           ))}
         </div>
         <div className="view-all-news">
-          <Link to="/news" className="btn-primary" style={{ textDecoration: 'none' }}>Xem tất cả tin tức</Link>
+          <Link to="/news" className="btn-primary" style={{ textDecoration: 'none' }}>{t('section_view_all_news')}</Link>
         </div>
       </div>
     </section>
