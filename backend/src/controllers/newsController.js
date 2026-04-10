@@ -2,8 +2,11 @@ import News from "../models/News.js";
 
 export const getNews = async (req, res) => {
     try {
-        const news = await News.find({ status: "active", isDeleted: false }).sort({ createdAt: -1 }).
-            select("name date title image slug ").populate({ path: "categoryNewsId", select: "name", match: { status: "active" } });
+        const news = await News.find({ status: "active", isDeleted: false })
+            .sort({ createdAt: -1 })
+            .select("name date title image slug ")
+            .populate({ path: "categoryNewsId", select: "name", match: { status: "active" } })
+            .lean();
         const filteredNews = news.filter(item => item.categoryNewsId !== null);
         res.status(200).json(filteredNews);
     } catch (error) {
@@ -30,8 +33,13 @@ export const getNewsForManage = async (req, res) => {
         }
 
         const totalNews = await News.countDocuments(filter);
-        const news = await News.find(filter).sort({ createdAt: -1 }).
-            select("name date title image slug description status").populate("categoryNewsId", "name").skip(skip).limit(limit);
+        const news = await News.find(filter)
+            .sort({ createdAt: -1 })
+            .select("name date title image slug description status")
+            .populate("categoryNewsId", "name")
+            .skip(skip)
+            .limit(limit)
+            .lean();
         res.status(200).json({
             news,
             totalPages: Math.ceil(totalNews / limit),
@@ -97,7 +105,10 @@ export const getNewsById = async (req, res) => {
             ? { $or: [{ _id: id }, { slug: id }], status: "active", isDeleted: false }
             : { slug: id, status: "active", isDeleted: false };
 
-        const news = await News.findOne(query).select("name date title image description content slug ").populate("categoryNewsId", "name");
+        const news = await News.findOne(query)
+            .select("name date title image description content slug ")
+            .populate("categoryNewsId", "name")
+            .lean();
 
         if (!news) {
             return res.status(404).json({ message: "News not found" });
@@ -122,7 +133,8 @@ export const getNewsByCategoryId = async (req, res) => {
             .skip(skip)
             .limit(limit)
             .select("name date title image description slug ")
-            .populate("categoryNewsId", "name");
+            .populate("categoryNewsId", "name")
+            .lean();
 
         const totalNews = await News.countDocuments(query);
 
@@ -153,7 +165,8 @@ export const getNewsByCategoryIdAdmin = async (req, res) => {
             .skip(skip)
             .limit(limit)
             .select("name date title image description slug status ")
-            .populate("categoryNewsId", "name");
+            .populate("categoryNewsId", "name")
+            .lean();
 
         const totalNews = await News.countDocuments(query);
 
@@ -188,7 +201,8 @@ export const getNewsByName = async (req, res) => {
             .skip(skip)
             .limit(limit)
             .select("name date title image description slug")
-            .populate("categoryNewsId", "name");
+            .populate("categoryNewsId", "name")
+            .lean();
 
         const totalNews = await News.countDocuments(query);
 
@@ -204,9 +218,6 @@ export const getNewsByName = async (req, res) => {
 
 export const getNewsBySearch = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
-            return res.status(403).json({ message: "Forbidden" });
-        }
         const { searchTerm } = req.params;
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -223,7 +234,8 @@ export const getNewsBySearch = async (req, res) => {
             .skip(skip)
             .limit(limit)
             .select("name date title image slug")
-            .populate("categoryNewsId", "name");
+            .populate("categoryNewsId", "name")
+            .lean();
 
         const totalNews = await News.countDocuments(query);
 

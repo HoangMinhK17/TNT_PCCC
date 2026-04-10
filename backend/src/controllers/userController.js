@@ -37,7 +37,7 @@ const loginUser = async (req, res) => {
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ message: "Sai mật khẩu" });
+            return res.status(404).json({ message: "Sai mật khẩu" });
         }
         const token = jwt.sign({ id: user._id, role: user.role, name: user.name }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
         res.status(200).json({
@@ -155,7 +155,7 @@ const forgotPassword = async (req, res) => {
         let logoUrl = "";
         const info = await Information.findOne();
         if (info && info.logo) {
-            logoUrl = info.logo.startsWith("http") ? info.logo : `${process.env.FRONTEND_URL || "http://localhost:5173"}${info.logo}`;
+            logoUrl = info.logo;
         }
         const companyName = info ? info.name : "";
 

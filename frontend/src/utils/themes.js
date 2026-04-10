@@ -382,7 +382,7 @@ export const UI_THEMES = [
         },
         layout: {
             news: 'grid',              // 3 card đứng đều
-            product: 'grid-3',         // 3 card lớn bo tròn nhiều
+            product: 'ai-teal',         // 3 card lớn bo tròn nhiều
             service: 'card-image',     // Card có ảnh
             project: 'classic-grid',   // Lưới dự án info gradient bên trong
             leader: 'circle-avatar',   // Avatar tròn thân thiện kiểu AI companion

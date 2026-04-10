@@ -2,7 +2,7 @@ import Information from "../models/Information.js";
 
 const getInformation = async (req, res) => {
     try {
-        const information = await Information.find().select("name title phone address email  timeWork");
+        const information = await Information.find().select("name title phone address email  timeWork").lean();
         res.status(200).json(information);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -11,7 +11,7 @@ const getInformation = async (req, res) => {
 
 const getImageInformation = async (req, res) => {
     try {
-        const information = await Information.find().select("name backgroundImage logo favicon");
+        const information = await Information.find().select("name backgroundImage logo favicon").lean();
         res.status(200).json(information);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -20,7 +20,7 @@ const getImageInformation = async (req, res) => {
 
 const getContactInformation = async (req, res) => {
     try {
-        const information = await Information.find().select("socialLinks chatConfig");
+        const information = await Information.find().select("socialLinks chatConfig").lean();
         res.status(200).json(information);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -32,7 +32,7 @@ const getAllInformation = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const information = await Information.find();
+        const information = await Information.find().lean();
         res.status(200).json(information);
     } catch (error) {
         res.status(500).json({ message: error.message });

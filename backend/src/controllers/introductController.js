@@ -149,8 +149,6 @@ const getMissionVision = async (req, res) => {
     }
 };
 
-
-
 const getCoreValues = async (req, res) => {
     try {
         const introductCompany = await IntroductCompany.find().select("coreValues");

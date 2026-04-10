@@ -2,7 +2,10 @@ import CategoryNew from "../models/CategoryNews.js";
 
 export const getCategoryNews = async (req, res) => {
     try {
-        const categoryNew = await CategoryNew.find({ status: "active", isDeleted: false }).sort({ createdAt: -1 }).select("name slug status");
+        const categoryNew = await CategoryNew.find({ status: "active", isDeleted: false })
+            .sort({ createdAt: -1 })
+            .select("name slug status")
+            .lean();
         res.status(200).json(categoryNew);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -18,7 +21,12 @@ export const getCategoryNewsForManage = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
         const totalCategoryNew = await CategoryNew.countDocuments({ isDeleted: false });
-        const categoryNew = await CategoryNew.find({ isDeleted: false }).sort({ createdAt: -1 }).select("name slug status").skip(skip).limit(limit);
+        const categoryNew = await CategoryNew.find({ isDeleted: false })
+            .sort({ createdAt: -1 })
+            .select("name slug status")
+            .skip(skip)
+            .limit(limit)
+            .lean();
         res.status(200).json({
             categoryNew,
             totalPages: Math.ceil(totalCategoryNew / limit),
@@ -39,7 +47,12 @@ export const searchCategoryNews = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
         const totalCategoryNew = await CategoryNew.countDocuments({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false });
-        const categoryNew = await CategoryNew.find({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false }).sort({ createdAt: -1 }).select("name slug status").skip(skip).limit(limit);
+        const categoryNew = await CategoryNew.find({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false })
+            .sort({ createdAt: -1 })
+            .select("name slug status")
+            .skip(skip)
+            .limit(limit)
+            .lean();
         res.status(200).json({
             categoryNew,
             totalPages: Math.ceil(totalCategoryNew / limit),
@@ -61,9 +74,8 @@ export const createCategoryNews = async (req, res) => {
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
-
         const categoryNew = await CategoryNew.create({ name, slug, status });
-        res.status(201).json(categoryNew);
+        res.status(200).json(categoryNew);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

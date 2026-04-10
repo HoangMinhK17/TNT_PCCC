@@ -12,7 +12,7 @@ export const getAllLeaders = async (req, res) => {
 export const getAllLeadersForManagement = async (req, res) => {
     try {
         if (req.user.role !== "admin") {
-            return res.status(401).json({ message: "Unauthorized" });
+            return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -28,7 +28,7 @@ export const getAllLeadersForManagement = async (req, res) => {
 export const findLeaderByName = async (req, res) => {
     try {
         if (req.user.role !== "admin") {
-            return res.status(401).json({ message: "Unauthorized" });
+            return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -44,7 +44,7 @@ export const findLeaderByName = async (req, res) => {
 export const createLeader = async (req, res) => {
     try {
         if (req.user.role !== "admin") {
-            return res.status(401).json({ message: "Unauthorized" });
+            return res.status(403).json({ message: "Forbidden" });
         }
         const leader = new Leader(req.body);
         await leader.save();
@@ -57,7 +57,7 @@ export const createLeader = async (req, res) => {
 export const updateLeader = async (req, res) => {
     try {
         if (req.user.role !== "admin") {
-            return res.status(401).json({ message: "Unauthorized" });
+            return res.status(403).json({ message: "Forbidden" });
         }
         const leader = await Leader.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.status(200).json(leader);
@@ -69,7 +69,7 @@ export const updateLeader = async (req, res) => {
 export const deleteLeader = async (req, res) => {
     try {
         if (req.user.role !== "admin") {
-            return res.status(401).json({ message: "Unauthorized" });
+            return res.status(403).json({ message: "Forbidden" });
         }
         const leader = await Leader.findByIdAndUpdate(req.params.id, { isDeleted: true });
         res.status(200).json(leader);

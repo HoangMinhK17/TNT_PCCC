@@ -299,13 +299,13 @@ const TabNews = () => {
         const trimmedValue = value?.trim() || "";
         setSearchText(trimmedValue);
         setCurrentPage(1);
-        fetchData(1, pageSize, trimmedValue, filterCategory);
+        fetchData(1, pageSize, trimmedValue, filterCategory !== undefined ? filterCategory : null);
     };
 
     const handleFilterCategory = (categoryId) => {
-        setFilterCategory(categoryId);
+        setFilterCategory(categoryId !== undefined ? categoryId : null);
         setCurrentPage(1);
-        fetchData(1, pageSize, searchText, categoryId);
+        fetchData(1, pageSize, searchText, categoryId !== undefined ? categoryId : null);
     };
 
     const openModal = (record = null) => {

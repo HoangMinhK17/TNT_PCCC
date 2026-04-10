@@ -27,9 +27,6 @@ export const uploadCV = multer({
     },
 });
 
-
-
-
 export const uploadToCloudinary = (fileBuffer, folder = "tnt_company", resource_type = "auto") => {
     return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(

@@ -10,7 +10,7 @@ import '../styles/Dashboard.css';
 
 import {
     createCategoryProduct, updateCategoryProduct, deleteCategoryProduct,
-    getCategoryProductForManage
+    getCategoryProductForManage, getCategoryProductBySearch
 } from '../utils/categoryProductApi';
 import {
     createProduct, updateProduct, deleteProduct, getProductForManage,
@@ -74,18 +74,36 @@ const TabCategoryProduct = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [editing, setEditing] = useState(null);
     const [saving, setSaving] = useState(false);
+    const [searchText, setSearchText] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
     const [form] = Form.useForm();
 
-    const fetchData = async () => {
+    const fetchData = async (page = 1, limit = 5, search = searchText) => {
         setLoading(true);
         try {
-            const res = await getCategoryProductForManage();
-            setData(res.map(d => ({ ...d, key: d._id })));
+            let res;
+            if (search) {
+                res = await getCategoryProductBySearch(search, page, limit);
+            } else {
+                res = await getCategoryProductForManage(page, limit);
+            }
+            const list = res.categoryProducts || res.categoryProduct || [];
+            setData(list.map(d => ({ ...d, key: d._id })));
+            setTotalPages(res.totalPages || 1);
         } catch { message.error('Lấy dữ liệu danh mục thất bại!'); }
         finally { setLoading(false); }
     };
 
-    useEffect(() => { fetchData(); }, []);
+    useEffect(() => { fetchData(currentPage, pageSize); }, [currentPage, pageSize]);
+
+    const handleSearch = (value) => {
+        const trimmed = value?.trim() || "";
+        setSearchText(trimmed);
+        setCurrentPage(1);
+        fetchData(1, pageSize, trimmed);
+    };
 
     const openModal = (record = null) => {
         setEditing(record);
@@ -160,7 +178,33 @@ const TabCategoryProduct = () => {
                 <Title level={4} style={{ margin: 0 }}>Danh mục Sản phẩm</Title>
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>Thêm danh mục</Button>
             </div>
-            <Table columns={columns} dataSource={data} loading={loading} bordered pagination={{ pageSize: 5 }} />
+            
+            <div style={{ marginBottom: 16 }}>
+                <Input.Search
+                    placeholder="Tìm kiếm danh mục theo tên..."
+                    allowClear
+                    onSearch={handleSearch}
+                    style={{ width: 300 }}
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                />
+            </div>
+            
+            <Table 
+                columns={columns} 
+                dataSource={data} 
+                loading={loading} 
+                bordered 
+                pagination={{ 
+                    current: currentPage,
+                    pageSize: pageSize,
+                    total: totalPages * pageSize,
+                    onChange: (page, size) => {
+                        setCurrentPage(page);
+                        setPageSize(size);
+                    }
+                }} 
+            />
 
             <Modal title={editing ? "Sửa danh mục" : "Thêm mới danh mục"} open={modalVisible}
                 onOk={handleSave} onCancel={() => setModalVisible(false)}
@@ -217,12 +261,12 @@ const TabProduct = () => {
         try {
             const [prodRes, catRes] = await Promise.all([
                 getProductForManage({ page, limit, name, categoryId }),
-                getCategoryProductForManage()
+                getCategoryProductForManage(1, 1000)
             ]);
             setData(prodRes.products.map(d => ({ ...d, key: d._id })));
             setTotalPages(prodRes.totalPages || 1);
             setCurrentPage(prodRes.currentPage || 1);
-            setCategories(catRes);
+            setCategories(catRes.categoryProducts || catRes.categoryProduct || []);
         } catch { message.error('Lấy dữ liệu thất bại!'); }
         finally { setLoading(false); }
     };
@@ -233,13 +277,13 @@ const TabProduct = () => {
         const trimmedValue = value?.trim() || "";
         setSearchText(trimmedValue);
         setCurrentPage(1);
-        fetchData(1, pageSize, trimmedValue, filterCategory);
+        fetchData(1, pageSize, trimmedValue, filterCategory !== undefined ? filterCategory : null);
     };
 
     const handleFilterCategory = (categoryId) => {
-        setFilterCategory(categoryId);
+        setFilterCategory(categoryId !== undefined ? categoryId : null);
         setCurrentPage(1);
-        fetchData(1, pageSize, searchText, categoryId);
+        fetchData(1, pageSize, searchText, categoryId !== undefined ? categoryId : null);
     };
 
     const openModal = (record = null) => {

@@ -11,7 +11,8 @@ const getProjects = async (req, res) => {
             .select("name title image date slug description status year")
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .lean();
 
         res.status(200).json({
             projects,
@@ -38,7 +39,8 @@ const getProjectsForManage = async (req, res) => {
             .select("name title image date slug description status year")
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .lean();
 
         res.status(200).json({
             projects,
@@ -132,7 +134,8 @@ const getProjectByName = async (req, res) => {
             .select("name title image date slug description status year")
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .lean();
 
         res.status(200).json({
             projects,

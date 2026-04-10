@@ -21,7 +21,6 @@ export const getAllHeader = async (req, res) => {
     }
 }
 
-
 export const getAllHeaderForShowHome = async (req, res) => {
     try {
         const header = await Header.find({ show_home: "active" });
@@ -42,8 +41,6 @@ export const updateHeader = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
-
-
 
 export const getAllForManagement = async (req, res) => {
     try {

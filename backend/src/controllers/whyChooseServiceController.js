@@ -17,7 +17,9 @@ export const createWhyChooseService = async (req, res) => {
 
 export const getWhyChooseService = async (req, res) => {
     try {
-        const whyChooseService = await WhyChooseService.find({ isDeleted: false, status: "active" }).select("title description icon").sort({ createdAt: -1 });
+        const whyChooseService = await WhyChooseService.find({ isDeleted: false, status: "active" })
+            .select("title description icon")
+            .sort({ createdAt: -1 });
         res.status(200).json(whyChooseService);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -60,7 +62,10 @@ export const getWhyChooseServiceForManage = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
         const totalWhyChooseService = await WhyChooseService.countDocuments({ isDeleted: false });
-        const whyChooseService = await WhyChooseService.find({ isDeleted: false }).select("title description icon status").skip(skip).limit(limit);
+        const whyChooseService = await WhyChooseService.find({ isDeleted: false })
+            .select("title description icon status")
+            .skip(skip)
+            .limit(limit);
         res.status(200).json({
             whyChooseService,
             totalPages: Math.ceil(totalWhyChooseService / limit),

@@ -29,7 +29,19 @@ export const deleteCategoryProduct = async (id) => {
     return response.data;
 };
 
-export const getCategoryProductForManage = async () => {
-    const response = await api.get("/categoryProduct/get-category-product-for-manage");
+export const getCategoryProductForManage = async (page, limit) => {
+    const token = localStorage.getItem("token");
+    const response = await api.get(`/categoryProduct/get-category-product-for-manage?page=${page}&limit=${limit}`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
     return response.data;
 };
+
+export const getCategoryProductBySearch = async (searchTerm, page, limit) => {
+    const token = localStorage.getItem("token");
+    const response = await api.get(`/categoryProduct/search-category-product/${searchTerm}?page=${page}&limit=${limit}`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+};
+
