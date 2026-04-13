@@ -6,7 +6,7 @@ import SEO from '../component/SEO';
 import { useTranslation } from 'react-i18next';
 
 const ProjectDetail = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { id } = useParams();
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -66,14 +66,14 @@ const ProjectDetail = () => {
                     </div>
 
                     <div className="project-detail-info">
-                        <h1 className="project-detail-title">{project.name}</h1>
+                        <h1 className="project-detail-title">{i18n.language === 'vn' ? project.name : project.name_en}</h1>
                         <p className="project-detail-year">{t('project_year')}: {new Date(project.date).getFullYear()}
                         </p>
 
                         <div className="project-detail-content">
-                            <p className="project-detail-description">{project.title}</p>
+                            <p className="project-detail-description">{i18n.language === 'vn' ? project.title : project.title_en}</p>
                             <h3>{t('project_detail')}</h3>
-                            <div dangerouslySetInnerHTML={{ __html: project.description }}></div>
+                            <div dangerouslySetInnerHTML={{ __html: i18n.language === 'vn' ? project.description : project.description_en }}></div>
                         </div>
 
                         <Link to="/contact" className="contact-btn">{t('project_button_contact')}</Link>

@@ -63,6 +63,7 @@
    "service_detail_overview" : "Overview",
    "service_detail_interested" : "Are you interested in this service?",
    "service_detail_button_contact" : "Contact us for a quote now.",
+   "service_button_contact": "Contact",
 
    "news_detail_button_back" : "Back to news list",
    "news_all": "All news",

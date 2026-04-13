@@ -9,7 +9,7 @@ const LeadershipSection = () => {
   const [getLeaders, setLeaders] = useState([]);
   const { themeLayout } = useThemeSettings();
   const variant = themeLayout?.leader || 'grid-carousel';
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const fetchLeaders = async () => {
@@ -28,10 +28,10 @@ const LeadershipSection = () => {
               <img src={leader.image} className="leader-image" alt={leader.name} />
             </div>
             <div className="leader-info">
-              <h3 className="leader-name">{leader.name}</h3>
-              <p className="leader-position">{leader.position}</p>
+              <h3 className="leader-name">{i18n.language === 'vi' ? leader.name : leader.name_en}</h3>
+              <p className="leader-position">{i18n.language === 'vi' ? leader.position : leader.position_en}</p>
               <div className="leader-divider"></div>
-              <p className="leader-description">{leader.description}</p>
+              <p className="leader-description">{i18n.language === 'vi' ? leader.description : leader.description_en}</p>
             </div>
           </div>
         ))}
@@ -47,10 +47,10 @@ const LeadershipSection = () => {
             <img src={leader.image} className="leader-image" alt={leader.name} />
           </div>
           <div className="leader-info">
-            <h3 className="leader-name">{leader.name}</h3>
-            <p className="leader-position">{leader.position}</p>
+            <h3 className="leader-name">{i18n.language === 'en' ? leader.name_en : leader.name}</h3>
+            <p className="leader-position">{i18n.language === 'en' ? leader.position_en : leader.position}</p>
             <div className="leader-divider"></div>
-            <p className="leader-description">{leader.description}</p>
+            <p className="leader-description">{i18n.language === 'en' ? leader.description_en : leader.description}</p>
           </div>
         </div>
       ))}

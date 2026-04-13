@@ -8,7 +8,7 @@ const getProjects = async (req, res) => {
 
         const totalProjects = await Project.countDocuments({ isDeleted: false, status: "active" });
         const projects = await Project.find({ isDeleted: false, status: "active" })
-            .select("name title image date slug description status year")
+            .select("name name_en image date slug description description_en year")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
@@ -36,7 +36,7 @@ const getProjectsForManage = async (req, res) => {
 
         const totalProjects = await Project.countDocuments({ isDeleted: false });
         const projects = await Project.find({ isDeleted: false })
-            .select("name title image date slug description status year")
+            .select("name name_en title title_en image date slug description description_en status year")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
@@ -58,12 +58,12 @@ const createProject = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, slug, title, description, image, date } = req.body;
+        const { name, name_en, slug, title, title_en, description, description_en, image, date } = req.body;
         const existingProduct = await Project.findOne({ slug });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
-        const project = await Project.create({ name, slug, title, description, image, date });
+        const project = await Project.create({ name, name_en, slug, title, title_en, description, description_en, image, date });
         res.status(200).json(project);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -75,12 +75,12 @@ const updateProject = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, slug, title, description, image, date, status } = req.body;
+        const { name, name_en, slug, title, title_en, description, description_en, image, date, status } = req.body;
         const existingProduct = await Project.findOne({ slug, _id: { $ne: req.params.id } });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
-        const project = await Project.findByIdAndUpdate(req.params.id, { name, slug, title, description, image, date, status }, { new: true });
+        const project = await Project.findByIdAndUpdate(req.params.id, { name, name_en, slug, title, title_en, description, description_en, image, date, status }, { new: true });
         res.status(200).json(project);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -107,7 +107,7 @@ const getProjectById = async (req, res) => {
             ? { $or: [{ _id: id }, { slug: id }], isDeleted: false }
             : { slug: id, isDeleted: false };
 
-        const project = await Project.findOne(query).select("name slug title description image date status");
+        const project = await Project.findOne(query).select("name name_en slug title title_en description description_en image date status");
         if (!project) {
             return res.status(404).json({ message: "Project not found" });
         }
@@ -131,7 +131,7 @@ const getProjectByName = async (req, res) => {
 
         const totalProjects = await Project.countDocuments(filter);
         const projects = await Project.find(filter)
-            .select("name title image date slug description status year")
+            .select("name name_en title title_en image date slug description description_en status year")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)

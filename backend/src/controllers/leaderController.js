@@ -17,7 +17,10 @@ export const getAllLeadersForManagement = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const leaders = await Leader.find({ isDeleted: false }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+        const leaders = await Leader.find({ isDeleted: false })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
         const total = await Leader.countDocuments({ isDeleted: false });
         res.status(200).json({ leaders, totalPages: Math.ceil(total / limit), currentPage: page });
     } catch (error) {
@@ -33,7 +36,10 @@ export const findLeaderByName = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const leaders = await Leader.find({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+        const leaders = await Leader.find({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
         const total = await Leader.countDocuments({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false });
         res.status(200).json({ leaders, totalPages: Math.ceil(total / limit), currentPage: page });
     } catch (error) {

@@ -111,6 +111,7 @@ const TabCategoryProduct = () => {
         if (record) {
             form.setFieldsValue({
                 name: record.name,
+                name_en: record.name_en,
                 slug: record.slug,
                 status: record.status || 'active',
             });
@@ -178,7 +179,7 @@ const TabCategoryProduct = () => {
                 <Title level={4} style={{ margin: 0 }}>Danh mục Sản phẩm</Title>
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>Thêm danh mục</Button>
             </div>
-            
+
             <div style={{ marginBottom: 16 }}>
                 <Input.Search
                     placeholder="Tìm kiếm danh mục theo tên..."
@@ -189,13 +190,13 @@ const TabCategoryProduct = () => {
                     onChange={(e) => setSearchText(e.target.value)}
                 />
             </div>
-            
-            <Table 
-                columns={columns} 
-                dataSource={data} 
-                loading={loading} 
-                bordered 
-                pagination={{ 
+
+            <Table
+                columns={columns}
+                dataSource={data}
+                loading={loading}
+                bordered
+                pagination={{
                     current: currentPage,
                     pageSize: pageSize,
                     total: totalPages * pageSize,
@@ -203,7 +204,7 @@ const TabCategoryProduct = () => {
                         setCurrentPage(page);
                         setPageSize(size);
                     }
-                }} 
+                }}
             />
 
             <Modal title={editing ? "Sửa danh mục" : "Thêm mới danh mục"} open={modalVisible}
@@ -224,6 +225,9 @@ const TabCategoryProduct = () => {
                                 form.setFieldsValue({ slug });
                             }
                         }} />
+                    </Form.Item>
+                    <Form.Item name="name_en" label="Tên danh mục (English)">
+                        <Input />
                     </Form.Item>
                     <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input />
@@ -292,16 +296,20 @@ const TabProduct = () => {
         if (record) {
             form.setFieldsValue({
                 name: record.name,
+                name_en: record.name_en,
                 title: record.title,
+                title_en: record.title_en,
                 description: record.description,
+                description_en: record.description_en,
                 categoryId: record.categoryId?._id || record.categoryId,
                 slug: record.slug,
                 status: record.status || 'active',
-                technical: record.technical?.length > 0 ? record.technical : [{}],
+                technical: record.technical?.length > 0 ? record.technical.map(t => ({ ...t })) : [{}],
+                technical_en: record.technical_en?.length > 0 ? record.technical_en.map(t => ({ ...t })) : [{}],
                 images: record.image || [],
             });
         } else {
-            form.setFieldsValue({ status: 'active', technical: [{}] });
+            form.setFieldsValue({ status: 'active', technical: [{}], technical_en: [{}] });
         }
         setModalVisible(true);
     };
@@ -436,83 +444,145 @@ const TabProduct = () => {
                 onOk={handleSave} onCancel={() => setModalVisible(false)}
                 okText={saving ? 'Đang lưu...' : 'Lưu'} okButtonProps={{ loading: saving }} cancelText="Hủy" width={850}>
                 <Form form={form} layout="vertical">
-                    <div style={{ display: 'flex', gap: 16 }}>
-                        <Form.Item name="name" label="Tên sản phẩm" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input onChange={(e) => {
-                                if (!editing) {
-                                    const slug = slugify(e.target.value, {
-                                        lower: true,
-                                        strict: true,
-                                        locale: "vi",
-                                    });
-                                    form.setFieldsValue({ slug });
-                                }
-                            }} />
-                        </Form.Item>
-                        <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input />
-                        </Form.Item>
-                    </div>
 
-                    <div style={{ display: 'flex', gap: 16 }}>
-                        <Form.Item name="categoryId" label="Danh mục" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
-                            <Select placeholder="Chọn danh mục">
-                                {categories.map(c => <Select.Option key={c._id} value={c._id} disabled={c.status !== 'active'}>{c.name}</Select.Option>)}
-                            </Select>
-                        </Form.Item>
-                        <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>
-                            <Select>
-                                <Select.Option value="active">Hoạt động</Select.Option>
-                                <Select.Option value="inactive">Dừng hoạt động</Select.Option>
-                            </Select>
-                        </Form.Item>
-                    </div>
-
-                    <Form.Item name="title" label="Tiêu đề phụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item name="description" label="Mô tả chi tiết" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
-                        <TextArea rows={3} />
-                    </Form.Item>
-
-                    <Form.Item name="images" label="Hình ảnh (Tối đa 5 ảnh)">
-                        <MultiCloudinaryUpload maxCount={5} />
-                    </Form.Item>
-
-                    <Title level={5}>Thông số kỹ thuật</Title>
-                    <Form.List name="technical">
-                        {(fields, { add, remove }) => (
-                            <>
-                                {fields.map(({ key, name, ...restField }) => (
-                                    <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'title']}
-                                            rules={[{ required: true, whitespace: true, message: 'Nhập tiêu đề' }]}
-                                        >
-                                            <Input placeholder="Tên thông số (Vd: Khối lượng)" style={{ width: 250 }} />
+                    <Tabs defaultActiveKey="vi" items={[
+                        {
+                            key: 'vi',
+                            label: 'Tiếng Việt (Mặc định)',
+                            children: (
+                                <>
+                                    <div style={{ display: 'flex', gap: 16 }}>
+                                        <Form.Item name="name" label="Tên sản phẩm" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                            <Input onChange={(e) => {
+                                                if (!editing) {
+                                                    const slug = slugify(e.target.value, {
+                                                        lower: true,
+                                                        strict: true,
+                                                        locale: "vi",
+                                                    });
+                                                    form.setFieldsValue({ slug });
+                                                }
+                                            }} />
                                         </Form.Item>
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'description']}
-                                            rules={[{ required: true, whitespace: true, message: 'Nhập giá trị' }]}
-                                        >
-                                            <Input placeholder="Giá trị (Vd: 3kg)" style={{ width: 350 }} />
+                                        <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                            <Input />
                                         </Form.Item>
-                                        {fields.length > 1 ? (
-                                            <DeleteOutlined onClick={() => remove(name)} style={{ color: 'red' }} />
-                                        ) : null}
-                                    </Space>
-                                ))}
-                                <Form.Item>
-                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                                        Thêm thông số kỹ thuật
-                                    </Button>
-                                </Form.Item>
-                            </>
-                        )}
-                    </Form.List>
+                                    </div>
+
+                                    <div style={{ display: 'flex', gap: 16 }}>
+                                        <Form.Item name="categoryId" label="Danh mục" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
+                                            <Select placeholder="Chọn danh mục">
+                                                {categories.map(c => <Select.Option key={c._id} value={c._id} disabled={c.status !== 'active'}>{c.name}</Select.Option>)}
+                                            </Select>
+                                        </Form.Item>
+                                        <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>
+                                            <Select>
+                                                <Select.Option value="active">Hoạt động</Select.Option>
+                                                <Select.Option value="inactive">Dừng hoạt động</Select.Option>
+                                            </Select>
+                                        </Form.Item>
+                                    </div>
+
+                                    <Form.Item name="title" label="Tiêu đề phụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                                        <Input />
+                                    </Form.Item>
+
+                                    <Form.Item name="description" label="Mô tả chi tiết" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                                        <TextArea rows={3} />
+                                    </Form.Item>
+
+                                    <Form.Item name="images" label="Hình ảnh (Tối đa 5 ảnh)">
+                                        <MultiCloudinaryUpload maxCount={5} />
+                                    </Form.Item>
+
+                                    <Title level={5}>Thông số kỹ thuật</Title>
+                                    <Form.List name="technical">
+                                        {(fields, { add, remove }) => (
+                                            <>
+                                                {fields.map(({ key, name, ...restField }) => (
+                                                    <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                                                        <Form.Item
+                                                            {...restField}
+                                                            name={[name, 'title']}
+                                                            rules={[{ required: true, whitespace: true, message: 'Nhập tiêu đề' }]}
+                                                        >
+                                                            <Input placeholder="Tên thông số (Vd: Khối lượng)" style={{ width: 250 }} />
+                                                        </Form.Item>
+                                                        <Form.Item
+                                                            {...restField}
+                                                            name={[name, 'description']}
+                                                            rules={[{ required: true, whitespace: true, message: 'Nhập giá trị' }]}
+                                                        >
+                                                            <Input placeholder="Giá trị (Vd: 3kg)" style={{ width: 350 }} />
+                                                        </Form.Item>
+                                                        {fields.length > 1 ? (
+                                                            <DeleteOutlined onClick={() => remove(name)} style={{ color: 'red' }} />
+                                                        ) : null}
+                                                    </Space>
+                                                ))}
+                                                <Form.Item>
+                                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                                        Thêm thông số kỹ thuật
+                                                    </Button>
+                                                </Form.Item>
+                                            </>
+                                        )}
+                                    </Form.List>
+                                </>
+                            )
+                        },
+                        {
+                            key: 'en',
+                            label: 'Tiếng Anh (Tùy chọn)',
+                            children: (
+                                <>
+                                    <Form.Item name="name_en" label="Tên sản phẩm (English)">
+                                        <Input />
+                                    </Form.Item>
+
+                                    <Form.Item name="title_en" label="Tiêu đề phụ (English)">
+                                        <Input />
+                                    </Form.Item>
+
+                                    <Form.Item name="description_en" label="Mô tả chi tiết (English)">
+                                        <TextArea rows={3} />
+                                    </Form.Item>
+
+                                    <Title level={5}>Thông số kỹ thuật (English)</Title>
+                                    <Form.List name="technical_en">
+                                        {(fields, { add, remove }) => (
+                                            <>
+                                                {fields.map(({ key, name, ...restField }) => (
+                                                    <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                                                        <Form.Item
+                                                            {...restField}
+                                                            name={[name, 'title_en']}
+                                                        >
+                                                            <Input placeholder="Tên thông số (Vd: Weight)" style={{ width: 250 }} />
+                                                        </Form.Item>
+                                                        <Form.Item
+                                                            {...restField}
+                                                            name={[name, 'description_en']}
+                                                        >
+                                                            <Input placeholder="Giá trị (Vd: 3kg)" style={{ width: 350 }} />
+                                                        </Form.Item>
+                                                        {fields.length > 1 ? (
+                                                            <DeleteOutlined onClick={() => remove(name)} style={{ color: 'red' }} />
+                                                        ) : null}
+                                                    </Space>
+                                                ))}
+                                                <Form.Item>
+                                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                                        Thêm thông số kỹ thuật (English)
+                                                    </Button>
+                                                </Form.Item>
+                                            </>
+                                        )}
+                                    </Form.List>
+                                </>
+                            )
+                        }
+                    ]} />
 
                 </Form>
             </Modal>

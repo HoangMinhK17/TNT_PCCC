@@ -272,6 +272,7 @@
 /* ─── Products Section ─── */
 .theme-ai-teal .public-layout .products-section {
     background: transparent !important;
+    padding: 20px 0 0 0;
 }
 
 .theme-ai-teal .public-layout .product-card {

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import slugify from 'slugify';
 import {
     Table, Button, Modal, Form, Input, Space,
-    Popconfirm, message, Typography, Upload, Image, Tag, DatePicker, Select
+    Popconfirm, message, Typography, Upload, Image, Tag, DatePicker, Select,
+    Tabs
 } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
@@ -110,8 +111,11 @@ const AdminProject = () => {
             if (record) {
                 form.setFieldsValue({
                     name: record.name,
+                    name_en: record.name_en,
                     title: record.title,
+                    title_en: record.title_en,
                     description: record.description,
+                    description_en: record.description_en,
                     slug: record.slug,
                     status: record.status || 'active',
                     date: record.date ? dayjs(record.date) : null,
@@ -134,10 +138,12 @@ const AdminProject = () => {
             const imageItems = Array.isArray(values.images) ? values.images : [];
             const imageUrls = await Promise.all(imageItems.map(value => resolveImageUrl(value, folder)));
             const processedDescription = await processRichTextContent(values.description, folder);
+            const processedDescriptionEn = await processRichTextContent(values.description_en, folder);
 
             const payload = {
                 ...values,
                 description: processedDescription,
+                description_en: processedDescriptionEn,
                 date: values.date ? values.date.toISOString() : null,
                 image: imageUrls.length > 0 ? imageUrls[0] : ""
             };
@@ -230,47 +236,66 @@ const AdminProject = () => {
                         onOk={handleSave} onCancel={() => setModalVisible(false)}
                         okText={saving ? 'Đang lưu...' : 'Lưu'} okButtonProps={{ loading: saving }} cancelText="Hủy" width={800}>
                         <Form form={form} layout="vertical">
-                            <div style={{ display: 'flex', gap: 16 }}>
-                                <Form.Item name="name" label="Tên dự án" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                                    <Input onChange={(e) => {
-                                        if (!editing) {
-                                            const slug = slugify(e.target.value, {
-                                                lower: true,
-                                                strict: true,
-                                                locale: "vi",
-                                            });
-                                            form.setFieldsValue({ slug });
-                                        }
-                                    }} />
-                                </Form.Item>
-                                <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                                    <Input />
-                                </Form.Item>
-                            </div>
+                            <Tabs defaultActiveKey="1">
+                                <Tabs.TabPane tab="Tiếng Việt" key="1">
 
-                            <div style={{ display: 'flex', gap: 16 }}>
-                                <Form.Item name="date" label="Ngày (hoặc Thời gian dự án)" style={{ flex: 1 }}>
-                                    <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
-                                </Form.Item>
-                                <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>
-                                    <Select>
-                                        <Select.Option value="active">Hoạt động</Select.Option>
-                                        <Select.Option value="inactive">Dừng hoạt động</Select.Option>
-                                    </Select>
-                                </Form.Item>
-                            </div>
+                                    <div style={{ display: 'flex', gap: 16 }}>
+                                        <Form.Item name="name" label="Tên dự án" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                            <Input onChange={(e) => {
+                                                if (!editing) {
+                                                    const slug = slugify(e.target.value, {
+                                                        lower: true,
+                                                        strict: true,
+                                                        locale: "vi",
+                                                    });
+                                                    form.setFieldsValue({ slug });
+                                                }
+                                            }} />
+                                        </Form.Item>
+                                        <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                            <Input />
+                                        </Form.Item>
+                                    </div>
 
-                            <Form.Item name="title" label="Tiêu đề phụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
-                                <Input />
-                            </Form.Item>
+                                    <div style={{ display: 'flex', gap: 16 }}>
+                                        <Form.Item name="date" label="Ngày (hoặc Thời gian dự án)" style={{ flex: 1 }}>
+                                            <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
+                                        </Form.Item>
+                                        <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>
+                                            <Select>
+                                                <Select.Option value="active">Hoạt động</Select.Option>
+                                                <Select.Option value="inactive">Dừng hoạt động</Select.Option>
+                                            </Select>
+                                        </Form.Item>
+                                    </div>
 
-                            <Form.Item name="description" label="Mô tả" rules={[{ required: true, message: 'Vui lòng không để trống!' }]}>
-                                <CustomQuillEditor folder="tnt_project" style={{ height: '250px', marginBottom: '50px' }} />
-                            </Form.Item>
+                                    <Form.Item name="title" label="Tiêu đề phụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                                        <Input />
+                                    </Form.Item>
 
-                            <Form.Item name="images" label="Hình ảnh">
-                                <MultiCloudinaryUpload maxCount={1} />
-                            </Form.Item>
+                                    <Form.Item name="description" label="Mô tả" rules={[{ required: true, message: 'Vui lòng không để trống!' }]}>
+                                        <CustomQuillEditor folder="tnt_project" style={{ height: '250px', marginBottom: '50px' }} />
+                                    </Form.Item>
+
+                                    <Form.Item name="images" label="Hình ảnh">
+                                        <MultiCloudinaryUpload maxCount={1} />
+                                    </Form.Item>
+                                </Tabs.TabPane>
+
+                                <Tabs.TabPane tab="Tiếng Anh(Tùy chọn)" key="2">
+                                    <Form.Item name="name_en" label="Tên dự án (English)">
+                                        <Input />
+                                    </Form.Item>
+                                    <Form.Item name="title_en" label="Tiêu đề phụ (English)">
+                                        <Input />
+                                    </Form.Item>
+                                    <Form.Item name="description_en" label="Mô tả (English)">
+                                        <CustomQuillEditor folder="tnt_project" style={{ height: '250px', marginBottom: '50px' }} />
+                                    </Form.Item>
+                                </Tabs.TabPane>
+                            </Tabs>
+
+
 
                         </Form>
                     </Modal>

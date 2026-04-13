@@ -4,7 +4,7 @@ import { getCoreValues } from '../utils/introductApi';
 import { useTranslation } from 'react-i18next';
 
 const Achievements = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [achievements, setAchievements] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -41,8 +41,8 @@ const Achievements = () => {
                                     <img src={item.image} alt={item.title} className="achievement-image" />
                                 </div>
                                 <div className="achievement-year">{item.date}</div>
-                                <h3>{item.title}</h3>
-                                <p>{item.description}</p>
+                                <h3>{i18n.language === 'en' && item.title_en ? item.title_en : item.title}</h3>
+                                <p>{i18n.language === 'en' && item.description_en ? item.description_en : item.description}</p>
                             </div>
                         ))}
                     </div>

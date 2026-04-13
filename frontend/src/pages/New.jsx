@@ -4,6 +4,7 @@ import '../styles/ProductSection.css'; // Reusing Product styles for consistency
 import SEO from '../component/SEO';
 import { getNews, getNewsByCategoryId, getNewsBySearch } from '../utils/newsApi';
 import { getCategoryNews } from '../utils/categoryNewsApi';
+import { useTranslation } from 'react-i18next';
 
 const New = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -19,6 +20,7 @@ const New = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const itemsPerPage = 4;
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -137,7 +139,12 @@ const New = () => {
             />
             <div className="container" data-aos="fade-up">
                 <h1 className="section-title">
-                    {selectedCategory}
+                    {searchParam ? `Kết quả tìm kiếm cho: "${searchParam}"` : 
+                        (categoryIdParam ? 
+                            (categories.find(c => c._id === categoryIdParam) 
+                                ? (i18n.language === 'en' && categories.find(c => c._id === categoryIdParam).name_en ? categories.find(c => c._id === categoryIdParam).name_en : categories.find(c => c._id === categoryIdParam).name)
+                                : selectedCategory)
+                            : (i18n.language === 'en' ? 'All News' : 'Tất cả tin tức'))}
                 </h1>
 
                 <div className="products-layout" style={{ flexDirection: 'column' }}>
@@ -201,13 +208,13 @@ const New = () => {
                                     <div key={category._id || index} className="category-section" style={{ marginBottom: '50px' }}>
                                         <div className="category-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #1063b2', paddingBottom: '0px' }}>
                                             <h3 className="product-category-title" style={{ fontSize: '24px', color: '#D32F2F', margin: 0, textTransform: 'uppercase', fontWeight: 700 }}>
-                                                {category.name}
+                                                {i18n.language === 'en' && category.name_en ? category.name_en : category.name}
                                             </h3>
                                             <button
                                                 onClick={() => { setSearchParams({ category: category.name, categoryId: category._id }); }}
                                                 style={{ background: 'none', border: 'none', color: '#D32F2F', cursor: 'pointer', fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '5px' }}
                                             >
-                                                Xem tất cả
+                                                {i18n.language === 'en' ? 'View all' : 'Xem tất cả'}
                                             </button>
                                         </div>
 

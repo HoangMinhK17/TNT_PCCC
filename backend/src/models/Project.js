@@ -5,13 +5,22 @@ const projectSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    name_en: {
+        type: String
+    },
     title: {
         type: String,
         required: true
     },
+    title_en: {
+        type: String
+    },
     description: {
         type: String,
         required: true
+    },
+    description_en: {
+        type: String
     },
     image: {
         type: String

@@ -10,7 +10,7 @@ const ProductDetail = () => {
     const [product, setProduct] = useState(null);
     const [activeImage, setActiveImage] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -86,28 +86,37 @@ const ProductDetail = () => {
                     </div>
 
                     <div className="product-info-detail">
-                        <span className="product-category-detail">{product.categoryId?.name}</span>
-                        <h1 className="product-title-detail">{product.name}</h1>
-
+                        <span className="product-category-detail">{i18n.language === 'en' ? product.categoryId?.name_en : product.categoryId?.name}</span>
+                        <h1 className="product-title-detail">{i18n.language === 'en' && product.name_en ? product.name_en : product.name}</h1>
+ 
                         <div className="product-description-detail">
-                            <p>{product.title}</p>
+                            <p>{i18n.language === 'en' && product.title_en ? product.title_en : product.title}</p>
                         </div>
 
                         <div className="product-specs">
                             <h3>{t('product_detail_des')}</h3>
-                            <p>{product.description}</p>
+                            <p>{i18n.language === 'en' && product.description_en ? product.description_en : product.description}</p>
 
                             {product.technical && product.technical.length > 0 && (
                                 <div className="specs-container">
                                     <h4>{t('product_detail_spec')}</h4>
                                     <table className="specs-table">
                                         <tbody>
-                                            {product.technical.map((spec, index) => (
-                                                <tr key={index} className="specs-row">
-                                                    <td className="specs-label">{spec.title}</td>
-                                                    <td className="specs-value">{spec.description}</td>
-                                                </tr>
-                                            ))}
+                                            {i18n.language === 'en' && product.technical_en && product.technical_en.length > 0 ? (
+                                                product.technical_en.map((spec, index) => (
+                                                    <tr key={index} className="specs-row">
+                                                        <td className="specs-label">{spec.title_en}</td>
+                                                        <td className="specs-value">{spec.description_en}</td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                product.technical.map((spec, index) => (
+                                                    <tr key={index} className="specs-row">
+                                                        <td className="specs-label">{spec.title}</td>
+                                                        <td className="specs-value">{spec.description}</td>
+                                                    </tr>
+                                                ))
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>

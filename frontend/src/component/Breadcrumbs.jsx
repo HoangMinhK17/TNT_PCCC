@@ -3,11 +3,13 @@ import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import '../styles/Breadcrumbs.css';
 import { useTranslation } from 'react-i18next';
 
-import { getPublicProducts } from '../utils/productApi.js';
+import { getPublicProducts, getPublicProductById } from '../utils/productApi.js';
 import { getNews } from '../utils/newsApi.js';
 import { getAllHeader } from '../utils/headerApi.js';
 import { getPublicServices } from '../utils/serviceApi.js';
 import { getProjects } from '../utils/projectApi.js';
+import { getCategoryProducts } from '../utils/categoryProductApi.js';
+import { getCategoryNews } from '../utils/categoryNewsApi.js';
 
 
 
@@ -22,7 +24,10 @@ const Breadcrumbs = () => {
     const [headers, setHeaders] = useState([]);
     const [services, setServices] = useState([])
     const [projects, setProjects] = useState([])
-
+    const [categories, setCategories] = useState([]);
+    const [currentProduct, setCurrentProduct] = useState(null);
+    const [categoryNews, setCategoryNews] = useState([]);
+    const [currentNews, setCurrentNews] = useState(null);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -70,12 +75,60 @@ const Breadcrumbs = () => {
             }
         };
 
+        const fetchCategories = async () => {
+            try {
+                const response = await getCategoryProducts();
+                setCategories(Array.isArray(response) ? response : []);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        const fetchCategoryNews = async () => {
+            try {
+                const response = await getCategoryNews();
+                setCategoryNews(Array.isArray(response) ? response : []);
+            } catch (error) {
+                console.error('Error fetching category news:', error);
+            }
+        };
+
         fetchProducts();
         fetchNews();
         fetchHeaders();
         fetchServices();
         fetchProjects();
+        fetchCategories();
+        fetchCategoryNews();
     }, []);
+
+    useEffect(() => {
+        const fetchDetail = async () => {
+            const paths = location.pathname.split('/').filter((x) => x);
+            if (paths[0] === 'products' && paths[1]) {
+                try {
+                    const res = await getPublicProductById(paths[1]);
+                    setCurrentProduct(res);
+                } catch (e) {
+                    console.error('Error fetching product detail for breadcrumb', e);
+                }
+            } else {
+                setCurrentProduct(null);
+            }
+
+            if (paths[0] === 'news' && paths[1]) {
+                try {
+                    const res = await import('../utils/newsApi.js').then(m => m.getNewsById(paths[1]));
+                    setCurrentNews(res);
+                } catch (e) {
+                    console.error('Error fetching news detail for breadcrumb', e);
+                }
+            } else {
+                setCurrentNews(null);
+            }
+        };
+        fetchDetail();
+    }, [location.pathname]);
 
     if (location.pathname === '/') {
         return null;
@@ -101,48 +154,78 @@ const Breadcrumbs = () => {
     if (pathnames[0] === 'products') {
         const productHeaderName = getName('products');
         breadcrumbs.push({ name: productHeaderName, path: '/products' });
+        const categoryIdParam = searchParams.get('categoryId');
+
         if (pathnames[1]) {
             const id = pathnames[1];
-            const product = products.find(p => p._id === id || p.id === id || p.slug === id);
+            const product = currentProduct || products.find(p => p._id === id || p.id === id || p.slug === id);
+
             if (product) {
                 if (product.categoryId && product.categoryId.name) {
+                    const catName = i18n.language === 'en' && product.categoryId.name_en ? product.categoryId.name_en : product.categoryId.name;
                     breadcrumbs.push({
-                        name: product.categoryId.name,
+                        name: catName,
                         path: `/products?category=${encodeURIComponent(product.categoryId.name)}&categoryId=${product.categoryId._id}`
                     });
                 } else if (categoryParam && categoryParam !== 'Tất cả') {
                     breadcrumbs.push({ name: categoryParam, path: null });
                 }
-                breadcrumbs.push({ name: product.name, path: null });
+                const prodName = (i18n.language === 'en' && product.name_en) ? product.name_en : product.name;
+                breadcrumbs.push({ name: prodName, path: null });
             } else {
                 breadcrumbs.push({ name: t('breadcrumb_product_detail'), path: null });
             }
         } else if (categoryParam && categoryParam !== 'Tất cả') {
-            breadcrumbs.push({ name: categoryParam, path: null });
+            if (categoryIdParam) {
+                const category = categories.find(c => c._id === categoryIdParam);
+                if (category) {
+                    const catName = i18n.language === 'en' && category.name_en ? category.name_en : category.name;
+                    breadcrumbs.push({ name: catName, path: null });
+                } else {
+                    breadcrumbs.push({ name: categoryParam, path: null });
+                }
+            } else {
+                breadcrumbs.push({ name: categoryParam, path: null });
+            }
         }
     }
     else if (pathnames[0] === 'news') {
         const newsHeaderName = getName('news');
         breadcrumbs.push({ name: newsHeaderName, path: '/news' });
+        const categoryIdParam = searchParams.get('categoryId');
 
         if (pathnames[1]) {
             const id = pathnames[1];
-            const newsItem = news.find(n => n._id === id || n.id === id || n.slug === id);
+            const newsItem = currentNews || news.find(n => n._id === id || n.id === id || n.slug === id);
+
             if (newsItem) {
                 if (newsItem.categoryNewsId && newsItem.categoryNewsId.name) {
+                    const catName = i18n.language === 'en' && newsItem.categoryNewsId.name_en ? newsItem.categoryNewsId.name_en : newsItem.categoryNewsId.name;
                     breadcrumbs.push({
-                        name: newsItem.categoryNewsId.name,
+                        name: catName,
                         path: `/news?category=${encodeURIComponent(newsItem.categoryNewsId.name)}&categoryId=${newsItem.categoryNewsId._id}`
                     });
                 } else if (categoryParam && categoryParam !== 'Tất cả') {
                     breadcrumbs.push({ name: categoryParam, path: null });
                 }
-                breadcrumbs.push({ name: newsItem.name || newsItem.title, path: null });
+
+                const newsName = i18n.language === 'en' && newsItem.name_en ? newsItem.name_en : (newsItem.name || newsItem.title);
+                breadcrumbs.push({ name: newsName, path: null });
             } else {
                 breadcrumbs.push({ name: t('breadcrumb_news_detail'), path: null });
             }
         } else if (categoryParam && categoryParam !== 'Tất cả') {
-            breadcrumbs.push({ name: categoryParam, path: null });
+            if (categoryIdParam) {
+                const category = categoryNews.find(c => c._id === categoryIdParam);
+                if (category) {
+                    const catName = i18n.language === 'en' && category.name_en ? category.name_en : category.name;
+                    breadcrumbs.push({ name: catName, path: null });
+                } else {
+                    breadcrumbs.push({ name: categoryParam, path: null });
+                }
+            } else {
+                breadcrumbs.push({ name: categoryParam, path: null });
+            }
         }
     }
     else if (pathnames[0] === 'services') {
@@ -155,7 +238,7 @@ const Breadcrumbs = () => {
             if (service) {
                 if (service.name) {
                     breadcrumbs.push({
-                        name: service.name,
+                        name: i18n.language === 'vn' ? service.name : service.name_en,
                         path: `/services?category=${encodeURIComponent(service._id)}&categoryId=${service._id}`
                     });
                 } else if (categoryParam && categoryParam !== 'Tất cả') {
@@ -178,7 +261,7 @@ const Breadcrumbs = () => {
             if (project) {
                 if (project.name) {
                     breadcrumbs.push({
-                        name: project.name,
+                        name: i18n.language === 'vn' ? project.name : project.name_en,
                         path: `/projects?category=${encodeURIComponent(project._id)}&categoryId=${project._id}`
                     });
                 } else if (categoryParam && categoryParam !== 'Tất cả') {

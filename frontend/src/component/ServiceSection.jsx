@@ -14,7 +14,7 @@ const ServiceSection = () => {
   const [whyChooseService, setWhyChooseService] = React.useState([]);
   const { themeLayout, userTheme } = useThemeSettings();
   const variant = themeLayout?.service || 'card-image';
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const itemsPerPage = 4;
 
@@ -55,8 +55,8 @@ const ServiceSection = () => {
         {whyChooseService.map((item, index) => (
           <div key={index} className="highlight-item">
             <div className="highlight-icon"><img src={item.icon} alt={item.title} /></div>
-            <h4>{item.title}</h4>
-            <p>{item.description}</p>
+            <h4>{i18n.language === 'vn' ? item.title : item.title_en}</h4>
+            <p>{i18n.language === 'vn' ? item.description : item.description_en}</p>
           </div>
         ))}
       </div>
@@ -87,9 +87,9 @@ const ServiceSection = () => {
               {services.map((service, idx) => (
                 <Link key={service._id} to={`/services/${service.slug}`} className="service-list-row">
                   <div className="service-list-row__info">
-                    <h3 className="service-list-row__name">{service.name}</h3>
+                    <h3 className="service-list-row__name">{i18n.language === 'vn' ? service.name : service.name_en}</h3>
                     {service.shortDescription && (
-                      <p className="service-list-row__desc">{service.shortDescription}</p>
+                      <p className="service-list-row__desc">{i18n.language === 'vn' ? service.shortDescription : service.shortDescription_en}</p>
                     )}
                   </div>
                   {service.image && (
@@ -124,7 +124,7 @@ const ServiceSection = () => {
                   </div>
                 </Link>
                 <h3 className="service-title">
-                  <Link to={`/services/${service.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>{service.name}</Link>
+                  <Link to={`/services/${service.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}> {i18n.language === 'vn' ? service.name : service.name_en}</Link>
                 </h3>
                 {userTheme === 'ai-teal' ? (
                   <Link to={`/contact`} className="ai-arrow-btn">
@@ -134,7 +134,7 @@ const ServiceSection = () => {
                     </svg>
                   </Link>
                 ) : (
-                  <Link to={`/contact`} className="service-link">Liên hệ</Link>
+                  <Link to={`/contact`} className="service-link">{t('service_button_contact')}</Link>
                 )}
               </div>
             ))

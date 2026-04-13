@@ -4,8 +4,8 @@ const getPublicProducts = async (req, res) => {
     try {
         const products = await Product.find({ isDeleted: false, status: "active" })
             .sort({ createdAt: -1 })
-            .select("name title image slug status")
-            .populate({ path: "categoryId", select: "name slug status", match: { status: "active" } })
+            .select("name name_en title title_en image slug status")
+            .populate({ path: "categoryId", select: "name_en name slug status", match: { status: "active" } })
             .lean();
 
         const filteredProducts = products.filter(p => p.categoryId !== null);
@@ -53,7 +53,7 @@ const getProductForManage = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
-        const { name, title, description, image, technical, categoryId, slug, status } = req.body;
+        const { name, name_en, title, title_en, description, description_en, image, technical, technical_en, categoryId, slug, status } = req.body;
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
@@ -62,7 +62,7 @@ const createProduct = async (req, res) => {
             return res.status(400).json({ message: "Slug already exists" });
         }
 
-        const product = await Product.create({ name, title, description, image, technical, categoryId, slug, status });
+        const product = await Product.create({ name, name_en, title, title_en, description, description_en, image, technical, technical_en, categoryId, slug, status });
         res.status(200).json(product);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -71,7 +71,7 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const { name, title, description, image, technical, categoryId, slug, status } = req.body;
+        const { name, name_en, title, title_en, description, description_en, image, technical, technical_en, categoryId, slug, status } = req.body;
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
@@ -80,7 +80,7 @@ const updateProduct = async (req, res) => {
             return res.status(400).json({ message: "Slug already exists" });
         }
 
-        const product = await Product.findByIdAndUpdate(req.params.id, { name, title, description, image, technical, categoryId, slug, status }, { new: true });
+        const product = await Product.findByIdAndUpdate(req.params.id, { name, name_en, title, title_en, description, description_en, image, technical, technical_en, categoryId, slug, status }, { new: true });
         res.status(200).json(product);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -107,7 +107,7 @@ const getPublicProductById = async (req, res) => {
             ? { $or: [{ _id: id }, { slug: id }], isDeleted: false }
             : { slug: id, isDeleted: false };
 
-        const product = await Product.findOne(query).populate({ path: "categoryId", select: "name slug" });
+        const product = await Product.findOne(query).populate({ path: "categoryId", select: "name slug name_en" });
 
         if (!product) {
             return res.status(404).json({ message: "Product not found" });
@@ -127,7 +127,7 @@ const getPublicProductByCategoryId = async (req, res) => {
         const filter = { categoryId: req.params.categoryId, isDeleted: false, status: "active" };
         const totalProducts = await Product.countDocuments(filter);
         const products = await Product.find(filter)
-            .populate({ path: "categoryId", select: "name slug" })
+            .populate({ path: "categoryId", select: "name slug name_en" })
             .skip(skip)
             .limit(limit)
             .sort({ createdAt: -1 })
@@ -156,7 +156,7 @@ const getProductByCategoryIdForManage = async (req, res) => {
         const filter = { categoryId: req.params.categoryId, isDeleted: false };
         const totalProducts = await Product.countDocuments(filter);
         const products = await Product.find(filter)
-            .populate({ path: "categoryId", select: "name slug" })
+            .populate({ path: "categoryId", select: "name slug name_en" })
             .skip(skip)
             .limit(limit)
             .sort({ createdAt: -1 })
@@ -181,14 +181,17 @@ const getProductByName = async (req, res) => {
         const skip = (page - 1) * limit;
 
         const filter = {
-            name: { $regex: name, $options: "i" },
+            $or: [
+                { name: { $regex: name, $options: "i" } },
+                { name_en: { $regex: name, $options: "i" } }
+            ],
             isDeleted: false,
             status: "active"
         };
 
         const totalProducts = await Product.countDocuments(filter);
         const products = await Product.find(filter)
-            .populate({ path: "categoryId", select: "name slug" })
+            .populate({ path: "categoryId", select: "name slug name_en" })
             .skip(skip)
             .limit(limit)
             .sort({ createdAt: -1 })

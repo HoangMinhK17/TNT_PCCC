@@ -9,7 +9,7 @@ const ServiceDetail = () => {
     const { id } = useParams();
     const [service, setService] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         const fetchService = async () => {
@@ -70,21 +70,21 @@ const ServiceDetail = () => {
             <div className="service-detail-header" style={{ backgroundImage: `url(${service.image})` }}>
                 <div className="overlay"></div>
                 <div className="container">
-                    <h1 className="service-detail-title" data-aos="fade-up">{service.name}</h1>
+                    <h1 className="service-detail-title" data-aos="fade-up">{ i18n.language === 'vn' ? service.name : service.name_en}</h1>
                 </div>
             </div>
 
             <div className="container service-detail-content">
                 <div className="detail-row">
                     <div className="detail-image" data-aos="fade-up"> 
-                        <img src={service.image} alt={service.title} />
+                        <img src={service.image} alt={ service.title} />
                     </div>
                     <div className="detail-info" data-aos="fade-up">
                         <h2>{t('service_detail_overview')}</h2>
-                        <p className="detail-description">{service.title}</p>
+                        <p className="detail-description">{ i18n.language === 'vn' ? service.name : service.name_en}</p>
                         <hr />
                         <h3>{t('service_detail_des')}</h3>
-                        <div className="detail-text" dangerouslySetInnerHTML={{ __html: service.description }}></div>
+                        <div className="detail-text" dangerouslySetInnerHTML={{ __html: i18n.language === 'vn' ? service.description : service.description_en }}></div>
 
                         <div className="cta-box">
                             <p>{t('service_detail_interested')}</p>

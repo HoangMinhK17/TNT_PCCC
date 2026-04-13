@@ -5,9 +5,15 @@ const whyChooseServiceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    title_en: {
+        type: String,
+    },
     description: {
         type: String,
         required: true
+    },
+    description_en: {
+        type: String,
     },
     icon: {
         type: String,

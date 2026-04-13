@@ -6,6 +6,10 @@ const categoryProductSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    name_en: {
+        type: String,
+        trim: true
+    },
     slug: {
         type: String,
         required: true,

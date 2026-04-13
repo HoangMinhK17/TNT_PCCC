@@ -1,5 +1,5 @@
 .testimonial-section {
-  padding: 30px 0;
+  padding: 20px 0;
   background-color: var(--theme-bg);
   position: relative;
 }
@@ -23,7 +23,7 @@
 .testimonial-slider {
   position: relative;
   max-width: 800px;
-  margin: 50px auto 30px;
+  margin: 20px auto 20px;
   min-height: 300px;
 }
 
@@ -138,7 +138,7 @@
 .testimonial-dots {
   display: flex;
   justify-content: center;
-  margin-top: 40px;
+  margin-top: 20px;
 }
 
 .testimonial-dots .dot {
@@ -165,11 +165,11 @@
 /* AI Theme Specific Styles */
 .testimonial-section.theme-ai {
   background-color: var(--theme-bg, #F9FAFB);
-  padding: 60px 0 80px;
+  padding: 20px 0 20px;
 }
 
 .ai-header-container {
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 }
 
 .ai-title {
@@ -177,7 +177,6 @@
   font-size: 36px;
   font-weight: 700;
   color: #011E1A;
-  margin: 0;
 }
 
 .ai-title::after {

@@ -4,8 +4,8 @@ export const getNews = async (req, res) => {
     try {
         const news = await News.find({ status: "active", isDeleted: false })
             .sort({ createdAt: -1 })
-            .select("name date title image slug ")
-            .populate({ path: "categoryNewsId", select: "name", match: { status: "active" } })
+            .select("name name_en date title title_en image slug ")
+            .populate({ path: "categoryNewsId", select: "name name_en", match: { status: "active" } })
             .lean();
         const filteredNews = news.filter(item => item.categoryNewsId !== null);
         res.status(200).json(filteredNews);
@@ -35,8 +35,8 @@ export const getNewsForManage = async (req, res) => {
         const totalNews = await News.countDocuments(filter);
         const news = await News.find(filter)
             .sort({ createdAt: -1 })
-            .select("name date title image slug description status")
-            .populate("categoryNewsId", "name")
+            .select("name name_en date title title_en image slug description description_en status")
+            .populate("categoryNewsId", "name name_en")
             .skip(skip)
             .limit(limit)
             .lean();
@@ -56,12 +56,12 @@ export const createNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, slug, title, description, image, date, status, categoryNewsId } = req.body;
+        const { name, name_en, slug, title, title_en, description, description_en, image, date, status, categoryNewsId } = req.body;
         const existingProduct = await News.findOne({ slug });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
-        const news = await News.create({ name, slug, title, description, image, date, status, categoryNewsId });
+        const news = await News.create({ name, name_en, slug, title, title_en, description, description_en, image, date, status, categoryNewsId });
         res.status(200).json(news);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -73,12 +73,12 @@ export const updateNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, slug, title, description, image, date, status, categoryNewsId } = req.body;
+        const { name, name_en, slug, title, title_en, description, description_en, image, date, status, categoryNewsId } = req.body;
         const existingProduct = await News.findOne({ slug, _id: { $ne: req.params.id } });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
-        const news = await News.findByIdAndUpdate(req.params.id, { name, slug, title, description, image, date, status, categoryNewsId }, { new: true });
+        const news = await News.findByIdAndUpdate(req.params.id, { name, name_en, slug, title, title_en, description, description_en, image, date, status, categoryNewsId }, { new: true });
         res.status(200).json(news);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -106,8 +106,8 @@ export const getNewsById = async (req, res) => {
             : { slug: id, status: "active", isDeleted: false };
 
         const news = await News.findOne(query)
-            .select("name date title image description content slug ")
-            .populate("categoryNewsId", "name")
+            .select("name name_en date title title_en image description description_en content slug ")
+            .populate("categoryNewsId", "name name_en")
             .lean();
 
         if (!news) {
@@ -132,8 +132,8 @@ export const getNewsByCategoryId = async (req, res) => {
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .select("name date title image description slug ")
-            .populate("categoryNewsId", "name")
+            .select("name name_en date title title_en image description description_en slug ")
+            .populate("categoryNewsId", "name name_en")
             .lean();
 
         const totalNews = await News.countDocuments(query);
@@ -164,8 +164,8 @@ export const getNewsByCategoryIdAdmin = async (req, res) => {
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .select("name date title image description slug status ")
-            .populate("categoryNewsId", "name")
+            .select("name name_en date title title_en image description description_en slug status ")
+            .populate("categoryNewsId", "name name_en")
             .lean();
 
         const totalNews = await News.countDocuments(query);
@@ -200,8 +200,8 @@ export const getNewsByName = async (req, res) => {
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .select("name date title image description slug")
-            .populate("categoryNewsId", "name")
+            .select("name name_en date title title_en image description description_en slug")
+            .populate("categoryNewsId", "name name_en")
             .lean();
 
         const totalNews = await News.countDocuments(query);
@@ -224,7 +224,10 @@ export const getNewsBySearch = async (req, res) => {
         const skip = (page - 1) * limit;
 
         const query = {
-            name: { $regex: searchTerm, $options: "i" },
+            $or: [
+                { name: { $regex: searchTerm, $options: "i" } },
+                { name_en: { $regex: searchTerm, $options: "i" } }
+            ],
             isDeleted: false,
             status: "active"
         };
@@ -233,8 +236,8 @@ export const getNewsBySearch = async (req, res) => {
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .select("name date title image slug")
-            .populate("categoryNewsId", "name")
+            .select("name name_en date title title_en image slug")
+            .populate("categoryNewsId", "name name_en")
             .lean();
 
         const totalNews = await News.countDocuments(query);

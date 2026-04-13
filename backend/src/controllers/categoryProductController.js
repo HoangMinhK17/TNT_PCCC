@@ -37,7 +37,7 @@ const getCategoryProductForManage = async (req, res) => {
 
 const createCategoryProduct = async (req, res) => {
     try {
-        const { name, slug } = req.body;
+        const { name, name_en, slug } = req.body;
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
@@ -47,7 +47,7 @@ const createCategoryProduct = async (req, res) => {
                 return res.status(400).json({ message: "Slug already exists" });
             }
         }
-        const categoryProduct = await CategoryProduct.create({ name, slug });
+        const categoryProduct = await CategoryProduct.create({ name, name_en, slug });
         res.status(200).json(categoryProduct);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -56,7 +56,7 @@ const createCategoryProduct = async (req, res) => {
 
 const updateCategoryProduct = async (req, res) => {
     try {
-        const { name, slug, status } = req.body;
+        const { name, name_en, slug, status } = req.body;
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
@@ -64,7 +64,7 @@ const updateCategoryProduct = async (req, res) => {
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
-        const categoryProduct = await CategoryProduct.findByIdAndUpdate(req.params.id, { name, slug, status }, { new: true });
+        const categoryProduct = await CategoryProduct.findByIdAndUpdate(req.params.id, { name, name_en, slug, status }, { new: true });
         res.status(200).json(categoryProduct);
     } catch (error) {
         res.status(500).json({ message: error.message });

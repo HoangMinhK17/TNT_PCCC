@@ -152,9 +152,12 @@ const TabIntroduct = () => {
         if (record) {
             form.setFieldsValue({
                 name: record.name,
+                name_en: record.name_en,
                 'title.titleName': record.title?.titleName,
+                'title.titleName_en': record.title?.titleName_en,
                 'title.titleIcon': record.title?.titleIcon || '',
                 'description.descriptionName': record.description?.descriptionName,
+                'description.descriptionName_en': record.description?.descriptionName_en,
                 'description.descriptionIcon': record.description?.descriptionIcon || '',
                 images: record.image || [],
             });
@@ -177,8 +180,9 @@ const TabIntroduct = () => {
 
             const payload = {
                 name: values.name,
-                title: { titleName: values['title.titleName'], titleIcon: titleIconUrl },
-                description: { descriptionName: values['description.descriptionName'], descriptionIcon: descIconUrl },
+                name_en: values.name_en,
+                title: { titleName: values['title.titleName'], titleName_en: values['title.titleName_en'], titleIcon: titleIconUrl },
+                description: { descriptionName: values['description.descriptionName'], descriptionName_en: values['description.descriptionName_en'], descriptionIcon: descIconUrl },
                 image: imageUrls.filter(Boolean),
             };
             await updateIntroductionCompany(editing._id, payload);
@@ -263,13 +267,22 @@ const TabIntroduct = () => {
                     <Form.Item name="name" label="Tên công ty" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input />
                     </Form.Item>
+                    <Form.Item name="name_en" label="Tên công ty (Tiếng Anh)">
+                        <Input />
+                    </Form.Item>
                     <Form.Item name="title.titleName" label="Tiêu đề" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                        <TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item name="title.titleName_en" label="Tiêu đề (Tiếng Anh)">
                         <TextArea rows={4} />
                     </Form.Item>
                     <Form.Item name="title.titleIcon" label="Icon tiêu đề (upload ảnh)">
                         <CloudinaryUpload />
                     </Form.Item>
                     <Form.Item name="description.descriptionName" label="Mô tả" rules={[{ whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                        <TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item name="description.descriptionName_en" label="Mô tả (Tiếng Anh)">
                         <TextArea rows={4} />
                     </Form.Item>
                     <Form.Item name="description.descriptionIcon" label="Icon mô tả (upload ảnh)">
@@ -312,7 +325,7 @@ const TabMissionVision = () => {
         setEditType(type);
         const src = type === 'mission' ? record.mission : record.vision;
         form.resetFields();
-        form.setFieldsValue({ title: src?.title, description: src?.description, image: src?.image || '' });
+        form.setFieldsValue({ title: src?.title, title_en: src?.title_en, description: src?.description, description_en: src?.description_en, image: src?.image || '' });
         setModalVisible(true);
     };
 
@@ -324,7 +337,7 @@ const TabMissionVision = () => {
             const values = await form.validateFields();
             const imageUrl = await resolveImageUrl(values.image);
             const payload = {
-                [editType]: { title: values.title, description: values.description, image: imageUrl }
+                [editType]: { title: values.title, title_en: values.title_en, description: values.description, description_en: values.description_en, image: imageUrl }
             };
             await updateMissionVision(editing._id, payload);
             message.success('Cập nhật thành công!');
@@ -389,7 +402,13 @@ const TabMissionVision = () => {
                     <Form.Item name="title" label="Tiêu đề" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input />
                     </Form.Item>
+                    <Form.Item name="title_en" label="Tiêu đề (Tiếng Anh)">
+                        <Input />
+                    </Form.Item>
                     <Form.Item name="description" label="Mô tả" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                        <TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item name="description_en" label="Mô tả (Tiếng Anh)">
                         <TextArea rows={4} />
                     </Form.Item>
                     <Form.Item name="image" label="Ảnh đại diện">
@@ -432,7 +451,7 @@ const TabCoreValues = () => {
         setEditing(record);
         form.resetFields();
         if (record) {
-            form.setFieldsValue({ title: record.title, description: record.description, image: record.image || '', date: record.date });
+            form.setFieldsValue({ title: record.title, title_en: record.title_en, description: record.description, description_en: record.description_en, image: record.image || '', date: record.date });
         }
         setModalVisible(true);
     };
@@ -444,7 +463,7 @@ const TabCoreValues = () => {
             setSaving(true);
             const values = await form.validateFields();
             const imageUrl = await resolveImageUrl(values.image);
-            const payload = { title: values.title, description: values.description, image: imageUrl || '', date: values.date || 0 };
+            const payload = { title: values.title, title_en: values.title_en, description: values.description, description_en: values.description_en, image: imageUrl || '', date: values.date || 0 };
             if (editing) {
                 await updateCoreValues(editing.key, payload);
                 message.success('Cập nhật thành công!');
@@ -511,7 +530,13 @@ const TabCoreValues = () => {
                     <Form.Item name="title" label="Tiêu đề" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input />
                     </Form.Item>
+                    <Form.Item name="title_en" label="Tiêu đề (Tiếng Anh)">
+                        <Input />
+                    </Form.Item>
                     <Form.Item name="description" label="Mô tả" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                        <TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item name="description_en" label="Mô tả (Tiếng Anh)">
                         <TextArea rows={4} />
                     </Form.Item>
                     <Form.Item name="date" label="Năm (số)" rules={[{ required: true, message: 'Bắt buộc!' }]}>
@@ -564,8 +589,11 @@ const TabLeaders = () => {
         if (record) {
             form.setFieldsValue({
                 name: record.name,
+                name_en: record.name_en,
                 position: record.position,
+                position_en: record.position_en,
                 description: record.description,
+                description_en: record.description_en,
                 image: record.image || '',
                 status: record.status || 'active'
             });
@@ -582,8 +610,11 @@ const TabLeaders = () => {
             const imageUrl = await resolveImageUrl(values.image);
             const payload = {
                 name: values.name,
+                name_en: values.name_en,
                 position: values.position,
+                position_en: values.position_en,
                 description: values.description,
+                description_en: values.description_en,
                 image: imageUrl || '',
                 status: values.status || 'active'
             };
@@ -671,10 +702,19 @@ const TabLeaders = () => {
                     <Form.Item name="name" label="Họ và tên" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input />
                     </Form.Item>
+                    <Form.Item name="name_en" label="Họ và tên (English)" >
+                        <Input />
+                    </Form.Item>
                     <Form.Item name="position" label="Chức vụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input />
                     </Form.Item>
+                    <Form.Item name="position_en" label="Chức vụ (English)" >
+                        <Input />
+                    </Form.Item>
                     <Form.Item name="description" label="Mô tả" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                        <TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item name="description_en" label="Mô tả (English)" >
                         <TextArea rows={4} />
                     </Form.Item>
                     <Form.Item name="image" label="Ảnh chân dung (Bắt buộc)" rules={[{ required: true, message: 'Thiếu ảnh chân dung!' }]}>

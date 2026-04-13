@@ -5,6 +5,9 @@ const categoryNewsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    name_en: {
+        type: String,
+    },
     slug: {
         type: String,
         required: true,

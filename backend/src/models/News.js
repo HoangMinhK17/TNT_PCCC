@@ -5,6 +5,9 @@ const newsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    name_en: {
+        type: String,
+    },
     date: {
         type: Date,
         required: true
@@ -13,9 +16,15 @@ const newsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    title_en: {
+        type: String,
+    },
     description: {
         type: String,
         required: true
+    },
+    description_en: {
+        type: String,
     },
     image: {
         type: String

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import '../styles/CompanyIntro.css';
 import { getIntroductionCompany } from '../utils/introductApi.js';
 import { useThemeSettings } from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 const CountUpNumber = ({ end, duration = 2000, suffix = '' }) => {
   const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const countRef = React.useRef(null);
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -58,6 +58,7 @@ const CountUpNumber = ({ end, duration = 2000, suffix = '' }) => {
 
 
 const AICompanyIntro = ({ introduction, images, currentImageIndex }) => {
+  const { i18n } = useTranslation();
 
   const features = [];
   if (introduction?.title?.titleName?.trim()) {
@@ -118,7 +119,7 @@ const AICompanyIntro = ({ introduction, images, currentImageIndex }) => {
 
         <div className="ai-intro-content-pane" data-aos="fade-left">
           <h2 className="ai-intro-heading">
-            <span className="ai-intro-heading--teal">{introduction?.name}</span>
+            <span className="ai-intro-heading--teal">{i18n.language === 'en' && introduction.name_en ? introduction.name_en : introduction?.name}</span>
           </h2>
 
           <div className="ai-intro-features">
@@ -148,56 +149,61 @@ const AICompanyIntro = ({ introduction, images, currentImageIndex }) => {
   );
 };
 
-const DefaultCompanyIntro = ({ introduction, images, currentImageIndex }) => (
-  <section id="about" className="company-intro-section">
-    <div className="container">
-      <div className="company-intro-content">
-        <div className="company-text" data-aos="fade-right">
-          <h2 className="section-title"> {introduction?.name}</h2>
+const DefaultCompanyIntro = ({ introduction, images, currentImageIndex }) => {
+  const { i18n } = useTranslation();
 
-          <div className="intro-content-wrapper">
-            <div className="intro-item">
-              <div className="intro-icon-box">
-                <img src={introduction?.title?.titleIcon} alt="Icon 1" className="intro-icon" />
-              </div>
-              <p className="company-description">
-                {introduction?.title?.titleName}
-              </p>
-            </div>
+  return (
+    <section id="about" className="company-intro-section">
+      <div className="container">
+        <div className="company-intro-content">
+          <div className="company-text" data-aos="fade-right">
+            <h2 className="section-title"> {i18n.language === 'en' && introduction?.name_en ? introduction.name_en : introduction?.name}</h2>
 
-            {introduction?.description?.descriptionName?.trim() && (
+            <div className="intro-content-wrapper">
               <div className="intro-item">
                 <div className="intro-icon-box">
-                  <img src={introduction?.description?.descriptionIcon} alt="Icon 3" className="intro-icon" />
+                  <img src={introduction?.title?.titleIcon} alt="Icon 1" className="intro-icon" />
                 </div>
                 <p className="company-description">
-                  {introduction?.description?.descriptionName}
+                  {introduction?.title?.titleName}
                 </p>
               </div>
-            )}
-          </div>
-        </div>
 
-        <div className="company-image-container" data-aos="fade-left">
-          <div className="image-decoration"></div>
-          <div className="company-image">
-            <img
-              key={currentImageIndex}
-              src={images[currentImageIndex]}
-              alt="Công ty"
-              className="intro-image fade-in"
-            />
+              {introduction?.description?.descriptionName?.trim() && (
+                <div className="intro-item">
+                  <div className="intro-icon-box">
+                    <img src={introduction?.description?.descriptionIcon} alt="Icon 3" className="intro-icon" />
+                  </div>
+                  <p className="company-description">
+                    {introduction?.description?.descriptionName}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="company-image-container" data-aos="fade-left">
+            <div className="image-decoration"></div>
+            <div className="company-image">
+              <img
+                key={currentImageIndex}
+                src={images[currentImageIndex]}
+                alt="Công ty"
+                className="intro-image fade-in"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 const CompanyIntro = () => {
   const [introduction, setIntroduction] = useState([]);
   const [loading, setLoading] = useState(true);
   const { userTheme } = useThemeSettings();
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     const fetchIntroduction = async () => {
@@ -228,10 +234,24 @@ const CompanyIntro = () => {
   if (loading) return null;
 
   const isAI = userTheme === 'ai-teal';
+  const isEng = i18n.language === 'en';
+
+  const displayIntroduction = introduction ? {
+    ...introduction,
+    name: isEng && introduction.name_en ? introduction.name_en : introduction.name,
+    title: {
+      ...introduction.title,
+      titleName: isEng && introduction.title?.titleName_en ? introduction.title.titleName_en : introduction.title?.titleName
+    },
+    description: {
+      ...introduction.description,
+      descriptionName: isEng && introduction.description?.descriptionName_en ? introduction.description.descriptionName_en : introduction.description?.descriptionName
+    }
+  } : null;
 
   return isAI
-    ? <AICompanyIntro introduction={introduction} images={images} currentImageIndex={currentImageIndex} />
-    : <DefaultCompanyIntro introduction={introduction} images={images} currentImageIndex={currentImageIndex} />;
+    ? <AICompanyIntro introduction={displayIntroduction} images={images} currentImageIndex={currentImageIndex} />
+    : <DefaultCompanyIntro introduction={displayIntroduction} images={images} currentImageIndex={currentImageIndex} />;
 };
 
 export default CompanyIntro;

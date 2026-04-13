@@ -10,7 +10,7 @@ const ProjectsSection = () => {
   const [loading, setLoading] = useState(true);
   const { themeLayout } = useThemeSettings();
   const variant = themeLayout?.project || 'masonry';
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -38,8 +38,8 @@ const ProjectsSection = () => {
                 <img src={project.image} alt={project.name} className="project-image" />
               </div>
               <div className="project-info">
-                <h3 className="project-name">{project.name}</h3>
-                <p className="project-description" dangerouslySetInnerHTML={{ __html: project.description }}></p>
+                <h3 className="project-name">{i18n.language === 'vn' ? project.name : project.name_en}</h3>
+                <p className="project-description" dangerouslySetInnerHTML={{ __html: i18n.language === 'vn' ? project.description : project.description_en }}></p>
                 <p className="project-year">Năm: {new Date(project.date).getFullYear()}</p>
               </div>
             </Link>
@@ -58,8 +58,8 @@ const ProjectsSection = () => {
               <img src={project.image} alt={project.name} className="project-image" />
             </div>
             <div className="project-info">
-              <h3 className="project-name">{project.name}</h3>
-              <p className="project-description" dangerouslySetInnerHTML={{ __html: project.description }}></p>
+              <h3 className="project-name">{i18n.language === 'vn' ? project.name : project.name_en}</h3>
+              <p className="project-description" dangerouslySetInnerHTML={{ __html: i18n.language === 'vn' ? project.description : project.description_en }}></p>
               <p className="project-year">{new Date(project.date).getFullYear()}</p>
             </div>
           </Link>

@@ -9,7 +9,7 @@ const getPublicServices = async (req, res) => {
         const filter = { isDeleted: false, status: "active" };
         const totalServices = await Service.countDocuments(filter);
         const services = await Service.find(filter)
-            .select("name image slug title status")
+            .select("name name_en image slug title title_en status")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
@@ -37,7 +37,7 @@ const getServicesForManage = async (req, res) => {
         const filter = { isDeleted: false };
         const totalServices = await Service.countDocuments(filter);
         const services = await Service.find(filter)
-            .select("name image slug title status description")
+            .select("name name_en image slug title title_en status description description_en")
             .skip(skip)
             .limit(limit)
             .sort({ createdAt: -1 });
@@ -58,12 +58,12 @@ const createService = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, description, title, image, slug, status } = req.body;
+        const { name, name_en, description, description_en, title, title_en, image, slug, status } = req.body;
         const existingProduct = await Service.findOne({ slug });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
-        const service = await Service.create({ name, description, title, image, slug, status });
+        const service = await Service.create({ name, name_en, description, description_en, title, title_en, image, slug, status });
         res.status(200).json(service);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -75,12 +75,12 @@ const updateService = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, description, title, image, slug, status } = req.body;
+        const { name, name_en, description, description_en, title, title_en, image, slug, status } = req.body;
         const existingProduct = await Service.findOne({ slug, _id: { $ne: req.params.id } });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
-        const service = await Service.findByIdAndUpdate(req.params.id, { name, description, title, image, slug, status }, { new: true });
+        const service = await Service.findByIdAndUpdate(req.params.id, { name, name_en, description, description_en, title, title_en, image, slug, status }, { new: true });
         res.status(200).json(service);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -111,7 +111,7 @@ const searchService = async (req, res) => {
         const totalServices = await Service.countDocuments(filter);
         const { name } = req.query;
         const services = await Service.find({ name: { $regex: name, $options: "i" }, isDeleted: false })
-            .select("name image slug title status")
+            .select("name name_en image slug title title_en status")
             .skip(skip)
             .limit(limit)
             .sort({ createdAt: -1 });

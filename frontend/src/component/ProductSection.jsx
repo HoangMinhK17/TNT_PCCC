@@ -13,7 +13,7 @@ const ProductSection = () => {
     const [loading, setLoading] = useState(true);
     const { themeLayout } = useThemeSettings();
     const variant = themeLayout?.product || 'grid-4';
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -81,6 +81,7 @@ const ProductSection = () => {
                     <div className="ai-blob ai-blob-3"></div>
                 </div>
                 <div className="container ai-products-container" data-aos="fade-up">
+                    <h2 className="section-title">{t('section_products')}</h2>
                     <div className="ai-products-grid">
                         {visibleCategories.slice(0, 3).map(category => {
                             const img = getCategoryImage(category);
@@ -98,7 +99,7 @@ const ProductSection = () => {
                                                 </div>
                                             )}
                                         </div>
-                                        <h3 className="ai-product-name">{category.name}</h3>
+                                        <h3 className="ai-product-name">{i18n.language === 'en' ? category.name_en : category.name}</h3>
                                         <div className="ai-product-count">
                                             {count} {t('section_products_count')}
                                         </div>
@@ -139,7 +140,7 @@ const ProductSection = () => {
                                         }
                                     </div>
                                     <div className="products-list-h__body">
-                                        <h3 className="products-list-h__name">{category.name}</h3>
+                                        <h3 className="products-list-h__name">{i18n.language === 'en' ? category.name_en : category.name}</h3>
                                         <p className="products-list-h__count">{count} {t('section_products_count')}</p>
                                         <span className="products-list-h__cta">{t('section_view_now')}</span>
                                     </div>
@@ -170,7 +171,7 @@ const ProductSection = () => {
                                             : <div className="product-image product-image--placeholder"></div>
                                         }
                                     </div>
-                                    <h3 className="product-name">{category.name}</h3>
+                                    <h3 className="product-name">{i18n.language === 'en' ? category.name_en : category.name}</h3>
                                     <p className="product-description">{count} {t('section_products_count')}</p>
                                 </Link>
                             );
@@ -198,7 +199,7 @@ const ProductSection = () => {
                                             <span style={{ color: '#999' }}>-</span>
                                         </div>
                                     }
-                                    <h3 className="product-name" style={{ textAlign: 'center', marginTop: '15px' }}>{category.name}</h3>
+                                    <h3 className="product-name" style={{ textAlign: 'center', marginTop: '15px' }}>{i18n.language === 'en' ? category.name_en : category.name}</h3>
                                     <p className="product-description" style={{ textAlign: 'center' }}>{count} {t('section_products_count')}</p>
                                 </div>
                             </Link>

@@ -3,10 +3,12 @@ import '../styles/VisionMission.css';
 import { getMissionVision } from '../utils/introductApi';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const VisionMission = () => {
     const [missionVision, setMissionVision] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { i18n } = useTranslation();
 
     useEffect(() => {
         const fetchMissionVision = async () => {
@@ -33,9 +35,9 @@ const VisionMission = () => {
                             <img src={missionVision?.mission?.image} alt="Tầm Nhìn" />
                         </div>
                         <div className="vm-content">
-                            <h3>{missionVision?.mission?.title}</h3>
+                            <h3>{i18n.language === 'en' && missionVision?.mission?.title_en ? missionVision.mission.title_en : missionVision?.mission?.title}</h3>
                             <p>
-                                {missionVision?.mission?.description}
+                                {i18n.language === 'en' && missionVision?.mission?.description_en ? missionVision.mission.description_en : missionVision?.mission?.description}
                             </p>
                         </div>
                     </div>
@@ -45,9 +47,9 @@ const VisionMission = () => {
                             <img src={missionVision?.vision?.image} alt="Sứ Mệnh" />
                         </div>
                         <div className="vm-content">
-                            <h3>{missionVision?.vision?.title}</h3>
+                            <h3>{i18n.language === 'en' && missionVision?.vision?.title_en ? missionVision.vision.title_en : missionVision?.vision?.title}</h3>
                             <p>
-                                {missionVision?.vision?.description}
+                                {i18n.language === 'en' && missionVision?.vision?.description_en ? missionVision.vision.description_en : missionVision?.vision?.description}
                             </p>
                         </div>
                     </div>

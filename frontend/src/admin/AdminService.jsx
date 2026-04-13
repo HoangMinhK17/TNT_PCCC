@@ -113,8 +113,11 @@ const TabService = () => {
             if (record) {
                 form.setFieldsValue({
                     name: record.name,
+                    name_en: record.name_en,
                     title: record.title,
+                    title_en: record.title_en,
                     description: record.description,
+                    description_en: record.description_en,
                     slug: record.slug,
                     status: record.status || 'active',
                     image: record.image || null,
@@ -133,11 +136,13 @@ const TabService = () => {
 
             const imageUrl = await resolveImageUrl(values.image, folder);
             const processedDescription = await processRichTextContent(values.description, folder);
+            const processedDescriptionEn = await processRichTextContent(values.description_en, folder);
 
             const payload = {
                 ...values,
                 image: imageUrl || "",
-                description: processedDescription
+                description: processedDescription,
+                description_en: processedDescriptionEn
             };
 
             if (editing) {
@@ -227,43 +232,65 @@ const TabService = () => {
             <Modal title={editing ? "Sửa Dịch vụ" : "Thêm mới Dịch vụ"} open={modalVisible}
                 onOk={handleSave} onCancel={() => setModalVisible(false)}
                 okText={saving ? 'Đang lưu...' : 'Lưu'} okButtonProps={{ loading: saving }} cancelText="Hủy" width={800}>
+
                 <Form form={form} layout="vertical">
-                    <div style={{ display: 'flex', gap: 16 }}>
-                        <Form.Item name="name" label="Tên dịch vụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input onChange={(e) => {
-                                if (!editing) {
-                                    const slug = slugify(e.target.value, {
-                                        lower: true,
-                                        strict: true,
-                                        locale: "vi",
-                                    });
-                                    form.setFieldsValue({ slug });
-                                }
-                            }} />
-                        </Form.Item>
-                        <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input />
-                        </Form.Item>
-                    </div>
 
-                    <Form.Item name="status" label="Trạng thái">
-                        <Select>
-                            <Select.Option value="active">Hoạt động</Select.Option>
-                            <Select.Option value="inactive">Dừng hoạt động</Select.Option>
-                        </Select>
-                    </Form.Item>
+                    <Tabs defaultActiveKey="1">
+                        <Tabs.TabPane tab="Tiếng Việt (Mặc định)" key="1">
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                <Form.Item name="name" label="Tên dịch vụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                    <Input onChange={(e) => {
+                                        if (!editing) {
+                                            const slug = slugify(e.target.value, {
+                                                lower: true,
+                                                strict: true,
+                                                locale: "vi",
+                                            });
+                                            form.setFieldsValue({ slug });
+                                        }
+                                    }} />
+                                </Form.Item>
+                                <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                    <Input />
+                                </Form.Item>
+                            </div>
 
-                    <Form.Item name="title" label="Tiêu đề phụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
-                        <Input />
-                    </Form.Item>
+                            <Form.Item name="status" label="Trạng thái">
+                                <Select>
+                                    <Select.Option value="active">Hoạt động</Select.Option>
+                                    <Select.Option value="inactive">Dừng hoạt động</Select.Option>
+                                </Select>
+                            </Form.Item>
 
-                    <Form.Item name="description" label="Mô tả" rules={[{ required: true, message: 'Vui lòng không để trống!' }]}>
-                        <CustomQuillEditor folder="tnt_service" style={{ height: '250px', marginBottom: '50px' }} />
-                    </Form.Item>
+                            <Form.Item name="title" label="Tiêu đề phụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                                <Input />
+                            </Form.Item>
 
-                    <Form.Item name="image" label="Hình ảnh">
-                        <SingleCloudinaryUpload />
-                    </Form.Item>
+                            <Form.Item name="description" label="Mô tả" rules={[{ required: true, message: 'Vui lòng không để trống!' }]}>
+                                <CustomQuillEditor folder="tnt_service" style={{ height: '250px', marginBottom: '50px' }} />
+                            </Form.Item>
+
+                            <Form.Item name="image" label="Hình ảnh">
+                                <SingleCloudinaryUpload />
+                            </Form.Item>
+                        </Tabs.TabPane>
+
+                        <Tabs.TabPane tab="Tiếng Anh(Tùy chọn)" key="2">
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                <Form.Item name="name_en" label="Tên dịch vụ(English)" style={{ flex: 1 }}>
+                                    <Input />
+                                </Form.Item>
+                            </div>
+
+                            <Form.Item name="title_en" label="Tiêu đề phụ(English)">
+                                <Input />
+                            </Form.Item>
+
+                            <Form.Item name="description_en" label="Mô tả (English)">
+                                <CustomQuillEditor folder="tnt_service" style={{ height: '250px', marginBottom: '50px' }} />
+                            </Form.Item>
+                        </Tabs.TabPane>
+                    </Tabs>
 
                 </Form>
             </Modal>
@@ -322,7 +349,9 @@ const TabWhyChooseService = () => {
             if (record) {
                 form.setFieldsValue({
                     title: record.title,
+                    title_en: record.title_en,
                     description: record.description,
+                    description_en: record.description_en,
                     icon: record.icon || null,
                     status: record.status || 'active',
                 });
@@ -436,8 +465,14 @@ const TabWhyChooseService = () => {
                     <Form.Item name="title" label="Tiêu đề (Lý do)" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input />
                     </Form.Item>
+                    <Form.Item name="title_en" label="Tiêu đề (Lý do) - Tiếng Anh">
+                        <Input />
+                    </Form.Item>
 
                     <Form.Item name="description" label="Mô tả chi tiết" rules={[{ required: true, message: 'Vui lòng không để trống!' }]}>
+                        <TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item name="description_en" label="Mô tả chi tiết - Tiếng Anh">
                         <TextArea rows={4} />
                     </Form.Item>
 

@@ -126,6 +126,7 @@ const TabCategoryNews = () => {
         if (record) {
             form.setFieldsValue({
                 name: record.name,
+                name_en: record.name_en,
                 slug: record.slug,
                 status: record.status || 'active',
             });
@@ -241,6 +242,9 @@ const TabCategoryNews = () => {
                             }
                         }} />
                     </Form.Item>
+                    <Form.Item name="name_en" label="Tên danh mục (English)" >
+                        <Input />
+                    </Form.Item>
                     <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
                         <Input />
                     </Form.Item>
@@ -323,6 +327,9 @@ const TabNews = () => {
                     status: record.status || 'active',
                     date: record.date ? dayjs(record.date) : null,
                     images: record.image ? [record.image] : [],
+                    name_en: record.name_en,
+                    title_en: record.title_en,
+                    description_en: record.description_en,
                 });
             } else {
                 form.setFieldsValue({ status: 'active' });
@@ -342,10 +349,12 @@ const TabNews = () => {
             const imageUrls = await Promise.all(imageItems.map(value => resolveImageUrl(value, folder)));
 
             const processedDescription = await processRichTextContent(values.description, folder);
+            const processedDescriptionEn = await processRichTextContent(values.description_en, folder);
 
             const payload = {
                 ...values,
                 description: processedDescription,
+                description_en: processedDescriptionEn,
                 date: values.date ? values.date.toISOString() : null,
                 image: imageUrls.length > 0 ? imageUrls[0] : ""
             };
@@ -470,56 +479,78 @@ const TabNews = () => {
                 onOk={handleSave} onCancel={() => setModalVisible(false)} destroyOnClose
                 okText={saving ? 'Đang lưu...' : 'Lưu'} okButtonProps={{ loading: saving }} cancelText="Hủy" width={850}>
                 <Form form={form} layout="vertical">
-                    <div style={{ display: 'flex', gap: 16 }}>
-                        <Form.Item name="name" label="Tên bài viết" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input onChange={(e) => {
-                                if (!editing) {
-                                    const slug = slugify(e.target.value, {
-                                        lower: true,
-                                        strict: true,
-                                        locale: "vi",
-                                    });
-                                    form.setFieldsValue({ slug });
-                                }
-                            }} />
-                        </Form.Item>
-                        <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input />
-                        </Form.Item>
-                    </div>
+                    <Tabs defaultActiveKey="1">
+                        <Tabs.TabPane tab="Tiếng Việt" key="1">
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                <Form.Item name="name" label="Tên bài viết" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                    <Input onChange={(e) => {
+                                        if (!editing) {
+                                            const slug = slugify(e.target.value, {
+                                                lower: true,
+                                                strict: true,
+                                                locale: "vi",
+                                            });
+                                            form.setFieldsValue({ slug });
+                                        }
+                                    }} />
+                                </Form.Item>
+                                <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                    <Input />
+                                </Form.Item>
+                            </div>
 
-                    <div style={{ display: 'flex', gap: 16 }}>
-                        <Form.Item name="categoryNewsId" label="Danh mục" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
-                            <Select placeholder="Chọn danh mục">
-                                {categories.map(c => <Select.Option key={c._id} value={c._id} disabled={c.status === "inactive"}>{c.name} </Select.Option>)}
-                            </Select>
-                        </Form.Item>
-                        <Form.Item name="date" label="Ngày đăng" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
-                            <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
-                        </Form.Item>
-                        <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>
-                            <Select>
-                                <Select.Option value="active">Hoạt động</Select.Option>
-                                <Select.Option value="inactive">Dừng hoạt động</Select.Option>
-                            </Select>
-                        </Form.Item>
-                    </div>
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                <Form.Item name="categoryNewsId" label="Danh mục" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
+                                    <Select placeholder="Chọn danh mục">
+                                        {categories.map(c => <Select.Option key={c._id} value={c._id} disabled={c.status === "inactive"}>{c.name} </Select.Option>)}
+                                    </Select>
+                                </Form.Item>
+                                <Form.Item name="date" label="Ngày đăng" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
+                                    <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
+                                </Form.Item>
+                                <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>
+                                    <Select>
+                                        <Select.Option value="active">Hoạt động</Select.Option>
+                                        <Select.Option value="inactive">Dừng hoạt động</Select.Option>
+                                    </Select>
+                                </Form.Item>
+                            </div>
 
-                    <Form.Item name="title" label="Tiêu đề phụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
-                        <Input />
-                    </Form.Item>
+                            <Form.Item name="title" label="Tiêu đề phụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                                <Input />
+                            </Form.Item>
 
-                    <Form.Item
-                        name="description"
-                        label="Mô tả"
-                        rules={[{ required: true, message: 'Vui lòng không để trống!' }]}
-                    >
-                        <CustomQuillEditor folder="tnt_news" style={{ height: '250px', marginBottom: '50px' }} />
-                    </Form.Item>
+                            <Form.Item
+                                name="description"
+                                label="Mô tả"
+                                rules={[{ required: true, message: 'Vui lòng không để trống!' }]}
+                            >
+                                <CustomQuillEditor folder="tnt_news" style={{ height: '250px', marginBottom: '50px' }} />
+                            </Form.Item>
 
-                    <Form.Item name="images" label="Hình ảnh">
-                        <MultiCloudinaryUpload maxCount={1} />
-                    </Form.Item>
+                            <Form.Item name="images" label="Hình ảnh">
+                                <MultiCloudinaryUpload maxCount={1} />
+                            </Form.Item>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="Tiếng Anh (Tùy chọn)" key="2">
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                <Form.Item name="name_en" label="Tên bài viết (English)" style={{ flex: 1 }}>
+                                    <Input />
+                                </Form.Item>
+                            </div>
+
+                            <Form.Item name="title_en" label="Tiêu đề phụ (English)" >
+                                <Input />
+                            </Form.Item>
+
+                            <Form.Item
+                                name="description_en"
+                                label="Mô tả (English)"
+                            >
+                                <CustomQuillEditor folder="tnt_news" style={{ height: '250px', marginBottom: '50px' }} />
+                            </Form.Item>
+                        </Tabs.TabPane>
+                    </Tabs>
 
                 </Form>
             </Modal>
