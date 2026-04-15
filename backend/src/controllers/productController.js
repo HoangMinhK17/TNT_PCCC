@@ -1,3 +1,4 @@
+import CategoryProduct from "../models/CategoryProduct.js";
 import Product from "../models/Product.js";
 
 const getPublicProducts = async (req, res) => {
@@ -79,7 +80,6 @@ const updateProduct = async (req, res) => {
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
-
         const product = await Product.findByIdAndUpdate(req.params.id, { name, name_en, title, title_en, description, description_en, image, technical, technical_en, categoryId, slug, status }, { new: true });
         res.status(200).json(product);
     } catch (error) {
@@ -107,7 +107,7 @@ const getPublicProductById = async (req, res) => {
             ? { $or: [{ _id: id }, { slug: id }], isDeleted: false }
             : { slug: id, isDeleted: false };
 
-        const product = await Product.findOne(query).populate({ path: "categoryId", select: "name slug name_en" });
+        const product = await Product.findOne(query).populate({ path: "categoryId", select: "name slug name_en status" });
 
         if (!product) {
             return res.status(404).json({ message: "Product not found" });
@@ -124,10 +124,19 @@ const getPublicProductByCategoryId = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
-        const filter = { categoryId: req.params.categoryId, isDeleted: false, status: "active" };
+        const category = await CategoryProduct.findOne({ _id: req.params.categoryId, isDeleted: false, status: "active" });
+
+        if (!category) {
+            return res.status(404).json({ message: "Category not found" });
+        }
+
+        const filter = { categoryId: category._id, isDeleted: false, status: "active" };
         const totalProducts = await Product.countDocuments(filter);
         const products = await Product.find(filter)
-            .populate({ path: "categoryId", select: "name slug name_en" })
+            .populate({
+                path: "categoryId",
+                select: "name slug name_en"
+            })
             .skip(skip)
             .limit(limit)
             .sort({ createdAt: -1 })

@@ -115,10 +115,11 @@ const TabRecruitment = () => {
             form.setFieldsValue({
                 ...record,
                 status: record.status || 'active',
+                requirements_en: record.requirements_en?.length > 0 ? record.requirements_en : [''],
                 requirements: record.requirements?.length > 0 ? record.requirements : [''],
             });
         } else {
-            form.setFieldsValue({ status: 'active', requirements: [''] });
+            form.setFieldsValue({ status: 'active', requirements: [''], requirements_en: [''] });
         }
         setModalVisible(true);
     };
@@ -130,6 +131,9 @@ const TabRecruitment = () => {
 
             if (values.requirements) {
                 values.requirements = values.requirements.filter(req => req && req.trim() !== '');
+            }
+            if (values.requirements_en) {
+                values.requirements_en = values.requirements_en.filter(req => req && req.trim() !== '');
             }
 
             if (editing) {
@@ -214,86 +218,152 @@ const TabRecruitment = () => {
                 onOk={handleSave} onCancel={() => setModalVisible(false)}
                 okText={saving ? 'Đang lưu...' : 'Lưu'} okButtonProps={{ loading: saving }} cancelText="Hủy" width={800}>
                 <Form form={form} layout="vertical">
-                    <div style={{ display: 'flex', gap: 16 }}>
-                        <Form.Item name="name" label="Tên công việc" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input onChange={(e) => {
-                                if (!editing) {
-                                    const slug = slugify(e.target.value, {
-                                        lower: true,
-                                        strict: true,
-                                        locale: "vi",
-                                    });
-                                    form.setFieldsValue({ slug });
-                                }
-                            }} />
-                        </Form.Item>
-                        <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input />
-                        </Form.Item>
-                    </div>
+                    <Tabs defaultActiveKey="1">
+                        <Tabs.TabPane tab="Tiếng Việt" key="1">
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                <Form.Item name="name" label="Tên công việc" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                    <Input onChange={(e) => {
+                                        if (!editing) {
+                                            const slug = slugify(e.target.value, {
+                                                lower: true,
+                                                strict: true,
+                                                locale: "vi",
+                                            });
+                                            form.setFieldsValue({ slug });
+                                        }
+                                    }} />
+                                </Form.Item>
+                                <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                    <Input />
+                                </Form.Item>
+                            </div>
 
-                    <div style={{ display: 'flex', gap: 16 }}>
-                        <Form.Item name="level" label="Cấp bậc (Level)" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item name="location" label="Địa điểm" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input />
-                        </Form.Item>
-                    </div>
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                <Form.Item name="level" label="Cấp bậc (Level)" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item name="location" label="Địa điểm" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                    <Input />
+                                </Form.Item>
+                            </div>
 
-                    <div style={{ display: 'flex', gap: 16 }}>
-                        <Form.Item name="salary" label="Mức lương" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input placeholder="Vd: Thỏa thuận, 10-15 triệu" />
-                        </Form.Item>
-                        <Form.Item name="time" label="Thời gian" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                            <Input placeholder="Vd: Full-time, Part-time" />
-                        </Form.Item>
-                        <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>
-                            <Select>
-                                <Select.Option value="active">Hoạt động</Select.Option>
-                                <Select.Option value="inactive">Dừng hoạt động</Select.Option>
-                            </Select>
-                        </Form.Item>
-                    </div>
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                <Form.Item name="salary" label="Mức lương" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                    <Input placeholder="Vd: Thỏa thuận, 10-15 triệu" />
+                                </Form.Item>
+                                <Form.Item name="time" label="Thời gian" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
+                                    <Input placeholder="Vd: Full-time, Part-time" />
+                                </Form.Item>
+                                <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>
+                                    <Select>
+                                        <Select.Option value="active">Hoạt động</Select.Option>
+                                        <Select.Option value="inactive">Dừng hoạt động</Select.Option>
+                                    </Select>
+                                </Form.Item>
+                            </div>
 
-                    <Title level={5}>Yêu cầu công việc (Requirements)</Title>
-                    <Form.List name="requirements">
-                        {(fields, { add, remove }) => (
-                            <>
-                                {fields.map((field, index) => (
-                                    <Form.Item
-                                        {...field}
-                                        label={index === 0 ? '' : ''}
-                                        required={false}
-                                        key={field.key}
-                                        style={{ marginBottom: 8 }}
-                                    >
-                                        <div style={{ display: 'flex', gap: 8 }}>
+                            <Title level={5}>Yêu cầu công việc (Requirements)</Title>
+                            <Form.List name="requirements">
+                                {(fields, { add, remove }) => (
+                                    <>
+                                        {fields.map((field, index) => (
                                             <Form.Item
                                                 {...field}
-                                                noStyle
-                                                rules={[{ required: true, whitespace: true, message: 'Nhập nội dung yêu cầu hoặc xóa dòng trống' }]}
+                                                label={index === 0 ? '' : ''}
+                                                required={false}
+                                                key={field.key}
+                                                style={{ marginBottom: 8 }}
                                             >
-                                                <Input style={{ flex: 1 }} />
+                                                <div style={{ display: 'flex', gap: 8 }}>
+                                                    <Form.Item
+                                                        {...field}
+                                                        noStyle
+                                                        rules={[{ required: true, whitespace: true, message: 'Nhập nội dung yêu cầu hoặc xóa dòng trống' }]}
+                                                    >
+                                                        <Input style={{ flex: 1 }} />
+                                                    </Form.Item>
+                                                    {fields.length > 1 ? (
+                                                        <MinusCircleOutlined
+                                                            className="dynamic-delete-button"
+                                                            onClick={() => remove(field.name)}
+                                                            style={{ color: 'red', marginTop: 8 }}
+                                                        />
+                                                    ) : null}
+                                                </div>
                                             </Form.Item>
-                                            {fields.length > 1 ? (
-                                                <MinusCircleOutlined
-                                                    className="dynamic-delete-button"
-                                                    onClick={() => remove(field.name)}
-                                                    style={{ color: 'red', marginTop: 8 }}
-                                                />
-                                            ) : null}
-                                        </div>
-                                    </Form.Item>
-                                ))}
-                                <Form.Item>
-                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                                        Thêm yêu cầu
-                                    </Button>
+                                        ))}
+                                        <Form.Item>
+                                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                                Thêm yêu cầu
+                                            </Button>
+                                        </Form.Item>
+                                    </>
+                                )}
+                            </Form.List>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="Tiếng anh (Tùy chọn)" key="2">
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                <Form.Item name="name_en" label="Tên công việc(English)" style={{ flex: 1 }}>
+                                    <Input />
                                 </Form.Item>
-                            </>
-                        )}
-                    </Form.List>
+                            </div>
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                <Form.Item name="level_en" label="Cấp bậc(English)" style={{ flex: 1 }}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item name="location_en" label="Địa điểm(English)" style={{ flex: 1 }}>
+                                    <Input />
+                                </Form.Item>
+                            </div>
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                <Form.Item name="salary_en" label="Mức lương(English)" style={{ flex: 1 }}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item name="time_en" label="Thời gian(English)" style={{ flex: 1 }}>
+                                    <Input />
+                                </Form.Item>
+                            </div>
+                            <Title level={5}>Yêu cầu công việc (English)</Title>
+
+                            <Form.List name="requirements_en">
+                                {(fields, { add, remove }) => (
+                                    <>
+                                        {fields.map((field, index) => (
+                                            <Form.Item
+                                                {...field}
+                                                label={index === 0 ? '' : ''}
+                                                required={false}
+                                                key={field.key}
+                                                style={{ marginBottom: 8 }}
+                                            >
+                                                <div style={{ display: 'flex', gap: 8 }}>
+                                                    <Form.Item
+                                                        {...field}
+                                                        noStyle
+                                                        rules={[{ required: true, whitespace: true, message: 'Nhập nội dung yêu cầu hoặc xóa dòng trống' }]}
+                                                    >
+                                                        <Input style={{ flex: 1 }} />
+                                                    </Form.Item>
+                                                    {fields.length > 1 ? (
+                                                        <MinusCircleOutlined
+                                                            className="dynamic-delete-button"
+                                                            onClick={() => remove(field.name)}
+                                                            style={{ color: 'red', marginTop: 8 }}
+                                                        />
+                                                    ) : null}
+                                                </div>
+                                            </Form.Item>
+                                        ))}
+                                        <Form.Item>
+                                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                                Thêm yêu cầu
+                                            </Button>
+                                        </Form.Item>
+                                    </>
+                                )}
+                            </Form.List>
+                        </Tabs.TabPane>
+                    </Tabs>
 
                 </Form>
             </Modal>
@@ -329,9 +399,11 @@ const TabWhyChooseCompany = () => {
         if (record) {
             form.setFieldsValue({
                 title: record.whyChooseUs?.title,
+                title_en: record.whyChooseUs?.title_en,
                 description: record.whyChooseUs?.description,
+                description_en: record.whyChooseUs?.description_en,
                 status: record.status || 'active',
-                benefits: record.benefits?.length > 0 ? record.benefits : [{}],
+                benefits: record.benefits?.length > 0 ? record.benefits : [{}]
             });
         } else {
             form.setFieldsValue({ status: 'active', benefits: [{}] });
@@ -354,7 +426,9 @@ const TabWhyChooseCompany = () => {
             const payload = {
                 whyChooseUs: {
                     title: values.title.trim(),
-                    description: values.description.trim()
+                    title_en: values.title_en.trim(),
+                    description: values.description.trim(),
+                    description_en: values.description_en.trim()
                 },
                 benefits: benefitsWithUpload,
                 status: values.status
@@ -429,66 +503,105 @@ const TabWhyChooseCompany = () => {
                 onOk={handleSave} onCancel={() => setModalVisible(false)}
                 okText={saving ? 'Đang lưu...' : 'Lưu'} okButtonProps={{ loading: saving }} cancelText="Hủy" width={850}>
                 <Form form={form} layout="vertical">
-
-                    <div style={{ display: 'flex', gap: 16 }}>
-                        <Form.Item name="title" label="Tiêu đề chính (Bỏ trống tiêu đề sẽ không hiển thị phần này)" style={{ flex: 2 }} >
-                            <Input placeholder='Tiêu đề'/>
-                        </Form.Item>
-                        <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>
-                            <Select>
-                                <Select.Option value="active">Hoạt động</Select.Option>
-                                <Select.Option value="inactive">Dừng hoạt động</Select.Option>
-                            </Select>
-                        </Form.Item>
-                    </div>
-
-                    <Form.Item name="description" label="Mô tả chính" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
-                        <TextArea rows={3} />
-                    </Form.Item>
-
-                    <Title level={5}>Lợi ích (Benefits)</Title>
-                    <Form.List name="benefits">
-                        {(fields, { add, remove }) => (
-                            <>
-                                {fields.map(({ key, name, ...restField }) => (
-                                    <Space key={key} style={{ display: 'flex', marginBottom: 16, gap: 12, alignItems: 'center' }} align="center">
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'title']}
-                                            rules={[{ required: true, whitespace: true, message: 'Nhập tiêu đề' }]}
-                                            style={{ flex: 1, minWidth: 150, marginBottom: 0 }}
-                                        >
-                                            <Input placeholder="Tiêu đề lợi ích" style={{ width: '100%' }} />
-                                        </Form.Item>
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'description']}
-                                            rules={[{ required: true, whitespace: true, message: 'Nhập mô tả' }]}
-                                            style={{ flex: 2, minWidth: 400, marginBottom: 0 }}
-                                        >
-                                            <Input placeholder="Mô tả lợi ích" style={{ width: '100%' }} />
-                                        </Form.Item>
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'icon']}
-                                            rules={[{ required: true, message: 'Vui lòng tải ảnh lên' }]}
-                                            style={{ flex: 'none', width: 90, marginBottom: 0, display: 'flex', justifyContent: 'center' }}
-                                        >
-                                            <SingleCloudinaryUpload />
-                                        </Form.Item>
-                                        {fields.length > 1 ? (
-                                            <Button type="text" danger icon={<DeleteOutlined />} onClick={() => remove(name)} style={{ marginLeft: 30 }} />
-                                        ) : <div style={{ width: 32 }}></div>}
-                                    </Space>
-                                ))}
-                                <Form.Item>
-                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                                        Thêm Lợi ích
-                                    </Button>
+                    <Tabs defaultActiveKey="1">
+                        <Tabs.TabPane tab="Tiếng Việt" key="1">
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                <Form.Item name="title" label="Tiêu đề chính (Bỏ trống tiêu đề sẽ không hiển thị phần này)" style={{ flex: 2 }} >
+                                    <Input placeholder='Tiêu đề' />
                                 </Form.Item>
-                            </>
-                        )}
-                    </Form.List>
+                                <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>
+                                    <Select>
+                                        <Select.Option value="active">Hoạt động</Select.Option>
+                                        <Select.Option value="inactive">Dừng hoạt động</Select.Option>
+                                    </Select>
+                                </Form.Item>
+                            </div>
+
+                            <Form.Item name="description" label="Mô tả chính" >
+                                <TextArea rows={3} />
+                            </Form.Item>
+
+                            <Title level={5}>Lợi ích (Benefits)</Title>
+                            <Form.List name="benefits">
+                                {(fields, { add, remove }) => (
+                                    <>
+                                        {fields.map(({ key, name, ...restField }) => (
+                                            <Space key={key} style={{ display: 'flex', marginBottom: 16, gap: 12, alignItems: 'center' }} align="center">
+                                                <Form.Item
+                                                    {...restField}
+                                                    name={[name, 'title']}
+                                                    rules={[{ required: true, whitespace: true, message: 'Nhập tiêu đề' }]}
+                                                    style={{ flex: 1, minWidth: 150, marginBottom: 0 }}
+                                                >
+                                                    <Input placeholder="Tiêu đề lợi ích" style={{ width: '100%' }} />
+                                                </Form.Item>
+                                                <Form.Item
+                                                    {...restField}
+                                                    name={[name, 'description']}
+                                                    rules={[{ required: true, whitespace: true, message: 'Nhập mô tả' }]}
+                                                    style={{ flex: 2, minWidth: 400, marginBottom: 0 }}
+                                                >
+                                                    <Input placeholder="Mô tả lợi ích" style={{ width: '100%' }} />
+                                                </Form.Item>
+                                                <Form.Item
+                                                    {...restField}
+                                                    name={[name, 'icon']}
+                                                    rules={[{ required: true, message: 'Vui lòng tải ảnh lên' }]}
+                                                    style={{ flex: 'none', width: 90, marginBottom: 0, display: 'flex', justifyContent: 'center' }}
+                                                >
+                                                    <SingleCloudinaryUpload />
+                                                </Form.Item>
+                                                {fields.length > 1 ? (
+                                                    <Button type="text" danger icon={<DeleteOutlined />} onClick={() => remove(name)} style={{ marginLeft: 30 }} />
+                                                ) : <div style={{ width: 32 }}></div>}
+                                            </Space>
+                                        ))}
+                                        <Form.Item>
+                                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                                Thêm Lợi ích
+                                            </Button>
+                                        </Form.Item>
+                                    </>
+                                )}
+                            </Form.List>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="Tiếng Anh" key="2">
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                <Form.Item name="title_en" label="Tiêu đề chính (English)" style={{ flex: 2 }} >
+                                    <Input placeholder='Tiêu đề chính (English)' />
+                                </Form.Item>
+                            </div>
+                            <Form.Item name="description_en" label="Mô tả chính (English)" style={{ flex: 2 }} >
+                                <TextArea rows={3} placeholder='Mô tả chính (English)' />
+                            </Form.Item>
+                            <Title level={5}>Lợi ích (English)</Title>
+                            <Form.List name="benefits">
+                                {(fields) => (
+                                    <>
+                                        {fields.map(({ key, name, ...restField }) => (
+                                            <Space key={key} style={{ display: 'flex', marginBottom: 8, alignItems: 'center' }}>
+                                                <Form.Item
+                                                    {...restField}
+                                                    name={[name, 'title_en']}
+                                                    style={{ flex: 2, minWidth: 400, marginBottom: 0 }}
+                                                >
+                                                    <Input placeholder="Tiêu đề" />
+                                                </Form.Item>
+                                                <Form.Item
+                                                    {...restField}
+                                                    name={[name, 'description_en']}
+                                                    style={{ flex: 2, minWidth: 400, marginBottom: 0 }}
+                                                >
+                                                    <Input placeholder="Mô tả lợi ích" />
+                                                </Form.Item>
+                                                <div style={{ width: 32 }}></div>
+                                            </Space>
+                                        ))}
+                                    </>
+                                )}
+                            </Form.List>
+                        </Tabs.TabPane>
+                    </Tabs>
 
                 </Form>
             </Modal>

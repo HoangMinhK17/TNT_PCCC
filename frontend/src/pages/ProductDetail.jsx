@@ -31,6 +31,7 @@ const ProductDetail = () => {
         fetchProduct();
     }, [id]);
 
+
     if (loading) return (
         <div className="container" style={{ minHeight: '80vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <div className="loading">Đang tải...</div>
@@ -45,6 +46,8 @@ const ProductDetail = () => {
             </div>
         );
     }
+
+    const isDisabled = product.status === 'inactive' || product.categoryId?.status === 'inactive';
 
     const structuredData = {
         "@context": "https://schema.org",
@@ -130,9 +133,9 @@ const ProductDetail = () => {
                                 {t('product_detail_button_contact')}
                             </Link>
                             <Link
-                                to="/contact"
-                                state={{ productId: product._id, productName: product.name, productImage: product.image[0] }}
-                                className="contact-btn buy-btn"
+                                to={isDisabled ? "#" : "/contact"}
+                                state={isDisabled ? null : { productId: product._id, productName: product.name, productImage: product.image[0] }}
+                                className={`contact-btn buy-btn ${isDisabled ? 'disabled' : ''}`}
                             >
                                 {t('product_detail_register')}
                             </Link>

@@ -6,21 +6,36 @@ const recruitmentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    name_en: {
+        type: String,
+    },
     level: {
         type: String,
         required: true
+    },
+    level_en: {
+        type: String,
     },
     location: {
         type: String,
         required: true
     },
+    location_en: {
+        type: String,
+    },
     salary: {
         type: String,
         required: true
     },
+    salary_en: {
+        type: String,
+    },
     time: {
         type: String,
         required: true
+    },
+    time_en: {
+        type: String,
     },
     slug: {
         type: String,
@@ -30,6 +45,10 @@ const recruitmentSchema = new mongoose.Schema({
     },
 
     requirements: {
+        type: [String],
+        default: []
+    },
+    requirements_en: {
         type: [String],
         default: []
     },

@@ -131,7 +131,7 @@ const Product = () => {
   );
 
   return (
-    <section className="products-section">
+    <section className="products-section products-page">
       <SEO
         title={pageTitle}
         description={pageDescription}
@@ -243,11 +243,13 @@ const Product = () => {
                           to={`/products/${product.slug}`}
                           style={{ textDecoration: "none", color: "inherit" }}
                         >
-                          <article className="product-card">
+                          <div className="product-card">
                             <img src={product.image[0]} alt={product.name} className="product-image" />
-                            <h3 className="product-name">{i18n.language === 'en' && product.name_en ? product.name_en : product.name}</h3>
-                            <p className="product-description">{i18n.language === 'en' && product.title_en ? product.title_en : product.title}</p>
-                          </article>
+                            <div className="product-info-body">
+                              <h3 className="product-name">{i18n.language === 'en' && product.name_en ? product.name_en : product.name}</h3>
+                              <p className="product-description">{i18n.language === 'en' && product.title_en ? product.title_en : product.title}</p>
+                            </div>
+                          </div>
                         </Link>
                       ))}
                     </div>
@@ -264,11 +266,13 @@ const Product = () => {
                         to={`/products/${product.slug}`}
                         style={{ textDecoration: "none", color: "inherit" }}
                       >
-                        <article className="product-card">
+                        <div className="product-card">
                           <img src={product.image[0]} alt={product.name} className="product-image" />
-                          <h3 className="product-name">{i18n.language === 'en' && product.name_en ? product.name_en : product.name}</h3>
-                          <p className="product-description">{i18n.language === 'en' && product.title_en ? product.title_en : product.title}</p>
-                        </article>
+                          <div className="product-info-body">
+                            <h3 className="product-name">{i18n.language === 'en' && product.name_en ? product.name_en : product.name}</h3>
+                            <p className="product-description">{i18n.language === 'en' && product.title_en ? product.title_en : product.title}</p>
+                          </div>
+                        </div>
                       </Link>
                     ))
                   ) : (

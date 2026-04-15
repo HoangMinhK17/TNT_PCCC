@@ -200,6 +200,8 @@ const TabCategoryProduct = () => {
                     current: currentPage,
                     pageSize: pageSize,
                     total: totalPages * pageSize,
+                    showLessItems: true,
+                    showSizeChanger: false,
                     onChange: (page, size) => {
                         setCurrentPage(page);
                         setPageSize(size);
@@ -358,9 +360,9 @@ const TabProduct = () => {
     };
 
     const columns = [
-        { title: 'Tên sản phẩm ', dataIndex: 'name', key: 'name', width: '20%' },
+        { title: 'Tên sản phẩm ', dataIndex: 'name', key: 'name', width: '30%' },
         {
-            title: 'Danh mục', dataIndex: 'categoryId', key: 'categoryId',
+            title: 'Danh mục', dataIndex: 'categoryId', key: 'categoryId', width: '250px',
             render: (cat) => <Text>{cat?.name || '---'}</Text>
         },
         {
@@ -375,7 +377,7 @@ const TabProduct = () => {
             ) : <Tag>Chưa có</Tag>
         },
         {
-            title: 'Trạng thái', dataIndex: 'status', key: 'status',
+            title: 'Trạng thái', dataIndex: 'status', key: 'status', width : '150px',
             render: (status) => (
                 <Tag color={status === 'active' ? 'green' : 'red'}>
                     {status === 'active' ? 'Hoạt động' : 'Dừng hoạt động'}
@@ -383,7 +385,7 @@ const TabProduct = () => {
             )
         },
         {
-            title: 'Thao tác', key: 'action',
+            title: 'Thao tác', key: 'action', width: '100px',
             render: (_, record) => (
                 <Space>
                     <Button type="primary" ghost size="small" icon={<EditOutlined />} onClick={() => openModal(record)}>Sửa</Button>
@@ -407,7 +409,7 @@ const TabProduct = () => {
                     placeholder="Tìm kiếm sản phẩm theo tên..."
                     allowClear
                     onSearch={handleSearch}
-                    style={{ width: 300 }}
+                    style={{ width: 400 }}
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                 />
@@ -415,7 +417,7 @@ const TabProduct = () => {
                     placeholder="Lọc theo danh mục"
                     allowClear
                     onChange={handleFilterCategory}
-                    style={{ width: 250 }}
+                    style={{ width: 400 }}
                     value={filterCategory}
                 >
                     {categories.map(c => (
@@ -433,6 +435,8 @@ const TabProduct = () => {
                     current: currentPage,
                     pageSize: pageSize,
                     total: totalPages * pageSize,
+                    showLessItems: true,
+                    showSizeChanger: false,
                     onChange: (page, size) => {
                         setCurrentPage(page);
                         setPageSize(size);
@@ -483,7 +487,7 @@ const TabProduct = () => {
                                         </Form.Item>
                                     </div>
 
-                                    <Form.Item name="title" label="Tiêu đề phụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                                    <Form.Item name="title" label="Tiêu đề phụ" >
                                         <Input />
                                     </Form.Item>
 
@@ -506,14 +510,14 @@ const TabProduct = () => {
                                                             name={[name, 'title']}
                                                             rules={[{ required: true, whitespace: true, message: 'Nhập tiêu đề' }]}
                                                         >
-                                                            <Input placeholder="Tên thông số (Vd: Khối lượng)" style={{ width: 250 }} />
+                                                            <Input placeholder="Tên thông số (Vd: Khối lượng)" style={{ width: 390 }} />
                                                         </Form.Item>
                                                         <Form.Item
                                                             {...restField}
                                                             name={[name, 'description']}
                                                             rules={[{ required: true, whitespace: true, message: 'Nhập giá trị' }]}
                                                         >
-                                                            <Input placeholder="Giá trị (Vd: 3kg)" style={{ width: 350 }} />
+                                                            <Input placeholder="Giá trị (Vd: 3kg)" style={{ width: 390 }} />
                                                         </Form.Item>
                                                         {fields.length > 1 ? (
                                                             <DeleteOutlined onClick={() => remove(name)} style={{ color: 'red' }} />
@@ -558,13 +562,13 @@ const TabProduct = () => {
                                                             {...restField}
                                                             name={[name, 'title_en']}
                                                         >
-                                                            <Input placeholder="Tên thông số (Vd: Weight)" style={{ width: 250 }} />
+                                                            <Input placeholder="Tên thông số (Vd: Weight)" style={{ width: 390 }} />
                                                         </Form.Item>
                                                         <Form.Item
                                                             {...restField}
                                                             name={[name, 'description_en']}
                                                         >
-                                                            <Input placeholder="Giá trị (Vd: 3kg)" style={{ width: 350 }} />
+                                                            <Input placeholder="Giá trị (Vd: 3kg)" style={{ width: 390 }} />
                                                         </Form.Item>
                                                         {fields.length > 1 ? (
                                                             <DeleteOutlined onClick={() => remove(name)} style={{ color: 'red' }} />

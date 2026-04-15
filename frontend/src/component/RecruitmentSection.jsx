@@ -19,7 +19,7 @@ const RecruitmentSection = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [whyChooseCompany, setWhyChooseCompany] = useState([]);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [applyModalVisible, setApplyModalVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -159,19 +159,9 @@ const RecruitmentSection = () => {
 
   return (
     <section id="recruitment" className="recruitment-section">
-      <Helmet>
-        <title>{t('recruitment_title')}</title>
-        <meta name="description" content={t('recruitment_subtitle')} />
-        <meta name="keywords" content="tuyển dụng" />
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
-      </Helmet>
-
       <div className="container" data-aos="fade-up">
         <h1 className="section-title">{t('recruitment_title')}</h1>
         <p className="section-subtitle">{t('recruitment_subtitle')}</p>
-
         <div className="recruitment-content">
           {loading ? (
             <div className="loading-container">
@@ -198,13 +188,13 @@ const RecruitmentSection = () => {
                       className={`job-card-item ${selectedJob?._id === job._id ? 'active' : ''}`}
                       onClick={() => setSelectedJob(job)}
                     >
-                      <h4>{job.name}</h4>
+                      <h4>{i18n.language === 'en' && job.name_en ? job.name_en : job.name}</h4>
                       <div className="job-meta">
-                        <span className="job-level-pill">{job.level}</span>
-                        <span className="job-salary-text">{job.salary}</span>
+                        <span className="job-level-pill">{i18n.language === 'en' && job.level_en ? job.level_en : job.level}</span>
+                        <span className="job-salary-text">{i18n.language === 'en' && job.salary_en ? job.salary_en : job.salary}</span>
                       </div>
                       <p className="job-location-text">
-                        <FaMapMarkerAlt className="icon-marker" /> {job.location}
+                        <FaMapMarkerAlt className="icon-marker" /> {i18n.language === 'en' && job.location_en ? job.location_en : job.location}
                       </p>
                     </article>
                   ))}
@@ -214,35 +204,35 @@ const RecruitmentSection = () => {
               <main className="job-details-view">
                 {selectedJob ? (
                   <div className="job-detail-content glass-effect">
-                    <h3>{selectedJob.name}</h3>
+                    <h3>{i18n.language === 'en' && selectedJob.name_en ? selectedJob.name_en : selectedJob.name}</h3>
 
                     <div className="detail-grid">
                       <div className="detail-item">
                         <FaMapMarkerAlt className="detail-icon" />
                         <div>
                           <span className="detail-label">{t('recruitment_location')}</span>
-                          <p>{selectedJob.location}</p>
+                          <p>{i18n.language === 'en' && selectedJob.location_en ? selectedJob.location_en : selectedJob.location}</p>
                         </div>
                       </div>
                       <div className="detail-item">
                         <FaUserTie className="detail-icon" />
                         <div>
                           <span className="detail-label">{t('recruitment_experience')}</span>
-                          <p>{selectedJob.level}</p>
+                          <p>{i18n.language === 'en' && selectedJob.level_en ? selectedJob.level_en : selectedJob.level}</p>
                         </div>
                       </div>
                       <div className="detail-item">
                         <FaMoneyBillWave className="detail-icon" />
                         <div>
                           <span className="detail-label">{t('recruitment_salary')}</span>
-                          <p className="highlight-salary">{selectedJob.salary}</p>
+                          <p className="highlight-salary">{i18n.language === 'en' && selectedJob.salary_en ? selectedJob.salary_en : selectedJob.salary}</p>
                         </div>
                       </div>
                       <div className="detail-item">
                         <FaBriefcase className="detail-icon" />
                         <div>
                           <span className="detail-label">{t('recruitment_time')}</span>
-                          <p>{selectedJob.time}</p>
+                          <p>{i18n.language === 'en' && selectedJob.time_en ? selectedJob.time_en : selectedJob.time}</p>
                         </div>
                       </div>
                     </div>
@@ -254,7 +244,7 @@ const RecruitmentSection = () => {
                           selectedJob.requirements.map((req, idx) => (
                             <li key={idx}>
                               <FaCheckCircle className="check-icon" />
-                              <span>{req}</span>
+                              <span>{i18n.language === 'en' && selectedJob.requirements_en && selectedJob.requirements_en[idx] ? selectedJob.requirements_en[idx] : req}</span>
                             </li>
                           ))
                         ) : (
@@ -290,8 +280,8 @@ const RecruitmentSection = () => {
                   <div className="benefit-icon-wrapper">{
                     <img src={benefit?.icon} alt="" />
                   }</div>
-                  <h4>{benefit?.title}</h4>
-                  <p>{benefit?.description}</p>
+                  <h4>{i18n.language === 'en' && benefit?.title_en ? benefit?.title_en : benefit?.title}</h4>
+                  <p>{i18n.language === 'en' && benefit?.description_en ? benefit?.description_en : benefit?.description}</p>
                 </div>
               ))}
             </div>
@@ -300,9 +290,9 @@ const RecruitmentSection = () => {
         {whyChooseCompany?.whyChooseUs?.title && (
           <section className="why-join-modern glass-effect">
             <div className="why-join-content">
-              <h3>{whyChooseCompany?.whyChooseUs?.title}</h3>
+              <h3>{i18n.language === 'en' && whyChooseCompany?.whyChooseUs?.title_en ? whyChooseCompany?.whyChooseUs?.title_en : whyChooseCompany?.whyChooseUs?.title}</h3>
               <p>
-                {whyChooseCompany?.whyChooseUs?.description}
+                {i18n.language === 'en' && whyChooseCompany?.whyChooseUs?.description_en ? whyChooseCompany?.whyChooseUs?.description_en : whyChooseCompany?.whyChooseUs?.description}
               </p>
 
             </div>
@@ -311,13 +301,13 @@ const RecruitmentSection = () => {
       </div>
 
       <Modal
-        title={`${t('recruitment_modal_title')} ${selectedJob?.name}`}
+        title={`${t('recruitment_modal_title')} ${i18n.language === 'en' && selectedJob?.name_en ? selectedJob?.name_en : selectedJob?.name}`}
         open={applyModalVisible}
         onCancel={() => setApplyModalVisible(false)}
         footer={null}
       >
         <Form form={form} layout="vertical" onFinish={handleApplySubmit}>
-          <Form.Item name="name" label= {t('recruitment_modal_name')} rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}>
+          <Form.Item name="name" label={t('recruitment_modal_name')} rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}>
             <Input placeholder="Nhập họ và tên của bạn" />
           </Form.Item>
           <Form.Item name="phone" label={t('recruitment_modal_phone')} rules={[{ required: true, message: 'Vui lòng nhập số điện thoại' }]}>
@@ -329,7 +319,7 @@ const RecruitmentSection = () => {
           ]}>
             <Input placeholder="Nhập địa chỉ Email" />
           </Form.Item>
-          <Form.Item name="address" label={t('recruitment_modal_address')}>
+          <Form.Item name="address" label={t('recruitment_modal_address')} rules={[{ required: true, message: 'Vui lòng nhập địa chỉ' }]}>
             <Input.TextArea rows={2} placeholder="Nhập địa chỉ của bạn" />
           </Form.Item>
           <Form.Item label={t('recruitment_modal_cv')} required>

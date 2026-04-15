@@ -95,7 +95,17 @@
 
    "recruitment_list_title" : "Open Positions",
    "recruitment_benefits" : "Benefits & Welfare",
-   "recruitment_benefits_description" : "We offer the best working environment for you"
+   "recruitment_benefits_description" : "We offer the best working environment for you",
+
+   "footer_about" : "About Us",
+   "footer_projects" : "Projects",
+   "footer_news" : "News",
+   "footer_contact" : "Contact",
+   "footer_product" : "Products",
+   "footer_service" : "Consulting Services",
+   "footer_product_list" : "Product List",
+   "footer_support" : "Support",
+   "footer_contact_info" : "Contact Us"
 
 
 }

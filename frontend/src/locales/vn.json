@@ -98,6 +98,17 @@
 
     "recruitment_list_title" : "Các vị trí đang tuyển",
     "recruitment_benefits" : "Quyền lợi & Phúc lợi",
-    "recruitment_benefits_description" : "Chúng tôi mang đến môi trường làm việc tốt nhất cho bạn"
+    "recruitment_benefits_description" : "Chúng tôi mang đến môi trường làm việc tốt nhất cho bạn",
+
+    "footer_about" : "Giới thiệu",
+    "footer_projects" : "Dự án",
+    "footer_news" : "Tin tức",
+    "footer_contact" : "Liên hệ",
+    "footer_product" : "Sản phẩm",
+    "footer_service" : "Dịch vụ tư vấn",
+    "footer_product_list" : "Danh sách sản phẩm",
+    "footer_support" : "Hỗ trợ",
+    "footer_contact_info" : "Liên hệ chúng tôi"
+
 
 }

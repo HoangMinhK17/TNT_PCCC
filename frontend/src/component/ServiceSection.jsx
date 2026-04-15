@@ -6,7 +6,7 @@ import { getWhyChooseService } from '../utils/whyChooseServiceApi';
 import { useThemeSettings } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
 
-const ServiceSection = () => {
+const  ServiceSection = () => {
   const [services, setServices] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [currentPage, setCurrentPage] = React.useState(1);

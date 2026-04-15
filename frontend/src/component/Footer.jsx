@@ -4,8 +4,10 @@ import '../styles/Footer.css';
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
 import { getInformation } from '../utils/informationApi';
 import { getThemeFooter } from '../utils/themeFooterApi';
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
+  const { t } = useTranslation();
   const [information, setInformation] = useState({});
   const [themeFooter, setThemeFooter] = useState(null);
 
@@ -68,30 +70,29 @@ const Footer = () => {
                 {information?.title}
               </p>
               <ul className="footer-list">
-                <li><Link to="/about">Giới thiệu</Link></li>
-                <li><Link to="/services">Dịch vụ</Link></li>
-                <li><Link to="/projects">Dự án</Link></li>
-                <li><Link to="/news">Tin tức</Link></li>
+                <li><Link to="/about">{t('footer_about')}</Link></li>
+                <li><Link to="/projects">{t('footer_projects')}</Link></li>
+                <li><Link to="/news">{t('footer_news')}</Link></li>
               </ul>
             </div>
 
             <div className="footer-section">
-              <h4 className="footer-title">Sản phẩm</h4>
+              <h4 className="footer-title">{t('footer_product')}</h4>
               <ul className="footer-list">
-                <li><Link to="/products">Danh sách sản phẩm</Link></li>
-                <li><Link to="/services">Dịch vụ tư vấn</Link></li>
+                <li><Link to="/products">{t('footer_product_list')}</Link></li>
+                <li><Link to="/services">{t('footer_service')}</Link></li>
               </ul>
             </div>
 
             <div className="footer-section">
-              <h4 className="footer-title">Hỗ trợ</h4>
+              <h4 className="footer-title">{t('footer_support')}</h4>
               <ul className="footer-list">
-                <li><Link to="/contact">Liên hệ chúng tôi</Link></li>
+                <li><Link to="/contact">{t('footer_contact_info')}</Link></li>
               </ul>
             </div>
 
             <div className="footer-section">
-              <h4 className="footer-title">Liên hệ</h4>
+              <h4 className="footer-title">{t('footer_contact')}</h4>
               <ul className="footer-list">
                 <li className="contact-item">
                   <span className="icon"><FaMapMarkerAlt /></span>

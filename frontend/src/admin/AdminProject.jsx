@@ -177,11 +177,11 @@ const AdminProject = () => {
         { title: 'Tên dự án', dataIndex: 'name', key: 'name', width: '25%' },
         { title: 'Tiêu đề', dataIndex: 'title', key: 'title' },
         {
-            title: 'Ngày dự án', dataIndex: 'date', key: 'date',
+            title: 'Ngày dự án', dataIndex: 'date', key: 'date', width: '10%',
             render: (date) => date ? dayjs(date).format('DD/MM/YYYY') : '---'
         },
         {
-            title: 'Ảnh', dataIndex: 'image', key: 'image',
+            title: 'Ảnh', dataIndex: 'image', key: 'image', width: '10%',
             render: (img) => img ? (
                 <Image src={img} height={50} width={80} style={{ borderRadius: 4, objectFit: 'cover' }} />
             ) : <Tag>Chưa có</Tag>

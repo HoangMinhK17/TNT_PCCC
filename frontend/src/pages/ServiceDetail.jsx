@@ -81,7 +81,7 @@ const ServiceDetail = () => {
                     </div>
                     <div className="detail-info" data-aos="fade-up">
                         <h2>{t('service_detail_overview')}</h2>
-                        <p className="detail-description">{ i18n.language === 'vn' ? service.name : service.name_en}</p>
+                        <p className="detail-description">{ i18n.language === 'vn' ? service.title : service.title_en}</p>
                         <hr />
                         <h3>{t('service_detail_des')}</h3>
                         <div className="detail-text" dangerouslySetInnerHTML={{ __html: i18n.language === 'vn' ? service.description : service.description_en }}></div>

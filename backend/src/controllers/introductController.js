@@ -135,7 +135,9 @@ const getAllIntroductCompany = async (req, res) => {
 
 const getIntroductCompany = async (req, res) => {
     try {
-        const introductCompany = await IntroductCompany.find().select("name name_en title description image ");
+        const introductCompany = await IntroductCompany.find()
+            .select("name name_en title description image ")
+            .lean();
         res.status(200).json(introductCompany);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -144,7 +146,9 @@ const getIntroductCompany = async (req, res) => {
 
 const getMissionVision = async (req, res) => {
     try {
-        const introductCompany = await IntroductCompany.find().select("mission vision");
+        const introductCompany = await IntroductCompany.find()
+            .select("mission vision")
+            .lean();
         res.status(200).json(introductCompany);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -153,7 +157,9 @@ const getMissionVision = async (req, res) => {
 
 const getCoreValues = async (req, res) => {
     try {
-        const introductCompany = await IntroductCompany.find().select("coreValues");
+        const introductCompany = await IntroductCompany.find()
+            .select("coreValues")
+            .lean();
         res.status(200).json(introductCompany);
     } catch (error) {
         res.status(500).json({ message: error.message });

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/ProductSection.css';
 import { getPublicProducts } from '../utils/productApi';
@@ -57,7 +57,7 @@ const ProductSection = () => {
         const categoryProducts = products.filter(
             p => p.categoryId?._id === category._id || p.categoryId === category._id
         )
-        const lastProduct = categoryProducts[categoryProducts.length - 1];
+        const lastProduct = categoryProducts[0];
         return lastProduct?.image?.length > 0
             ? lastProduct.image[0]
             : null;
@@ -99,7 +99,7 @@ const ProductSection = () => {
                                                 </div>
                                             )}
                                         </div>
-                                        <h3 className="ai-product-name">{i18n.language === 'en' ? category.name_en : category.name}</h3>
+                                        <h3 className="ai-product-name" title={i18n.language === 'en' ? category.name_en : category.name}>{i18n.language === 'en' ? category.name_en : category.name}</h3>
                                         <div className="ai-product-count">
                                             {count} {t('section_products_count')}
                                         </div>
@@ -140,7 +140,7 @@ const ProductSection = () => {
                                         }
                                     </div>
                                     <div className="products-list-h__body">
-                                        <h3 className="products-list-h__name">{i18n.language === 'en' ? category.name_en : category.name}</h3>
+                                        <h3 className="products-list-h__name" title={i18n.language === 'en' ? category.name_en : category.name}>{i18n.language === 'en' ? category.name_en : category.name}</h3>
                                         <p className="products-list-h__count">{count} {t('section_products_count')}</p>
                                         <span className="products-list-h__cta">{t('section_view_now')}</span>
                                     </div>
@@ -171,7 +171,7 @@ const ProductSection = () => {
                                             : <div className="product-image product-image--placeholder"></div>
                                         }
                                     </div>
-                                    <h3 className="product-name">{i18n.language === 'en' ? category.name_en : category.name}</h3>
+                                    <h3 className="product-name" title={i18n.language === 'en' ? category.name_en : category.name}>{i18n.language === 'en' ? category.name_en : category.name}</h3>
                                     <p className="product-description">{count} {t('section_products_count')}</p>
                                 </Link>
                             );
@@ -191,16 +191,22 @@ const ProductSection = () => {
                         const img = getCategoryImage(category);
                         const count = getCategoryProductCount(category);
                         return (
-                            <Link key={category._id} to={toUrl(category)} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <div className="product-card">
+                            <Link key={category._id} to={toUrl(category)} className="product-card-link">
+                                <div className="product-card" style={{ flexGrow: 1 }}>
                                     {img
                                         ? <img src={img} alt={category.name} className="product-image" />
-                                        : <div className="product-image" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f0f0f0', height: '200px' }}>
-                                            <span style={{ color: '#999' }}>-</span>
+                                        : <div className="product-image product-image-fallback">
+                                            <span>-</span>
                                         </div>
                                     }
-                                    <h3 className="product-name" style={{ textAlign: 'center', marginTop: '15px' }}>{i18n.language === 'en' ? category.name_en : category.name}</h3>
-                                    <p className="product-description" style={{ textAlign: 'center' }}>{count} {t('section_products_count')}</p>
+                                    <div className="product-info-wrapper">
+                                        <h3 className="product-name" title={i18n.language === 'en' && category.name_en ? category.name_en : category.name}>
+                                            {i18n.language === 'en' && category.name_en ? category.name_en : category.name}
+                                        </h3>
+                                        <p className="product-description">
+                                            {count} {t('section_products_count')}
+                                        </p>
+                                    </div>
                                 </div>
                             </Link>
                         );

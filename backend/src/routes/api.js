@@ -22,15 +22,12 @@ import testimonialRouter from "./testimonialRoute.js";
 import themeHeaderRouter from "./themeHeaderRoute.js";
 import themeFooterRouter from "./themeFooterRoute.js";
 const router = express.Router();
+
 //User
 router.use("/user", userRouter);
 
-
-
 //Introduct
 router.use("/introduct", introductRouter);
-
-
 
 //CategoryProduct
 router.use("/categoryProduct", categoryProductRouter);

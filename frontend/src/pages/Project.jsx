@@ -6,7 +6,7 @@ import SEO from '../component/SEO';
 import { useTranslation } from 'react-i18next';
 
 const Project = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [projectsData, setProjectsData] = useState({
         projects: [],
         currentPage: 1,
@@ -66,7 +66,7 @@ const Project = () => {
                             {!loading ? (
                                 projectsData.projects.length > 0 ? (
                                     projectsData.projects.map((project) => (
-                                        <div key={project._id} className="project-card" data-aos="fade-up">               
+                                        <div key={project._id} className="project-card" data-aos="fade-up">
                                             <Link
                                                 to={`/projects/${project.slug}`}
                                                 style={{ textDecoration: "none", color: "inherit", display: 'flex', flexDirection: 'column', height: '100%' }}
@@ -75,8 +75,8 @@ const Project = () => {
                                                     <img src={project.image} alt={project.name} className="project-image" />
                                                 </div>
                                                 <div className="project-info">
-                                                    <h3 className="project-name">{project.name}</h3>
-                                                    <p className="project-description">{project.title}</p>
+                                                    <h3 className="project-name">{i18n.language === 'vn' ? project.name : project.name_en}</h3>
+                                                    <p className="project-description" dangerouslySetInnerHTML={{ __html: i18n.language === 'vn' ? project.description : project.description_en }}></p>
                                                     <p className="project-year">  {t('project_year')}: {new Date(project.date).getFullYear()}
                                                     </p>
                                                 </div>

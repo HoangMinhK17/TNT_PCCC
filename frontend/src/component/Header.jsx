@@ -4,6 +4,7 @@ import '../styles/Header.css';
 import { useTranslation } from 'react-i18next';
 import { getCategoryProducts } from '../utils/categoryProductApi';
 import { getCategoryNews } from '../utils/categoryNewsApi';
+import { getPublicServices} from '../utils/serviceApi';
 
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { getImageInformation } from '../utils/informationApi';
@@ -19,12 +20,15 @@ const Header = () => {
     const [language, setLanguage] = useState(JSON.parse(localStorage.getItem("language")) || "vn");
     const [categories, setCategories] = useState([]);
     const [newsCategories, setNewsCategories] = useState([]);
+    const [publicServices, setPublicServices] = useState([]);
     const [logo, setLogo] = useState([]);
     const [getHeaderTitle, setGetHeaderTitle] = useState([]);
     const [themeConfig, setThemeConfig] = useState(null);
     const { themeLayout } = useThemeSettings();
 
     const { t, i18n } = useTranslation();
+
+
 
     useEffect(() => {
         const fetchLogo = async () => {
@@ -69,6 +73,19 @@ const Header = () => {
     }, []);
 
     useEffect(() => {
+        const fetchServices = async () => {
+            try {
+                const data = await getPublicServices(1, 100);
+                const list = Array.isArray(data) ? data : (data?.data || data?.services || []);
+                setPublicServices(list);
+            } catch (error) {
+                console.error("Error fetching public services:", error);
+            }
+        };
+        fetchServices();
+    }, []);
+
+    useEffect(() => {
         const fetchTheme = async () => {
             try {
                 const data = await getThemeHeader();
@@ -79,6 +96,7 @@ const Header = () => {
         };
         fetchTheme();
     }, []);
+
 
 
     const handleLanguageChange = (lang) => {
@@ -107,7 +125,7 @@ const Header = () => {
         home: { path: '/', hasSubmenu: false, key: 'home' },
         about: { path: '/about', hasSubmenu: false, key: 'about' },
         products: { path: '/products', hasSubmenu: true, key: 'products' },
-        services: { path: '/services', hasSubmenu: false, key: 'services' },
+        services: { path: '/services', hasSubmenu: true, key: 'services' },
         projects: { path: '/projects', hasSubmenu: false, key: 'projects' },
         recruitment: { path: '/recruitment', hasSubmenu: false, key: 'recruitment' },
         news: { path: '/news', hasSubmenu: true, key: 'news' },
@@ -195,6 +213,20 @@ const Header = () => {
                                                     onClick={closeMenu}
                                                 >
                                                     {language === 'en' ? (category.name_en || category.name) : category.name}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                                {item.key === 'services' && (
+                                    <ul className={`dropdown ${activeSubmenu === index ? 'open' : ''}`}>
+                                        {publicServices.map((service, idx) => (
+                                            <li key={idx}>
+                                                <Link
+                                                    to={`/services/${service._id}`}
+                                                    onClick={closeMenu}
+                                                >
+                                                    {language === 'en' ? (service.name_en || service.name) : service.name}
                                                 </Link>
                                             </li>
                                         ))}

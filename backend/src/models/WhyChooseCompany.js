@@ -6,9 +6,15 @@ const whyChooseCompanySchema = new mongoose.Schema({
             type: String,
             required: true
         },
+        title_en: {
+            type: String,
+        },
         description: {
             type: String,
             required: true
+        },
+        description_en: {
+            type: String,
         },
         icon: {
             type: String,
@@ -19,7 +25,13 @@ const whyChooseCompanySchema = new mongoose.Schema({
         title: {
             type: String,
         },
+        title_en: {
+            type: String,
+        },
         description: {
+            type: String,
+        },
+        description_en: {
             type: String,
         }
     },
