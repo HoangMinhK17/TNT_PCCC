@@ -144,7 +144,6 @@ const Breadcrumbs = () => {
             if (!h || !h.key) return false;
             return h.key === path;
         });
-
         if (matchingHeader) {
             return (currentLang === 'en' && matchingHeader.name_en) ? matchingHeader.name_en : matchingHeader.name_vn;
         }
@@ -159,7 +158,7 @@ const Breadcrumbs = () => {
         if (pathnames[1]) {
             const id = pathnames[1];
             const product = currentProduct || products.find(p => p._id === id || p.id === id || p.slug === id);
-
+            
             if (product) {
                 if (product.categoryId && product.categoryId.name) {
                     const catName = i18n.language === 'en' && product.categoryId.name_en ? product.categoryId.name_en : product.categoryId.name;

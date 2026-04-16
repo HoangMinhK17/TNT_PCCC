@@ -40,7 +40,7 @@ const deleteIntroductCompany = async (req, res) => {
 const getIntroductCompanyById = async (req, res) => {
     try {
         const { id } = req.params;
-        const introductCompany = await IntroductCompany.findById(id);
+        const introductCompany = await IntroductCompany.findById(id).lean();
         res.status(200).json(introductCompany);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -126,7 +126,7 @@ const deleteCoreValuesCompany = async (req, res) => {
 
 const getAllIntroductCompany = async (req, res) => {
     try {
-        const introductCompany = await IntroductCompany.find();
+        const introductCompany = await IntroductCompany.find().lean();
         res.status(200).json(introductCompany);
     } catch (error) {
         res.status(500).json({ message: error.message });

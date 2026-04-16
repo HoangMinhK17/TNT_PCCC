@@ -8,7 +8,6 @@ const getRecruitment = async () => {
         console.error("Error fetching recruitment:", error);
         throw error;
     }
-
 };
 
 const getRecruitmentForManage = async (page = 1, limit = 10) => {

@@ -71,7 +71,6 @@ const ProductSection = () => {
 
     const toUrl = (cat) => `/products?category=${cat.name}&categoryId=${cat._id}`;
 
-    // ── Layout: AI-TEAL (Kolia style) ──────────────────────────────
     if (variant === 'ai-teal') {
         return (
             <section id="products" className="products-section ai-products-section">
@@ -121,7 +120,6 @@ const ProductSection = () => {
         );
     }
 
-    // ── Layout: LIST-HORIZONTAL ───────────────────────────────────
     if (variant === 'list-horizontal') {
         return (
             <section id="products" className="products-section">
@@ -153,7 +151,6 @@ const ProductSection = () => {
         );
     }
 
-    // ── Layout: GRID-3 ────────────────────────────────────────────
     if (variant === 'grid-3') {
         return (
             <section id="products" className="products-section">

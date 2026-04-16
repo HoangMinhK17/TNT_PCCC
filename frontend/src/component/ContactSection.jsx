@@ -122,7 +122,6 @@ const ContactSection = () => {
                   required
                 />
               </div>
-
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="email">{t('section_email')} *</label>

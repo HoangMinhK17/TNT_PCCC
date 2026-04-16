@@ -107,7 +107,9 @@ const getPublicProductById = async (req, res) => {
             ? { $or: [{ _id: id }, { slug: id }], isDeleted: false }
             : { slug: id, isDeleted: false };
 
-        const product = await Product.findOne(query).populate({ path: "categoryId", select: "name slug name_en status" });
+        const product = await Product.findOne(query)
+            .populate({ path: "categoryId", select: "name slug name_en status" })
+            .lean();
 
         if (!product) {
             return res.status(404).json({ message: "Product not found" });

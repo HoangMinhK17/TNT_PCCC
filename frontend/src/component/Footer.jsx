@@ -71,7 +71,6 @@ const Footer = () => {
               </p>
               <ul className="footer-list">
                 <li><Link to="/about">{t('footer_about')}</Link></li>
-                <li><Link to="/projects">{t('footer_projects')}</Link></li>
                 <li><Link to="/news">{t('footer_news')}</Link></li>
               </ul>
             </div>
@@ -106,13 +105,10 @@ const Footer = () => {
                   <span className="icon"><FaEnvelope /></span>
                   <span>{information?.email}</span>
                 </li>
-
               </ul>
             </div>
           </div>
-
           <div className="footer-divider"></div>
-
         </div>
       </footer>
     </>

@@ -495,7 +495,7 @@ const TabProduct = () => {
                                         <TextArea rows={3} />
                                     </Form.Item>
 
-                                    <Form.Item name="images" label="Hình ảnh (Tối đa 5 ảnh)">
+                                    <Form.Item name="images" label="Hình ảnh (Tối đa 5 ảnh)" rules={[{ required: true, message: 'Vui lòng không để trống!' }]}>
                                         <MultiCloudinaryUpload maxCount={5} />
                                     </Form.Item>
 

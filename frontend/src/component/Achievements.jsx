@@ -13,7 +13,6 @@ const Achievements = () => {
             try {
                 setLoading(true);
                 const response = await getCoreValues();
-
                 const data = Array.isArray(response) ? (response[0]?.coreValues ?? []) : (response?.coreValues ?? []);
                 setAchievements(data);
             } catch (error) {

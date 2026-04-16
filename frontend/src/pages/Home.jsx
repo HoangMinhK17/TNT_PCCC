@@ -9,9 +9,13 @@ import NewsSection from '../component/NewsSection'
 import ContactSection from '../component/ContactSection'
 import LeadershipSection from '../component/LeadershipSection'
 import { useHeader } from '../context/HeaderContext'
+import { useEffect } from 'react'
 
 const Home = () => {
     const { isSectionVisible } = useHeader();
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     return (
         <>

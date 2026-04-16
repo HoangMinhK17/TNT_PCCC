@@ -107,7 +107,9 @@ const getProjectById = async (req, res) => {
             ? { $or: [{ _id: id }, { slug: id }], isDeleted: false }
             : { slug: id, isDeleted: false };
 
-        const project = await Project.findOne(query).select("name name_en slug title title_en description description_en image date status");
+        const project = await Project.findOne(query)
+            .select("name name_en slug title title_en description description_en image date status")
+            .lean();
         if (!project) {
             return res.status(404).json({ message: "Project not found" });
         }

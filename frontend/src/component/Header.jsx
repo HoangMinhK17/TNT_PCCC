@@ -249,7 +249,6 @@ const Header = () => {
                         className={`language-flag ${language === 'en' ? 'active' : ''}`}
                         onClick={() => handleLanguageChange('en')}
                     />
-             
                 </div>
             </div>
         </header>

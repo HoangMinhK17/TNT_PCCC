@@ -14,7 +14,7 @@ export const createHeader = async (req, res) => {
 
 export const getAllHeader = async (req, res) => {
     try {
-        const header = await Header.find({ status: "active" });
+        const header = await Header.find({ status: "active" }).lean();
         res.status(200).json(header);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -23,7 +23,7 @@ export const getAllHeader = async (req, res) => {
 
 export const getAllHeaderForShowHome = async (req, res) => {
     try {
-        const header = await Header.find({ show_home: "active" });
+        const header = await Header.find({ show_home: "active" }).lean();
         res.status(200).json(header);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -52,7 +52,11 @@ export const getAllForManagement = async (req, res) => {
         const skip = (page - 1) * limit;
         const total = await Header.countDocuments();
 
-        const header = await Header.find().skip(skip).limit(limit);
+        const header = await Header.find()
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean();
         res.status(200).json({ header, total, totalPage: Math.ceil(total / limit), currentPage: page });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -78,7 +82,11 @@ export const findHeaderByName = async (req, res) => {
         };
 
         const total = await Header.countDocuments(query);
-        const header = await Header.find(query).skip(skip).limit(limit);
+        const header = await Header.find(query)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean();
 
         res.status(200).json({
             header,

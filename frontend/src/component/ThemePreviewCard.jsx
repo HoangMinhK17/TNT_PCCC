@@ -109,7 +109,6 @@ const ThemePreviewCard = ({ themeId, selected, onSelect, onHover, onLeave }) => 
                         Tìm hiểu
                     </div>
                 </div>
-
                 <div style={{ display: 'flex', gap: 6 }}>
                     {[0, 1].map(i => (
                         <div key={i} style={{

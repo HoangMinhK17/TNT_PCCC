@@ -14,7 +14,6 @@ const newsSchema = new mongoose.Schema({
     },
     title: {
         type: String,
-        required: true
     },
     title_en: {
         type: String,

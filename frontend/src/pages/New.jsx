@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import '../styles/ProductSection.css'; // Reusing Product styles for consistency
+import '../styles/ProductSection.css'; 
 import SEO from '../component/SEO';
 import { getNews, getNewsByCategoryId, getNewsBySearch } from '../utils/newsApi';
 import { getCategoryNews } from '../utils/categoryNewsApi';
@@ -11,7 +11,6 @@ const New = () => {
     const categoryParam = searchParams.get('category');
     const categoryIdParam = searchParams.get('categoryId');
     const searchParam = searchParams.get('search');
-
     const [newsItems, setNewsItems] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -85,7 +84,6 @@ const New = () => {
     };
 
     const isServerPaginated = (categoryIdParam && categoryIdParam !== 'all') || searchParam;
-
     const filteredNews = isServerPaginated
         ? newsItems
         : newsItems.filter(item =>
@@ -105,7 +103,6 @@ const New = () => {
         : Math.ceil(filteredNews.length / itemsPerPage);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
     const pageTitle = selectedCategory === 'Tất cả tin tức'
         ? 'Tin tức'
         : `${selectedCategory}`;
@@ -139,9 +136,9 @@ const New = () => {
             />
             <div className="container" data-aos="fade-up">
                 <h1 className="section-title">
-                    {searchParam ? `Kết quả tìm kiếm cho: "${searchParam}"` : 
-                        (categoryIdParam ? 
-                            (categories.find(c => c._id === categoryIdParam) 
+                    {searchParam ? `Kết quả tìm kiếm cho: "${searchParam}"` :
+                        (categoryIdParam ?
+                            (categories.find(c => c._id === categoryIdParam)
                                 ? (i18n.language === 'en' && categories.find(c => c._id === categoryIdParam).name_en ? categories.find(c => c._id === categoryIdParam).name_en : categories.find(c => c._id === categoryIdParam).name)
                                 : selectedCategory)
                             : (i18n.language === 'en' ? 'All News' : 'Tất cả tin tức'))}
@@ -227,11 +224,11 @@ const New = () => {
                                                 >
                                                     <article className="product-card">
                                                         <img src={item.image} alt={item.title} className="product-image" style={{ height: '220px', objectFit: 'cover' }} />
-                                                        <div style={{ padding: '15px' }}>
+                                                        <div style={{ padding: '15px', width: '100%', boxSizing: 'border-box' }}>
                                                             <span style={{ fontSize: '12px', color: '#888', display: 'block', marginBottom: '2px', paddingLeft: '10px' }}>
                                                                 {new Date(item.date).toLocaleDateString('vi-VN')}
                                                             </span>
-                                                            <h3 className="product-name" style={{ fontSize: '18px', lineHeight: '1.4', marginBottom: '10px' }}>{item.name}</h3>
+                                                            <h3 className="product-name" style={{ fontSize: '18px', lineHeight: '1.4', marginBottom: '10px', whiteSpace: 'normal', minHeight: '90px' }}>{item.name}</h3>
                                                             <p className="product-description" style={{ fontSize: '14px', color: '#666', display: '-webkit-box', WebkitLineClamp: '3', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                                                                 {item.title}
                                                             </p>
@@ -255,11 +252,11 @@ const New = () => {
                                             >
                                                 <article className="product-card">
                                                     <img src={item.image} alt={item.title} className="product-image" style={{ height: '220px', objectFit: 'cover' }} />
-                                                    <div style={{ padding: '15px' }}>
+                                                    <div style={{ padding: '15px', width: '100%', boxSizing: 'border-box' }}>
                                                         <span style={{ fontSize: '12px', color: '#888', display: 'block', marginBottom: '5px' }}>
                                                             {new Date(item.date).toLocaleDateString('vi-VN')}
                                                         </span>
-                                                        <h3 className="product-name" style={{ fontSize: '18px', lineHeight: '1.4', marginBottom: '10px' }}>{item.name}</h3>
+                                                        <h3 className="product-name" style={{ fontSize: '18px', lineHeight: '1.4', marginBottom: '10px', whiteSpace: 'normal', minHeight: '90px' }}>{item.name}</h3>
                                                         <p className="product-description" style={{ fontSize: '14px', color: '#666', display: '-webkit-box', WebkitLineClamp: '3', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                                                             {item.title}
                                                         </p>

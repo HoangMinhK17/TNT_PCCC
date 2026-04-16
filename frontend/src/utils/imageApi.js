@@ -53,6 +53,5 @@ export const processRichTextContent = async (content, folder = "tnt_shared_uploa
             console.error("Error processing rich text image:", error);
         }
     }
-
     return newContent;
 };

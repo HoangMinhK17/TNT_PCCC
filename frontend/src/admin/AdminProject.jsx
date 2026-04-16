@@ -124,7 +124,7 @@ const AdminProject = () => {
             } else {
                 form.setFieldsValue({ status: 'active' });
             }
-        }, 100);
+        }, 200);
     };
 
     const handleSave = async () => {
@@ -137,15 +137,22 @@ const AdminProject = () => {
 
             const imageItems = Array.isArray(values.images) ? values.images : [];
             const imageUrls = await Promise.all(imageItems.map(value => resolveImageUrl(value, folder)));
-            const processedDescription = await processRichTextContent(values.description, folder);
-            const processedDescriptionEn = await processRichTextContent(values.description_en, folder);
+            const processedDescription = await processRichTextContent(values.description || '', folder);
+            const processedDescriptionEn = await processRichTextContent(values.description_en || '', folder);
+            const hasNewFile = imageItems.some(item => item instanceof File);
+            let finalImage;
+            if (hasNewFile) {
+                finalImage = imageUrls.find(url => url) || (editing ? editing.image : '');
+            } else {
+                finalImage = editing ? editing.image : (imageUrls[0] || '');
+            }
 
             const payload = {
                 ...values,
                 description: processedDescription,
                 description_en: processedDescriptionEn,
                 date: values.date ? values.date.toISOString() : null,
-                image: imageUrls.length > 0 ? imageUrls[0] : ""
+                image: finalImage
             };
 
             delete payload.images;
@@ -277,7 +284,7 @@ const AdminProject = () => {
                                         <CustomQuillEditor folder="tnt_project" style={{ height: '250px', marginBottom: '50px' }} />
                                     </Form.Item>
 
-                                    <Form.Item name="images" label="Hình ảnh">
+                                    <Form.Item name="images" label="Hình ảnh" rules={[{ required: true, message: 'Vui lòng không để trống!' }]}>
                                         <MultiCloudinaryUpload maxCount={1} />
                                     </Form.Item>
                                 </Tabs.TabPane>
@@ -293,10 +300,8 @@ const AdminProject = () => {
                                         <CustomQuillEditor folder="tnt_project" style={{ height: '250px', marginBottom: '50px' }} />
                                     </Form.Item>
                                 </Tabs.TabPane>
+
                             </Tabs>
-
-
-
                         </Form>
                     </Modal>
                 </div>

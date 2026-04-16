@@ -5,7 +5,7 @@ const getPublicTestimonials = async (req, res) => {
         const testimonials = await Testimonial.find({ isDeleted: false, status: "active" })
             .select("name role company content rating avatar")
             .sort({ createdAt: -1 })
-
+            .lean();
         res.status(200).json({
             testimonials
         });
@@ -29,7 +29,8 @@ const getTestimonialsForManage = async (req, res) => {
             .select("name role company content rating avatar status")
             .skip(skip)
             .limit(limit)
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
 
         res.status(200).json({
             testimonials,
@@ -94,7 +95,9 @@ const searchTestimonial = async (req, res) => {
         const testimonials = await Testimonial.find({ name: { $regex: name, $options: "i" }, isDeleted: false })
             .select("name role company content rating avatar status")
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({ createdAt: -1 })
+            .lean();
         res.status(200).json({
             testimonials,
             totalPages: Math.ceil(totalTestimonials / limit),
@@ -108,7 +111,7 @@ const searchTestimonial = async (req, res) => {
 
 const getPublicTestimonialById = async (req, res) => {
     try {
-        const testimonial = await Testimonial.findOne({ _id: req.params.id, isDeleted: false });
+        const testimonial = await Testimonial.findOne({ _id: req.params.id, isDeleted: false }).lean();
         if (!testimonial) {
             return res.status(404).json({ message: "Testimonial not found" });
         }

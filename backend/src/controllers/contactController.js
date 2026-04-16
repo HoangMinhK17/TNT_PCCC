@@ -25,7 +25,8 @@ const getContactById = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const contact = await Contact.findById(req.params.id).populate("productId", "name slug");
+        const contact = await Contact.findById(req.params.id)
+            .populate("productId", "name slug");
         if (!contact) {
             return res.status(404).json({ message: "Contact not found" });
         }

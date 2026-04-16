@@ -2,7 +2,7 @@ import ThemeFooter from "../models/ThemeFooter.js";
 
 const getThemeFooter = async (req, res) => {
     try {
-        const themeFooter = await ThemeFooter.findOne();
+        const themeFooter = await ThemeFooter.findOne().lean();
         res.status(200).json(themeFooter);
     } catch (error) {
         res.status(500).json({ error: error.message });

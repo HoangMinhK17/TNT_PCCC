@@ -30,7 +30,6 @@ const NewsSection = () => {
 
   const formatDate = (d) => new Date(d).toLocaleDateString('vi-VN');
 
-  // ── Layout: MAGAZINE ──────────────────────────────────────────
   if (variant === 'magazine') {
     const [main, ...rest] = newsItems.slice(0, 5);
     return (
@@ -76,7 +75,6 @@ const NewsSection = () => {
     );
   }
 
-  // ── Layout: LIST ──────────────────────────────────────────────
   if (variant === 'list') {
     return (
       <section id="news" className="news-section">
@@ -107,7 +105,6 @@ const NewsSection = () => {
     );
   }
 
-  // ── Layout: GRID (default) ────────────────────────────────────
   return (
     <section id="news" className="news-section">
       <div className="container" data-aos="fade-up">

@@ -516,7 +516,7 @@ const TabNews = () => {
                                 </Form.Item>
                             </div>
 
-                            <Form.Item name="title" label="Tiêu đề phụ" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
+                            <Form.Item name="title" label="Tiêu đề phụ" >
                                 <Input />
                             </Form.Item>
 
@@ -528,7 +528,7 @@ const TabNews = () => {
                                 <CustomQuillEditor folder="tnt_news" style={{ height: '250px', marginBottom: '50px' }} />
                             </Form.Item>
 
-                            <Form.Item name="images" label="Hình ảnh">
+                            <Form.Item name="images" label="Hình ảnh" rules={[{ required: true, message: 'Vui lòng không để trống!' }]}>
                                 <MultiCloudinaryUpload maxCount={1} />
                             </Form.Item>
                         </Tabs.TabPane>

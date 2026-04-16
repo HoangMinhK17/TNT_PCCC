@@ -31,18 +31,15 @@ const Product = () => {
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
-      
     };
     fetchCategories();
   }, []);
-
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
         let response;
-
         if (activeSearchTerm) {
           response = await getProductByName(activeSearchTerm, currentPage, productsPerPage);
           setProducts(response.products || []);
@@ -56,9 +53,7 @@ const Product = () => {
           setProducts(allProducts || []);
           setTotalPages(1);
         }
-
         setSelectedCategory(activeSearchTerm ? 'Kết quả tìm kiếm' : (categoryParam || 'Tất cả sản phẩm'));
-
         if (activeSearchTerm || categoryIdParam) {
         }
       } catch (error) {

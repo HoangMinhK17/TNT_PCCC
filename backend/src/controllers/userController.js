@@ -21,7 +21,7 @@ const createUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await User.find().lean();
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -78,7 +78,9 @@ const updateTheme = async (req, res) => {
 
 const getAdminTheme = async (req, res) => {
     try {
-        const admin = await User.findOne({ role: "admin" }).select('theme');
+        const admin = await User.findOne({ role: "admin" })
+            .select('theme')
+            .lean();
         res.status(200).json({ theme: admin ? admin.theme : 'corporate-red' });
     } catch (error) {
         res.status(500).json({ message: error.message });

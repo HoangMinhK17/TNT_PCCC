@@ -2,7 +2,10 @@ import Partner from "../models/Partner.js";
 
 export const getPartners = async (req, res) => {
     try {
-        const partners = await Partner.find({ status: "active", isDeleted: false }).select("name image");
+        const partners = await Partner.find({ status: "active", isDeleted: false })
+            .sort({ createdAt: -1 })
+            .select("name image")
+            .lean();
         res.status(200).json(partners);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -54,7 +57,12 @@ export const getPartnersForManage = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const partners = await Partner.find({ isDeleted: false }).sort({ createdAt: -1 }).skip(skip).limit(limit).select("name image status");
+        const partners = await Partner.find({ isDeleted: false })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .select("name image status")
+            .lean();
         const total = await Partner.countDocuments({ isDeleted: false });
         res.status(200).json({ partners, total, totalPage: Math.ceil(total / limit), currentPage: page });
     } catch (error) {
@@ -70,7 +78,12 @@ export const getPartnerByName = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const partners = await Partner.find({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false }).sort({ createdAt: -1 }).skip(skip).limit(limit).select("name image status");
+        const partners = await Partner.find({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .select("name image status")
+            .lean();
         const total = await Partner.countDocuments({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false });
         res.status(200).json({ partners, total, totalPage: Math.ceil(total / limit), currentPage: page });
     } catch (error) {

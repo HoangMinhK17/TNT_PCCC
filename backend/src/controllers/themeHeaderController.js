@@ -2,7 +2,7 @@ import ThemeHeader from "../models/ThemeHeader.js";
 
 export const getThemeHeader = async (req, res) => {
     try {
-        const themeHeader = await ThemeHeader.findOne();
+        const themeHeader = await ThemeHeader.findOne().lean();
         res.status(200).json(themeHeader);
     } catch (error) {
         res.status(500).json({ message: error.message });

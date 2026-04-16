@@ -109,7 +109,6 @@ export const getNewsById = async (req, res) => {
             .select("name name_en date title title_en image description description_en content slug ")
             .populate("categoryNewsId", "name name_en")
             .lean();
-
         if (!news) {
             return res.status(404).json({ message: "News not found" });
         }

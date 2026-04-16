@@ -35,7 +35,6 @@ export const getContactRecruitmentByNameOrPhone = async (nameOrPhone, page, limi
     } catch (error) {
         return error.response.data;
     }
-
 }
 
 export const getContactRecruitmentByStatus = async (status, page, limit) => {
@@ -47,11 +46,9 @@ export const getContactRecruitmentByStatus = async (status, page, limit) => {
             },
         });
         return response.data;
-
     } catch (error) {
         return error.response.data;
     }
-
 }
 
 export const updateContactRecruitment = async (id, contactRecruitment) => {
@@ -66,7 +63,6 @@ export const updateContactRecruitment = async (id, contactRecruitment) => {
     } catch (error) {
         return error.response.data;
     }
-
 }
 
 export const deleteContactRecruitment = async (id) => {

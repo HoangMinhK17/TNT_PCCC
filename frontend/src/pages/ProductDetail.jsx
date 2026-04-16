@@ -91,7 +91,7 @@ const ProductDetail = () => {
                     <div className="product-info-detail">
                         <span className="product-category-detail">{i18n.language === 'en' ? product.categoryId?.name_en : product.categoryId?.name}</span>
                         <h1 className="product-title-detail">{i18n.language === 'en' && product.name_en ? product.name_en : product.name}</h1>
- 
+
                         <div className="product-description-detail">
                             <p>{i18n.language === 'en' && product.title_en ? product.title_en : product.title}</p>
                         </div>
@@ -125,6 +125,7 @@ const ProductDetail = () => {
                                 </div>
                             )}
                         </div>
+                        
                         <div className="product-actions">
                             <Link
                                 to="/contact"

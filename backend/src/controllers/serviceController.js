@@ -12,7 +12,8 @@ const getPublicServices = async (req, res) => {
             .select("name name_en image slug title title_en status")
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .lean();
 
         res.status(200).json({
             services,
@@ -40,7 +41,8 @@ const getServicesForManage = async (req, res) => {
             .select("name name_en image slug title title_en status description description_en")
             .skip(skip)
             .limit(limit)
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
 
         res.status(200).json({
             services,
@@ -114,7 +116,8 @@ const searchService = async (req, res) => {
             .select("name name_en image slug title title_en status")
             .skip(skip)
             .limit(limit)
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
         res.status(200).json({
             services,
             totalPages: Math.ceil(totalServices / limit),
@@ -134,7 +137,7 @@ const getPublicServiceById = async (req, res) => {
             ? { $or: [{ _id: id }, { slug: id }], isDeleted: false }
             : { slug: id, isDeleted: false };
 
-        const service = await Service.findOne(query);
+        const service = await Service.findOne(query).lean();
         if (!service) {
             return res.status(404).json({ message: "Service not found" });
         }

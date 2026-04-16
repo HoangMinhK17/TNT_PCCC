@@ -334,7 +334,6 @@ const RecruitmentSection = () => {
           </Form.Item>
         </Form>
       </Modal>
-
     </section>
   );
 };
