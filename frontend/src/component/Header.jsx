@@ -189,7 +189,6 @@ const Header = () => {
                                         </span>
                                     )}
                                 </div>
-
                                 {item.key === 'products' && (
                                     <ul className={`dropdown ${activeSubmenu === index ? 'open' : ''}`}>
                                         {categories.map((category, idx) => (

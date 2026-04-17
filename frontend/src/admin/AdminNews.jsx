@@ -532,6 +532,7 @@ const TabNews = () => {
                                 <MultiCloudinaryUpload maxCount={1} />
                             </Form.Item>
                         </Tabs.TabPane>
+
                         <Tabs.TabPane tab="Tiếng Anh (Tùy chọn)" key="2">
                             <div style={{ display: 'flex', gap: 16 }}>
                                 <Form.Item name="name_en" label="Tên bài viết (English)" style={{ flex: 1 }}>
@@ -551,7 +552,6 @@ const TabNews = () => {
                             </Form.Item>
                         </Tabs.TabPane>
                     </Tabs>
-
                 </Form>
             </Modal>
         </div>

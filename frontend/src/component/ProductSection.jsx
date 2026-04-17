@@ -47,7 +47,7 @@ const ProductSection = () => {
                 newCategories.push(firstCategory);
                 return newCategories;
             });
-        }, 5000);
+        }, 7000);
         return () => clearInterval(interval);
     }, [categories]);
 

@@ -245,7 +245,6 @@ const AdminProject = () => {
                         <Form form={form} layout="vertical">
                             <Tabs defaultActiveKey="1">
                                 <Tabs.TabPane tab="Tiếng Việt" key="1">
-
                                     <div style={{ display: 'flex', gap: 16 }}>
                                         <Form.Item name="name" label="Tên dự án" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
                                             <Input onChange={(e) => {
@@ -300,7 +299,6 @@ const AdminProject = () => {
                                         <CustomQuillEditor folder="tnt_project" style={{ height: '250px', marginBottom: '50px' }} />
                                     </Form.Item>
                                 </Tabs.TabPane>
-
                             </Tabs>
                         </Form>
                     </Modal>

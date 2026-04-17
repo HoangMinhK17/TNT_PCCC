@@ -448,7 +448,6 @@ const TabProduct = () => {
                 onOk={handleSave} onCancel={() => setModalVisible(false)}
                 okText={saving ? 'Đang lưu...' : 'Lưu'} okButtonProps={{ loading: saving }} cancelText="Hủy" width={850}>
                 <Form form={form} layout="vertical">
-
                     <Tabs defaultActiveKey="vi" items={[
                         {
                             key: 'vi',
@@ -587,7 +586,6 @@ const TabProduct = () => {
                             )
                         }
                     ]} />
-
                 </Form>
             </Modal>
         </div>

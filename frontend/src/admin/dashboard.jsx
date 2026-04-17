@@ -230,7 +230,6 @@ const Dashboard = () => {
                                         title={<span style={{ color: '#7f8c8d' }}>{stat.label}</span>}
                                         value={stat.value}
                                         valueStyle={{ color: '#1A237E', fontWeight: 'bold' }}
-
                                     />
                                 </Card>
                             </Col>
