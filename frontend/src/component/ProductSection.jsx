@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/ProductSection.css';
 import { getPublicProducts } from '../utils/productApi';
@@ -47,7 +47,7 @@ const ProductSection = () => {
                 newCategories.push(firstCategory);
                 return newCategories;
             });
-        }, 7000);
+        }, 3000);
         return () => clearInterval(interval);
     }, [categories]);
 
@@ -70,6 +70,91 @@ const ProductSection = () => {
     };
 
     const toUrl = (cat) => `/products?category=${cat.name}&categoryId=${cat._id}`;
+
+    if (variant === 'magazine-grid') {
+        const displayCats = visibleCategories.slice(0, 4);
+        return (
+            <section id="products" className="products-section">
+                <div className="container" data-aos="fade-up">
+                    <h2 className="section-title">{t('section_products')}</h2>
+                    <div className="mgz-grid">
+                        {displayCats[0] && (() => {
+                            const img = getCategoryImage(displayCats[0]);
+                            const count = getCategoryProductCount(displayCats[0]);
+                            return (
+                                <Link key={displayCats[0]._id} to={toUrl(displayCats[0])} className="mgz-card mgz-card--wide">
+                                    {img
+                                        ? <img src={img} alt={displayCats[0].name} className="mgz-card__img" />
+                                        : <div className="mgz-card__img mgz-card__img--placeholder" />}
+                                    <div className="mgz-card__overlay">
+                                        <h3 className="mgz-card__title" title={i18n.language === 'en' ? displayCats[0].name_en : displayCats[0].name}>
+                                            {i18n.language === 'en' ? displayCats[0].name_en : displayCats[0].name}
+                                        </h3>
+                                        <p className="mgz-card__desc">{count} {t('section_products_count')}</p>
+                                    </div>
+                                </Link>
+                            );
+                        })()}
+                        {displayCats[1] && (() => {
+                            const img = getCategoryImage(displayCats[1]);
+                            const count = getCategoryProductCount(displayCats[1]);
+                            return (
+                                <Link key={displayCats[1]._id} to={toUrl(displayCats[1])} className="mgz-card mgz-card--narrow">
+                                    <div className="mgz-card__thumb">
+                                        {img
+                                            ? <img src={img} alt={displayCats[1].name} className="mgz-card__thumb-img" />
+                                            : <div className="mgz-card__thumb-img mgz-card__img--placeholder" />}
+                                    </div>
+                                    <div className="mgz-card__info">
+                                        <h3 className="mgz-card__info-title" title={i18n.language === 'en' ? displayCats[1].name_en : displayCats[1].name}>
+                                            {i18n.language === 'en' ? displayCats[1].name_en : displayCats[1].name}
+                                        </h3>
+                                        <p className="mgz-card__info-desc">{count} {t('section_products_count')}</p>
+                                    </div>
+                                </Link>
+                            );
+                        })()}
+                        {displayCats[2] && (() => {
+                            const img = getCategoryImage(displayCats[2]);
+                            const count = getCategoryProductCount(displayCats[2]);
+                            return (
+                                <Link key={displayCats[2]._id} to={toUrl(displayCats[2])} className="mgz-card mgz-card--narrow mgz-card--narrow-left">
+                                    <div className="mgz-card__thumb">
+                                        {img
+                                            ? <img src={img} alt={displayCats[2].name} className="mgz-card__thumb-img" />
+                                            : <div className="mgz-card__thumb-img mgz-card__img--placeholder" />}
+                                    </div>
+                                    <div className="mgz-card__info">
+                                        <h3 className="mgz-card__info-title" title={i18n.language === 'en' ? displayCats[2].name_en : displayCats[2].name}>
+                                            {i18n.language === 'en' ? displayCats[2].name_en : displayCats[2].name}
+                                        </h3>
+                                        <p className="mgz-card__info-desc">{count} {t('section_products_count')}</p>
+                                    </div>
+                                </Link>
+                            );
+                        })()}
+                        {displayCats[3] && (() => {
+                            const img = getCategoryImage(displayCats[3]);
+                            const count = getCategoryProductCount(displayCats[3]);
+                            return (
+                                <Link key={displayCats[3]._id} to={toUrl(displayCats[3])} className="mgz-card mgz-card--wide">
+                                    {img
+                                        ? <img src={img} alt={displayCats[3].name} className="mgz-card__img" />
+                                        : <div className="mgz-card__img mgz-card__img--placeholder" />}
+                                    <div className="mgz-card__overlay">
+                                        <h3 className="mgz-card__title" title={i18n.language === 'en' ? displayCats[3].name_en : displayCats[3].name}>
+                                            {i18n.language === 'en' ? displayCats[3].name_en : displayCats[3].name}
+                                        </h3>
+                                        <p className="mgz-card__desc">{count} {t('section_products_count')}</p>
+                                    </div>
+                                </Link>
+                            );
+                        })()}
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     if (variant === 'ai-teal') {
         return (
@@ -126,7 +211,7 @@ const ProductSection = () => {
                 <div className="container" data-aos="fade-up">
                     <h2 className="section-title">{t('section_products')}</h2>
                     <div className="products-list-h">
-                        {visibleCategories.slice(0, 4).map(category => {
+                        {visibleCategories.slice(0, 6).map(category => {
                             const img = getCategoryImage(category);
                             const count = getCategoryProductCount(category);
                             return (

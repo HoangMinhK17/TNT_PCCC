@@ -48,4 +48,9 @@ const categoryProductSchema = new mongoose.Schema({
     }
 );
 
+categoryProductSchema.index({ status: 1, isDeleted: 1, createdAt: -1 })
+categoryProductSchema.index({ isDeleted: 1, createdAt: -1 })
+categoryProductSchema.index({ name: 1 })
+
+
 export default mongoose.model("CategoryProduct", categoryProductSchema);

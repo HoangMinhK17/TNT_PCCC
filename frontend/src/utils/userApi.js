@@ -46,7 +46,9 @@ export const updateThemeAPI = async (theme) => {
 
 export const getAdminThemeAPI = async () => {
     try {
-        const response = await api.get("/user/admin-theme");
+        const token = localStorage.getItem("token");
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const response = await api.get("/user/admin-theme", { headers });
         return response.data;
     } catch (error) {
         throw error;

@@ -49,5 +49,9 @@ const contactRecruitmentSchema = new mongoose.Schema({
 
 )
 
+contactRecruitmentSchema.index({ status: 1, isDeleted: 1, createdAt: -1 })
+contactRecruitmentSchema.index({ isDeleted: 1, createdAt: -1 })
+contactRecruitmentSchema.index({ name: 1 })
+contactRecruitmentSchema.index({ phone: 1 })
 
 export default mongoose.model("ContactRecruitment", contactRecruitmentSchema) 

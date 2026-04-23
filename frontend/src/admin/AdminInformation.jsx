@@ -278,7 +278,6 @@ const AdminInformation = () => {
                 localStorage.setItem('user', JSON.stringify(userObj));
             }
             updateThemeState(userTheme);
-
             message.success("Cập nhật Theme UI thành công!");
         } catch (err) {
             message.error("Cập nhật Theme UI thất bại!");
@@ -292,7 +291,6 @@ const AdminInformation = () => {
             if (!infoData) return message.warning("Không tìm thấy ID dữ liệu thiết lập ban đầu, vui lòng liên hệ dev.");
             setSavingGen(true);
             const values = await formGen.validateFields();
-
             const payload = {
                 ...values,
                 timeWork: values.timeWork.split('\n').filter(line => line.trim() !== '')
@@ -312,7 +310,6 @@ const AdminInformation = () => {
         try {
             setSavingThemeHeader(true);
             const values = await formThemeHeader.validateFields();
-
             if (!themeHeaderData) {
                 await createThemeHeader(values);
             } else {
@@ -331,7 +328,6 @@ const AdminInformation = () => {
         try {
             setSavingThemeFooter(true);
             const values = await formThemeFooter.validateFields();
-
             const payload = {
                 background_color: values.background_color,
                 icon_color: values.icon_color,
@@ -390,7 +386,6 @@ const AdminInformation = () => {
             if (!infoData) return;
             setSavingContact(true);
             const values = await formContact.validateFields();
-
             const updatedLinks = [];
             if (values.socialLinks) {
                 for (let link of values.socialLinks) {
@@ -407,7 +402,6 @@ const AdminInformation = () => {
             const payload = {
                 socialLinks: updatedLinks
             };
-
             await updateContactInformation(infoData._id, payload);
             message.success("Cập nhật liên kết xã hội thành công!");
             fetchDetail();
@@ -426,7 +420,6 @@ const AdminInformation = () => {
 
             const imageChatItems = Array.isArray(values.imageChat) ? values.imageChat : [];
             const imageChatUrls = await Promise.all(imageChatItems.map(item => resolveImageUrl(item, "tnt_info/chat")));
-
             const payload = {
                 chatConfig: {
                     enable: values.enable,

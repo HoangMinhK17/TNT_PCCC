@@ -260,7 +260,7 @@ export const UI_THEMES = [
         },
         layout: {
             news: 'magazine',           // Magazine style
-            product: 'list-horizontal', // Card ngang: ảnh trái, info phải
+            product: 'grid-4', // Card ngang: ảnh trái, info phải
             service: 'card-image',       // Icon card
             project: 'classic-grid',    // Lưới dự án đóng vai kẻ khung trang trọng
             leader: 'elegant-profile',  // Hồ sơ lãnh đạo nét chữ mạ vàng thanh mảnh

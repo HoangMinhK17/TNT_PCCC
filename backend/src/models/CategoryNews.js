@@ -44,5 +44,9 @@ const categoryNewsSchema = new mongoose.Schema({
         timestamps: true
     }
 );
+categoryNewsSchema.index({ status: 1, isDeleted: 1, createdAt: -1 })
+categoryNewsSchema.index({ isDeleted: 1, createdAt: -1 })
+categoryNewsSchema.index({ name: 1 })
+
 
 export default mongoose.model("CategoryNews", categoryNewsSchema);

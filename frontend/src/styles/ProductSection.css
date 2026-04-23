@@ -1,4 +1,4 @@
-﻿/* Product Section */
+/* Product Section */
 .products-section {
     padding: 20px 0;
     background-color: var(--theme-bg);
@@ -212,7 +212,7 @@
     padding: 10px 20px 5px 10px;
     margin: 0;
     color: var(--text-color);
-    text-align: left;
+    text-align: center;
     line-height: 1.4;
     font-weight: 600;
     width: 100%;
@@ -388,8 +388,8 @@
 
 /* ───── LIST-HORIZONTAL LAYOUT ───── */
 .products-list-h {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 18px;
     margin-bottom: 20px;
 }
@@ -405,6 +405,7 @@
     color: inherit;
     transition: transform 0.25s, box-shadow 0.25s;
     border: 1px solid var(--theme-border, #eee);
+    min-width: 0; /* Fix grid item overflow */
 }
 .products-list-h__item:hover {
     transform: translateX(6px);
@@ -425,7 +426,10 @@
     background: var(--theme-surface, #f5f5f5);
     font-size: 36px;
 }
-.products-list-h__body { flex: 1; }
+.products-list-h__body { 
+    flex: 1;
+    min-width: 0; /* Fix flexbox truncation */
+}
 .products-list-h__name {
     font-size: 18px;
     font-weight: 700;
@@ -447,6 +451,7 @@
 }
 @media (max-width:768px) {
     .products-grid--3 { grid-template-columns: 1fr; }
+    .products-list-h { grid-template-columns: 1fr; }
     .products-list-h__img { width: 70px; height: 70px; }
     .products-list-h__name { font-size: 16px; }
 }
@@ -718,6 +723,180 @@
     padding: 0;
 }
 
+/* ───── MAGAZINE-GRID LAYOUT ───── */
+.mgz-grid {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    grid-template-rows: 260px 200px;
+    gap: 12px;
+}
+
+/* Row 1 – wide card (col 1) */
+.mgz-card--wide {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+
+.mgz-card--wide .mgz-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.mgz-card--wide:hover .mgz-card__img {
+    transform: scale(1.05);
+}
+
+.mgz-card__overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 20px 16px;
+    background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.2) 70%, transparent 100%);
+    color: #fff;
+}
+
+.mgz-card__label {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 6px;
+}
+
+.mgz-card__title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mgz-card__desc {
+    font-size: 12px;
+    margin: 0;
+    opacity: 0.8;
+}
+
+/* Row 1 – narrow card (col 2) */
+.mgz-card--narrow {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    background: var(--theme-card-bg, #fff);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    border: 1px solid var(--theme-border, #eee);
+    transition: box-shadow 0.3s, transform 0.3s;
+    height: 100%;
+}
+
+.mgz-card--narrow:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+    border-color: var(--primary-color, #D32F2F);
+}
+
+.mgz-card__thumb {
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.mgz-card__thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.mgz-card--narrow:hover .mgz-card__thumb-img {
+    transform: scale(1.06);
+}
+
+.mgz-card__info {
+    padding: 12px 14px;
+    border-top: 1px solid var(--theme-border, #f0f0f0);
+    background: var(--theme-card-bg, #fff);
+}
+
+.mgz-card__label--dark {
+    color: var(--primary-color, #D32F2F);
+}
+
+.mgz-card__info-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 4px 0 4px;
+    color: var(--text-color, #111);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+
+.mgz-card__info-desc {
+    font-size: 12px;
+    color: #888;
+    margin: 0;
+}
+
+/* Row 2: narrow card goes to col 1, wide goes to col 2 */
+/* Grid auto-flow fills left-to-right, so order in DOM drives placement */
+/* Use grid-column to swap layout for row 2 */
+.mgz-card--narrow-left {
+    grid-column: 1;
+}
+
+.mgz-card__img--placeholder {
+    width: 100%;
+    height: 100%;
+    background: #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Reset grid to correct 2-column alternating layout via explicit areas */
+.mgz-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: 260px 200px;
+    gap: 12px;
+}
+
+.mgz-grid > :nth-child(1) { grid-column: span 3; }
+.mgz-grid > :nth-child(2) { grid-column: span 2; }
+.mgz-grid > :nth-child(3) { grid-column: span 2; }
+.mgz-grid > :nth-child(4) { grid-column: span 3; }
+
+@media (max-width: 768px) {
+    .mgz-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+    .mgz-grid > :nth-child(n) { grid-column: span 1; }
+    
+    .mgz-card--wide .mgz-card__img { height: 200px; }
+    .mgz-card--narrow { min-height: 160px; }
+}
+
 /* ───── PRODUCT LIST PAGE OVERRIDES (.products-page) ───── */
 /* Trang danh sach san pham: hien thi ten day du, title ngang hang */
 .products-page .product-card {
@@ -740,6 +919,7 @@
     text-overflow: unset;
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     min-height: calc(1.4em * 3);
     padding: 0;
@@ -761,6 +941,7 @@
     border-top: 1px solid #f0f0f0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     flex-grow: 1;

@@ -66,7 +66,7 @@ export const getProductByCategoryIdForManage = async (categoryId, page = 1, limi
 
 export const getProductByNameForManage = async (name, page = 1, limit = 10) => {
     const token = localStorage.getItem("token");
-    const response = await api.get(`/product/getProductByNameForManage/${name}?page=${page}&limit=${limit}`, {
+    const response = await api.get(`/product/getProductByNameForManage/${(name)}?page=${page}&limit=${limit}`, {
         headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;

@@ -1,6 +1,6 @@
 /* Services Section */
 .services-section {
-    padding: 20px 0 0 0;
+    padding: 0 0 0 0;
     background: var(--theme-bg);
     width: 100%;
 }
@@ -297,8 +297,9 @@
 
 /* ───── LIST LAYOUT ───── */
 .services-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
     border-top: 1px solid var(--theme-border, #eee);
     margin-bottom: 24px;
     

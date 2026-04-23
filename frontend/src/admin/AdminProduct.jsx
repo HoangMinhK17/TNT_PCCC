@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import slugify from "slugify";
 import {
     Tabs, Table, Button, Modal, Form, Input, Space,
-    Popconfirm, message, Typography, Upload, Image, Tag, Select
+    Popconfirm, message, Typography, Upload, Image, Tag, Select, Tooltip
 } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined, ReloadOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
 
@@ -232,7 +232,28 @@ const TabCategoryProduct = () => {
                         <Input />
                     </Form.Item>
                     <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
-                        <Input />
+                        <Input 
+                        addonAfter={
+                            <Tooltip title="Tạo slug từ tên danh mục">
+                                <ReloadOutlined
+                                    onClick={() => {
+                                        const name = form.getFieldValue("name");
+
+                                        if (!name) return;
+
+                                        const slug = slugify(name, {
+                                            lower: true,
+                                            strict: true,
+                                            locale: "vi",
+                                        });
+
+                                        form.setFieldsValue({ slug });
+                                    }}
+                                    style={{ cursor: "pointer" }}
+                                />
+                            </Tooltip>
+                        }
+                        />
                     </Form.Item>
                     <Form.Item name="status" label="Trạng thái">
                         <Select>
@@ -468,7 +489,28 @@ const TabProduct = () => {
                                             }} />
                                         </Form.Item>
                                         <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                                            <Input />
+                                            <Input
+                                                addonAfter={
+                                                    <Tooltip title="Tạo slug từ tên sản phẩm">
+                                                        <ReloadOutlined
+                                                            onClick={() => {
+                                                                const name = form.getFieldValue("name");
+
+                                                                if (!name) return;
+
+                                                                const slug = slugify(name, {
+                                                                    lower: true,
+                                                                    strict: true,
+                                                                    locale: "vi",
+                                                                });
+
+                                                                form.setFieldsValue({ slug });
+                                                            }}
+                                                            style={{ cursor: "pointer" }}
+                                                        />
+                                                    </Tooltip>
+                                                }
+                                            />
                                         </Form.Item>
                                     </div>
 

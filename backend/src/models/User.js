@@ -15,9 +15,9 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ["admin", "user"],
+        enum: ["admin", "staff", "user"],
         default: "admin"
-    },
+    }, 
     status: {
         type: String,
         enum: ["active", "inactive"],
@@ -28,7 +28,6 @@ const userSchema = new mongoose.Schema({
         enum: [
             'corporate-red', 'ocean-blue', 'forest-green',
             'midnight-dark', 'warm-gold', 'pure-minimal', 'ai-teal'
-
         ],
         default: 'corporate-red'
     },

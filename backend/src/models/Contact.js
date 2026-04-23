@@ -48,4 +48,10 @@ const contactSchema = new mongoose.Schema({
     }
 );
 
+contactSchema.index({ status: 1, isDeleted: 1, createdAt: -1 });
+contactSchema.index({ isDeleted: 1, createdAt: -1 });
+contactSchema.index({ name: 1 });
+contactSchema.index({ phone: 1 }); 
+
+
 export default mongoose.model("Contact", contactSchema);

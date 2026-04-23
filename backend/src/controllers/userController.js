@@ -78,6 +78,20 @@ const updateTheme = async (req, res) => {
 
 const getAdminTheme = async (req, res) => {
     try {
+        const authHeader = req.headers.authorization;
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            const token = authHeader.split(' ')[1];
+            try {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                const user = await User.findById(decoded.id).select('theme').lean();
+                if (user && user.theme) {
+                    return res.status(200).json({ theme: user.theme });
+                }
+            } catch (err) {
+
+            }
+        }
+
         const admin = await User.findOne({ role: "admin" })
             .select('theme')
             .lean();

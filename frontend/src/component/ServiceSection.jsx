@@ -84,13 +84,11 @@ const  ServiceSection = () => {
             <div style={{ textAlign: 'center', padding: '80px 20px', minHeight: '300px' }}>Đang tải...</div>
           ) : (
             <div className="services-list">
-              {services.map((service, idx) => (
+              {services.slice(0, 4).map((service, idx) => (
                 <Link key={service._id} to={`/services/${service.slug}`} className="service-list-row">
                   <div className="service-list-row__info">
                     <h3 className="service-list-row__name">{i18n.language === 'vn' ? service.name : service.name_en}</h3>
-                    {service.shortDescription && (
-                      <p className="service-list-row__desc">{i18n.language === 'vn' ? service.shortDescription : service.shortDescription_en}</p>
-                    )}
+                    <Link to={`/contact`} className="service-list-row__desc">{t('service_button_contact')}</Link>
                   </div>
                   {service.image && (
                     <div className="service-list-row__img">
@@ -116,7 +114,7 @@ const  ServiceSection = () => {
           {loading ? (
             <div style={{ textAlign: 'center', width: '100%', padding: '100px 20px', minHeight: '400px' }}>Đang tải dịch vụ...</div>
           ) : services.length > 0 ? (
-            services.map(service => (
+            services.slice(0, 4).map(service => (
               <div key={service._id} className="service-card">
                 <Link to={`/services/${service.slug}`} className="service-image-link">
                   <div className="service-image-wrapper">

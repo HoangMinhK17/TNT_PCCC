@@ -27,7 +27,8 @@ const getProductForManage = async (req, res) => {
         const skip = (page - 1) * limit;
         const filter = { isDeleted: false };
         if (name) {
-            filter.name = { $regex: name, $options: "i" };
+            const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            filter.name = { $regex: escapeRegex(name), $options: "i" };
         }
         if (categoryId && categoryId !== "null" && categoryId !== "undefined") {
             filter.categoryId = categoryId;
@@ -186,15 +187,19 @@ const getProductByCategoryIdForManage = async (req, res) => {
 
 const getProductByName = async (req, res) => {
     try {
+        const escapeRegex = (text) => {
+            return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        };
         const name = req.params.name;
+        const escapeName = escapeRegex(name);
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
         const filter = {
             $or: [
-                { name: { $regex: name, $options: "i" } },
-                { name_en: { $regex: name, $options: "i" } }
+                { name: { $regex: escapeName, $options: "i" } },
+                { name_en: { $regex: escapeName, $options: "i" } }
             ],
             isDeleted: false,
             status: "active"

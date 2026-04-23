@@ -48,8 +48,8 @@ const getContactRecruitmentByNameOrPhone = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const total = await ContactRecruitment.countDocuments({ $or: [{ name: { $regex: search, $options: "i" } }, { phone: { $regex: search, $options: "i" } }], isDeleted: false });
-        const contactRecruitment = await ContactRecruitment.find({ $or: [{ name: { $regex: search, $options: "i" } }, { phone: { $regex: search, $options: "i" } }], isDeleted: false })
+        const total = await ContactRecruitment.countDocuments({ $or: [{ name: { $regex: `${search}`, $options: "i" } }, { phone: { $regex: `${search}`, $options: "i" } }], isDeleted: false });
+        const contactRecruitment = await ContactRecruitment.find({ $or: [{ name: { $regex: `${search}`, $options: "i" } }, { phone: { $regex: `${search}`, $options: "i" } }], isDeleted: false })
             .populate('recruitmentId', 'name slug')
             .sort({ createdAt: -1 })
             .skip(skip)

@@ -84,13 +84,6 @@ const Footer = () => {
             </div>
 
             <div className="footer-section">
-              <h4 className="footer-title">{t('footer_support')}</h4>
-              <ul className="footer-list">
-                <li><Link to="/contact">{t('footer_contact_info')}</Link></li>
-              </ul>
-            </div>
-
-            <div className="footer-section">
               <h4 className="footer-title">{t('footer_contact')}</h4>
               <ul className="footer-list">
                 <li className="contact-item">
