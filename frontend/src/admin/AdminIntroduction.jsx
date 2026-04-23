@@ -59,25 +59,21 @@ const CloudinaryUpload = ({ value, onChange }) => {
 
     return (
         <Space direction="vertical" style={{ width: '100%' }}>
-            <Space>
-                <Upload beforeUpload={beforeUpload} showUploadList={false} accept="image/*">
-                    <Button icon={<UploadOutlined />}>
-                        {value instanceof File ? '✓ Đã chọn: ' + value.name : 'Chọn ảnh'}
-                    </Button>
-                </Upload>
-                {value instanceof File && (
-                    <Button size="small" danger onClick={handleClearFile}>Bỏ chọn</Button>
-                )}
-            </Space>
+            <Upload beforeUpload={beforeUpload} showUploadList={false} accept="image/*">
+                <Button icon={<UploadOutlined />}>
+                    {value instanceof File ? '✓ Đã chọn: ' + value.name : 'Chọn ảnh'}
+                </Button>
+            </Upload>
             {previewSrc && (
-                <Image src={previewSrc} height={80} style={{ borderRadius: 6, objectFit: 'cover' }} />
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                    <Image src={previewSrc} height={80} width={120} style={{ borderRadius: 6, objectFit: 'cover' }} />
+                    <Button
+                        size="small" danger
+                        style={{ position: 'absolute', top: 2, right: 2, padding: '0 4px', minWidth: 'auto' }}
+                        onClick={handleClearFile}
+                    >✕</Button>
+                </div>
             )}
-            <Input
-                placeholder="Hoặc nhập URL ảnh trực tiếp..."
-                value={typeof value === 'string' ? value : ''}
-                onChange={e => onChange(e.target.value)}
-                size="small"
-            />
         </Space>
     );
 };

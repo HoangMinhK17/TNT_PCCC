@@ -135,9 +135,9 @@ const Product = () => {
       />
       <div className="container" data-aos="fade-up">
         <h1 className="section-title">
-          {activeSearchTerm ? `Kết quả cho: "${activeSearchTerm}"` : 
-            (categoryIdParam ? 
-              (categories.find(c => c._id === categoryIdParam) 
+          {activeSearchTerm ? `Kết quả cho: "${activeSearchTerm}"` :
+            (categoryIdParam ?
+              (categories.find(c => c._id === categoryIdParam)
                 ? (i18n.language === 'en' && categories.find(c => c._id === categoryIdParam).name_en ? categories.find(c => c._id === categoryIdParam).name_en : categories.find(c => c._id === categoryIdParam).name)
                 : selectedCategory)
               : (i18n.language === 'en' ? 'All Products' : 'Tất cả sản phẩm'))}

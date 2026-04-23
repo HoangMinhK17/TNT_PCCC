@@ -4,6 +4,7 @@ import '../styles/ProductDetail.css';
 import SEO from '../component/SEO';
 import { getPublicProductById } from '../utils/productApi';
 import { useTranslation } from 'react-i18next';
+import { Image } from 'antd';
 
 const ProductDetail = () => {
     const { id } = useParams();
@@ -73,7 +74,12 @@ const ProductDetail = () => {
                 <div className="product-detail-container">
                     <div className="product-gallery">
                         <div className="main-image-container">
-                            <img src={activeImage} alt={product.name} className="main-image" />
+                            <Image 
+                                src={activeImage} 
+                                alt={product.name} 
+                                className="main-image" 
+                                rootClassName="main-image-wrapper"
+                            />
                         </div>
                         <div className="thumbnail-list">
                             {product.image.map((img, index) => (
@@ -86,6 +92,20 @@ const ProductDetail = () => {
                                 </div>
                             ))}
                         </div>
+
+                        <div className="product-specs product-desc-below-gallery">
+                            <h3>{t('product_detail_des')}</h3>
+                            <ul className="product-desc-list">
+                                {(i18n.language === 'en' && product.description_en ? product.description_en : product.description)
+                                    .split('.')
+                                    .map(s => s.trim())
+                                    .filter(s => s.length > 0)
+                                    .map((sentence, idx) => (
+                                        <li key={idx} className="product-desc-item">• {sentence}.</li>
+                                    ))
+                                }
+                            </ul>
+                        </div>
                     </div>
 
                     <div className="product-info-detail">
@@ -96,36 +116,31 @@ const ProductDetail = () => {
                             <p>{i18n.language === 'en' && product.title_en ? product.title_en : product.title}</p>
                         </div>
 
-                        <div className="product-specs">
-                            <h3>{t('product_detail_des')}</h3>
-                            <p>{i18n.language === 'en' && product.description_en ? product.description_en : product.description}</p>
+                        {product.technical && product.technical.length > 0 && (
+                            <div className="specs-container">
+                                <h4>{t('product_detail_spec')}</h4>
+                                <table className="specs-table">
+                                    <tbody>
+                                        {i18n.language === 'en' && product.technical_en && product.technical_en.length > 0 ? (
+                                            product.technical_en.map((spec, index) => (
+                                                <tr key={index} className="specs-row">
+                                                    <td className="specs-label">{spec.title_en}</td>
+                                                    <td className="specs-value">{spec.description_en}</td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            product.technical.map((spec, index) => (
+                                                <tr key={index} className="specs-row">
+                                                    <td className="specs-label">{spec.title}</td>
+                                                    <td className="specs-value">{spec.description}</td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
 
-                            {product.technical && product.technical.length > 0 && (
-                                <div className="specs-container">
-                                    <h4>{t('product_detail_spec')}</h4>
-                                    <table className="specs-table">
-                                        <tbody>
-                                            {i18n.language === 'en' && product.technical_en && product.technical_en.length > 0 ? (
-                                                product.technical_en.map((spec, index) => (
-                                                    <tr key={index} className="specs-row">
-                                                        <td className="specs-label">{spec.title_en}</td>
-                                                        <td className="specs-value">{spec.description_en}</td>
-                                                    </tr>
-                                                ))
-                                            ) : (
-                                                product.technical.map((spec, index) => (
-                                                    <tr key={index} className="specs-row">
-                                                        <td className="specs-label">{spec.title}</td>
-                                                        <td className="specs-value">{spec.description}</td>
-                                                    </tr>
-                                                ))
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
-                        </div>
-                        
                         <div className="product-actions">
                             <Link
                                 to="/contact"
@@ -143,6 +158,7 @@ const ProductDetail = () => {
                         </div>
                     </div>
                 </div>
+
             </div>
         </section>
     );

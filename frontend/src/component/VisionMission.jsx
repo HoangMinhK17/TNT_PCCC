@@ -26,6 +26,16 @@ const VisionMission = () => {
         fetchMissionVision();
     }, []);
 
+    const descriptionVisionText =
+        i18n.language === 'en' && missionVision?.vision?.description_en
+            ? missionVision.vision.description_en
+            : missionVision?.vision?.description;
+
+    const descriptionMissionText =
+        i18n.language === 'en' && missionVision?.mission?.description_en
+            ? missionVision.mission.description_en
+            : missionVision?.mission?.description;
+
     return (
         <section className="vision-mission-section">
             <div className="container">
@@ -36,9 +46,13 @@ const VisionMission = () => {
                         </div>
                         <div className="vm-content">
                             <h3>{i18n.language === 'en' && missionVision?.mission?.title_en ? missionVision.mission.title_en : missionVision?.mission?.title}</h3>
-                            <p>
-                                {i18n.language === 'en' && missionVision?.mission?.description_en ? missionVision.mission.description_en : missionVision?.mission?.description}
-                            </p>
+
+                            {descriptionMissionText
+                                ?.split('.')
+                                .filter(item => item.trim() !== '')
+                                .map((item, index) => (
+                                    <p key={index}>{item.trim()}.</p>
+                                ))}
                         </div>
                     </div>
 
@@ -48,9 +62,13 @@ const VisionMission = () => {
                         </div>
                         <div className="vm-content">
                             <h3>{i18n.language === 'en' && missionVision?.vision?.title_en ? missionVision.vision.title_en : missionVision?.vision?.title}</h3>
-                            <p>
-                                {i18n.language === 'en' && missionVision?.vision?.description_en ? missionVision.vision.description_en : missionVision?.vision?.description}
-                            </p>
+
+                            {descriptionVisionText
+                                ?.split('.')
+                                .filter(item => item.trim() !== '')
+                                .map((item, index) => (
+                                    <p key={index}>{item.trim()}.</p>
+                                ))}
                         </div>
                     </div>
                 </div>

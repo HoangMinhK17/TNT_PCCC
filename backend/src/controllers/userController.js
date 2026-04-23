@@ -161,7 +161,8 @@ const forgotPassword = async (req, res) => {
             return res.status(404).json({ message: "Không tìm thấy người dùng" });
         }
         const token = crypto.randomBytes(32).toString("hex");
-        user.passwordResetToken = token;
+        const hashToken = crypto.createHash("sha256").update(token).digest("hex");
+        user.passwordResetToken = hashToken;
         const dateExpires = new Date(Date.now() + 10 * 60 * 1000);
         const expiresInMinutes = Math.round((dateExpires - Date.now()) / (60 * 1000));
         user.passwordResetExpires = dateExpires;
@@ -211,7 +212,8 @@ const forgotPassword = async (req, res) => {
 const resetPassword = async (req, res) => {
     try {
         const { token, newPassword } = req.body;
-        const user = await User.findOne({ passwordResetToken: token, passwordResetExpires: { $gt: Date.now() } });
+        const hashToken = crypto.createHash("sha256").update(token).digest("hex");
+        const user = await User.findOne({ passwordResetToken: hashToken, passwordResetExpires: { $gt: Date.now() } });
         if (!user) {
             return res.status(404).json({ message: "Token không hợp lệ hoặc đã hết hạn" });
         }

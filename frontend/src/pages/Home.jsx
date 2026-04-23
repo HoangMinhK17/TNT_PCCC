@@ -10,6 +10,7 @@ import ContactSection from '../component/ContactSection'
 import LeadershipSection from '../component/LeadershipSection'
 import { useHeader } from '../context/HeaderContext'
 import { useEffect } from 'react'
+import SEO from '../component/SEO';
 
 const Home = () => {
     const { isSectionVisible } = useHeader();
@@ -18,7 +19,14 @@ const Home = () => {
     }, []);
 
     return (
-        <>
+        <div>
+            <SEO
+                title="Trang chủ"
+                description=""
+                keywords=""
+                url=""
+            />
+            <>
             <SearchBar />
             {isSectionVisible('about') && <CompanyIntro />}
             {isSectionVisible('products') && <ProductSection />}
@@ -30,6 +38,7 @@ const Home = () => {
             {isSectionVisible('news') && <NewsSection />}
             {isSectionVisible('contact') && <ContactSection />}
         </>
+        </div>
     )
 }
 

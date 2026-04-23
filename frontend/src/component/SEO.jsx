@@ -1,27 +1,20 @@
-import React, { useEffect, useState } from 'react';
-
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { getAllIntroduction } from '../utils/introductApi';
+import { useSite } from '../context/SiteContext';
 
 const SEO = ({ title, description, keywords, image, url, type = 'website', schema }) => {
-    const [introduction, setIntroduction] = useState(null);
-    useEffect(() => {
-        const fetchIntroduction = async () => {
-            const res = await getAllIntroduction();
-            setIntroduction(Array.isArray(res) ? (res[0] ?? null) : res);
-        };
-        fetchIntroduction();
-    }, []);
-    const siteTitle = introduction?.name || '';
+    const { introduction } = useSite() ?? {};
+
+    const siteTitle = introduction?.name || 'TNT PCCC';
     const defaultDescription = introduction?.description?.descriptionName || '';
     const defaultKeywords = introduction?.title?.titleName || '';
-    const defaultImage = introduction?.image[0] || '';
+    const defaultImage = introduction?.image?.[0] || '';
     const siteUrl = introduction?.url || '';
 
     const metaTitle = title ? `${title} | ${siteTitle}` : siteTitle;
     const metaDescription = description || defaultDescription;
     const metaKeywords = keywords || defaultKeywords;
-    const metaImage = image ? `${siteUrl}${image}` : `${siteUrl}${defaultImage}`;
+    const metaImage = image || `${siteUrl}${defaultImage}`;
     const metaUrl = url ? `${siteUrl}${url}` : siteUrl;
 
     return (

@@ -32,9 +32,18 @@
     background: var(--theme-card-bg, #fff);
 }
 
-.main-image {
+.main-image-wrapper {
     width: 100%;
     height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-image {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 400px;
     object-fit: contain;
     transition: transform 0.3s ease;
 }
@@ -120,6 +129,11 @@
     margin-bottom: 30px;
 }
 
+/* Khối chi tiết sp nằm trong cột trái, ngay dưới thumbnail */
+.product-desc-below-gallery {
+    margin-top: 20px;
+}
+
 .product-specs h3 {
     font-size: 18px;
     margin-bottom: 10px;
@@ -131,6 +145,25 @@
     color: #666;
     line-height: 1.6;
     margin-bottom: 20px;
+}
+
+/* Danh sách mô tả chi tiết theo từng câu */
+.product-desc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.product-desc-item {
+    font-size: 15px;
+    color: #555;
+    line-height: 1.7;
+    padding: 4px 0;
+    border-bottom: 1px dashed #e8e8e8;
+}
+
+.product-desc-item:last-child {
+    border-bottom: none;
 }
 
 .specs-container h4 {
