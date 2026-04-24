@@ -21,6 +21,8 @@ import leaderRouter from "./leaderRoute.js";
 import testimonialRouter from "./testimonialRoute.js";
 import themeHeaderRouter from "./themeHeaderRoute.js";
 import themeFooterRouter from "./themeFooterRoute.js";
+import auditLogRouter from "./auditLog.js";
+
 const router = express.Router();
 
 //User
@@ -86,5 +88,6 @@ router.use("/themeHeader", themeHeaderRouter);
 //ThemeFooter
 router.use("/themeFooter", themeFooterRouter);
 
-
+//AuditLog
+router.use("/auditLog", auditLogRouter);
 export default router;

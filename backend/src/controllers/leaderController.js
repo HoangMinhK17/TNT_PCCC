@@ -1,3 +1,4 @@
+import AuditLog from "../models/AuditLog.js";
 import Leader from "../models/Leader.js";
 
 export const getAllLeaders = async (req, res) => {
@@ -56,6 +57,13 @@ export const createLeader = async (req, res) => {
         }
         const leader = new Leader(req.body);
         await leader.save();
+        await AuditLog.create({
+            module: "Lãnh đạo",
+            recordId: leader._id,
+            recordName: leader.name,
+            action: "create",
+            userId: req.user.id,
+        });
         res.status(200).json(leader);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -67,7 +75,28 @@ export const updateLeader = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+        const oldData = await Leader.findById(req.params.id);
+        const oldValues = {};
+        const newValues = {};
+        const updateFields = ["name", "name_en", "position", "position_en", "image", "description", "description_en", "status"];
+        updateFields.forEach(field => {
+            if (oldData[field] !== req.body[field]) {
+                oldValues[field] = oldData[field];
+                newValues[field] = req.body[field];
+            }
+        });
         const leader = await Leader.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (Object.keys(oldValues).length > 0) {
+            await AuditLog.create({
+                module: "Lãnh đạo",
+                recordId: leader._id,
+                recordName: leader.name,
+                action: "update",
+                userId: req.user.id,
+                oldValues,
+                newValues,
+            });
+        }
         res.status(200).json(leader);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -80,6 +109,13 @@ export const deleteLeader = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const leader = await Leader.findByIdAndUpdate(req.params.id, { isDeleted: true });
+        await AuditLog.create({
+            module: "Lãnh đạo",
+            recordId: leader._id,
+            recordName: leader.name,
+            action: "delete",
+            userId: req.user.id,
+        });
         res.status(200).json(leader);
     } catch (error) {
         res.status(500).json({ message: error.message });

@@ -1,4 +1,5 @@
 import ContactRecruitment from "../models/ContactRecruitment.js";
+import AuditLog from "../models/AuditLog.js";
 
 const createContactRecruitment = async (req, res) => {
     try {
@@ -103,6 +104,22 @@ const updateContactRecruitment = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, email, phone, address, cv, recruitmentId, status, note } = req.body;
+
+        const oldContactRecruitment = await ContactRecruitment.findById(req.params.id);
+
+        const allowedFields = [
+            "status",
+            "note"
+        ];
+        const oldValues = {};
+        const newValues = {};
+
+        for (const field of allowedFields) {
+            if (oldContactRecruitment[field] !== req.body[field]) {
+                oldValues[field] = oldContactRecruitment[field];
+                newValues[field] = req.body[field];
+            }
+        }
         const contactRecruitment = await ContactRecruitment.findByIdAndUpdate(req.params.id, {
             name,
             email,
@@ -113,6 +130,19 @@ const updateContactRecruitment = async (req, res) => {
             status,
             note
         }, { new: true });
+
+        if (Object.keys(oldValues).length > 0 && status != "pending") {
+            const auditLog = new AuditLog({
+                module: "Ứng viên",
+                action: "update",
+                recordId: contactRecruitment._id,
+                recordName: contactRecruitment.name,
+                userId: req.user.id,
+                oldValues,
+                newValues,
+            });
+            await auditLog.save();
+        }
         res.status(200).json(contactRecruitment);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -125,6 +155,14 @@ const deleteContactRecruitment = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const contactRecruitment = await ContactRecruitment.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+        const auditLog = new AuditLog({
+            module: "Ứng viên",
+            action: "delete",
+            recordId: contactRecruitment._id,
+            recordName: contactRecruitment.name,
+            userId: req.user.id,
+        });
+        await auditLog.save();
         res.status(200).json(contactRecruitment);
     } catch (error) {
         res.status(500).json({ message: error.message });

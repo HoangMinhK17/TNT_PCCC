@@ -1,3 +1,4 @@
+import AuditLog from "../models/AuditLog.js";
 import CategoryProduct from "../models/CategoryProduct.js";
 import Product from "../models/Product.js";
 
@@ -65,6 +66,13 @@ const createProduct = async (req, res) => {
         }
 
         const product = await Product.create({ name, name_en, title, title_en, description, description_en, image, technical, technical_en, categoryId, slug, status });
+        await AuditLog.create({
+            action: "create",
+            module: "Sản phẩm",
+            recordId: product._id,
+            recordName: product.name,
+            userId: req.user.id,
+        });
         res.status(200).json(product);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -81,7 +89,82 @@ const updateProduct = async (req, res) => {
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
+        const oldProduct = await Product.findById(req.params.id);
+
+        const allowedFields = ["name", "name_en", "title", "title_en", "description", "description_en", "image", "technical", "technical_en", "categoryId", "slug", "status"];
+        const oldValues = {};
+        const newValues = {};
+        const oldProductObj = oldProduct.toObject();
+
+        const cleanForCompare = (val) => {
+            if (val === null || val === undefined) return null;
+            if (Array.isArray(val)) return val.map(cleanForCompare);
+            if (typeof val === 'object') {
+                if (val instanceof Date) return val.toISOString();
+                if (val.toString && /^[0-9a-fA-F]{24}$/.test(val.toString())) {
+                    return val.toString();
+                }
+                const newObj = {};
+                for (const key in val) {
+                    if (key !== '_id' && key !== 'id') {
+                        newObj[key] = cleanForCompare(val[key]);
+                    }
+                }
+                return newObj;
+            }
+            return val;
+        };
+
+        const computeArrayDiff = (oldArr, newArr) => {
+            const oldDiff = [];
+            const newDiff = [];
+            const maxLength = Math.max(oldArr.length, newArr.length);
+            for (let i = 0; i < maxLength; i++) {
+                const o = oldArr[i];
+                const n = newArr[i];
+                const cleanO = cleanForCompare(o);
+                const cleanN = cleanForCompare(n);
+                if (JSON.stringify(cleanO) !== JSON.stringify(cleanN)) {
+                    if (o !== undefined) oldDiff.push({ _index: i, ...(cleanO && typeof cleanO === 'object' ? cleanO : { value: cleanO }) });
+                    if (n !== undefined) newDiff.push({ _index: i, ...(cleanN && typeof cleanN === 'object' ? cleanN : { value: cleanN }) });
+                }
+            }
+            return { oldDiff, newDiff };
+        };
+
+        allowedFields.forEach(field => {
+            if (req.body[field] !== undefined) {
+                if (field === 'technical' || field === 'technical_en') {
+                    const oldArr = Array.isArray(oldProductObj[field]) ? oldProductObj[field] : [];
+                    const newArr = Array.isArray(req.body[field]) ? req.body[field] : [];
+                    const { oldDiff, newDiff } = computeArrayDiff(oldArr, newArr);
+                    if (oldDiff.length > 0 || newDiff.length > 0) {
+                        oldValues[field] = oldDiff;
+                        newValues[field] = newDiff;
+                    }
+                } else {
+                    const oldValClean = cleanForCompare(oldProductObj[field]);
+                    const newValClean = cleanForCompare(req.body[field]);
+
+                    if (JSON.stringify(oldValClean) !== JSON.stringify(newValClean)) {
+                        oldValues[field] = oldValClean;
+                        newValues[field] = newValClean;
+                    }
+                }
+            }
+        });
         const product = await Product.findByIdAndUpdate(req.params.id, { name, name_en, title, title_en, description, description_en, image, technical, technical_en, categoryId, slug, status }, { new: true });
+        if (Object.keys(oldValues).length > 0) {
+            await AuditLog.create({
+                action: "update",
+                module: "Sản phẩm",
+                recordId: product._id,
+                recordName: product.name,
+                userId: req.user.id,
+                oldValues,
+                newValues,
+            });
+        }
         res.status(200).json(product);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -94,6 +177,13 @@ const deleteProduct = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const product = await Product.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+        await AuditLog.create({
+            action: "delete",
+            module: "Sản phẩm",
+            recordId: product._id,
+            recordName: product.name,
+            userId: req.user.id,
+        });
         res.status(200).json(product);
     } catch (error) {
         res.status(500).json({ message: error.message });

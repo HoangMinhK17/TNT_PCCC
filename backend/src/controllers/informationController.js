@@ -1,3 +1,4 @@
+import AuditLog from "../models/AuditLog.js";
 import Information from "../models/Information.js";
 
 const getInformation = async (req, res) => {
@@ -56,6 +57,20 @@ const updateInformation = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+        const oldData = await Information.findById(req.params.id);
+        const allowUpdateField = ["name", "title", "phone", "address", "email", "timeWork"];
+        const updatedData = {};
+        const oldValues = {};
+        const newValues = {};
+        for (const field of allowUpdateField) {
+            if (req.body[field] !== undefined) {
+                updatedData[field] = req.body[field];
+                if (oldData[field] !== req.body[field]) {
+                    oldValues[field] = oldData[field];
+                    newValues[field] = req.body[field];
+                }
+            } 
+        }
         const information = await Information.findByIdAndUpdate(req.params.id, {
             name: req.body.name,
             title: req.body.title,
@@ -66,6 +81,18 @@ const updateInformation = async (req, res) => {
         }, { new: true });
         if (!information) {
             return res.status(404).json({ message: "Information not found" });
+        }
+        if (Object.keys(updatedData).length > 0) {
+            const auditLog = new AuditLog({
+                module: "Thông tin chung",
+                action: "update",
+                recordId: information._id,
+                recordName: information.name,
+                userId: req.user.id,
+                oldValues,
+                newValues,
+            });
+            await auditLog.save();
         }
         res.status(200).json(information);
     } catch (error) {
@@ -78,6 +105,19 @@ const upadateImageInformation = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+        const allowUpdateField = ["name", "backgroundImage", "logo", "favicon"];
+        const updatedData = {};
+        const oldValues = {};
+        const newValues = {};
+        for (const field of allowUpdateField) {
+            if (req.body[field] !== undefined) {
+                updatedData[field] = req.body[field];
+                if (oldData[field] !== req.body[field]) {
+                    oldValues[field] = oldData[field];
+                    newValues[field] = req.body[field];
+                }
+            } 
+        }
         const information = await Information.findByIdAndUpdate(req.params.id, {
             backgroundImage: req.body.backgroundImage,
             logo: req.body.logo,
@@ -85,6 +125,18 @@ const upadateImageInformation = async (req, res) => {
         }, { new: true });
         if (!information) {
             return res.status(404).json({ message: "Information not found" });
+        }
+        if (Object.keys(updatedData).length > 0) {
+            const auditLog = new AuditLog({
+                module: "Thông tin chung",
+                action: "update",
+                recordId: information._id,
+                recordName: information.name,
+                userId: req.user.id,
+                oldValues,
+                newValues,
+            });
+            await auditLog.save();
         }
         res.status(200).json(information);
     } catch (error) {

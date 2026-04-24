@@ -1,4 +1,5 @@
 import CategoryNew from "../models/CategoryNews.js";
+import AuditLog from "../models/AuditLog.js";
 
 export const getCategoryNews = async (req, res) => {
     try {
@@ -75,6 +76,13 @@ export const createCategoryNews = async (req, res) => {
             return res.status(400).json({ message: "Slug already exists" });
         }
         const categoryNew = await CategoryNew.create({ name, slug, status, name_en });
+        await AuditLog.create({
+            action: "create",
+            module: "Danh mục tin tức",
+            recordId: categoryNew._id,
+            recordName: categoryNew.name,
+            userId: req.user.id,
+        });
         res.status(200).json(categoryNew);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -91,7 +99,53 @@ export const updateCategoryNews = async (req, res) => {
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
+        const oldData = await CategoryNew.findById(req.params.id);
         const categoryNew = await CategoryNew.findByIdAndUpdate(req.params.id, { name, slug, status, name_en }, { new: true });
+        const cleanForCompare = (val) => {
+            if (val === null || val === undefined) return null;
+            if (Array.isArray(val)) return val.map(cleanForCompare);
+            if (typeof val === 'object') {
+                if (val instanceof Date) return val.toISOString();
+                if (val.toString && /^[0-9a-fA-F]{24}$/.test(val.toString())) {
+                    return val.toString();
+                }
+                const newObj = {};
+                for (const key in val) {
+                    if (key !== '_id' && key !== 'id') {
+                        newObj[key] = cleanForCompare(val[key]);
+                    }
+                }
+                return newObj;
+            }
+            return val;
+        };
+
+        const oldDataObj = oldData.toObject();
+        const oldValues = {};
+        const newValues = {};
+        const updateFields = ["name", "name_en", "slug", "status"];
+        updateFields.forEach(field => {
+            if (req.body[field] !== undefined) {
+                const oldValClean = JSON.stringify(cleanForCompare(oldDataObj[field]));
+                const newValClean = JSON.stringify(cleanForCompare(req.body[field]));
+
+                if (oldValClean !== newValClean) {
+                    oldValues[field] = cleanForCompare(oldDataObj[field]);
+                    newValues[field] = cleanForCompare(req.body[field]);
+                }
+            }
+        });
+        if (Object.keys(oldValues).length > 0) {
+            await AuditLog.create({
+                action: "update",
+                module: "Danh mục tin tức",
+                recordId: categoryNew._id,
+                recordName: categoryNew.name,
+                userId: req.user.id,
+                oldValues,
+                newValues,
+            });
+        }
         res.status(200).json(categoryNew);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -104,6 +158,13 @@ export const deleteCategoryNews = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const categoryNew = await CategoryNew.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+        await AuditLog.create({
+            action: "delete",
+            module: "Danh mục tin tức",
+            recordId: categoryNew._id,
+            recordName: categoryNew.name,
+            userId: req.user.id,
+        });
         res.status(200).json(categoryNew);
     } catch (error) {
         res.status(500).json({ message: error.message });

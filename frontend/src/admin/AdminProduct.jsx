@@ -14,7 +14,7 @@ import {
 } from '../utils/categoryProductApi';
 import {
     createProduct, updateProduct, deleteProduct, getProductForManage,
-    getProductByCategoryIdForManage, getProductByNameForManage
+
 } from '../utils/productApi';
 import { uploadImageToCloudinary } from '../utils/imageApi';
 

@@ -14,6 +14,7 @@ import {
     FaStar,
     FaCogs,
     FaHandshake,
+    FaHistory,
 } from 'react-icons/fa';
 import { getImageInformation } from '../utils/informationApi';
 
@@ -39,7 +40,7 @@ const AdminSidebar = () => {
         { label: 'Đối tác', path: '/admin/partners', icon: <FaHandshake /> },
         { label: 'Đánh giá', path: '/admin/testimonial', icon: <FaStar /> },
         { label: 'Cấu hình hệ thống', path: '/admin/information', icon: <FaCogs /> },
-
+        { label: 'Nhật ký hoạt động', path: '/admin/audit-log', icon: <FaHistory /> },
     ];
 
     const [information, setInformation] = useState(null);

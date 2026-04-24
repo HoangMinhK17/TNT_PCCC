@@ -1,4 +1,5 @@
 import CategoryProduct from "../models/CategoryProduct.js";
+import AuditLog from "../models/AuditLog.js";
 
 const getCategoryProducts = async (req, res) => {
     try {
@@ -42,13 +43,20 @@ const createCategoryProduct = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         if (slug) {
-            const categoryProduct = await CategoryProduct.findOne({ slug: slug });
+            const categoryProduct = await CategoryProduct.findOne({ slug: slug});
             if (categoryProduct) {
                 return res.status(400).json({ message: "Slug already exists" });
             }
         }
         const categoryProduct = await CategoryProduct.create({ name, name_en, slug });
-        res.status(200).json(categoryProduct);
+        await AuditLog.create({
+            action: "create",
+            module: "Danh mục sản phẩm",
+            recordId: categoryProduct._id,
+            recordName: categoryProduct.name,
+            userId: req.user.id,
+        });
+        return res.status(200).json(categoryProduct);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -64,8 +72,35 @@ const updateCategoryProduct = async (req, res) => {
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
+        const oldCategoryProduct = await CategoryProduct.findById(req.params.id);
+
+        const allowedFields = ["name", "name_en", "slug", "status"];
+
+        const oldValues = {};
+        const newValues = {};
+
+        allowedFields.forEach(field => {
+            if (
+                req.body[field] !== undefined &&
+                req.body[field] !== oldCategoryProduct[field]
+            ) {
+                oldValues[field] = oldCategoryProduct[field];
+                newValues[field] = req.body[field];
+            }
+        });
         const categoryProduct = await CategoryProduct.findByIdAndUpdate(req.params.id, { name, name_en, slug, status }, { new: true });
-        res.status(200).json(categoryProduct);
+        if (Object.keys(oldValues).length > 0) {
+            await AuditLog.create({
+                action: "update",
+                module: "Danh mục sản phẩm",
+                recordId: categoryProduct._id,
+                recordName: categoryProduct.name,
+                userId: req.user.id,
+                oldValues,
+                newValues,
+            });
+        }
+        return res.status(200).json(categoryProduct);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -77,7 +112,14 @@ const deleteCategoryProduct = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const categoryProduct = await CategoryProduct.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
-        res.status(200).json(categoryProduct);
+        await AuditLog.create({
+            action: "delete",
+            module: "Danh mục sản phẩm",
+            recordId: categoryProduct._id,
+            recordName: categoryProduct.name,
+            userId: req.user.id
+        });
+        return res.status(200).json(categoryProduct);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

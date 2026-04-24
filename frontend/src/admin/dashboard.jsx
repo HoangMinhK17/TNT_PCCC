@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Row, Col, Card, Typography, Table, Tag, Statistic, Dropdown, Modal, Form, Input, Button, message } from 'antd';
-import { DownOutlined, KeyOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
+import { Row, Col, Card, Typography, Table, Tag, Statistic, Dropdown, Modal, Form, Input, Button, message, Timeline } from 'antd';
+import { DownOutlined, KeyOutlined, UserOutlined, LogoutOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
 import { getContactsForManage } from '../utils/contactApi.js';
@@ -9,6 +9,7 @@ import { getProductForManage } from '../utils/productApi.js';
 import { getProjectsForManage } from '../utils/projectApi.js';
 import { getNewsForManage } from '../utils/newsApi.js';
 import { changePasswordAPI, updateInfoAPI } from '../utils/userApi.js';
+import { getAllAuditLogs } from '../utils/auditLog.js';
 
 const { Title } = Typography;
 const Dashboard = () => {
@@ -18,6 +19,7 @@ const Dashboard = () => {
     });
 
     const [recentContacts, setRecentContacts] = useState([]);
+    const [recentAuditLogs, setRecentAuditLogs] = useState([]);
     const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
     const [isInfoModalVisible, setIsInfoModalVisible] = useState(false);
     const [passwordForm] = Form.useForm();
@@ -168,6 +170,27 @@ const Dashboard = () => {
         fetchNews();
     }, []);
 
+    useEffect(() => {
+        const fetchAuditLogs = async () => {
+            try {
+                const res = await getAllAuditLogs(1, 7);
+                setRecentAuditLogs(res?.auditLogs || []);
+            } catch {
+                setRecentAuditLogs([]);
+            }
+        };
+        fetchAuditLogs();
+    }, []);
+
+    const ACTION_COLOR = { create: 'green', update: 'blue', delete: 'red' };
+    const ACTION_LABEL = { create: 'Thêm mới', update: 'Cập nhật', delete: 'Xóa' };
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return '';
+        const d = new Date(dateStr);
+        return d.toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+    };
+
     const stats = [
         { label: 'Liên hệ', value: totalContacts },
         { label: 'Sản phẩm', value: totalProducts },
@@ -236,20 +259,58 @@ const Dashboard = () => {
                         ))}
                     </Row>
 
-                    <div style={{ background: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                            <Title level={5} style={{ margin: 0 }}>Liên hệ mới nhất</Title>
-                            <Link to="/admin/contacts">Xem tất cả</Link>
-                        </div>
-                        <Table
-                            columns={columns}
-                            dataSource={recentContacts}
-                            loading={loading}
-                            pagination={false}
-                            bordered
-                            rowKey="key"
-                        />
-                    </div>
+                    <Row gutter={[16, 16]}>
+                        <Col xs={24} xl={14}>
+                            <div style={{ background: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', height: '100%' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                                    <Title level={5} style={{ margin: 0 }}>Liên hệ mới nhất</Title>
+                                    <Link to="/admin/contacts">Xem tất cả</Link>
+                                </div>
+                                <Table
+                                    columns={columns}
+                                    dataSource={recentContacts}
+                                    loading={loading}
+                                    pagination={false}
+                                    bordered
+                                    rowKey="key"
+                                    size="normal"
+                                />
+                            </div>
+                        </Col>
+                        <Col xs={24} xl={10}>
+                            <div style={{ background: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', height: '100%' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                                    <Title level={5} style={{ margin: 0 }}>Hoạt động gần đây</Title>
+                                    <Link to="/admin/audit-log">Xem tất cả</Link>
+                                </div>
+                                {recentAuditLogs.length === 0 ? (
+                                    <p style={{ color: '#aaa', textAlign: 'center', marginTop: 32 }}>Chưa có hoạt động nào</p>
+                                ) : (
+                                    <Timeline
+                                        items={recentAuditLogs.map(log => ({
+                                            dot: <ClockCircleOutlined style={{ color: ACTION_COLOR[log.action] || '#ccc' }} />,
+                                            children: (
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, paddingBottom: 4 }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                                                        <Tag color={ACTION_COLOR[log.action]} style={{ margin: 0, fontSize: 11 }}>
+                                                            {ACTION_LABEL[log.action]}
+                                                        </Tag>
+                                                        <Tag color="geekblue" style={{ margin: 0, fontSize: 11 }}>{log.module}</Tag>
+                                                        <span style={{ fontWeight: 600, fontSize: 13, color: '#222' }}>
+                                                            {log.recordName || '---'}
+                                                        </span>
+                                                    </div>
+                                                    <div style={{ color: '#888', fontSize: 12 }}>
+                                                        {log.userId?.name || 'Ẩn danh'} &bull; {formatDate(log.createdAt)}
+                                                    </div>
+                                                </div>
+                                            )
+                                        }))}
+                                    />
+                                )}
+                            </div>
+                        </Col>
+                    </Row>
                 </div>
 
                 <Modal

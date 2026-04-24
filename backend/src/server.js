@@ -3,10 +3,12 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import apiRouter from "./routes/api.js";
 import cors from "cors";
+import AuditLog from "./models/AuditLog.js";
+
 
 dotenv.config();
 connectDB();
-
+AuditLog.syncIndexes();
 const app = express();
 app.use(express.json());
 app.use(cors());

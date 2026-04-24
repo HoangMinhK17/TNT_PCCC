@@ -1,4 +1,5 @@
 import Service from "../models/Service.js";
+import AuditLog from "../models/AuditLog.js";
 
 const getPublicServices = async (req, res) => {
     try {
@@ -66,6 +67,15 @@ const createService = async (req, res) => {
             return res.status(400).json({ message: "Slug already exists" });
         }
         const service = await Service.create({ name, name_en, description, description_en, title, title_en, image, slug, status });
+
+        const auditLog = new AuditLog({
+            module: "Dịch vụ",
+            recordId: service._id,
+            recordName: service.name,
+            action: "create",
+            userId: req.user.id,
+        });
+        await auditLog.save();
         res.status(200).json(service);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -82,7 +92,68 @@ const updateService = async (req, res) => {
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
+        const oldData = await Service.findById(req.params.id);
+        const cleanForCompare = (val) => {
+            if (val === null || val === undefined) return null;
+            if (typeof val === "string") {
+                const trimmed = val.trim();
+                if (trimmed === "" || trimmed === "<p><br></p>") return null;
+                return trimmed.replace(/\r\n/g, '\n');
+            }
+
+            if (typeof val === "boolean") return val;
+            if (typeof val === "number") return val;
+            if (Array.isArray(val)) return val.map(cleanForCompare);
+            if (typeof val === 'object') {
+                if (val instanceof Date) return val.toISOString();
+                if (val.toString && /^[0-9a-fA-F]{24}$/.test(val.toString())) {
+                    return val.toString();
+                }
+                const newObj = {};
+                for (const key in val) {
+                    if (key !== '_id' && key !== 'id') {
+                        newObj[key] = cleanForCompare(val[key]);
+                    }
+                }
+                return newObj;
+            }
+            return val;
+        };
+
+        const oldDataObj = oldData.toObject();
+        const oldValues = {};
+        const newValues = {};
+        const updateFields = ["name", "name_en", "description", "description_en", "title", "title_en", "image", "slug", "status"];
+
+        updateFields.forEach(field => {
+            if (req.body[field] !== undefined) {
+                const oldValClean = JSON.stringify(cleanForCompare(oldDataObj[field]));
+                const newValClean = JSON.stringify(cleanForCompare(req.body[field]));
+
+                if (oldValClean !== newValClean) {
+                    if (["description", "description_en"].includes(field)) {
+                        oldValues[field] = "(Đã thay đổi nội dung, không hiển thị vì quá dài)";
+                        newValues[field] = "(Đã cập nhật nội dung mới)";
+                    } else {
+                        oldValues[field] = cleanForCompare(oldDataObj[field]);
+                        newValues[field] = cleanForCompare(req.body[field]);
+                    }
+                }
+            }
+        });
         const service = await Service.findByIdAndUpdate(req.params.id, { name, name_en, description, description_en, title, title_en, image, slug, status }, { new: true });
+        if (Object.keys(oldValues).length > 0) {
+            const auditLog = new AuditLog({
+                module: "Dịch vụ",
+                recordId: service._id,
+                recordName: service.name,
+                action: "update",
+                userId: req.user.id,
+                oldValues,
+                newValues,
+            });
+            await auditLog.save();
+        }
         res.status(200).json(service);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -95,6 +166,14 @@ const deleteService = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const service = await Service.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+        const auditLog = new AuditLog({
+            module: "Dịch vụ",
+            recordId: service._id,
+            recordName: service.name,
+            action: "delete",
+            userId: req.user.id,
+        });
+        await auditLog.save();
         res.status(200).json(service);
     } catch (error) {
         res.status(500).json({ message: error.message });

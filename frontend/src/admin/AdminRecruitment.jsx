@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import slugify from 'slugify';
 import {
     Tabs, Table, Button, Modal, Form, Input, Space,
-    Popconfirm, message, Typography, Tag, Select, InputNumber, Upload, Image, Descriptions
+    Popconfirm, message, Typography, Tag, Select, InputNumber, Upload, Image, Descriptions, Tooltip
 } from 'antd';
-import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined, MinusCircleOutlined, UploadOutlined } from '@ant-design/icons';
+import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined, MinusCircleOutlined, UploadOutlined, ReloadOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
 import dayjs from 'dayjs';
@@ -233,8 +233,28 @@ const TabRecruitment = () => {
                                         }
                                     }} />
                                 </Form.Item>
+                                
                                 <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]} style={{ flex: 1 }}>
-                                    <Input />
+                                    <Input 
+                                    addonAfter={
+                                        <Tooltip title="Tự động tạo slug">
+                                        <ReloadOutlined 
+                                        
+                                        onClick={() => {
+                                            const name = form.getFieldValue('name');
+                                            if (name) {
+                                                const slug = slugify(name, {
+                                                    lower: true,
+                                                    strict: true,
+                                                    locale: "vi",
+                                                });
+                                                form.setFieldsValue({ slug });
+                                            }
+                                        }}
+                                        />
+                                    </Tooltip>
+                                    }
+                                    />
                                 </Form.Item>
                             </div>
 
@@ -340,7 +360,6 @@ const TabRecruitment = () => {
                                                     <Form.Item
                                                         {...field}
                                                         noStyle
-                                                        rules={[{ required: true, whitespace: true, message: 'Nhập nội dung yêu cầu hoặc xóa dòng trống' }]}
                                                     >
                                                         <Input style={{ flex: 1 }} />
                                                     </Form.Item>

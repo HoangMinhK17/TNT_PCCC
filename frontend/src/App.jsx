@@ -34,6 +34,7 @@ import AdminPartner from './admin/AdminPartner'
 import AdminContact from './admin/AdminContact'
 import AdminInformation from './admin/AdminInformation'
 import AdminTestimonial from './admin/AdminTestimonial'
+import AdminAuditLog from './admin/AdminAuditLog'
 import ProtectedRoute from './component/ProtectedRoute'
 import api from './utils/api'
 import { getImageInformation } from './utils/informationApi'
@@ -200,6 +201,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminInformation />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/audit-log"
+            element={
+              <ProtectedRoute>
+                <AdminAuditLog />
               </ProtectedRoute>
             }
           />

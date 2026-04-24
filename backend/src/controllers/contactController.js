@@ -1,4 +1,5 @@
 import Contact from "../models/Contact.js";
+import AuditLog from "../models/AuditLog.js";
 
 const getContactsForManage = async (req, res) => {
     try {
@@ -51,9 +52,32 @@ const updateContact = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const contact = await Contact.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const { repliedMessage, status } = req.body;
+        const contactOld = await Contact.findById(req.params.id).lean();
+        const contact = await Contact.findByIdAndUpdate(req.params.id, { repliedMessage, status }, { new: true });
         if (!contact) {
             return res.status(404).json({ message: "Contact not found" });
+        }
+        const allowedFields = ["repliedMessage", "status"];
+        const newValues = {};
+        const oldValues = {};
+        allowedFields.forEach(field => {
+            if (req.body[field] !== undefined && req.body[field] !== contactOld[field]) {
+                newValues[field] = req.body[field];
+                oldValues[field] = contactOld[field];
+            }
+        });
+        if (Object.keys(newValues).length > 0 && status !== "pending") {
+        const auditLog = new AuditLog({
+            module: "Liên hệ", 
+            action: "update",
+            recordId: contact._id,
+            recordName: contact.name,
+            userId: req.user.id,
+            oldValues,
+            newValues,
+        });
+        await auditLog.save();
         }
         res.status(200).json(contact);
     } catch (error) {
@@ -70,6 +94,14 @@ const deleteContact = async (req, res) => {
         if (!contact) {
             return res.status(404).json({ message: "Contact not found" });
         }
+        const auditLog = new AuditLog({
+            module: "Liên hệ",
+            action: "delete",
+            recordId: contact._id,
+            recordName: contact.name,
+            userId: req.user.id,
+        });
+        await auditLog.save();
         res.status(200).json({ message: "Contact deleted successfully" });
     } catch (error) {
         res.status(500).json({ message: error.message });
