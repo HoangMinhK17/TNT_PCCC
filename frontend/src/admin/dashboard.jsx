@@ -188,7 +188,7 @@ const Dashboard = () => {
     const formatDate = (dateStr) => {
         if (!dateStr) return '';
         const d = new Date(dateStr);
-        return d.toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+        return d.toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', year: 'numeric' });
     };
 
     const stats = [
@@ -300,7 +300,7 @@ const Dashboard = () => {
                                                             {log.recordName || '---'}
                                                         </span>
                                                     </div>
-                                                    <div style={{ color: '#888', fontSize: 12 }}>
+                                                    <div style={{ color: '#000', fontSize: 12, fontWeight: 500 }}>
                                                         {log.userId?.name || 'Ẩn danh'} &bull; {formatDate(log.createdAt)}
                                                     </div>
                                                 </div>

@@ -13,21 +13,3 @@ export const getAllAuditLogs = async (page = 1, limit = 10) => {
         return error;
     }
 };
-
-export const getAuditLogsByUser = async (userId) => {
-    try {
-        const response = await appi.get(`/auditLog/get-audit-logs-by-user/${userId}`);
-        return response.data;
-    } catch (error) {
-        return error;
-    }
-};
-
-export const getAuditLogsByModule = async (module) => {
-    try {
-        const response = await appi.get(`/auditLog/get-audit-logs-by-module/${module}`);
-        return response.data;
-    } catch (error) {
-        return error;
-    }
-};
