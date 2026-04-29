@@ -1,14 +1,156 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
-    Table, Tag, Typography, Space, Select, Input, Modal, Descriptions, Empty, Button, DatePicker
+    Table, Tag, Typography, Space, Select, Input, Modal, Descriptions, Empty, Button, DatePicker, Tabs, Badge, Popconfirm, Tooltip
 } from 'antd';
 import dayjs from 'dayjs';
-import { EyeOutlined } from '@ant-design/icons';
+import { EyeOutlined, LogoutOutlined, DesktopOutlined, MobileOutlined, GlobalOutlined, ReloadOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
 import { getAllAuditLogs, getModulFilter, getActionFilter } from '../utils/auditLog';
+import { getAllSessionsAPI, logoutSessionAPI } from '../utils/userApi';
 
 const { Title, Text } = Typography;
+
+// ─── Device Management Tab ────────────────────────────────────────────────────
+const getPlatformIcon = (platform = '') => {
+    const p = platform.toLowerCase();
+    if (p.includes('mobile') || p.includes('android') || p.includes('ios')) return <MobileOutlined />;
+    if (p.includes('desktop') || p.includes('windows') || p.includes('mac') || p.includes('linux')) return <DesktopOutlined />;
+    return <GlobalOutlined />;
+};
+
+const DeviceManagementTab = () => {
+    const [sessions, setSessions] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [filterActive, setFilterActive] = useState('');
+    const [searchVal, setSearchVal] = useState('');
+    const [searchInput, setSearchInput] = useState('');
+    const debounceRef = useRef(null);
+    const pageSize = 15;
+
+    const fetchSessions = useCallback(async (pg = 1, active = '', search = '') => {
+        setLoading(true);
+        try {
+            const res = await getAllSessionsAPI({ page: pg, pageSize, isActive: active, search });
+            setSessions((res.sessions || []).map(s => ({ ...s, key: s._id })));
+            setTotal(res.total || 0);
+        } catch {
+            setSessions([]);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => { fetchSessions(page, filterActive, searchVal); }, [page, filterActive, searchVal]);
+
+    const handleLogout = async (sessionId) => {
+        try {
+            await logoutSessionAPI(sessionId);
+            fetchSessions(page, filterActive, searchVal);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const columns = [
+        { title: '#', key: 'idx', width: 52, render: (_, __, i) => (page - 1) * pageSize + i + 1 },
+        {
+            title: 'Người dùng', key: 'user', width: 180,
+            render: (_, row) => (
+                <div>
+                    <div style={{ fontWeight: 600 }}>{row.userId?.name || <Text type="secondary">Ẩn danh</Text>}</div>
+                    <Text type="secondary" style={{ fontSize: 12 }}>{row.userId?.email || ''}</Text>
+                </div>
+            )
+        },
+        {
+            title: 'Thiết bị', key: 'device', width: 60, align: 'center',
+            render: (_, row) => (
+                <Tooltip title={`${row.platform || ''} – ${row.os || ''}`}>
+                    <span style={{ fontSize: 20, color: '#1A237E' }}>{getPlatformIcon(row.platform)}</span>
+                </Tooltip>
+            )
+        },
+        { title: 'IP', dataIndex: 'ip', key: 'ip', width: 140, render: v => <Text code>{v || '---'}</Text> },
+        { title: 'Trình duyệt', dataIndex: 'browser', key: 'browser', width: 140, render: v => v || '---' },
+        { title: 'Hệ điều hành', dataIndex: 'os', key: 'os', width: 140, render: v => v || '---' },
+        {
+            title: 'Trạng thái', dataIndex: 'isActive', key: 'isActive', width: 110, align: 'center',
+            render: v => v
+                ? <Badge status="success" text={<Text style={{ color: '#52c41a', fontWeight: 600 }}>Đang hoạt động</Text>} />
+                : <Badge status="default" text={<Text type="secondary">Đã đăng xuất</Text>} />
+        },
+        {
+            title: 'Đăng nhập lúc', dataIndex: 'lastActive', key: 'lastActive', width: 170,
+            render: d => d ? new Date(d).toLocaleString('vi-VN') : '---'
+        },
+        {
+            title: 'Thao tác', key: 'action', width: 140, align: 'center',
+            render: (_, row) => row.isActive ? (
+                <Popconfirm
+                    title="Đăng xuất thiết bị này?"
+                    description="Phiên đăng nhập sẽ bị vô hiệu hóa ngay lập tức."
+                    okText="Đăng xuất"
+                    cancelText="Hủy"
+                    okButtonProps={{ danger: true }}
+                    onConfirm={() => handleLogout(row._id)}
+                >
+                    <Button danger size="small" icon={<LogoutOutlined />}>Đăng xuất</Button>
+                </Popconfirm>
+            ) : <Text type="secondary">—</Text>
+        },
+    ];
+
+    return (
+        <div>
+            <Space style={{ marginBottom: 16, flexWrap: 'wrap' }}>
+                <Select
+                    placeholder="Trạng thái"
+                    allowClear
+                    style={{ width: 180 }}
+                    options={[
+                        { label: 'Đang hoạt động', value: 'true' },
+                        { label: 'Đã đăng xuất', value: 'false' },
+                    ]}
+                    onChange={v => { setFilterActive(v ?? ''); setPage(1); }}
+                />
+                <Input.Search
+                    placeholder="Tìm theo tên hoặc email..."
+                    allowClear
+                    style={{ width: 280 }}
+                    value={searchInput}
+                    onChange={e => {
+                        setSearchInput(e.target.value);
+                        if (debounceRef.current) clearTimeout(debounceRef.current);
+                        debounceRef.current = setTimeout(() => { setSearchVal(e.target.value); setPage(1); }, 500);
+                    }}
+                    onSearch={v => { setSearchVal(v); setPage(1); }}
+                    onClear={() => { setSearchVal(''); setPage(1); }}
+                />
+                <Button icon={<ReloadOutlined />} onClick={() => fetchSessions(page, filterActive, searchVal)}>
+                    Làm mới
+                </Button>
+            </Space>
+            <Table
+                columns={columns}
+                dataSource={sessions}
+                loading={loading}
+                bordered
+                size="small"
+                locale={{ emptyText: <Empty description="Chưa có phiên đăng nhập nào" /> }}
+                pagination={{
+                    current: page, pageSize, total,
+                    showSizeChanger: false, showLessItems: true,
+                    onChange: p => setPage(p),
+                    showTotal: t => `Tổng ${t} phiên`,
+                }}
+            />
+        </div>
+    );
+};
+// ─────────────────────────────────────────────────────────────────────────────
 
 const ACTION_COLOR = {
     create: 'green',
@@ -417,119 +559,137 @@ const AdminAuditLog = () => {
             <AdminSidebar />
             <main className="admin-main" style={{ padding: '24px 32px' }}>
                 <Title level={2} style={{ color: '#1A237E', marginBottom: 24 }}>
-                    Nhật ký hoạt động (Audit Log)
+                    Nhật ký hoạt động & Thiết bị
                 </Title>
 
                 <div style={{ background: '#fff', padding: 24, borderRadius: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.06)', minHeight: '80vh' }}>
+                    <Tabs
+                        defaultActiveKey="auditlog"
+                        size="large"
+                        items={[
+                            {
+                                key: 'auditlog',
+                                label: ' Nhật ký hoạt động',
+                                children: (
+                                    <>
+                                        <Space style={{ marginBottom: 16, flexWrap: 'wrap' }}>
+                                            <Select
+                                                placeholder="Lọc hành động"
+                                                allowClear
+                                                style={{ width: 160 }}
+                                                options={actionOptions.map(a => ({ label: ACTION_LABEL[a] || a, value: a }))}
+                                                onChange={(v) => {
+                                                    const newAction = v ?? null;
+                                                    setFilterAction(newAction);
+                                                    const currentFilters = { search: searchUser, action: newAction, module: filterModule };
+                                                    if (filterDateRange && filterDateRange.length === 2) {
+                                                        currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                                                        currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                                                    }
+                                                    handleFilterChange(currentFilters);
+                                                }}
+                                            />
+                                            <Select
+                                                placeholder="Lọc module"
+                                                allowClear
+                                                style={{ width: 200 }}
+                                                options={moduleOptions.map(m => ({ label: m, value: m }))}
+                                                onChange={(v) => {
+                                                    const newModule = v ?? null;
+                                                    setFilterModule(newModule);
+                                                    const currentFilters = { search: searchUser, action: filterAction, module: newModule };
+                                                    if (filterDateRange && filterDateRange.length === 2) {
+                                                        currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                                                        currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                                                    }
+                                                    handleFilterChange(currentFilters);
+                                                }}
+                                            />
+                                            <Input.Search
+                                                placeholder="Tìm theo tên hoặc email người dùng..."
+                                                allowClear
+                                                style={{ width: 320 }}
+                                                value={searchInput}
+                                                onChange={e => {
+                                                    const val = e.target.value;
+                                                    setSearchInput(val);
+                                                    if (debounceRef.current) clearTimeout(debounceRef.current);
+                                                    debounceRef.current = setTimeout(() => {
+                                                        setSearchUser(val);
+                                                        const currentFilters = { search: val, action: filterAction, module: filterModule };
+                                                        if (filterDateRange && filterDateRange.length === 2) {
+                                                            currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                                                            currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                                                        }
+                                                        handleFilterChange(currentFilters);
+                                                    }, 500);
+                                                }}
+                                                onSearch={v => {
+                                                    if (debounceRef.current) clearTimeout(debounceRef.current);
+                                                    setSearchInput(v);
+                                                    setSearchUser(v);
+                                                    const currentFilters = { search: v, action: filterAction, module: filterModule };
+                                                    if (filterDateRange && filterDateRange.length === 2) {
+                                                        currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                                                        currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                                                    }
+                                                    handleFilterChange(currentFilters);
+                                                }}
+                                                onClear={() => {
+                                                    if (debounceRef.current) clearTimeout(debounceRef.current);
+                                                    setSearchInput('');
+                                                    setSearchUser('');
+                                                    const currentFilters = { search: '', action: filterAction, module: filterModule };
+                                                    if (filterDateRange && filterDateRange.length === 2) {
+                                                        currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                                                        currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                                                    }
+                                                    handleFilterChange(currentFilters);
+                                                }}
+                                            />
+                                            <DatePicker.RangePicker
+                                                placeholder={['Từ ngày', 'Đến ngày']}
+                                                style={{ width: 260 }}
+                                                value={filterDateRange}
+                                                disabledDate={(current) => {
+                                                    return current && (current > dayjs().endOf('day') || current < dayjs().subtract(30, 'days').startOf('day'));
+                                                }}
+                                                onChange={(dates) => {
+                                                    setFilterDateRange(dates);
+                                                    const currentFilters = { search: searchUser, action: filterAction, module: filterModule };
+                                                    if (dates && dates.length === 2) {
+                                                        currentFilters.startDate = dates[0].startOf('day').toISOString();
+                                                        currentFilters.endDate = dates[1].endOf('day').toISOString();
+                                                    }
+                                                    handleFilterChange(currentFilters);
+                                                }}
+                                            />
+                                        </Space>
 
-                    <Space style={{ marginBottom: 16, flexWrap: 'wrap' }}>
-                        <Select
-                            placeholder="Lọc hành động"
-                            allowClear
-                            style={{ width: 160 }}
-                            options={actionOptions.map(a => ({ label: ACTION_LABEL[a] || a, value: a }))}
-                            onChange={(v) => {
-                                const newAction = v ?? null;
-                                setFilterAction(newAction);
-                                const currentFilters = { search: searchUser, action: newAction, module: filterModule };
-                                if (filterDateRange && filterDateRange.length === 2) {
-                                    currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
-                                    currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
-                                }
-                                handleFilterChange(currentFilters);
-                            }}
-                        />
-                        <Select
-                            placeholder="Lọc module"
-                            allowClear
-                            style={{ width: 200 }}
-                            options={moduleOptions.map(m => ({ label: m, value: m }))}
-                            onChange={(v) => {
-                                const newModule = v ?? null;
-                                setFilterModule(newModule);
-                                const currentFilters = { search: searchUser, action: filterAction, module: newModule };
-                                if (filterDateRange && filterDateRange.length === 2) {
-                                    currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
-                                    currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
-                                }
-                                handleFilterChange(currentFilters);
-                            }}
-                        />
-                        <Input.Search
-                            placeholder="Tìm theo tên hoặc email người dùng..."
-                            allowClear
-                            style={{ width: 320 }}
-                            value={searchInput}
-                            onChange={e => {
-                                const val = e.target.value;
-                                setSearchInput(val);
-                                if (debounceRef.current) clearTimeout(debounceRef.current);
-                                debounceRef.current = setTimeout(() => {
-                                    setSearchUser(val);
-                                    const currentFilters = { search: val, action: filterAction, module: filterModule };
-                                    if (filterDateRange && filterDateRange.length === 2) {
-                                        currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
-                                        currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
-                                    }
-                                    handleFilterChange(currentFilters);
-                                }, 500);
-                            }}
-                            onSearch={v => {
-                                if (debounceRef.current) clearTimeout(debounceRef.current);
-                                setSearchInput(v);
-                                setSearchUser(v);
-                                const currentFilters = { search: v, action: filterAction, module: filterModule };
-                                if (filterDateRange && filterDateRange.length === 2) {
-                                    currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
-                                    currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
-                                }
-                                handleFilterChange(currentFilters);
-                            }}
-                            onClear={() => {
-                                if (debounceRef.current) clearTimeout(debounceRef.current);
-                                setSearchInput('');
-                                setSearchUser('');
-                                const currentFilters = { search: '', action: filterAction, module: filterModule };
-                                if (filterDateRange && filterDateRange.length === 2) {
-                                    currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
-                                    currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
-                                }
-                                handleFilterChange(currentFilters);
-                            }}
-                        />
-                        <DatePicker.RangePicker
-                            placeholder={['Từ ngày', 'Đến ngày']}
-                            style={{ width: 260 }}
-                            value={filterDateRange}
-                            disabledDate={(current) => {
-                                return current && (current > dayjs().endOf('day') || current < dayjs().subtract(30, 'days').startOf('day'));
-                            }}
-                            onChange={(dates) => {
-                                setFilterDateRange(dates);
-                                const currentFilters = { search: searchUser, action: filterAction, module: filterModule };
-                                if (dates && dates.length === 2) {
-                                    currentFilters.startDate = dates[0].startOf('day').toISOString();
-                                    currentFilters.endDate = dates[1].endOf('day').toISOString();
-                                }
-                                handleFilterChange(currentFilters);
-                            }}
-                        />
-                    </Space>
-
-                    <Table
-                        columns={columns}
-                        dataSource={data}
-                        loading={loading}
-                        bordered
-                        locale={{ emptyText: <Empty description="Chưa có nhật ký nào" /> }}
-                        pagination={{
-                            current: currentPage,
-                            pageSize,
-                            total: totalLogs,
-                            showLessItems: true,
-                            showSizeChanger: false,
-                            onChange: (page) => setCurrentPage(page),
-                        }}
+                                        <Table
+                                            columns={columns}
+                                            dataSource={data}
+                                            loading={loading}
+                                            bordered
+                                            locale={{ emptyText: <Empty description="Chưa có nhật ký nào" /> }}
+                                            pagination={{
+                                                current: currentPage,
+                                                pageSize,
+                                                total: totalLogs,
+                                                showLessItems: true,
+                                                showSizeChanger: false,
+                                                onChange: (page) => setCurrentPage(page),
+                                            }}
+                                        />
+                                    </>
+                                ),
+                            },
+                            {
+                                key: 'devices',
+                                label: ' Quản lý Thiết bị',
+                                children: <DeviceManagementTab />,
+                            },
+                        ]}
                     />
                 </div>
 
@@ -575,7 +735,6 @@ const AdminAuditLog = () => {
                                             {renderValues(detailRecord.oldValues, detailRecord.module)}
                                         </div>
                                     )}
-
                                     {detailRecord.newValues && Object.keys(detailRecord.newValues).length > 0 && (
                                         <div>
                                             <Text strong style={{ display: 'block', marginBottom: 8, color: '#389e0d' }}> Giá trị mới:</Text>

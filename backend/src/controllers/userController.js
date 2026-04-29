@@ -1,12 +1,13 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import env from "dotenv";
+import dotenv from "dotenv";
+dotenv.config();
 import sendMail from "../config/sendMail.js";
 import crypto from "crypto";
 import Information from "../models/Information.js";
 import AuditLog from "../models/AuditLog.js";
-env.config();
+import Session from "../models/Session.js";
 
 const createUser = async (req, res) => {
     try {
@@ -34,7 +35,7 @@ const getAllUsers = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, deviceId } = req.body;
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "Không tìm thấy người dùng" });
@@ -44,8 +45,45 @@ const loginUser = async (req, res) => {
             return res.status(404).json({ message: "Sai mật khẩu" });
         }
         const token = jwt.sign({ id: user._id, role: user.role, name: user.name }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+        const refreshToken = jwt.sign({ id: user._id, role: user.role, name: user.name }, process.env.JWT_SECRET_REFRESH, { expiresIn: process.env.JWT_EXPIRES_IN_REFRESH })
+        
+        let session;
+        if (deviceId) {
+            session = await Session.findOne({ userId: user._id, deviceId: deviceId });
+        }
+        
+        if (session) {
+            // Update existing session for this device
+            session.ip = req.userInfo.ip;
+            session.browser = req.userInfo.browser;
+            session.os = req.userInfo.os;
+            session.platform = req.userInfo.platform;
+            session.refreshToken = refreshToken;
+            session.isActive = true;
+            session.lastActive = Date.now();
+            await session.save();
+        } else {
+            // Create new session
+            session = await Session.create({
+                userId: user._id,
+                deviceId: deviceId,
+                ip: req.userInfo.ip,
+                browser: req.userInfo.browser,
+                os: req.userInfo.os,
+                platform: req.userInfo.platform,
+                refreshToken: refreshToken,
+                isActive: true,
+                lastActive: Date.now()
+            });
+        }
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000
+        });
         res.status(200).json({
-            token, user: {
+            token, refreshToken, session, user: {
                 id: user._id,
                 name: user.name,
                 email: user.email,
@@ -263,4 +301,105 @@ const resetPassword = async (req, res) => {
     }
 };
 
-export { createUser, getAllUsers, loginUser, updateTheme, getAdminTheme, changePassword, updateInfo, forgotPassword, resetPassword };
+const getAllSessions = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 20;
+        const { isActive, search } = req.query;
+
+        // Build session filter
+        const sessionFilter = {};
+        if (isActive !== undefined && isActive !== '') {
+            sessionFilter.isActive = isActive === 'true';
+        }
+
+        // Build user filter for search
+        let userIds = null;
+        if (search && search.trim()) {
+            const User = (await import("../models/User.js")).default;
+            const users = await User.find({
+                $or: [
+                    { name: { $regex: search.trim(), $options: 'i' } },
+                    { email: { $regex: search.trim(), $options: 'i' } }
+                ]
+            }).select('_id').lean();
+            userIds = users.map(u => u._id);
+            sessionFilter.userId = { $in: userIds };
+        }
+
+        const total = await Session.countDocuments(sessionFilter);
+        const sessions = await Session.find(sessionFilter)
+            .populate('userId', 'name email role')
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * pageSize)
+            .limit(pageSize)
+            .lean();
+
+        res.status(200).json({ sessions, total, page, pageSize });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const logoutSession = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const { id } = req.params;
+        const session = await Session.findById(id);
+        if (!session) {
+            return res.status(404).json({ message: "Không tìm thấy phiên đăng nhập" });
+        }
+        if (!session.isActive) {
+            return res.status(400).json({ message: "Phiên đăng nhập này đã bị vô hiệu hóa" });
+        }
+        session.isActive = false;
+        await session.save();
+
+        await AuditLog.create({
+            module: "Quản lý thiết bị",
+            action: "update",
+            recordId: session._id,
+            recordName: `Đăng xuất thiết bị – ${session.browser || ''} / ${session.os || ''} (${session.ip || ''})`,
+            userId: req.user.id,
+            oldValues: { isActive: true },
+            newValues: { isActive: false },
+        });
+
+        res.status(200).json({ message: "Đăng xuất thiết bị thành công" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const refreshToken = async (req, res) => {
+    try {
+        const { refreshToken } = req.body;
+        if (!refreshToken) {
+            return res.status(401).json({ message: "Không tìm thấy refresh token" });
+        }
+
+        const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH);
+        const session = await Session.findOne({ refreshToken, isActive: true });
+        if (!session) {
+            return res.status(401).json({ message: "Phiên đăng nhập không hợp lệ hoặc đã bị đăng xuất" });
+        }
+
+        const user = await User.findById(decoded.id);
+        if (!user) {
+            return res.status(401).json({ message: "Người dùng không tồn tại" });
+        }
+
+        const newToken = jwt.sign({ id: user._id, role: user.role, name: user.name }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+
+        res.status(200).json({ token: newToken });
+    } catch (error) {
+        return res.status(401).json({ message: "Refresh token không hợp lệ hoặc đã hết hạn" });
+    }
+};
+
+export { createUser, getAllUsers, loginUser, updateTheme, getAdminTheme, changePassword, updateInfo, forgotPassword, resetPassword, getAllSessions, logoutSession, refreshToken };
