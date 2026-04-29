@@ -1,0 +1,203 @@
+/**
+ * Midnight Dark Theme – Client Page Overrides
+ * Áp dụng khi <html data-theme="midnight-dark">
+ */
+
+/* =============================================
+   HEADER & NAVIGATION DROPDOWN
+   ============================================= */
+[data-theme="midnight-dark"] .header {
+    background: #13111f !important;
+    box-shadow: 0 2px 20px rgba(124, 58, 237, 0.15) !important;
+}
+
+[data-theme="midnight-dark"] .menu-items a {
+    color: #e2e8f0 !important;
+}
+
+[data-theme="midnight-dark"] .menu-items a:hover {
+    color: #a78bfa !important;
+    border-bottom-color: #7c3aed !important;
+}
+
+/* Dropdown background & text */
+[data-theme="midnight-dark"] .dropdown {
+    background: #1e1b4b !important;
+    border-color: #2d2060 !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="midnight-dark"] .dropdown::before {
+    background: #1e1b4b !important;
+    border-color: #2d2060 !important;
+}
+
+[data-theme="midnight-dark"] .dropdown li a {
+    color: #e2e8f0 !important;
+    border-bottom-color: #2d2060 !important;
+}
+
+[data-theme="midnight-dark"] .dropdown li a:hover {
+    background: #2d2060 !important;
+    color: #a78bfa !important;
+}
+
+/* Mobile menu */
+[data-theme="midnight-dark"] .menu {
+    background: #13111f !important;
+}
+
+[data-theme="midnight-dark"] .menu-items li {
+    border-bottom-color: #2d2060 !important;
+}
+
+/* =============================================
+   PRODUCT DETAIL PAGE
+   ============================================= */
+[data-theme="midnight-dark"] .product-detail-section {
+    background: #0f0f1a !important;
+}
+
+[data-theme="midnight-dark"] .product-detail-container {
+    background: #1e1b4b !important;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="midnight-dark"] .product-title-detail {
+    color: #e2e8f0 !important;
+}
+
+[data-theme="midnight-dark"] .product-description-detail {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="midnight-dark"] .product-category-detail {
+    background: rgba(124, 58, 237, 0.2) !important;
+    color: #a78bfa !important;
+}
+
+[data-theme="midnight-dark"] .product-price-detail {
+    border-bottom-color: #2d2060 !important;
+}
+
+/* Specs block */
+[data-theme="midnight-dark"] .product-specs {
+    background: #161428 !important;
+}
+
+[data-theme="midnight-dark"] .product-specs h3 {
+    color: #a78bfa !important;
+}
+
+[data-theme="midnight-dark"] .product-specs p {
+    color: #94a3b8 !important;
+}
+
+/* Desc list items */
+[data-theme="midnight-dark"] .product-desc-item {
+    color: #cbd5e1 !important;
+    border-bottom-color: #2d2060 !important;
+}
+
+/* Specs table */
+[data-theme="midnight-dark"] .specs-container h4 {
+    color: #e2e8f0 !important;
+    border-bottom-color: #2d2060 !important;
+}
+
+[data-theme="midnight-dark"] .specs-row:nth-child(odd) {
+    background-color: #161428 !important;
+}
+
+[data-theme="midnight-dark"] .specs-row:nth-child(even) {
+    background-color: #1e1b4b !important;
+}
+
+[data-theme="midnight-dark"] .specs-label {
+    color: #a78bfa !important;
+    border-color: #2d2060 !important;
+    background-color: transparent !important;
+}
+
+[data-theme="midnight-dark"] .specs-value {
+    color: #e2e8f0 !important;
+    border-color: #2d2060 !important;
+}
+
+/* Main image container */
+[data-theme="midnight-dark"] .main-image-container {
+    background: #161428 !important;
+    border-color: #2d2060 !important;
+}
+
+[data-theme="midnight-dark"] .thumbnail-item {
+    border-color: #2d2060 !important;
+}
+
+/* Contact buttons in detail page */
+[data-theme="midnight-dark"] .contact-btn {
+    background: #1e1b4b !important;
+    border-color: #7c3aed !important;
+    color: #a78bfa !important;
+}
+
+[data-theme="midnight-dark"] .contact-btn:hover {
+    background: #2d2060 !important;
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3) !important;
+}
+
+[data-theme="midnight-dark"] .contact-btn.buy-btn {
+    background: #7c3aed !important;
+    color: #fff !important;
+    border-color: #7c3aed !important;
+}
+
+[data-theme="midnight-dark"] .contact-btn.buy-btn:hover {
+    background: #6d28d9 !important;
+    border-color: #6d28d9 !important;
+}
+
+/* =============================================
+   GENERAL TEXT & SURFACE OVERRIDES (Client pages)
+   ============================================= */
+[data-theme="midnight-dark"] .public-layout {
+    background-color: #0f0f1a;
+    color: #e2e8f0;
+    min-height: 100vh;
+}
+
+[data-theme="midnight-dark"] body {
+    background-color: #0f0f1a;
+}
+
+[data-theme="midnight-dark"] .public-layout h1,
+[data-theme="midnight-dark"] .public-layout h2,
+[data-theme="midnight-dark"] .public-layout h3,
+[data-theme="midnight-dark"] .public-layout h4,
+[data-theme="midnight-dark"] .public-layout h5,
+[data-theme="midnight-dark"] .public-layout h6 {
+    color: #e2e8f0;
+}
+
+[data-theme="midnight-dark"] .public-layout p {
+    color: #cbd5e1;
+}
+
+[data-theme="midnight-dark"] .public-layout a {
+    color: #a78bfa;
+}
+
+[data-theme="midnight-dark"] .public-layout a:hover {
+    color: #7c3aed;
+}
+
+/* Reset admin links back to default if any leaks occur */
+.admin-sidebar a, .admin-header a, .admin-main a {
+    color: inherit;
+}
+.admin-menu-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+.admin-menu-link:hover, .admin-menu-link.active {
+    color: #ffffff !important;
+}
