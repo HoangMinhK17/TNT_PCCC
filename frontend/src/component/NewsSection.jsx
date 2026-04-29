@@ -42,12 +42,12 @@ const NewsSection = () => {
               <Link to={`/news/${main.slug}`} className="news-magazine__main">
                 <div className="news-magazine__main-img">
                   <img src={main.image} alt={main.name} />
-                  <span className="news-category">{i18n.language === 'en' ? main.categoryNewsId?.name_en : main.categoryNewsId?.name}</span>
+                  <span className="news-category">{i18n.language === 'en' && main.categoryNewsId?.name_en ? main.categoryNewsId?.name_en : main.categoryNewsId?.name}</span>
                 </div>
                 <div className="news-magazine__main-body">
                   <p className="news-date">{formatDate(main.date)}</p>
-                  <h3 className="news-magazine__main-title">{i18n.language === 'en' ? main.name_en : main.name}</h3>
-                  <p className="news-excerpt">{i18n.language === 'en' ? main.title_en : main.title}</p>
+                  <h3 className="news-magazine__main-title">{i18n.language === 'en' && main.name_en ? main.name_en : main.name}</h3>
+                  <p className="news-excerpt">{i18n.language === 'en' && main.title_en ? main.title_en : main.title}</p>
                 </div>
               </Link>
             )}
@@ -59,9 +59,9 @@ const NewsSection = () => {
                     <img src={item.image} alt={item.name} />
                   </div>
                   <div className="news-magazine__side-body">
-                    <span className="news-category-tag">{i18n.language === 'en' ? item.categoryNewsId?.name_en : item.categoryNewsId?.name}</span>
+                    <span className="news-category-tag">{i18n.language === 'en' && item.categoryNewsId?.name_en ? item.categoryNewsId?.name_en : item.categoryNewsId?.name}</span>
                     <p className="news-date">{formatDate(item.date)}</p>
-                    <h4 className="news-magazine__side-title">{i18n.language === 'en' ? item.name_en : item.name}</h4>
+                    <h4 className="news-magazine__side-title">{i18n.language === 'en' && item.name_en ? item.name_en : item.name}</h4>
                   </div>
                 </Link>
               ))}
@@ -88,11 +88,11 @@ const NewsSection = () => {
                 </div>
                 <div className="news-list__body">
                   <div className="news-list__meta">
-                    <span className="news-category-tag">{i18n.language === 'en' ? item.categoryNewsId?.name_en : item.categoryNewsId?.name}</span>
+                    <span className="news-category-tag">{i18n.language === 'en' && item.categoryNewsId?.name_en ? item.categoryNewsId?.name_en : item.categoryNewsId?.name}</span>
                     <span className="news-date">{formatDate(item.date)}</span>
                   </div>
-                  <h3 className="news-list__title">{i18n.language === 'en' ? item.name_en : item.name}</h3>
-                  <p className="news-excerpt">{i18n.language === 'en' ? item.title_en : item.title}</p>
+                  <h3 className="news-list__title">{i18n.language === 'en' && item.name_en ? item.name_en : item.name}</h3>
+                  <p className="news-excerpt">{i18n.language === 'en' && item.title_en ? item.title_en : item.title}</p>
                 </div>
               </Link>
             ))}
@@ -115,12 +115,12 @@ const NewsSection = () => {
               <Link to={`/news/${newsItem.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className="news-image-wrapper">
                   <img src={newsItem.image} alt={newsItem.name} className="news-image" />
-                  <span className="news-category">{i18n.language === 'en' ? newsItem.categoryNewsId?.name_en : newsItem.categoryNewsId?.name}</span>
+                  <span className="news-category">{i18n.language === 'en' && newsItem.categoryNewsId?.name_en ? newsItem.categoryNewsId?.name_en : newsItem.categoryNewsId?.name}</span>
                 </div>
                 <div className="news-content">
                   <p className="news-date">{formatDate(newsItem.date)}</p>
-                  <h3 className="news-title">{i18n.language === 'en' ? newsItem.name_en : newsItem.name}</h3>
-                  <p className="news-excerpt">{i18n.language === 'en' ? newsItem.title_en : newsItem.title}</p>
+                  <h3 className="news-title">{i18n.language === 'en' && newsItem.name_en ? newsItem.name_en : newsItem.name}</h3>
+                  <p className="news-excerpt">{i18n.language === 'en' && newsItem.title_en ? newsItem.title_en : newsItem.title}</p>
                 </div>
               </Link>
             </article>

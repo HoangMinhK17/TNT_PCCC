@@ -237,7 +237,7 @@ const Breadcrumbs = () => {
             if (service) {
                 if (service.name) {
                     breadcrumbs.push({
-                        name: i18n.language === 'vn' ? service.name : service.name_en,
+                        name: i18n.language === 'en' && service.name_en ? service.name_en : service.name,
                         path: `/services?category=${encodeURIComponent(service._id)}&categoryId=${service._id}`
                     });
                 } else if (categoryParam && categoryParam !== 'Tất cả') {
@@ -260,7 +260,7 @@ const Breadcrumbs = () => {
             if (project) {
                 if (project.name) {
                     breadcrumbs.push({
-                        name: i18n.language === 'vn' ? project.name : project.name_en,
+                        name: i18n.language === 'en' && project.name_en ? project.name_en : project.name,
                         path: `/projects?category=${encodeURIComponent(project._id)}&categoryId=${project._id}`
                     });
                 } else if (categoryParam && categoryParam !== 'Tất cả') {

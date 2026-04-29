@@ -55,8 +55,8 @@ const  ServiceSection = () => {
         {whyChooseService.map((item, index) => (
           <div key={index} className="highlight-item">
             <div className="highlight-icon"><img src={item.icon} alt={item.title} /></div>
-            <h4>{i18n.language === 'vn' ? item.title : item.title_en}</h4>
-            <p>{i18n.language === 'vn' ? item.description : item.description_en}</p>
+            <h4>{i18n.language === 'en' && item.title_en ? item.title_en : item.title}</h4>
+            <p>{i18n.language === 'en' && item.description_en ? item.description_en : item.description}</p>
           </div>
         ))}
       </div>
@@ -87,7 +87,7 @@ const  ServiceSection = () => {
               {services.slice(0, 4).map((service, idx) => (
                 <Link key={service._id} to={`/services/${service.slug}`} className="service-list-row">
                   <div className="service-list-row__info">
-                    <h3 className="service-list-row__name">{i18n.language === 'vn' ? service.name : service.name_en}</h3>
+                    <h3 className="service-list-row__name">{i18n.language === 'en' && service.name_en ? service.name_en : service.name}</h3>
                     <Link to={`/contact`} className="service-list-row__desc">{t('service_button_contact')}</Link>
                   </div>
                   {service.image && (
@@ -122,7 +122,7 @@ const  ServiceSection = () => {
                   </div>
                 </Link>
                 <h3 className="service-title">
-                  <Link to={`/services/${service.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}> {i18n.language === 'vn' ? service.name : service.name_en}</Link>
+                  <Link to={`/services/${service.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}> {i18n.language === 'en' && service.name_en ? service.name_en : service.name}</Link>
                 </h3>
                 {userTheme === 'ai-teal' ? (
                   <Link to={`/contact`} className="ai-arrow-btn">

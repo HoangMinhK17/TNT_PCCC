@@ -19,7 +19,11 @@ export const loginUser = async (email, password) => {
 
 export const createUser = async (name, email, password) => {
     try {
-        const response = await api.post("/user/create-user", { name, email, password });
+        const response = await api.post("/user/create-user", { name, email, password }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
         return response.data;
     } catch (error) {
         throw error;

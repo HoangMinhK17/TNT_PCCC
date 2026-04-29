@@ -74,13 +74,13 @@ const NewsDetail = () => {
                     </div>
 
                     <div className="news-detail-info">
-                        <span className="news-detail-category">{i18n.language === 'en' ? newsItem.categoryNewsId?.name_en : newsItem.categoryNewsId?.name}</span>
-                        <h1 className="news-detail-title">{i18n.language === 'en' ? newsItem.name_en : newsItem.name}</h1>
+                        <span className="news-detail-category">{i18n.language === 'en' && newsItem.categoryNewsId?.name_en ? newsItem.categoryNewsId?.name_en : newsItem.categoryNewsId?.name}</span>
+                        <h1 className="news-detail-title">{i18n.language === 'en' && newsItem.name_en ? newsItem.name_en : newsItem.name}</h1>
                         <p className="news-detail-date"> {new Date(newsItem.date).toLocaleDateString('vi-VN')}</p>
 
                         <div className="news-detail-content">
-                            <p className="news-detail-description" style={{ fontWeight: '600', marginBottom: '10px' }}>{i18n.language === 'en' ? newsItem.title_en : newsItem.title}</p>
-                            <div className="news-detail-short-desc" style={{ color: '#555', marginBottom: '20px', fontStyle: 'italic' }} dangerouslySetInnerHTML={{ __html: i18n.language === 'en' ? newsItem.description_en : newsItem.description }}></div>
+                            <p className="news-detail-description" style={{ fontWeight: '600', marginBottom: '10px' }}>{i18n.language === 'en' && newsItem.title_en ? newsItem.title_en : newsItem.title}</p>
+                            <div className="news-detail-short-desc" style={{ color: '#555', marginBottom: '20px', fontStyle: 'italic' }} dangerouslySetInnerHTML={{ __html: i18n.language === 'en' && newsItem.description_en ? newsItem.description_en : newsItem.description }}></div>
                         </div>
 
                         <div className="news-detail-footer">

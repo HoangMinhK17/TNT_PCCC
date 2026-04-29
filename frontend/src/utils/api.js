@@ -22,12 +22,11 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        
+
         if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-            // Prevent infinite retry loops
             if (!originalRequest._retry) {
                 originalRequest._retry = true;
-                
+
                 const refreshToken = localStorage.getItem('refreshToken');
                 if (refreshToken) {
                     try {
@@ -38,13 +37,11 @@ api.interceptors.response.use(
                             return api(originalRequest);
                         }
                     } catch (refreshError) {
-                        // Refresh token also failed or expired
                         console.error('Refresh token failed:', refreshError);
                     }
                 }
             }
 
-            // If no refresh token, or refresh token failed, logout user
             const msg = error.response.data?.message?.toLowerCase() || "";
             if (msg.includes("token") || msg.includes("forbidden") || msg.includes("unauthorized") || error.response.status === 401) {
                 localStorage.removeItem('token');

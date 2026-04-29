@@ -38,8 +38,8 @@ const ProjectsSection = () => {
                 <img src={project.image} alt={project.name} className="project-image" />
               </div>
               <div className="project-info">
-                <h3 className="project-name">{i18n.language === 'vn' ? project.name : project.name_en}</h3>
-                <p className="project-description" dangerouslySetInnerHTML={{ __html: i18n.language === 'vn' ? project.description : project.description_en }}></p>
+                <h3 className="project-name">{i18n.language === 'en' && project.name_en ? project.name_en : project.name}</h3>
+                <p className="project-description" dangerouslySetInnerHTML={{ __html: i18n.language === 'en' && project.description_en ? project.description_en : project.description }}></p>
                 <p className="project-year">Năm: {new Date(project.date).getFullYear()}</p>
               </div>
             </Link>
@@ -58,8 +58,8 @@ const ProjectsSection = () => {
               <img src={project.image} alt={project.name} className="project-image" />
             </div>
             <div className="project-info">
-              <h3 className="project-name">{i18n.language === 'vn' ? project.name : project.name_en}</h3>
-              <p className="project-description" dangerouslySetInnerHTML={{ __html: i18n.language === 'vn' ? project.description : project.description_en }}></p>
+              <h3 className="project-name">{i18n.language === 'en' && project.name_en ? project.name_en : project.name}</h3>
+              <p className="project-description" dangerouslySetInnerHTML={{ __html: i18n.language === 'en' && project.description_en ? project.description_en : project.description }}></p>
               <p className="project-year">{new Date(project.date).getFullYear()}</p>
             </div>
           </Link>

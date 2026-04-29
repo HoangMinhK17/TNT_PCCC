@@ -83,7 +83,7 @@ const DeviceManagementTab = () => {
                 : <Badge status="default" text={<Text type="secondary">Đã đăng xuất</Text>} />
         },
         {
-            title: 'Đăng nhập lúc', dataIndex: 'lastActive', key: 'lastActive', width: 170,
+            title: 'Đăng nhập lần cuối', dataIndex: 'lastActive', key: 'lastActive', width: 170,
             render: d => d ? new Date(d).toLocaleString('vi-VN') : '---'
         },
         {
@@ -433,6 +433,26 @@ const AdminAuditLog = () => {
             };
             if (dict[key]) return dict[key];
         }
+        if (moduleName === 'Quản lý thiết bị') {
+            const dict = {
+                isActive: 'Trạng thái đăng nhập',
+            };
+            if (dict[key]) return dict[key];
+        }
+        if (moduleName === 'Giới thiệu') {
+            const dict = {
+                name: 'Tên công ty',
+                'title.titleName': 'Tiêu đề',
+                'title.titleName_en': 'Tiêu đề (Tiếng Anh)',
+                'title.titleIcon' : "Ảnh Tiêu đề",
+                name_en : 'Tên công ty (Tiếng Anh)',
+                'description.descriptionName' : 'Mô tả',
+                'description.descriptionName_en' : 'Mô tả (Tiếng Anh)',
+                'description.descriptionIcon' : 'Ảnh Mô tả',
+
+            }
+            if (dict[key]) return dict[key];
+        }
         const commonDict = {
             name: 'Tên',
             name_en: 'Tên (Tiếng Anh)',
@@ -566,6 +586,7 @@ const AdminAuditLog = () => {
                     <Tabs
                         defaultActiveKey="auditlog"
                         size="large"
+                        type='card'
                         items={[
                             {
                                 key: 'auditlog',

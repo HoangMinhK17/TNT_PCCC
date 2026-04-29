@@ -109,7 +109,7 @@ const ProductDetail = () => {
                     </div>
 
                     <div className="product-info-detail">
-                        <span className="product-category-detail">{i18n.language === 'en' ? product.categoryId?.name_en : product.categoryId?.name}</span>
+                        <span className="product-category-detail">{i18n.language === 'en' && product.categoryId?.name_en ? product.categoryId?.name_en : product.categoryId?.name}</span>
                         <h1 className="product-title-detail">{i18n.language === 'en' && product.name_en ? product.name_en : product.name}</h1>
 
                         <div className="product-description-detail">
@@ -121,21 +121,19 @@ const ProductDetail = () => {
                                 <h4>{t('product_detail_spec')}</h4>
                                 <table className="specs-table">
                                     <tbody>
-                                        {i18n.language === 'en' && product.technical_en && product.technical_en.length > 0 ? (
-                                            product.technical_en.map((spec, index) => (
+                                        {product.technical.map((spec, index) => {
+                                            const isEn = i18n.language === 'en';
+                                            const specEn = product.technical_en && product.technical_en[index] ? product.technical_en[index] : {};
+                                            const displayTitle = isEn && specEn.title_en ? specEn.title_en : spec.title;
+                                            const displayDesc = isEn && specEn.description_en ? specEn.description_en : spec.description;
+
+                                            return (
                                                 <tr key={index} className="specs-row">
-                                                    <td className="specs-label">{spec.title_en}</td>
-                                                    <td className="specs-value">{spec.description_en}</td>
+                                                    <td className="specs-label">{displayTitle}</td>
+                                                    <td className="specs-value">{displayDesc}</td>
                                                 </tr>
-                                            ))
-                                        ) : (
-                                            product.technical.map((spec, index) => (
-                                                <tr key={index} className="specs-row">
-                                                    <td className="specs-label">{spec.title}</td>
-                                                    <td className="specs-value">{spec.description}</td>
-                                                </tr>
-                                            ))
-                                        )}
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </div>

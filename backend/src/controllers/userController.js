@@ -46,14 +46,13 @@ const loginUser = async (req, res) => {
         }
         const token = jwt.sign({ id: user._id, role: user.role, name: user.name }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
         const refreshToken = jwt.sign({ id: user._id, role: user.role, name: user.name }, process.env.JWT_SECRET_REFRESH, { expiresIn: process.env.JWT_EXPIRES_IN_REFRESH })
-        
+
         let session;
         if (deviceId) {
             session = await Session.findOne({ userId: user._id, deviceId: deviceId });
         }
-        
+
         if (session) {
-            // Update existing session for this device
             session.ip = req.userInfo.ip;
             session.browser = req.userInfo.browser;
             session.os = req.userInfo.os;
@@ -63,7 +62,6 @@ const loginUser = async (req, res) => {
             session.lastActive = Date.now();
             await session.save();
         } else {
-            // Create new session
             session = await Session.create({
                 userId: user._id,
                 deviceId: deviceId,
@@ -180,6 +178,14 @@ const changePassword = async (req, res) => {
         const hashedPassword = await bcrypt.hash(newPassword, salt);
         user.password = hashedPassword;
         await user.save();
+
+        await AuditLog.create({
+            module: "Cập nhật tài khoản",
+            action: "update",
+            recordId: req.user.id,
+            recordName: "Thay đổi mật khẩu",
+            userId: req.user.id,
+        });
         res.status(200).json(user);
         sendMail(user.email, "ĐỔI MẬT KHẨU", "Mật khẩu của bạn đã được thay đổi thành công vào lúc " + new Date().toLocaleString("vi-VN"));
 
@@ -198,22 +204,20 @@ const updateInfo = async (req, res) => {
 
         const oldUser = await User.findById(userId);
 
-
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ message: "Không tìm thấy người dùng" });
         }
-
 
         user.name = name;
         await user.save();
 
         if (oldUser.name !== user.name) {
             await AuditLog.create({
-                module: "Cập nhật thông tin",
+                module: "Cập nhật tài khoản",
                 action: "update",
                 recordId: req.user.id,
-                recordName: "Họ và tên",
+                recordName: "Cập nhật thông tin cá nhân",
                 userId: req.user.id,
                 oldValues: { name: oldUser.name },
                 newValues: { name: user.name },
@@ -310,16 +314,13 @@ const getAllSessions = async (req, res) => {
         const pageSize = parseInt(req.query.pageSize) || 20;
         const { isActive, search } = req.query;
 
-        // Build session filter
         const sessionFilter = {};
         if (isActive !== undefined && isActive !== '') {
             sessionFilter.isActive = isActive === 'true';
         }
 
-        // Build user filter for search
         let userIds = null;
         if (search && search.trim()) {
-            const User = (await import("../models/User.js")).default;
             const users = await User.find({
                 $or: [
                     { name: { $regex: search.trim(), $options: 'i' } },
@@ -332,7 +333,7 @@ const getAllSessions = async (req, res) => {
 
         const total = await Session.countDocuments(sessionFilter);
         const sessions = await Session.find(sessionFilter)
-            .populate('userId', 'name email role')
+            .populate('userId', 'name email')
             .sort({ createdAt: -1 })
             .skip((page - 1) * pageSize)
             .limit(pageSize)

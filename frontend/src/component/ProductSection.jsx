@@ -87,8 +87,8 @@ const ProductSection = () => {
                                         ? <img src={img} alt={displayCats[0].name} className="mgz-card__img" />
                                         : <div className="mgz-card__img mgz-card__img--placeholder" />}
                                     <div className="mgz-card__overlay">
-                                        <h3 className="mgz-card__title" title={i18n.language === 'en' ? displayCats[0].name_en : displayCats[0].name}>
-                                            {i18n.language === 'en' ? displayCats[0].name_en : displayCats[0].name}
+                                        <h3 className="mgz-card__title" title={i18n.language === 'en' && displayCats[0].name_en ? displayCats[0].name_en : displayCats[0].name}>
+                                            {i18n.language === 'en' && displayCats[0].name_en ? displayCats[0].name_en : displayCats[0].name}
                                         </h3>
                                         <p className="mgz-card__desc">{count} {t('section_products_count')}</p>
                                     </div>
@@ -106,8 +106,8 @@ const ProductSection = () => {
                                             : <div className="mgz-card__thumb-img mgz-card__img--placeholder" />}
                                     </div>
                                     <div className="mgz-card__info">
-                                        <h3 className="mgz-card__info-title" title={i18n.language === 'en' ? displayCats[1].name_en : displayCats[1].name}>
-                                            {i18n.language === 'en' ? displayCats[1].name_en : displayCats[1].name}
+                                        <h3 className="mgz-card__info-title" title={i18n.language === 'en' && displayCats[1].name_en ? displayCats[1].name_en : displayCats[1].name}>
+                                            {i18n.language === 'en' && displayCats[1].name_en ? displayCats[1].name_en : displayCats[1].name}
                                         </h3>
                                         <p className="mgz-card__info-desc">{count} {t('section_products_count')}</p>
                                     </div>
@@ -125,8 +125,8 @@ const ProductSection = () => {
                                             : <div className="mgz-card__thumb-img mgz-card__img--placeholder" />}
                                     </div>
                                     <div className="mgz-card__info">
-                                        <h3 className="mgz-card__info-title" title={i18n.language === 'en' ? displayCats[2].name_en : displayCats[2].name}>
-                                            {i18n.language === 'en' ? displayCats[2].name_en : displayCats[2].name}
+                                        <h3 className="mgz-card__info-title" title={i18n.language === 'en' && displayCats[2].name_en ? displayCats[2].name_en : displayCats[2].name}>
+                                            {i18n.language === 'en' && displayCats[2].name_en ? displayCats[2].name_en : displayCats[2].name}
                                         </h3>
                                         <p className="mgz-card__info-desc">{count} {t('section_products_count')}</p>
                                     </div>
@@ -142,8 +142,8 @@ const ProductSection = () => {
                                         ? <img src={img} alt={displayCats[3].name} className="mgz-card__img" />
                                         : <div className="mgz-card__img mgz-card__img--placeholder" />}
                                     <div className="mgz-card__overlay">
-                                        <h3 className="mgz-card__title" title={i18n.language === 'en' ? displayCats[3].name_en : displayCats[3].name}>
-                                            {i18n.language === 'en' ? displayCats[3].name_en : displayCats[3].name}
+                                        <h3 className="mgz-card__title" title={i18n.language === 'en' && displayCats[3].name_en ? displayCats[3].name_en : displayCats[3].name}>
+                                            {i18n.language === 'en' && displayCats[3].name_en ? displayCats[3].name_en : displayCats[3].name}
                                         </h3>
                                         <p className="mgz-card__desc">{count} {t('section_products_count')}</p>
                                     </div>
@@ -183,7 +183,7 @@ const ProductSection = () => {
                                                 </div>
                                             )}
                                         </div>
-                                        <h3 className="ai-product-name" title={i18n.language === 'en' ? category.name_en : category.name}>{i18n.language === 'en' ? category.name_en : category.name}</h3>
+                                        <h3 className="ai-product-name" title={i18n.language === 'en' && category.name_en ? category.name_en : category.name}>{i18n.language === 'en' && category.name_en ? category.name_en : category.name}</h3>
                                         <div className="ai-product-count">
                                             {count} {t('section_products_count')}
                                         </div>
@@ -223,7 +223,7 @@ const ProductSection = () => {
                                         }
                                     </div>
                                     <div className="products-list-h__body">
-                                        <h3 className="products-list-h__name" title={i18n.language === 'en' ? category.name_en : category.name}>{i18n.language === 'en' ? category.name_en : category.name}</h3>
+                                        <h3 className="products-list-h__name" title={i18n.language === 'en' && category.name_en ? category.name_en : category.name}>{i18n.language === 'en' && category.name_en ? category.name_en : category.name}</h3>
                                         <p className="products-list-h__count">{count} {t('section_products_count')}</p>
                                         <span className="products-list-h__cta">{t('section_view_now')}</span>
                                     </div>
@@ -253,7 +253,7 @@ const ProductSection = () => {
                                             : <div className="product-image product-image--placeholder"></div>
                                         }
                                     </div>
-                                    <h3 className="product-name" title={i18n.language === 'en' ? category.name_en : category.name}>{i18n.language === 'en' ? category.name_en : category.name}</h3>
+                                    <h3 className="product-name" title={i18n.language === 'en' && category.name_en ? category.name_en : category.name}>{i18n.language === 'en' && category.name_en ? category.name_en : category.name}</h3>
                                     <p className="product-description">{count} {t('section_products_count')}</p>
                                 </Link>
                             );

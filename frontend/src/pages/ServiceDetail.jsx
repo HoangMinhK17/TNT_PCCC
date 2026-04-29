@@ -70,7 +70,7 @@ const ServiceDetail = () => {
             <div className="service-detail-header" style={{ backgroundImage: `url(${service.image})` }}>
                 <div className="overlay"></div>
                 <div className="container">
-                    <h1 className="service-detail-title" data-aos="fade-up">{i18n.language === 'vn' ? service.name : service.name_en}</h1>
+                    <h1 className="service-detail-title" data-aos="fade-up">{i18n.language === 'en' && service.name_en ? service.name_en : service.name}</h1>
                 </div>
             </div>
 
@@ -81,10 +81,10 @@ const ServiceDetail = () => {
                     </div>
                     <div className="detail-info" data-aos="fade-up">
                         <h2>{t('service_detail_overview')}</h2>
-                        <p className="detail-description">{i18n.language === 'vn' ? service.title : service.title_en}</p>
+                        <p className="detail-description">{i18n.language === 'en' && service.title_en ? service.title_en : service.title}</p>
                         <hr />
                         <h3>{t('service_detail_des')}</h3>
-                        <div className="detail-text" dangerouslySetInnerHTML={{ __html: i18n.language === 'vn' ? service.description : service.description_en }}></div>
+                        <div className="detail-text" dangerouslySetInnerHTML={{ __html: i18n.language === 'en' && service.description_en ? service.description_en : service.description }}></div>
                         <div className="cta-box">
                             <p>{t('service_detail_interested')}</p>
                             <Link to="/contact" className="cta-button">{t('service_detail_button_contact')}</Link>

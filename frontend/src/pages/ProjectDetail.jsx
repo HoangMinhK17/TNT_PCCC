@@ -66,14 +66,14 @@ const ProjectDetail = () => {
                     </div>
 
                     <div className="project-detail-info">
-                        <h1 className="project-detail-title">{i18n.language === 'vn' ? project.name : project.name_en}</h1>
+                        <h1 className="project-detail-title">{i18n.language === 'en' && project.name_en ? project.name_en : project.name}</h1>
                         <p className="project-detail-year">{t('project_year')}: {new Date(project.date).getFullYear()}
                         </p>
 
                         <div className="project-detail-content">
-                            <p className="project-detail-description">{i18n.language === 'vn' ? project.title : project.title_en}</p>
+                            <p className="project-detail-description">{i18n.language === 'en' && project.title_en ? project.title_en : project.title}</p>
                             <h3>{t('project_detail')}</h3>
-                            <div dangerouslySetInnerHTML={{ __html: i18n.language === 'vn' ? project.description : project.description_en }}></div>
+                            <div dangerouslySetInnerHTML={{ __html: i18n.language === 'en' && project.description_en ? project.description_en : project.description }}></div>
                         </div>
 
                         <Link to="/contact" className="contact-btn">{t('project_button_contact')}</Link>
