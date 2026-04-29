@@ -1,4 +1,5 @@
 import Header from "../models/Header.js";
+import AuditLog from "../models/AuditLog.js";
 
 export const createHeader = async (req, res) => {
     try {
@@ -35,7 +36,40 @@ export const updateHeader = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ error: "Forbidden" });
         }
+        const oldData = await Header.findById(req.params.id).lean();
+        const allowUpdateField = ["name_en", "name_vn", "status", "show_home"];
+        const oldValues = {};
+        const newValues = {};
+        const stripMongoIds = (val) => {
+            if (Array.isArray(val)) return val.map(stripMongoIds);
+            if (val && typeof val === 'object') {
+                const { _id, __v, ...rest } = val;
+                return Object.fromEntries(Object.entries(rest).map(([k, v]) => [k, stripMongoIds(v)]));
+            }
+            return val;
+        };
+        for (const field of allowUpdateField) {
+            if (req.body[field] !== undefined) {
+                const isEqual = JSON.stringify(stripMongoIds(oldData[field])) === JSON.stringify(req.body[field]);
+                if (!isEqual) {
+                    oldValues[field] = oldData[field];
+                    newValues[field] = req.body[field];
+                }
+            }
+        }
         const header = await Header.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (Object.keys(newValues).length > 0) {
+            const auditLog = new AuditLog({
+                module: "Cấu hình hệ thống",
+                action: "update",
+                recordId: req.params.id,
+                recordName: "Quản lý Header",
+                userId: req.user.id,
+                oldValues,
+                newValues,
+            });
+            await auditLog.save();
+        }
         res.status(200).json(header);
     } catch (error) {
         res.status(500).json({ error: error.message });

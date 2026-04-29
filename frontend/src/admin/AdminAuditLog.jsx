@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
-    Table, Tag, Typography, Space, Select, Input, Modal, Descriptions, Empty, Button
+    Table, Tag, Typography, Space, Select, Input, Modal, Descriptions, Empty, Button, DatePicker
 } from 'antd';
+import dayjs from 'dayjs';
 import { EyeOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
-import { getAllAuditLogs } from '../utils/auditLog';
+import { getAllAuditLogs, getModulFilter, getActionFilter } from '../utils/auditLog';
 
 const { Title, Text } = Typography;
 
@@ -30,6 +31,8 @@ const formatDate = (dateStr) => {
     });
 };
 
+
+
 const AdminAuditLog = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -39,15 +42,31 @@ const AdminAuditLog = () => {
 
     const [filterAction, setFilterAction] = useState(null);
     const [filterModule, setFilterModule] = useState(null);
+    const [searchInput, setSearchInput] = useState('');
     const [searchUser, setSearchUser] = useState('');
+    const [filterDateRange, setFilterDateRange] = useState(null);
 
     const [detailVisible, setDetailVisible] = useState(false);
     const [detailRecord, setDetailRecord] = useState(null);
 
-    const fetchData = async (page = 1) => {
+    const [moduleOptions, setModuleOptions] = useState([]);
+    const [actionOptions, setActionOptions] = useState([]);
+
+    const debounceRef = useRef(null);
+
+    useEffect(() => {
+        getModulFilter().then((res) => {
+            setModuleOptions(res);
+        });
+        getActionFilter().then((res) => {
+            setActionOptions(res);
+        });
+    }, []);
+
+    const fetchData = useCallback(async (page = 1, filters = {}) => {
         setLoading(true);
         try {
-            const res = await getAllAuditLogs(page, pageSize);
+            const res = await getAllAuditLogs(page, pageSize, filters);
             setData((res.auditLogs || []).map(d => ({ ...d, key: d._id })));
             setTotalLogs(res.totalAuditLogs || 0);
         } catch {
@@ -55,21 +74,21 @@ const AdminAuditLog = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [pageSize]);
 
-    useEffect(() => { fetchData(currentPage); }, [currentPage]);
-
-    const filteredData = data.filter(row => {
-        if (filterAction && row.action !== filterAction) return false;
-        if (filterModule && row.module !== filterModule) return false;
-        if (searchUser) {
-            const name = row.userId?.name || '';
-            if (!name.toLowerCase().includes(searchUser.toLowerCase())) return false;
+    useEffect(() => {
+        const filters = { search: searchUser, action: filterAction, module: filterModule };
+        if (filterDateRange && filterDateRange.length === 2) {
+            filters.startDate = filterDateRange[0].startOf('day').toISOString();
+            filters.endDate = filterDateRange[1].endOf('day').toISOString();
         }
-        return true;
-    });
+        fetchData(currentPage, filters);
+    }, [currentPage]);
 
-    const moduleOptions = [...new Set(data.map(d => d.module).filter(Boolean))].map(m => ({ label: m, value: m }));
+    const handleFilterChange = useCallback((newFilters) => {
+        setCurrentPage(1);
+        fetchData(1, newFilters);
+    }, [fetchData]);
 
     const columns = [
         {
@@ -93,7 +112,7 @@ const AdminAuditLog = () => {
             title: 'Module',
             dataIndex: 'module',
             key: 'module',
-            width: 160,
+            width: 200,
             render: (m) => <Text code>{m}</Text>,
         },
         {
@@ -141,38 +160,71 @@ const AdminAuditLog = () => {
         );
     };
 
-    const renderDiffCell = (val) => {
+    const renderObjectAsTable = (obj, moduleName) => {
+        if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return null;
+        const entries = Object.entries(obj).filter(([k]) => k !== '_id' && k !== '__v');
+        if (entries.length === 0) return <Text type="secondary">(trống)</Text>;
+        return (
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                <tbody>
+                    {entries.map(([k, v]) => (
+                        <tr key={k} style={{ borderBottom: '1px solid #f0f0f0' }}>
+                            <td style={{ padding: '4px 8px', fontWeight: 600, color: '#555', whiteSpace: 'nowrap', width: '40%' }}>
+                                {getFieldTranslation(moduleName, k)}
+                            </td>
+                            <td style={{ padding: '4px 8px', wordBreak: 'break-word' }}>
+                                {v === null || v === undefined || v === ''
+                                    ? <Text type="secondary">(trống)</Text>
+                                    : typeof v === 'object'
+                                        ? renderObjectAsTable(v, moduleName)
+                                        : String(v)}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        );
+    };
+
+    const renderDiffCell = (val, moduleName) => {
         if (val === null || val === undefined || val === '') return <Text type="secondary">(trống)</Text>;
-        
+
         if (Array.isArray(val)) {
             if (val.length === 0) return <Text type="secondary">Bỏ trống</Text>;
+            if (typeof val[0] === 'object') {
+                return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        {val.map((item, idx) => (
+                            <div key={idx} style={{ background: '#fafafa', border: '1px solid #e8e8e8', borderRadius: 6, padding: '6px 10px' }}>
+                                <Text type="secondary" style={{ fontSize: 11, display: 'block', marginBottom: 4 }}>#{idx + 1}</Text>
+                                {renderObjectAsTable(item, moduleName)}
+                            </div>
+                        ))}
+                    </div>
+                );
+            }
             return (
                 <ul style={{ margin: 0, paddingLeft: 16 }}>
                     {val.map((item, idx) => (
-                        <li key={idx} style={{ wordBreak: 'break-word' }}>
-                            {typeof item === 'object' ? JSON.stringify(item) : String(item)}
-                        </li>
+                        <li key={idx} style={{ wordBreak: 'break-word' }}>{String(item)}</li>
                     ))}
                 </ul>
             );
         }
-        
+
         if (typeof val === 'object') {
-            return (
-                <pre style={{ margin: 0, fontSize: '13px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontFamily: 'inherit' }}>
-                    {JSON.stringify(val, null, 2)}
-                </pre>
-            );
+            return renderObjectAsTable(val, moduleName);
         }
 
         const str = String(val);
         if (str.length > 100 && !str.includes('<') && !str.includes('>')) {
             return <div style={{ maxHeight: '200px', overflowY: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{str}</div>;
         } else if (str.includes('<') && str.includes('>')) {
-            return <div style={{ maxHeight: '200px', overflowY: 'auto', background: '#fff', padding: 8, border: '1px solid #d9d9d9', borderRadius: 4 }} dangerouslySetInnerHTML={{ __html: str }} />
+            return <div style={{ maxHeight: '200px', overflowY: 'auto', background: '#fff', padding: 8, border: '1px solid #d9d9d9', borderRadius: 4 }} dangerouslySetInnerHTML={{ __html: str }} />;
         }
         return <Text style={{ wordBreak: 'break-word' }}>{str}</Text>;
     };
+
 
     const getFieldTranslation = (moduleName, key) => {
         if (moduleName === 'Danh mục tin tức' || moduleName === 'Danh mục sản phẩm') {
@@ -200,7 +252,7 @@ const AdminAuditLog = () => {
             };
             if (dict[key]) return dict[key];
         }
-        if (moduleName === 'Thông tin chung') {
+        if (moduleName === 'Cấu hình hệ thống') {
             const dict = {
                 name: 'Tên công ty',
                 title: 'Tiêu đề',
@@ -211,17 +263,34 @@ const AdminAuditLog = () => {
                 backgroundImage: 'Banner Trang Chủ',
                 logo: 'Logo Công Ty',
                 favicon: 'Favicon Trang Web',
+                name_en: 'Tên (Tiếng Anh)',
+                name_vn: 'Tên (Tiếng Việt)',
+                status: 'Trạng thái',
+                show_home: 'Hiển thị UI Home',
+                theme: 'Giao diện UI',
+                text_size: 'Cỡ chữ',
+                text_color: 'Màu chữ',
+                background_color: 'Màu nền',
+                text_title: 'Tiêu đề Cột',
+                text_p: 'Đoạn văn ',
+                text_a: 'Đường link',
+                contact_text: 'Thông tin liên hệ',
+                icon_color: 'Màu icon',
+                enable: 'Hiển thị',
+                imageChat: 'Hình Ảnh Chatbox',
+                show_phone: 'Hiển thị Số Điện Thoại',
+                socialLinks: 'Liên kết Mạng Xã Hội',
+                chatConfig: 'Cấu hình Chatbox'
             };
             if (dict[key]) return dict[key];
         }
-        if (moduleName === 'Dịch vụ'){
+        if (moduleName === 'Dịch vụ') {
             const dict = {
                 name: 'Tên dịch vụ',
                 name_en: 'Tên dịch vụ (Tiếng Anh)',
             };
             if (dict[key]) return dict[key];
         }
-
         const commonDict = {
             name: 'Tên',
             name_en: 'Tên (Tiếng Anh)',
@@ -233,31 +302,37 @@ const AdminAuditLog = () => {
             date: 'Ngày',
             status: 'Trạng thái',
             slug: 'Đường dẫn (Slug)',
-            repliedMessage : 'Phản hồi',
-            note : 'Ghi chú',
-            requirements : 'Yêu cầu',
+            repliedMessage: 'Phản hồi',
+            note: 'Ghi chú',
+            requirements: 'Yêu cầu',
+            timeWork: 'Giờ làm việc',
+            backgroundImage: 'Banner Trang Chủ',
+            logo: 'Logo Công Ty',
+            favicon: 'Favicon Trang Web',
+            socialLinks: 'Danh sách mạng xã hội',
+            chatConfig: 'Chatbox'
         };
         return commonDict[key] || key;
     };
 
     const renderUpdateDiff = (oldValues, newValues, moduleName) => {
         const allKeys = Array.from(new Set([...Object.keys(oldValues || {}), ...Object.keys(newValues || {})]));
-        
+
         return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {allKeys.map(key => {
                     const oldVal = oldValues[key];
                     const newVal = newValues[key];
                     const displayKey = getFieldTranslation(moduleName, key);
-                    
+
                     const isArrayOfObjects = (arr) => Array.isArray(arr) && arr.length > 0 && typeof arr[0] === 'object';
-                    
+
                     if (isArrayOfObjects(oldVal) || isArrayOfObjects(newVal)) {
                         const oldArr = Array.isArray(oldVal) ? oldVal : [];
                         const newArr = Array.isArray(newVal) ? newVal : [];
                         const isDiffFormat = (arr) => arr.length > 0 && arr[0].hasOwnProperty('_index');
                         let diffs = [];
-                        
+
                         if (isDiffFormat(oldArr) || isDiffFormat(newArr)) {
                             const indices = Array.from(new Set([...oldArr.map(x => x._index), ...newArr.map(x => x._index)])).sort((a, b) => a - b);
                             diffs = indices.map(idx => {
@@ -276,7 +351,7 @@ const AdminAuditLog = () => {
                                 const n = newArr[i] ? { ...newArr[i] } : null;
                                 if (o) { delete o._id; delete o.id; }
                                 if (n) { delete n._id; delete n.id; }
-                                
+
                                 if (JSON.stringify(o) !== JSON.stringify(n)) {
                                     diffs.push({ index: i, oldItem: o, newItem: n });
                                 }
@@ -323,11 +398,11 @@ const AdminAuditLog = () => {
                             <div style={{ display: 'flex' }}>
                                 <div style={{ flex: 1, padding: '12px 16px', background: '#fff1f0', borderRight: '1px solid #e8e8e8', overflowX: 'auto' }}>
                                     <Text type="danger" strong style={{ display: 'block', marginBottom: '8px' }}>Cũ:</Text>
-                                    {renderDiffCell(oldVal)}
+                                    {renderDiffCell(oldVal, moduleName)}
                                 </div>
                                 <div style={{ flex: 1, padding: '12px 16px', background: '#f6ffed', overflowX: 'auto' }}>
                                     <Text type="success" strong style={{ display: 'block', marginBottom: '8px' }}>Mới:</Text>
-                                    {renderDiffCell(newVal)}
+                                    {renderDiffCell(newVal, moduleName)}
                                 </div>
                             </div>
                         </div>
@@ -352,33 +427,98 @@ const AdminAuditLog = () => {
                             placeholder="Lọc hành động"
                             allowClear
                             style={{ width: 160 }}
-                            options={[
-                                { label: 'Thêm mới', value: 'create' },
-                                { label: 'Cập nhật', value: 'update' },
-                                { label: 'Xóa', value: 'delete' },
-                            ]}
-                            onChange={(v) => setFilterAction(v ?? null)}
+                            options={actionOptions.map(a => ({ label: ACTION_LABEL[a] || a, value: a }))}
+                            onChange={(v) => {
+                                const newAction = v ?? null;
+                                setFilterAction(newAction);
+                                const currentFilters = { search: searchUser, action: newAction, module: filterModule };
+                                if (filterDateRange && filterDateRange.length === 2) {
+                                    currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                                    currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                                }
+                                handleFilterChange(currentFilters);
+                            }}
                         />
                         <Select
                             placeholder="Lọc module"
                             allowClear
                             style={{ width: 200 }}
-                            options={moduleOptions}
-                            onChange={(v) => setFilterModule(v ?? null)}
+                            options={moduleOptions.map(m => ({ label: m, value: m }))}
+                            onChange={(v) => {
+                                const newModule = v ?? null;
+                                setFilterModule(newModule);
+                                const currentFilters = { search: searchUser, action: filterAction, module: newModule };
+                                if (filterDateRange && filterDateRange.length === 2) {
+                                    currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                                    currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                                }
+                                handleFilterChange(currentFilters);
+                            }}
                         />
                         <Input.Search
-                            placeholder="Tìm theo tên người dùng..."
+                            placeholder="Tìm theo tên hoặc email người dùng..."
                             allowClear
+                            style={{ width: 320 }}
+                            value={searchInput}
+                            onChange={e => {
+                                const val = e.target.value;
+                                setSearchInput(val);
+                                if (debounceRef.current) clearTimeout(debounceRef.current);
+                                debounceRef.current = setTimeout(() => {
+                                    setSearchUser(val);
+                                    const currentFilters = { search: val, action: filterAction, module: filterModule };
+                                    if (filterDateRange && filterDateRange.length === 2) {
+                                        currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                                        currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                                    }
+                                    handleFilterChange(currentFilters);
+                                }, 500);
+                            }}
+                            onSearch={v => {
+                                if (debounceRef.current) clearTimeout(debounceRef.current);
+                                setSearchInput(v);
+                                setSearchUser(v);
+                                const currentFilters = { search: v, action: filterAction, module: filterModule };
+                                if (filterDateRange && filterDateRange.length === 2) {
+                                    currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                                    currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                                }
+                                handleFilterChange(currentFilters);
+                            }}
+                            onClear={() => {
+                                if (debounceRef.current) clearTimeout(debounceRef.current);
+                                setSearchInput('');
+                                setSearchUser('');
+                                const currentFilters = { search: '', action: filterAction, module: filterModule };
+                                if (filterDateRange && filterDateRange.length === 2) {
+                                    currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                                    currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                                }
+                                handleFilterChange(currentFilters);
+                            }}
+                        />
+                        <DatePicker.RangePicker
+                            placeholder={['Từ ngày', 'Đến ngày']}
                             style={{ width: 260 }}
-                            value={searchUser}
-                            onChange={e => setSearchUser(e.target.value)}
-                            onSearch={v => setSearchUser(v)}
+                            value={filterDateRange}
+                            disabledDate={(current) => {
+                                return current && (current > dayjs().endOf('day') || current < dayjs().subtract(30, 'days').startOf('day'));
+                            }}
+                            onChange={(dates) => {
+                                setFilterDateRange(dates);
+                                const currentFilters = { search: searchUser, action: filterAction, module: filterModule };
+                                if (dates && dates.length === 2) {
+                                    currentFilters.startDate = dates[0].startOf('day').toISOString();
+                                    currentFilters.endDate = dates[1].endOf('day').toISOString();
+                                }
+                                handleFilterChange(currentFilters);
+                            }}
                         />
                     </Space>
 
                     <Table
                         columns={columns}
-                        dataSource={filteredData}
+                        dataSource={data}
                         loading={loading}
                         bordered
                         locale={{ emptyText: <Empty description="Chưa có nhật ký nào" /> }}

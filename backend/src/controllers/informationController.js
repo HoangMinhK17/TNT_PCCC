@@ -57,7 +57,7 @@ const updateInformation = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const oldData = await Information.findById(req.params.id);
+        const oldData = await Information.findById(req.params.id).lean();
         const allowUpdateField = ["name", "title", "phone", "address", "email", "timeWork"];
         const updatedData = {};
         const oldValues = {};
@@ -65,7 +65,8 @@ const updateInformation = async (req, res) => {
         for (const field of allowUpdateField) {
             if (req.body[field] !== undefined) {
                 updatedData[field] = req.body[field];
-                if (oldData[field] !== req.body[field]) {
+                const isEqual = JSON.stringify(oldData[field]) === JSON.stringify(req.body[field]);
+                if (!isEqual) {
                     oldValues[field] = oldData[field];
                     newValues[field] = req.body[field];
                 }
@@ -82,12 +83,12 @@ const updateInformation = async (req, res) => {
         if (!information) {
             return res.status(404).json({ message: "Information not found" });
         }
-        if (Object.keys(updatedData).length > 0) {
+        if (Object.keys(newValues).length > 0) {
             const auditLog = new AuditLog({
-                module: "Thông tin chung",
+                module: "Cấu hình hệ thống",
                 action: "update",
                 recordId: information._id,
-                recordName: information.name,
+                recordName: "Thông tin chung",
                 userId: req.user.id,
                 oldValues,
                 newValues,
@@ -105,6 +106,7 @@ const upadateImageInformation = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+        const oldData = await Information.findById(req.params.id).lean();
         const allowUpdateField = ["name", "backgroundImage", "logo", "favicon"];
         const updatedData = {};
         const oldValues = {};
@@ -112,7 +114,8 @@ const upadateImageInformation = async (req, res) => {
         for (const field of allowUpdateField) {
             if (req.body[field] !== undefined) {
                 updatedData[field] = req.body[field];
-                if (oldData[field] !== req.body[field]) {
+                const isEqual = JSON.stringify(oldData[field]) === JSON.stringify(req.body[field]);
+                if (!isEqual) {
                     oldValues[field] = oldData[field];
                     newValues[field] = req.body[field];
                 }
@@ -126,12 +129,12 @@ const upadateImageInformation = async (req, res) => {
         if (!information) {
             return res.status(404).json({ message: "Information not found" });
         }
-        if (Object.keys(updatedData).length > 0) {
+        if (Object.keys(newValues).length > 0) {
             const auditLog = new AuditLog({
-                module: "Thông tin chung",
+                module: "Cấu hình hệ thống",
                 action: "update",
                 recordId: information._id,
-                recordName: information.name,
+                recordName: "Logo & Banner",
                 userId: req.user.id,
                 oldValues,
                 newValues,
@@ -149,12 +152,50 @@ const updateContactInformation = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+        const oldData = await Information.findById(req.params.id).lean();
+        const allowUpdateField = ["socialLinks"];
+        const oldValues = {};
+        const newValues = {};
+
+        const stripMongoIds = (val) => {
+            if (Array.isArray(val)) return val.map(stripMongoIds);
+            if (val && typeof val === 'object') {
+                const { _id, __v, ...rest } = val;
+                return Object.fromEntries(Object.entries(rest).map(([k, v]) => [k, stripMongoIds(v)]));
+            }
+            return val;
+        };
+
+        for (const field of allowUpdateField) {
+            if (req.body[field] !== undefined) {
+                const isEqual = JSON.stringify(stripMongoIds(oldData[field])) === JSON.stringify(req.body[field]);
+                if (!isEqual) {
+                    oldValues[field] = oldData[field];
+                    newValues[field] = req.body[field];
+                }
+            }
+        }
+
         const information = await Information.findByIdAndUpdate(req.params.id, {
             socialLinks: req.body.socialLinks
         }, { new: true });
         if (!information) {
             return res.status(404).json({ message: "Information not found" });
         }
+
+        if (Object.keys(newValues).length > 0) {
+            const auditLog = new AuditLog({
+                module: "Cấu hình hệ thống",
+                action: "update",
+                recordId: req.params.id,
+                recordName: "Mạng xã hội",
+                userId: req.user.id,
+                oldValues,
+                newValues,
+            });
+            await auditLog.save();
+        }
+
         res.status(200).json(information);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -166,12 +207,40 @@ const updateChatConfig = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
+        const oldData = await Information.findById(req.params.id);
+        const allowUpdateField = ["chatConfig"];
+        const oldValues = {};
+        const newValues = {};
+        for (const field of allowUpdateField) {
+            if (req.body[field] !== undefined) {
+                const isEqual = JSON.stringify(oldData[field]) === JSON.stringify(req.body[field]);
+                if (!isEqual) {
+                    oldValues[field] = oldData[field];
+                    newValues[field] = req.body[field];
+                }
+            }
+        }
+
         const information = await Information.findByIdAndUpdate(req.params.id, {
             chatConfig: req.body.chatConfig
         }, { new: true });
         if (!information) {
             return res.status(404).json({ message: "Information not found" });
         }
+
+        if (Object.keys(newValues).length > 0) {
+            const auditLog = new AuditLog({
+                module: "Cấu hình hệ thống",
+                action: "update",
+                recordId: information._id,
+                recordName: "Chatbox",
+                userId: req.user.id,
+                oldValues,
+                newValues,
+            });
+            await auditLog.save();
+        }
+
         res.status(200).json(information);
     } catch (error) {
         res.status(500).json({ message: error.message });

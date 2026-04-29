@@ -5,10 +5,14 @@ import env from "dotenv";
 import sendMail from "../config/sendMail.js";
 import crypto from "crypto";
 import Information from "../models/Information.js";
+import AuditLog from "../models/AuditLog.js";
 env.config();
 
 const createUser = async (req, res) => {
     try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
         const { name, email, password } = req.body;
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -62,6 +66,8 @@ const updateTheme = async (req, res) => {
         const { theme } = req.body;
         const userId = req.user.id;
 
+        const oldUser = await User.findById(userId);
+
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ message: "Không tìm thấy người dùng" });
@@ -69,6 +75,18 @@ const updateTheme = async (req, res) => {
 
         user.theme = theme;
         await user.save();
+
+        if (oldUser.theme !== user.theme) {
+            await AuditLog.create({
+                module: "Cấu hình hệ thống",
+                action: "update",
+                recordId: user._id,
+                recordName: "Cấu hình theme (UI)",
+                userId: req.user.id,
+                oldValues: { theme: oldUser.theme },
+                newValues: { theme: user.theme },
+            });
+        }
 
         res.status(200).json({ message: "Cập nhật theme thành công", theme: user.theme });
     } catch (error) {
@@ -140,13 +158,29 @@ const updateInfo = async (req, res) => {
         const { name } = req.body;
         const userId = req.user.id;
 
+        const oldUser = await User.findById(userId);
+
+
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ message: "Không tìm thấy người dùng" });
         }
 
+
         user.name = name;
         await user.save();
+
+        if (oldUser.name !== user.name) {
+            await AuditLog.create({
+                module: "Cập nhật thông tin",
+                action: "update",
+                recordId: req.user.id,
+                recordName: "Họ và tên",
+                userId: req.user.id,
+                oldValues: { name: oldUser.name },
+                newValues: { name: user.name },
+            });
+        }
         res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });
