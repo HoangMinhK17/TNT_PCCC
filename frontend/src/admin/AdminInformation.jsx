@@ -204,7 +204,9 @@ const AdminInformation = () => {
                     name: data.chatConfig?.name || "Chat Hỗ Trợ",
                     scriptUrl: data.chatConfig?.scriptUrl || "",
                     token: data.chatConfig?.token || "",
-                    imageChat: data.chatConfig?.imageChat ? [data.chatConfig.imageChat] : []
+                    imageChat: data.chatConfig?.imageChat ? [data.chatConfig.imageChat] : [],
+                    externalChatConfig_enable: data.chatConfig?.externalChatConfig?.enable ?? false,
+                    externalChatConfig_url: data.chatConfig?.externalChatConfig?.url || ""
                 });
             }
         } catch {
@@ -426,7 +428,11 @@ const AdminInformation = () => {
                     name: values.name,
                     scriptUrl: values.scriptUrl,
                     token: values.token,
-                    imageChat: imageChatUrls.length > 0 ? imageChatUrls[0] : ""
+                    imageChat: imageChatUrls.length > 0 ? imageChatUrls[0] : "",
+                    externalChatConfig: {
+                        enable: values.externalChatConfig_enable,
+                        url: values.externalChatConfig_url
+                    }
                 }
             };
             await updateChatConfig(infoData._id, payload);
@@ -847,6 +853,22 @@ const AdminInformation = () => {
                                 <Form.Item name="imageChat" label="Icon Chat">
                                     <MultiCloudinaryUpload maxCount={1} />
                                 </Form.Item>
+                            </Col>
+                            <Col span={24}>
+                                <Card title="Cấu hình mở link chat ngoài (Tùy chọn)" size="small">
+                                    <Row gutter={16}>
+                                        <Col span={24}>
+                                            <Form.Item name="externalChatConfig_enable" label="Cho phép hiển thị tùy chọn Chat bằng Link ngoài" valuePropName="checked">
+                                                <Switch checkedChildren="Bật" unCheckedChildren="Tắt" />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col span={24}>
+                                            <Form.Item name="externalChatConfig_url" label="Đường dẫn trang Chat (URL)">
+                                                <Input placeholder="VD: https://zalo.me/..." />
+                                            </Form.Item>
+                                        </Col>
+                                    </Row>
+                                </Card>
                             </Col>
                         </Row>
                         <Divider />

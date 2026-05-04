@@ -30,9 +30,7 @@ const projectSchema = new mongoose.Schema({
     },
     slug: {
         type: String,
-        required: true,
-        unique: true,
-        index: true
+        required: true
     },
     status: {
         type: String,
@@ -60,6 +58,17 @@ const projectSchema = new mongoose.Schema({
 },
     {
         timestamps: true
+    }
+);
+
+projectSchema.index({ status: 1, isDeleted: 1, createdAt: -1 })
+projectSchema.index({ isDeleted: 1, createdAt: -1 })
+projectSchema.index({ name: 1 })
+projectSchema.index(
+    { slug: 1 },
+    {
+        unique: true,
+        partialFilterExpression: { isDeleted: false }
     }
 );
 

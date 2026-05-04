@@ -4,7 +4,8 @@ import IntroductCompany from "../models/IntroductCompany.js";
 const createIntroductCompany = async (req, res) => {
     try {
         const { name, name_en, title, description, image, mission, vision, coreValues } = req.body;
-        const introductCompany = await IntroductCompany.create({ name, name_en, title, description, image, mission, vision, coreValues });
+        const introductCompany = await IntroductCompany
+            .create({ name, name_en, title, description, image, mission, vision, coreValues });
         res.status(200).json(introductCompany);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -360,4 +361,9 @@ const getCoreValues = async (req, res) => {
     }
 };
 
-export { createIntroductCompany, getAllIntroductCompany, getIntroductCompany, getMissionVision, getCoreValues, getIntroductCompanyById, updateIntroductCompany, deleteIntroductCompany, updateMissionVision, updateCoreValuesCompany, addCoreValuesCompany, deleteCoreValuesCompany };
+export {
+    createIntroductCompany, getAllIntroductCompany, getIntroductCompany, getMissionVision
+    , getCoreValues, getIntroductCompanyById, updateIntroductCompany
+    , deleteIntroductCompany, updateMissionVision, updateCoreValuesCompany
+    , addCoreValuesCompany, deleteCoreValuesCompany
+};

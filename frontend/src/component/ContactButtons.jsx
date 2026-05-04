@@ -61,7 +61,8 @@ const ContactButtons = () => {
                             name: chatCfg.name || "Chat Hỗ Trợ",
                             url: chatCfg.scriptUrl,
                             icon: chatCfg.imageChat || "",
-                            isConfigChat: true
+                            isConfigChat: true,
+                            externalConfig: chatCfg.externalChatConfig || { enable: false, url: "" }
                         });
                     }
                     info.socialLinks = filteredLinks;
@@ -90,18 +91,41 @@ const ContactButtons = () => {
 
     return (
         <div className="social-contact-global">
-            {contactInformation?.socialLinks?.map((link, index) => (
-                <a
-                    key={index}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`social-btn-global ${link.isConfigChat ? 'chat-config-btn' : (link.name?.toLowerCase() || '')}`}
-                    onClick={(e) => handleLinkClick(e, link)}
-                >
-                    <img src={link.icon} alt={link.name} /> <span>{link.name}</span>
-                </a>
-            ))}
+            {contactInformation?.socialLinks?.map((link, index) => {
+                if (link.isConfigChat && link.externalConfig?.enable) {
+                    return (
+                        <div key={index} className="social-btn-wrapper chat-wrapper">
+                            <div 
+                                className={`social-btn-global chat-config-btn`}
+                                onClick={(e) => handleLinkClick(e, link)}
+                            >
+                                <img src={link.icon} alt={link.name} /> <span>{link.name}</span>
+                            </div>
+                            <div className="chat-options-popup">
+                                <div className="chat-option-item" onClick={(e) => { e.stopPropagation(); handleLinkClick(e, link) }}>
+                                    Chat trực tiếp trên Web
+                                </div>
+                                <a className="chat-option-item" href={link.externalConfig.url} target="_blank" rel="noopener noreferrer">
+                                    Mở trang Chat
+                                </a>
+                            </div>
+                        </div>
+                    );
+                }
+
+                return (
+                    <a
+                        key={index}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`social-btn-global ${link.isConfigChat ? 'chat-config-btn' : (link.name?.toLowerCase() || '')}`}
+                        onClick={(e) => handleLinkClick(e, link)}
+                    >
+                        <img src={link.icon} alt={link.name} /> <span>{link.name}</span>
+                    </a>
+                );
+            })}
 
             {isChatOpen && contactInformation?.chatConfig && (
                 <div className={`custom-chatbox-container ${isChatMinimized ? 'minimized' : ''}`}>

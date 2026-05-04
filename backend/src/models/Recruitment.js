@@ -39,9 +39,7 @@ const recruitmentSchema = new mongoose.Schema({
     },
     slug: {
         type: String,
-        required: true,
-        unique: true,
-        index: true
+        required: true
     },
 
     requirements: {
@@ -80,6 +78,17 @@ const recruitmentSchema = new mongoose.Schema({
 },
     {
         timestamps: true
+    }
+);
+
+recruitmentSchema.index({ status: 1, isDeleted: 1, createdAt: -1 });
+recruitmentSchema.index({ isDeleted: 1, createdAt: -1 });
+recruitmentSchema.index({ name: 1 });
+recruitmentSchema.index(
+    { slug: 1 },
+    {
+        unique: true,
+        partialFilterExpression: { isDeleted: false }
     }
 );
 

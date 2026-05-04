@@ -12,9 +12,7 @@ const categoryProductSchema = new mongoose.Schema({
     },
     slug: {
         type: String,
-        required: true,
-        unique: true,
-        index: true
+        required: true
     },
     status: {
         type: String,
@@ -51,6 +49,13 @@ const categoryProductSchema = new mongoose.Schema({
 categoryProductSchema.index({ status: 1, isDeleted: 1, createdAt: -1 })
 categoryProductSchema.index({ isDeleted: 1, createdAt: -1 })
 categoryProductSchema.index({ name: 1 })
+categoryProductSchema.index(
+    { slug: 1 },
+    {
+        unique: true,
+        partialFilterExpression: { isDeleted: false }
+    }
+);
 
 
 export default mongoose.model("CategoryProduct", categoryProductSchema);

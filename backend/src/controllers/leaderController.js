@@ -78,7 +78,10 @@ export const updateLeader = async (req, res) => {
         const oldData = await Leader.findById(req.params.id);
         const oldValues = {};
         const newValues = {};
-        const updateFields = ["name", "name_en", "position", "position_en", "image", "description", "description_en", "status"];
+        const updateFields = [
+            "name", "name_en", "position", "position_en", "image"
+            , "description", "description_en", "status"
+        ];
         updateFields.forEach(field => {
             if (oldData[field] !== req.body[field]) {
                 oldValues[field] = oldData[field];

@@ -17,7 +17,10 @@ const updateThemeFooter = async (req, res) => {
         }
         const { id } = req.params;
         const oldData = await ThemeFooter.findById(id).lean();
-        const allowUpdateField = ["background_color", "text_title", "text_p", "text_a", "contact_text", "icon_color"];
+        const allowUpdateField = [
+            "background_color", "text_title", "text_p", "text_a",
+            "contact_text", "icon_color"
+        ];
         const oldValues = {};
         const newValues = {};
         for (const field of allowUpdateField) {

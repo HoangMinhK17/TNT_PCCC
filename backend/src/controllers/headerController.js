@@ -44,13 +44,15 @@ export const updateHeader = async (req, res) => {
             if (Array.isArray(val)) return val.map(stripMongoIds);
             if (val && typeof val === 'object') {
                 const { _id, __v, ...rest } = val;
-                return Object.fromEntries(Object.entries(rest).map(([k, v]) => [k, stripMongoIds(v)]));
+                return Object.fromEntries(Object.entries(rest)
+                    .map(([k, v]) => [k, stripMongoIds(v)]));
             }
             return val;
         };
         for (const field of allowUpdateField) {
             if (req.body[field] !== undefined) {
-                const isEqual = JSON.stringify(stripMongoIds(oldData[field])) === JSON.stringify(req.body[field]);
+                const isEqual = JSON.stringify(stripMongoIds(oldData[field]))
+                    === JSON.stringify(req.body[field]);
                 if (!isEqual) {
                     oldValues[field] = oldData[field];
                     newValues[field] = req.body[field];
@@ -91,7 +93,12 @@ export const getAllForManagement = async (req, res) => {
             .skip(skip)
             .limit(limit)
             .lean();
-        res.status(200).json({ header, total, totalPage: Math.ceil(total / limit), currentPage: page });
+        res.status(200).json({
+            header,
+            total,
+            totalPage: Math.ceil(total / limit),
+            currentPage: page
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

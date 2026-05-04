@@ -16,7 +16,9 @@ export const updateThemeHeader = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const oldThemeHeader = await ThemeHeader.findById(req.params.id);
-        const allowedFields = ["background_color", "text_color", "text_size"];
+        const allowedFields = [
+            "background_color", "text_color", "text_size"
+        ];
 
         const oldUpdateValues = {};
         const newUpdateValues = {};
@@ -28,7 +30,8 @@ export const updateThemeHeader = async (req, res) => {
             }
         });
 
-        const themeHeader = await ThemeHeader.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const themeHeader = await ThemeHeader.findByIdAndUpdate(req.params.id,
+            req.body, { new: true });
 
         if (Object.keys(newUpdateValues).length > 0) {
             await AuditLog.create({

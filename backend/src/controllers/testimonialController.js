@@ -49,7 +49,9 @@ const createTestimonial = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, role, company, content, rating, avatar } = req.body;
-        const testimonial = await Testimonial.create({ name, role, company, content, rating, avatar });
+        const testimonial = await Testimonial.create({
+            name, role, company, content, rating, avatar
+        });
         res.status(200).json(testimonial);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -62,7 +64,9 @@ const updateTestimonial = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, role, company, content, rating, avatar, status } = req.body;
-        const testimonial = await Testimonial.findByIdAndUpdate(req.params.id, { name, role, company, content, rating, avatar, status }, { new: true });
+        const testimonial = await Testimonial.findByIdAndUpdate(req.params.id, {
+            name, role, company, content, rating, avatar, status
+        }, { new: true });
         res.status(200).json(testimonial);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -74,7 +78,8 @@ const deleteTestimonial = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const testimonial = await Testimonial.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+        const testimonial = await Testimonial.findByIdAndUpdate(req.params.id,
+            { isDeleted: true }, { new: true });
         res.status(200).json(testimonial);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -92,7 +97,10 @@ const searchTestimonial = async (req, res) => {
         const filter = { isDeleted: false };
         const totalTestimonials = await Testimonial.countDocuments(filter);
         const { name } = req.query;
-        const testimonials = await Testimonial.find({ name: { $regex: name, $options: "i" }, isDeleted: false })
+        const testimonials = await Testimonial.find({
+            name: { $regex: name, $options: "i" },
+            isDeleted: false
+        })
             .select("name role company content rating avatar status")
             .skip(skip)
             .limit(limit)
@@ -111,7 +119,10 @@ const searchTestimonial = async (req, res) => {
 
 const getPublicTestimonialById = async (req, res) => {
     try {
-        const testimonial = await Testimonial.findOne({ _id: req.params.id, isDeleted: false }).lean();
+        const testimonial = await Testimonial.findOne({
+            _id: req.params.id,
+            isDeleted: false
+        }).lean();
         if (!testimonial) {
             return res.status(404).json({ message: "Testimonial not found" });
         }
@@ -121,4 +132,7 @@ const getPublicTestimonialById = async (req, res) => {
     }
 };
 
-export { getPublicTestimonials, createTestimonial, getPublicTestimonialById, updateTestimonial, deleteTestimonial, searchTestimonial, getTestimonialsForManage };
+export {
+    getPublicTestimonials, createTestimonial, getPublicTestimonialById,
+    updateTestimonial, deleteTestimonial, searchTestimonial, getTestimonialsForManage
+};

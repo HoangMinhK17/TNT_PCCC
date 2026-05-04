@@ -3,7 +3,9 @@ import Information from "../models/Information.js";
 
 const getInformation = async (req, res) => {
     try {
-        const information = await Information.find().select("name title phone address email  timeWork").lean();
+        const information = await Information.find()
+            .select("name title phone address email  timeWork")
+            .lean();
         res.status(200).json(information);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -12,7 +14,9 @@ const getInformation = async (req, res) => {
 
 const getImageInformation = async (req, res) => {
     try {
-        const information = await Information.find().select("name backgroundImage logo favicon").lean();
+        const information = await Information.find()
+            .select("name backgroundImage logo favicon")
+            .lean();
         res.status(200).json(information);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -21,7 +25,9 @@ const getImageInformation = async (req, res) => {
 
 const getContactInformation = async (req, res) => {
     try {
-        const information = await Information.find().select("socialLinks chatConfig").lean();
+        const information = await Information.find()
+            .select("socialLinks chatConfig")
+            .lean();
         res.status(200).json(information);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -70,7 +76,7 @@ const updateInformation = async (req, res) => {
                     oldValues[field] = oldData[field];
                     newValues[field] = req.body[field];
                 }
-            } 
+            }
         }
         const information = await Information.findByIdAndUpdate(req.params.id, {
             name: req.body.name,
@@ -119,7 +125,7 @@ const upadateImageInformation = async (req, res) => {
                     oldValues[field] = oldData[field];
                     newValues[field] = req.body[field];
                 }
-            } 
+            }
         }
         const information = await Information.findByIdAndUpdate(req.params.id, {
             backgroundImage: req.body.backgroundImage,
@@ -207,18 +213,52 @@ const updateChatConfig = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const oldData = await Information.findById(req.params.id);
+        const oldData = await Information.findById(req.params.id).lean();
         const allowUpdateField = ["chatConfig"];
         const oldValues = {};
         const newValues = {};
-        for (const field of allowUpdateField) {
-            if (req.body[field] !== undefined) {
-                const isEqual = JSON.stringify(oldData[field]) === JSON.stringify(req.body[field]);
-                if (!isEqual) {
-                    oldValues[field] = oldData[field];
-                    newValues[field] = req.body[field];
+
+        const normalizeForCompare = (val) => {
+            if (Array.isArray(val)) return val.map(normalizeForCompare);
+            if (val && typeof val === 'object') {
+                const { _id, __v, ...rest } = val;
+                const sortedKeys = Object.keys(rest).sort();
+                const result = {};
+                for (const k of sortedKeys) {
+                    result[k] = normalizeForCompare(rest[k]);
+                }
+                return result;
+            }
+            return val;
+        };
+
+        const getDiff = (oldObj, newObj, prefix) => {
+            const keys = new Set([
+                ...Object.keys(oldObj || {}).filter(k => k !== '_id' && k !== '__v'),
+                ...Object.keys(newObj || {}).filter(k => k !== '_id' && k !== '__v')
+            ]);
+
+            for (const key of keys) {
+                const oldVal = oldObj ? oldObj[key] : undefined;
+                const newVal = newObj ? newObj[key] : undefined;
+                const path = prefix ? `${prefix}.${key}` : key;
+
+                if (oldVal && newVal && typeof oldVal === 'object' && typeof newVal === 'object'
+                    && !Array.isArray(oldVal) && !Array.isArray(newVal)) {
+                    getDiff(oldVal, newVal, path);
+                } else {
+                    const isEqual = JSON.stringify(normalizeForCompare(oldVal))
+                        === JSON.stringify(normalizeForCompare(newVal));
+                    if (!isEqual) {
+                        oldValues[path] = oldVal;
+                        newValues[path] = newVal;
+                    }
                 }
             }
+        };
+
+        if (req.body.chatConfig !== undefined) {
+            getDiff(oldData.chatConfig || {}, req.body.chatConfig || {}, 'chatConfig');
         }
 
         const information = await Information.findByIdAndUpdate(req.params.id, {
@@ -247,4 +287,8 @@ const updateChatConfig = async (req, res) => {
     }
 }
 
-export { getInformation, getImageInformation, getContactInformation, getAllInformation, createInformation, updateInformation, upadateImageInformation, updateContactInformation, updateChatConfig };
+export {
+    getInformation, getImageInformation, getContactInformation
+    , getAllInformation, createInformation, updateInformation
+    , upadateImageInformation, updateContactInformation, updateChatConfig
+};

@@ -44,8 +44,16 @@ const loginUser = async (req, res) => {
         if (!isMatch) {
             return res.status(404).json({ message: "Sai mật khẩu" });
         }
-        const token = jwt.sign({ id: user._id, role: user.role, name: user.name }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
-        const refreshToken = jwt.sign({ id: user._id, role: user.role, name: user.name }, process.env.JWT_SECRET_REFRESH, { expiresIn: process.env.JWT_EXPIRES_IN_REFRESH })
+        const token = jwt.sign(
+            { id: user._id, role: user.role, name: user.name }
+            , process.env.JWT_SECRET
+            , { expiresIn: process.env.JWT_EXPIRES_IN }
+        );
+        const refreshToken = jwt.sign(
+            { id: user._id, role: user.role, name: user.name }
+            , process.env.JWT_SECRET_REFRESH
+            , { expiresIn: process.env.JWT_EXPIRES_IN_REFRESH }
+        )
 
         let session;
         if (deviceId) {
@@ -187,7 +195,8 @@ const changePassword = async (req, res) => {
             userId: req.user.id,
         });
         res.status(200).json(user);
-        sendMail(user.email, "ĐỔI MẬT KHẨU", "Mật khẩu của bạn đã được thay đổi thành công vào lúc " + new Date().toLocaleString("vi-VN"));
+        sendMail(user.email, "ĐỔI MẬT KHẨU", "Mật khẩu của bạn đã được thay đổi thành công vào lúc "
+            + new Date().toLocaleString("vi-VN"));
 
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -289,7 +298,10 @@ const resetPassword = async (req, res) => {
     try {
         const { token, newPassword } = req.body;
         const hashToken = crypto.createHash("sha256").update(token).digest("hex");
-        const user = await User.findOne({ passwordResetToken: hashToken, passwordResetExpires: { $gt: Date.now() } });
+        const user = await User.findOne({
+            passwordResetToken: hashToken
+            , passwordResetExpires: { $gt: Date.now() }
+        });
         if (!user) {
             return res.status(404).json({ message: "Token không hợp lệ hoặc đã hết hạn" });
         }
@@ -395,7 +407,11 @@ const refreshToken = async (req, res) => {
             return res.status(401).json({ message: "Người dùng không tồn tại" });
         }
 
-        const newToken = jwt.sign({ id: user._id, role: user.role, name: user.name }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+        const newToken = jwt.sign(
+            { id: user._id, role: user.role, name: user.name }
+            , process.env.JWT_SECRET
+            , { expiresIn: process.env.JWT_EXPIRES_IN }
+        );
 
         res.status(200).json({ token: newToken });
     } catch (error) {
@@ -403,4 +419,7 @@ const refreshToken = async (req, res) => {
     }
 };
 
-export { createUser, getAllUsers, loginUser, updateTheme, getAdminTheme, changePassword, updateInfo, forgotPassword, resetPassword, getAllSessions, logoutSession, refreshToken };
+export {
+    createUser, getAllUsers, loginUser, updateTheme, getAdminTheme, changePassword
+    , updateInfo, forgotPassword, resetPassword, getAllSessions, logoutSession, refreshToken
+};

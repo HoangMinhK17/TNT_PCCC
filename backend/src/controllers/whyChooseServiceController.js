@@ -7,7 +7,9 @@ export const createWhyChooseService = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { title, title_en, description, description_en, icon, status } = req.body;
-        const whyChooseService = new WhyChooseService({ title, title_en, description, description_en, icon, status });
+        const whyChooseService = new WhyChooseService({
+            title, title_en, description, description_en, icon, status
+        });
         await whyChooseService.save();
         res.status(200).json(whyChooseService);
     } catch (error) {
@@ -33,7 +35,9 @@ export const updateWhyChooseService = async (req, res) => {
         }
         const { id } = req.params;
         const { title, title_en, description, description_en, icon, status } = req.body;
-        const whyChooseService = await WhyChooseService.findByIdAndUpdate(id, { title, title_en, description, description_en, icon, status }, { new: true });
+        const whyChooseService = await WhyChooseService.findByIdAndUpdate(id, {
+            title, title_en, description, description_en, icon, status
+        }, { new: true });
         res.status(200).json(whyChooseService);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -46,7 +50,9 @@ export const deleteWhyChooseService = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { id } = req.params;
-        const whyChooseService = await WhyChooseService.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+        const whyChooseService = await WhyChooseService.findByIdAndUpdate(id, {
+            isDeleted: true
+        }, { new: true });
         res.status(200).json(whyChooseService);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -87,7 +93,10 @@ export const searchWhyChooseService = async (req, res) => {
         const skip = (page - 1) * limit;
         const totalWhyChooseService = await WhyChooseService.countDocuments({ isDeleted: false });
         const { name } = req.query;
-        const whyChooseService = await WhyChooseService.find({ title: { $regex: name, $options: "i" }, isDeleted: false })
+        const whyChooseService = await WhyChooseService.find({
+            title: { $regex: name, $options: "i" },
+            isDeleted: false
+        })
             .select("title title_en description description_en icon status")
             .skip(skip)
             .limit(limit);

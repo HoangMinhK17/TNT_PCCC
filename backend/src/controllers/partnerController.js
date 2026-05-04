@@ -77,7 +77,9 @@ export const deletePartner = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const partner = await Partner.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+        const partner = await Partner.findByIdAndUpdate(req.params.id,
+            { isDeleted: true },
+            { new: true });
         const auditLog = new AuditLog({
             module: "Đối tác",
             action: "delete",
@@ -107,7 +109,12 @@ export const getPartnersForManage = async (req, res) => {
             .select("name image status")
             .lean();
         const total = await Partner.countDocuments({ isDeleted: false });
-        res.status(200).json({ partners, total, totalPage: Math.ceil(total / limit), currentPage: page });
+        res.status(200).json({
+            partners,
+            total,
+            totalPage: Math.ceil(total / limit),
+            currentPage: page
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -121,14 +128,26 @@ export const getPartnerByName = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const partners = await Partner.find({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false })
+        const partners = await Partner.find({
+            name: { $regex: req.params.name, $options: "i" },
+            isDeleted: false
+        })
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
             .select("name image status")
             .lean();
-        const total = await Partner.countDocuments({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false });
-        res.status(200).json({ partners, total, totalPage: Math.ceil(total / limit), currentPage: page });
+        const total = await Partner
+            .countDocuments({
+                name: { $regex: req.params.name, $options: "i" },
+                isDeleted: false
+            });
+        res.status(200).json({
+            partners,
+            total,
+            totalPage: Math.ceil(total / limit),
+            currentPage: page
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

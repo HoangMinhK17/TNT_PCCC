@@ -73,9 +73,19 @@ const informationSchema = new mongoose.Schema({
         name: {
             type: String,
             default: "Chat Hỗ Trợ"
+        },
+        externalChatConfig: {
+            enable: {
+                type: Boolean,
+                default: false
+            },
+            url: {
+                type: String,
+                default: ""
+            }
         }
-    }
 
+    }
 
 },
     {

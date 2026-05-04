@@ -61,12 +61,16 @@ const createService = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, name_en, description, description_en, title, title_en, image, slug, status } = req.body;
-        const existingProduct = await Service.findOne({ slug });
+        const { name, name_en, description, description_en, title, title_en, image, slug,
+            status } = req.body;
+        const existingProduct = await Service.findOne({ slug, isDeleted: false });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
-        const service = await Service.create({ name, name_en, description, description_en, title, title_en, image, slug, status });
+        const service = await Service.create({
+            name, name_en, description, description_en, title, title_en, image, slug,
+            status
+        });
 
         const auditLog = new AuditLog({
             module: "Dịch vụ",
@@ -87,8 +91,11 @@ const updateService = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, name_en, description, description_en, title, title_en, image, slug, status } = req.body;
-        const existingProduct = await Service.findOne({ slug, _id: { $ne: req.params.id } });
+        const {
+            name, name_en, description, description_en, title, title_en, image, slug,
+            status
+        } = req.body;
+        const existingProduct = await Service.findOne({ slug, isDeleted: false, _id: { $ne: req.params.id } });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
@@ -123,7 +130,10 @@ const updateService = async (req, res) => {
         const oldDataObj = oldData.toObject();
         const oldValues = {};
         const newValues = {};
-        const updateFields = ["name", "name_en", "description", "description_en", "title", "title_en", "image", "slug", "status"];
+        const updateFields = [
+            "name", "name_en", "description", "description_en", "title",
+            "title_en", "image", "slug", "status"
+        ];
 
         updateFields.forEach(field => {
             if (req.body[field] !== undefined) {
@@ -141,7 +151,10 @@ const updateService = async (req, res) => {
                 }
             }
         });
-        const service = await Service.findByIdAndUpdate(req.params.id, { name, name_en, description, description_en, title, title_en, image, slug, status }, { new: true });
+        const service = await Service.findByIdAndUpdate(req.params.id, {
+            name, name_en, description, description_en, title,
+            title_en, image, slug, status
+        }, { new: true });
         if (Object.keys(oldValues).length > 0) {
             const auditLog = new AuditLog({
                 module: "Dịch vụ",
@@ -165,7 +178,8 @@ const deleteService = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const service = await Service.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+        const service = await Service.findByIdAndUpdate(req.params.id, { isDeleted: true },
+            { new: true });
         const auditLog = new AuditLog({
             module: "Dịch vụ",
             recordId: service._id,
@@ -191,7 +205,10 @@ const searchService = async (req, res) => {
         const filter = { isDeleted: false };
         const totalServices = await Service.countDocuments(filter);
         const { name } = req.query;
-        const services = await Service.find({ name: { $regex: name, $options: "i" }, isDeleted: false })
+        const services = await Service.find({
+            name: { $regex: name, $options: "i" },
+            isDeleted: false
+        })
             .select("name name_en image slug title title_en status")
             .skip(skip)
             .limit(limit)
@@ -226,5 +243,8 @@ const getPublicServiceById = async (req, res) => {
     }
 };
 
-export { getPublicServices, createService, getPublicServiceById, updateService, deleteService, searchService, getServicesForManage };
+export {
+    getPublicServices, createService, getPublicServiceById, updateService, deleteService,
+    searchService, getServicesForManage
+};
 

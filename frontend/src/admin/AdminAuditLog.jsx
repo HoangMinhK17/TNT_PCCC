@@ -11,7 +11,6 @@ import { getAllSessionsAPI, logoutSessionAPI } from '../utils/userApi';
 
 const { Title, Text } = Typography;
 
-// ─── Device Management Tab ────────────────────────────────────────────────────
 const getPlatformIcon = (platform = '') => {
     const p = platform.toLowerCase();
     if (p.includes('mobile') || p.includes('android') || p.includes('ios')) return <MobileOutlined />;
@@ -282,7 +281,9 @@ const AdminAuditLog = () => {
             width: 90,
             align: 'center',
             render: (_, row) => (
-                <Button type="primary" ghost size="small" icon={<EyeOutlined />} onClick={() => { setDetailRecord(row); setDetailVisible(true); }}>Xem</Button>
+                <Button type="primary" ghost size="small" icon={<EyeOutlined />}
+                    onClick={() => { setDetailRecord(row); setDetailVisible(true); }}>Xem
+                </Button>
             ),
         },
     ];
@@ -422,7 +423,14 @@ const AdminAuditLog = () => {
                 imageChat: 'Hình Ảnh Chatbox',
                 show_phone: 'Hiển thị Số Điện Thoại',
                 socialLinks: 'Liên kết Mạng Xã Hội',
-                chatConfig: 'Cấu hình Chatbox'
+                chatConfig: 'Cấu hình Chatbox',
+                'chatConfig.enable': 'Bật/Tắt Chatbox',
+                'chatConfig.name': 'Tên Chatbox',
+                'chatConfig.scriptUrl': 'Script URL Chat',
+                'chatConfig.token': 'Token Chat',
+                'chatConfig.imageChat': 'Icon Chat',
+                'chatConfig.externalChatConfig.enable': 'Bật Chat Link Ngoài',
+                'chatConfig.externalChatConfig.url': 'URL Chat Link Ngoài',
             };
             if (dict[key]) return dict[key];
         }
@@ -444,11 +452,11 @@ const AdminAuditLog = () => {
                 name: 'Tên công ty',
                 'title.titleName': 'Tiêu đề',
                 'title.titleName_en': 'Tiêu đề (Tiếng Anh)',
-                'title.titleIcon' : "Ảnh Tiêu đề",
-                name_en : 'Tên công ty (Tiếng Anh)',
-                'description.descriptionName' : 'Mô tả',
-                'description.descriptionName_en' : 'Mô tả (Tiếng Anh)',
-                'description.descriptionIcon' : 'Ảnh Mô tả',
+                'title.titleIcon': "Ảnh Tiêu đề",
+                name_en: 'Tên công ty (Tiếng Anh)',
+                'description.descriptionName': 'Mô tả',
+                'description.descriptionName_en': 'Mô tả (Tiếng Anh)',
+                'description.descriptionIcon': 'Ảnh Mô tả',
 
             }
             if (dict[key]) return dict[key];
@@ -685,6 +693,13 @@ const AdminAuditLog = () => {
                                                     handleFilterChange(currentFilters);
                                                 }}
                                             />
+                                            <Button
+                                                icon={<ReloadOutlined />}
+                                                loading={loading}
+                                                onClick={() => fetchData(currentPage, pageSize)}
+                                            >
+                                                Tải lại danh sách
+                                            </Button>
                                         </Space>
 
                                         <Table

@@ -7,7 +7,10 @@ const getPublicProducts = async (req, res) => {
         const products = await Product.find({ isDeleted: false, status: "active" })
             .sort({ createdAt: -1 })
             .select("name name_en title title_en image slug status")
-            .populate({ path: "categoryId", select: "name_en name slug status", match: { status: "active" } })
+            .populate({
+                path: "categoryId", select: "name_en name slug status",
+                match: { status: "active" }
+            })
             .lean();
 
         const filteredProducts = products.filter(p => p.categoryId !== null);
@@ -56,16 +59,20 @@ const getProductForManage = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
-        const { name, name_en, title, title_en, description, description_en, image, technical, technical_en, categoryId, slug, status } = req.body;
+        const { name, name_en, title, title_en, description, description_en, image,
+            technical, technical_en, categoryId, slug, status } = req.body;
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const existingProduct = await Product.findOne({ slug });
+        const existingProduct = await Product.findOne({ slug, isDeleted: false });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
 
-        const product = await Product.create({ name, name_en, title, title_en, description, description_en, image, technical, technical_en, categoryId, slug, status });
+        const product = await Product.create({
+            name, name_en, title, title_en, description,
+            description_en, image, technical, technical_en, categoryId, slug, status
+        });
         await AuditLog.create({
             action: "create",
             module: "Sản phẩm",
@@ -81,17 +88,20 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const { name, name_en, title, title_en, description, description_en, image, technical, technical_en, categoryId, slug, status } = req.body;
+        const { name, name_en, title, title_en, description, description_en, image,
+            technical, technical_en, categoryId, slug, status } = req.body;
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const existingProduct = await Product.findOne({ slug, _id: { $ne: req.params.id } });
+        const existingProduct = await Product.findOne({ slug, isDeleted: false, _id: { $ne: req.params.id } });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
         const oldProduct = await Product.findById(req.params.id);
 
-        const allowedFields = ["name", "name_en", "title", "title_en", "description", "description_en", "image", "technical", "technical_en", "categoryId", "slug", "status"];
+        const allowedFields = ["name", "name_en", "title", "title_en", "description",
+            "description_en", "image", "technical", "technical_en", "categoryId",
+            "slug", "status"];
         const oldValues = {};
         const newValues = {};
         const oldProductObj = oldProduct.toObject();
@@ -125,8 +135,10 @@ const updateProduct = async (req, res) => {
                 const cleanO = cleanForCompare(o);
                 const cleanN = cleanForCompare(n);
                 if (JSON.stringify(cleanO) !== JSON.stringify(cleanN)) {
-                    if (o !== undefined) oldDiff.push({ _index: i, ...(cleanO && typeof cleanO === 'object' ? cleanO : { value: cleanO }) });
-                    if (n !== undefined) newDiff.push({ _index: i, ...(cleanN && typeof cleanN === 'object' ? cleanN : { value: cleanN }) });
+                    if (o !== undefined)
+                        oldDiff.push({ _index: i, ...(cleanO && typeof cleanO === 'object' ? cleanO : { value: cleanO }) });
+                    if (n !== undefined)
+                        newDiff.push({ _index: i, ...(cleanN && typeof cleanN === 'object' ? cleanN : { value: cleanN }) });
                 }
             }
             return { oldDiff, newDiff };
@@ -153,7 +165,11 @@ const updateProduct = async (req, res) => {
                 }
             }
         });
-        const product = await Product.findByIdAndUpdate(req.params.id, { name, name_en, title, title_en, description, description_en, image, technical, technical_en, categoryId, slug, status }, { new: true });
+        const product = await Product.findByIdAndUpdate(req.params.id, {
+            name, name_en, title, title_en, description,
+            description_en, image, technical, technical_en,
+            categoryId, slug, status
+        }, { new: true });
         if (Object.keys(oldValues).length > 0) {
             await AuditLog.create({
                 action: "update",
@@ -176,7 +192,8 @@ const deleteProduct = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const product = await Product.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+        const product = await Product.findByIdAndUpdate(req.params.id, { isDeleted: true },
+            { new: true });
         await AuditLog.create({
             action: "delete",
             module: "Sản phẩm",
@@ -217,7 +234,10 @@ const getPublicProductByCategoryId = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
-        const category = await CategoryProduct.findOne({ _id: req.params.categoryId, isDeleted: false, status: "active" });
+        const category = await CategoryProduct.findOne({
+            _id: req.params.categoryId,
+            isDeleted: false, status: "active"
+        });
 
         if (!category) {
             return res.status(404).json({ message: "Category not found" });
@@ -348,4 +368,8 @@ const getProductByNameForManage = async (req, res) => {
     }
 };
 
-export { getPublicProducts, createProduct, updateProduct, deleteProduct, getPublicProductById, getPublicProductByCategoryId, getProductByName, getProductForManage, getProductByCategoryIdForManage, getProductByNameForManage };    
+export {
+    getPublicProducts, createProduct, updateProduct, deleteProduct,
+    getPublicProductById, getPublicProductByCategoryId, getProductByName,
+    getProductForManage, getProductByCategoryIdForManage, getProductByNameForManage
+};

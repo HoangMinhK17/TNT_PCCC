@@ -47,8 +47,14 @@ export const searchCategoryNews = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const totalCategoryNew = await CategoryNew.countDocuments({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false });
-        const categoryNew = await CategoryNew.find({ name: { $regex: req.params.name, $options: "i" }, isDeleted: false })
+        const totalCategoryNew = await CategoryNew.countDocuments({
+            name: { $regex: req.params.name, $options: "i" },
+            isDeleted: false
+        });
+        const categoryNew = await CategoryNew.find({
+            name: { $regex: req.params.name, $options: "i" },
+            isDeleted: false
+        })
             .sort({ createdAt: -1 })
             .select("name slug status name_en")
             .skip(skip)
@@ -71,7 +77,7 @@ export const createCategoryNews = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, slug, status, name_en } = req.body;
-        const existingProduct = await CategoryNew.findOne({ slug });
+        const existingProduct = await CategoryNew.findOne({ slug, isDeleted: false });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
@@ -95,12 +101,14 @@ export const updateCategoryNews = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, slug, status, name_en } = req.body;
-        const existingProduct = await CategoryNew.findOne({ slug, _id: { $ne: req.params.id } });
+        const existingProduct = await CategoryNew.findOne({ slug, isDeleted: false, _id: { $ne: req.params.id } });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
         const oldData = await CategoryNew.findById(req.params.id);
-        const categoryNew = await CategoryNew.findByIdAndUpdate(req.params.id, { name, slug, status, name_en }, { new: true });
+        const categoryNew = await CategoryNew.findByIdAndUpdate(
+            req.params.id, { name, slug, status, name_en }, { new: true }
+        );
         const cleanForCompare = (val) => {
             if (val === null || val === undefined) return null;
             if (Array.isArray(val)) return val.map(cleanForCompare);
@@ -157,7 +165,8 @@ export const deleteCategoryNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const categoryNew = await CategoryNew.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+        const categoryNew = await CategoryNew
+            .findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
         await AuditLog.create({
             action: "delete",
             module: "Danh mục tin tức",

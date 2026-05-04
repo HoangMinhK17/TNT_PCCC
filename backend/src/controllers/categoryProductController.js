@@ -43,7 +43,7 @@ const createCategoryProduct = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         if (slug) {
-            const categoryProduct = await CategoryProduct.findOne({ slug: slug});
+            const categoryProduct = await CategoryProduct.findOne({ slug: slug, isDeleted: false });
             if (categoryProduct) {
                 return res.status(400).json({ message: "Slug already exists" });
             }
@@ -68,7 +68,7 @@ const updateCategoryProduct = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const existingProduct = await CategoryProduct.findOne({ slug, _id: { $ne: req.params.id } });
+        const existingProduct = await CategoryProduct.findOne({ slug, isDeleted: false, _id: { $ne: req.params.id } });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
@@ -88,7 +88,8 @@ const updateCategoryProduct = async (req, res) => {
                 newValues[field] = req.body[field];
             }
         });
-        const categoryProduct = await CategoryProduct.findByIdAndUpdate(req.params.id, { name, name_en, slug, status }, { new: true });
+        const categoryProduct = await CategoryProduct
+            .findByIdAndUpdate(req.params.id, { name, name_en, slug, status }, { new: true });
         if (Object.keys(oldValues).length > 0) {
             await AuditLog.create({
                 action: "update",
@@ -111,7 +112,8 @@ const deleteCategoryProduct = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const categoryProduct = await CategoryProduct.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+        const categoryProduct = await CategoryProduct
+            .findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
         await AuditLog.create({
             action: "delete",
             module: "Danh mục sản phẩm",
@@ -143,8 +145,10 @@ const getCategoryProductBySearch = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const totalCategoryProduct = await CategoryProduct.countDocuments({ name: { $regex: searchTerm, $options: "i" }, isDeleted: false });
-        const categoryProduct = await CategoryProduct.find({ name: { $regex: searchTerm, $options: "i" }, isDeleted: false })
+        const totalCategoryProduct = await CategoryProduct
+            .countDocuments({ name: { $regex: searchTerm, $options: "i" }, isDeleted: false });
+        const categoryProduct = await CategoryProduct
+            .find({ name: { $regex: searchTerm, $options: "i" }, isDeleted: false })
             .sort({ createdAt: -1 })
             .select("name slug status")
             .skip(skip)
@@ -160,4 +164,8 @@ const getCategoryProductBySearch = async (req, res) => {
     }
 };
 
-export { getCategoryProducts, getCategoryProductForManage, createCategoryProduct, updateCategoryProduct, deleteCategoryProduct, getCategoryProductById, getCategoryProductBySearch };
+export {
+    getCategoryProducts, getCategoryProductForManage, createCategoryProduct,
+    updateCategoryProduct, deleteCategoryProduct, getCategoryProductById,
+    getCategoryProductBySearch
+};

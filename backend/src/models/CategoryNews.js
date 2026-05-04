@@ -10,9 +10,7 @@ const categoryNewsSchema = new mongoose.Schema({
     },
     slug: {
         type: String,
-        required: true,
-        unique: true,
-        index: true
+        required: true
     },
     status: {
         type: String,
@@ -47,6 +45,13 @@ const categoryNewsSchema = new mongoose.Schema({
 categoryNewsSchema.index({ status: 1, isDeleted: 1, createdAt: -1 })
 categoryNewsSchema.index({ isDeleted: 1, createdAt: -1 })
 categoryNewsSchema.index({ name: 1 })
+categoryNewsSchema.index(
+  { slug: 1 },
+    {
+        unique: true,
+        partialFilterExpression: { isDeleted: false }
+    }
+);
 
 
 export default mongoose.model("CategoryNews", categoryNewsSchema);

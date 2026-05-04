@@ -75,7 +75,7 @@ const MultiCloudinaryUpload = ({ value = [], onChange, maxCount = 1 }) => {
 };
 
 // ═══════════════════════ TAB 1: DANH MỤC TIN TỨC ══════════════════════════
-const TabCategoryNews = () => {
+const TabCategoryNews = ({ onCategoryChange }) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
@@ -151,6 +151,7 @@ const TabCategoryNews = () => {
             setSearchText('');
             setCurrentPage(1);
             fetchData(1, pageSize);
+            onCategoryChange?.();
         } catch (err) {
             message.error(err?.response?.data?.message || 'Có lỗi xảy ra!');
         } finally { setSaving(false); }
@@ -162,6 +163,7 @@ const TabCategoryNews = () => {
             message.success('Xóa thành công!');
             setSearchText('');
             fetchData(currentPage, pageSize);
+            onCategoryChange?.();
         } catch { message.error('Xóa thất bại!'); }
     };
 
@@ -282,7 +284,7 @@ const TabCategoryNews = () => {
 };
 
 // ═══════════════════════ TAB 2: TIN TỨC ══════════════════════════
-const TabNews = () => {
+const TabNews = ({ categoryRefreshKey }) => {
     const [data, setData] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -319,6 +321,12 @@ const TabNews = () => {
     };
 
     useEffect(() => { fetchData(currentPage, pageSize); }, [currentPage, pageSize]);
+
+    useEffect(() => {
+        if (categoryRefreshKey > 0) {
+            fetchData(currentPage, pageSize);
+        }
+    }, [categoryRefreshKey]);
 
     const handleSearch = (value) => {
         const trimmedValue = value?.trim() || "";
@@ -458,7 +466,7 @@ const TabNews = () => {
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>Thêm Tin tức</Button>
             </div>
 
-            <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
+            <div style={{ display: 'flex', gap: 16, marginBottom: 16, alignItems: 'center' }}>
                 <Input.Search
                     placeholder="Tìm kiếm tin tức theo tên..."
                     allowClear
@@ -478,6 +486,13 @@ const TabNews = () => {
                         <Select.Option key={c._id} value={c._id}>{c.name} {c.status !== "active" ? "(Tạm dừng)" : ""}  </Select.Option>
                     ))}
                 </Select>
+                    <Button
+                        icon={<ReloadOutlined />}
+                        loading={loading}
+                        onClick={() => fetchData(currentPage, pageSize)}
+                    >
+                        Tải lại danh sách
+                    </Button>
             </div>
 
             <Table
@@ -603,6 +618,12 @@ const TabNews = () => {
 
 // ═══════════════════════ ROOT COMPONENT ══════════════════════════
 const AdminNews = () => {
+    const [categoryRefreshKey, setCategoryRefreshKey] = useState(0);
+
+    const handleCategoryChange = () => {
+        setCategoryRefreshKey(prev => prev + 1);
+    };
+
     return (
         <div className="admin-dashboard-layout">
             <AdminSidebar />
@@ -617,12 +638,12 @@ const AdminNews = () => {
                             {
                                 key: '1',
                                 label: 'Tin tức',
-                                children: <TabNews />,
+                                children: <TabNews categoryRefreshKey={categoryRefreshKey} />,
                             },
                             {
                                 key: '2',
                                 label: 'Danh mục',
-                                children: <TabCategoryNews />,
+                                children: <TabCategoryNews onCategoryChange={handleCategoryChange} />,
                             }
                         ]}
                     />

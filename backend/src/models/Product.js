@@ -47,9 +47,7 @@ const productSchema = new mongoose.Schema({
     },
     slug: {
         type: String,
-        required: true,
-        unique: true,
-        index: true
+        required: true
     },
     status: {
         type: String,
@@ -78,6 +76,17 @@ const productSchema = new mongoose.Schema({
 },
     {
         timestamps: true
+    }
+);
+
+productSchema.index({ status: 1, isDeleted: 1, createdAt: -1 })
+productSchema.index({ isDeleted: 1, createdAt: -1 })
+productSchema.index({ name: 1 })
+productSchema.index(
+    { slug: 1 },
+    {
+        unique: true,
+        partialFilterExpression: { isDeleted: false }
     }
 );
 

@@ -18,7 +18,10 @@ export const createRecruiment = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         if (req.body.slug) {
-            const existingProduct = await Recruitment.findOne({ slug: req.body.slug });
+            const existingProduct = await Recruitment.findOne({
+                slug: req.body.slug,
+                isDeleted: false
+            });
             if (existingProduct) {
                 return res.status(400).json({ message: "Slug already exists" });
             }
@@ -45,7 +48,11 @@ export const updateRecruiment = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         if (req.body.slug) {
-            const existingProduct = await Recruitment.findOne({ slug: req.body.slug, _id: { $ne: req.params.id } });
+            const existingProduct = await Recruitment.findOne({
+                slug: req.body.slug,
+                isDeleted: false,
+                _id: { $ne: req.params.id }
+            });
             if (existingProduct) {
                 return res.status(400).json({ message: "Slug already exists" });
             }
@@ -89,8 +96,10 @@ export const updateRecruiment = async (req, res) => {
                 const cleanO = cleanForCompare(o);
                 const cleanN = cleanForCompare(n);
                 if (JSON.stringify(cleanO) !== JSON.stringify(cleanN)) {
-                    if (o !== undefined) oldDiff.push({ _index: i, ...(cleanO && typeof cleanO === 'object' ? cleanO : { value: cleanO }) });
-                    if (n !== undefined) newDiff.push({ _index: i, ...(cleanN && typeof cleanN === 'object' ? cleanN : { value: cleanN }) });
+                    if (o !== undefined)
+                        oldDiff.push({ _index: i, ...(cleanO && typeof cleanO === 'object' ? cleanO : { value: cleanO }) });
+                    if (n !== undefined)
+                        newDiff.push({ _index: i, ...(cleanN && typeof cleanN === 'object' ? cleanN : { value: cleanN }) });
                 }
             }
             return { oldDiff, newDiff };
@@ -118,7 +127,8 @@ export const updateRecruiment = async (req, res) => {
             }
         });
 
-        const recruiment = await Recruitment.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const recruiment = await Recruitment.findByIdAndUpdate(req.params.id, req.body,
+            { new: true });
         if (Object.keys(oldValues).length > 0 || Object.keys(newValues).length > 0) {
             const auditLog = new AuditLog({
                 module: "Tuyển dụng",
@@ -142,7 +152,11 @@ export const deleteRecruiment = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const recruiment = await Recruitment.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+        const recruiment = await Recruitment.findByIdAndUpdate(
+            req.params.id,
+            { isDeleted: true },
+            { new: true }
+        );
         const auditLog = new AuditLog({
             module: "Tuyển dụng",
             action: "delete",
@@ -188,8 +202,12 @@ export const getRecruimentsByName = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const totalRecruiments = await Recruitment.countDocuments({ name: { $regex: name, $options: "i" }, isDeleted: false });
-        const recruiments = await Recruitment.find({ name: { $regex: name, $options: "i" }, isDeleted: false })
+        const totalRecruiments = await Recruitment.countDocuments({
+            name: { $regex: name, $options: "i" }, isDeleted: false
+        });
+        const recruiments = await Recruitment.find({
+            name: { $regex: name, $options: "i" }, isDeleted: false
+        })
             .skip(skip)
             .limit(limit)
             .sort({ createdAt: -1 })

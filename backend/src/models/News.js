@@ -36,8 +36,6 @@ const newsSchema = new mongoose.Schema({
     slug: {
         type: String,
         required: true,
-        unique: true,
-        index: true
     },
     status: {
         type: String,
@@ -66,6 +64,17 @@ const newsSchema = new mongoose.Schema({
 },
     {
         timestamps: true
+    }
+);
+
+newsSchema.index({ status: 1, isDeleted: 1, createdAt: -1 })
+newsSchema.index({ isDeleted: 1, createdAt: -1 })
+newsSchema.index({ name: 1 })
+newsSchema.index(
+    { slug: 1 },
+    {
+        unique: true,
+        partialFilterExpression: { isDeleted: false }
     }
 );
 

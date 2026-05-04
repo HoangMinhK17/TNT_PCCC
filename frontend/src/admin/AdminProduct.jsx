@@ -68,7 +68,7 @@ const MultiCloudinaryUpload = ({ value = [], onChange, maxCount = 5 }) => {
 };
 
 // ═══════════════════════ TAB 1: DANH MỤC SẢN PHẨM ══════════════════════════
-const TabCategoryProduct = () => {
+const TabCategoryProduct = ({ onCategoryChange }) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
@@ -134,7 +134,7 @@ const TabCategoryProduct = () => {
             }
             setModalVisible(false);
             fetchData();
-            window.location.reload();
+            onCategoryChange?.();
         } catch (err) {
             message.error(err?.response?.data?.message || 'Có lỗi xảy ra!');
         } finally { setSaving(false); }
@@ -145,7 +145,7 @@ const TabCategoryProduct = () => {
             await deleteCategoryProduct(id);
             message.success('Xóa thành công!');
             fetchData();
-            window.location.reload();
+            onCategoryChange?.();
         } catch { message.error('Xóa thất bại!'); }
     };
 
@@ -268,7 +268,7 @@ const TabCategoryProduct = () => {
 };
 
 // ═══════════════════════ TAB 2: SẢN PHẨM ══════════════════════════
-const TabProduct = () => {
+const TabProduct = ({ categoryRefreshKey }) => {
     const [data, setData] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -299,6 +299,12 @@ const TabProduct = () => {
     };
 
     useEffect(() => { fetchData(currentPage, pageSize); }, [currentPage, pageSize]);
+
+    useEffect(() => {
+        if (categoryRefreshKey > 0) {
+            fetchData(currentPage, pageSize);
+        }
+    }, [categoryRefreshKey]);
 
     const handleSearch = (value) => {
         const trimmedValue = value?.trim() || "";
@@ -425,7 +431,7 @@ const TabProduct = () => {
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>Thêm Sản phẩm</Button>
             </div>
 
-            <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
+            <div style={{ display: 'flex', gap: 16, marginBottom: 16, alignItems: 'center' }}>
                 <Input.Search
                     placeholder="Tìm kiếm sản phẩm theo tên..."
                     allowClear
@@ -445,6 +451,11 @@ const TabProduct = () => {
                         <Select.Option key={c._id} value={c._id}>{c.name} {c.status !== 'active' ? '(Tạm dừng)' : ''}</Select.Option>
                     ))}
                 </Select>
+                <Button
+                    icon={<ReloadOutlined />}
+                    loading={loading}
+                    onClick={() => fetchData(currentPage, pageSize)}
+                >Tải lại danh sách</Button>
             </div>
 
             <Table
@@ -637,6 +648,12 @@ const TabProduct = () => {
 
 // ═══════════════════════ ROOT COMPONENT ══════════════════════════
 const AdminProduct = () => {
+    const [categoryRefreshKey, setCategoryRefreshKey] = useState(0);
+
+    const handleCategoryChange = () => {
+        setCategoryRefreshKey(prev => prev + 1);
+    };
+
     return (
         <div className="admin-dashboard-layout">
             <AdminSidebar />
@@ -651,12 +668,12 @@ const AdminProduct = () => {
                             {
                                 key: '1',
                                 label: 'Sản phẩm',
-                                children: <TabProduct />,
+                                children: <TabProduct categoryRefreshKey={categoryRefreshKey} />,
                             },
                             {
                                 key: '2',
                                 label: 'Danh mục',
-                                children: <TabCategoryProduct />,
+                                children: <TabCategoryProduct onCategoryChange={handleCategoryChange} />,
                             }
                         ]}
                     />

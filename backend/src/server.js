@@ -3,14 +3,12 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import apiRouter from "./routes/api.js";
 import cors from "cors";
-import AuditLog from "./models/AuditLog.js";
 import * as useragent from 'express-useragent';
 import requestIp from 'request-ip';
 
-
 dotenv.config();
 connectDB();
-AuditLog.syncIndexes();
+
 const app = express();
 
 app.set("trust proxy", 1);

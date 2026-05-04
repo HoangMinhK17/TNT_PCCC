@@ -34,7 +34,8 @@ const getContactRecruitment = async (req, res) => {
             .skip(skip)
             .limit(limit)
             .lean();
-        res.status(200).json({ contactRecruitment, total, totalPage: Math.ceil(total / limit), currentPage: page });
+        res.status(200).json({ contactRecruitment, total, totalPage: Math.ceil(total / limit), 
+            currentPage: page });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -49,14 +50,26 @@ const getContactRecruitmentByNameOrPhone = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const total = await ContactRecruitment.countDocuments({ $or: [{ name: { $regex: `${search}`, $options: "i" } }, { phone: { $regex: `${search}`, $options: "i" } }], isDeleted: false });
-        const contactRecruitment = await ContactRecruitment.find({ $or: [{ name: { $regex: `${search}`, $options: "i" } }, { phone: { $regex: `${search}`, $options: "i" } }], isDeleted: false })
+        const total = await ContactRecruitment
+            .countDocuments({
+                $or: [
+                    { name: { $regex: `${search}`, $options: "i" } },
+                    { phone: { $regex: `${search}`, $options: "i" } }
+                ], isDeleted: false
+            });
+        const contactRecruitment = await ContactRecruitment.find({
+            $or: [
+                { name: { $regex: `${search}`, $options: "i" } },
+                { phone: { $regex: `${search}`, $options: "i" } }
+            ], isDeleted: false
+        })
             .populate('recruitmentId', 'name slug')
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
             .lean();
-        res.status(200).json({ contactRecruitment, total, totalPage: Math.ceil(total / limit), currentPage: page });
+        res.status(200).json({ contactRecruitment, total, totalPage: Math.ceil(total / limit),
+             currentPage: page });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -78,7 +91,8 @@ const getContactRecruitmentByStatus = async (req, res) => {
             .skip(skip)
             .limit(limit)
             .lean();
-        res.status(200).json({ contactRecruitment, total, totalPage: Math.ceil(total / limit), currentPage: page });
+        res.status(200).json({ contactRecruitment, total, totalPage: Math.ceil(total / limit),
+             currentPage: page });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -154,7 +168,8 @@ const deleteContactRecruitment = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const contactRecruitment = await ContactRecruitment.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+        const contactRecruitment = await ContactRecruitment
+            .findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
         const auditLog = new AuditLog({
             module: "Ứng viên",
             action: "delete",
@@ -169,4 +184,8 @@ const deleteContactRecruitment = async (req, res) => {
     }
 }
 
-export { createContactRecruitment, getContactRecruitment, getContactRecruitmentByNameOrPhone, getContactRecruitmentByStatus, updateContactRecruitment, deleteContactRecruitment, getContactRecruitmentById }
+export {
+    createContactRecruitment, getContactRecruitment, getContactRecruitmentByNameOrPhone,
+    getContactRecruitmentByStatus, updateContactRecruitment, deleteContactRecruitment,
+    getContactRecruitmentById
+}

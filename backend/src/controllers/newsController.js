@@ -57,12 +57,14 @@ export const createNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, name_en, slug, title, title_en, description, description_en, image, date, status, categoryNewsId } = req.body;
-        const existingProduct = await News.findOne({ slug });
+        const { name, name_en, slug, title, title_en, description, description_en, 
+            image, date, status, categoryNewsId } = req.body;
+        const existingProduct = await News.findOne({ slug, isDeleted: false });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
-        const news = await News.create({ name, name_en, slug, title, title_en, description, description_en, image, date, status, categoryNewsId });
+        const news = await News.create({ name, name_en, slug, title, title_en, description,
+             description_en, image, date, status, categoryNewsId });
         await AuditLog.create({
             action: "create",
             module: "Tin tức",
@@ -81,13 +83,18 @@ export const updateNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, name_en, slug, title, title_en, description, description_en, image, date, status, categoryNewsId } = req.body;
-        const existingProduct = await News.findOne({ slug, _id: { $ne: req.params.id } });
+        const { name, name_en, slug, title, title_en, description, description_en, image, date,
+            status, categoryNewsId } = req.body;
+        const existingProduct = await News.findOne({ slug, isDeleted: false, _id: { $ne: req.params.id } });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
         const oldData = await News.findById(req.params.id);
-        const news = await News.findByIdAndUpdate(req.params.id, { name, name_en, slug, title, title_en, description, description_en, image, date, status, categoryNewsId }, { new: true });
+        const news = await News.findByIdAndUpdate(req.params.id, {
+            name, name_en, slug, title,
+            title_en, description, description_en, image, date, status, categoryNewsId
+        },
+            { new: true });
         const cleanForCompare = (val) => {
             if (val === null || val === undefined) return null;
             if (typeof val === "string") {
@@ -117,7 +124,8 @@ export const updateNews = async (req, res) => {
         const oldDataObj = oldData.toObject();
         const oldValues = {};
         const newValues = {};
-        const updateFields = ["name", "name_en", "slug", "title", "title_en", "description", "description_en", "image", "date", "status", "categoryNewsId"];
+        const updateFields = ["name", "name_en", "slug", "title", "title_en", "description",
+            "description_en", "image", "date", "status", "categoryNewsId"];
         updateFields.forEach(field => {
             if (req.body[field] !== undefined) {
                 const oldValClean = JSON.stringify(cleanForCompare(oldDataObj[field]));
@@ -134,7 +142,7 @@ export const updateNews = async (req, res) => {
                 }
             }
         });
-        
+
         if (Object.keys(oldValues).length > 0) {
             await AuditLog.create({
                 action: "update",
