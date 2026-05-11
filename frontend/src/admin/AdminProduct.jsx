@@ -10,7 +10,7 @@ import '../styles/Dashboard.css';
 
 import {
     createCategoryProduct, updateCategoryProduct, deleteCategoryProduct,
-    getCategoryProductForManage, getCategoryProductBySearch
+    getCategoryProductForManage, getCategoryProductBySearch, getCategoryProductForManageForm
 } from '../utils/categoryProductApi';
 import {
     createProduct, updateProduct, deleteProduct, getProductForManage,
@@ -288,12 +288,12 @@ const TabProduct = ({ categoryRefreshKey }) => {
         try {
             const [prodRes, catRes] = await Promise.all([
                 getProductForManage({ page, limit, name, categoryId }),
-                getCategoryProductForManage(1, 1000)
+                getCategoryProductForManageForm()
             ]);
             setData(prodRes.products.map(d => ({ ...d, key: d._id })));
             setTotalPages(prodRes.totalPages || 1);
             setCurrentPage(prodRes.currentPage || 1);
-            setCategories(catRes.categoryProducts || catRes.categoryProduct || []);
+            setCategories(catRes || []);
         } catch { message.error('Lấy dữ liệu thất bại!'); }
         finally { setLoading(false); }
     };
@@ -446,13 +446,28 @@ const TabProduct = ({ categoryRefreshKey }) => {
                     onChange={handleFilterCategory}
                     style={{ width: 400 }}
                     value={filterCategory}
+                    showSearch
+                    optionFilterProp="children"
                 >
-                    {categories.map(c => (
-                        <Select.Option key={c._id} value={c._id}>{c.name} {c.status !== 'active' ? '(Tạm dừng)' : ''}</Select.Option>
-                    ))}
+                    <Select.OptGroup label="Đang hoạt động">
+                        {categories.filter(c => c.status === 'active' && !c.isDeleted).map(c => (
+                            <Select.Option key={c._id} value={c._id}>{c.name}</Select.Option>
+                        ))}
+                    </Select.OptGroup>
+                    
+                    {categories.some(c => c.status !== 'active' || c.isDeleted) && (
+                        <Select.OptGroup label="Đã xóa / Tạm dừng">
+                            {categories.filter(c => c.status !== 'active' || c.isDeleted).map(c => (
+                                <Select.Option key={c._id} value={c._id}>
+                                    {c.name} {c.isDeleted ? '(Đã xóa)' : '(Tạm dừng)'}
+                                </Select.Option>
+                            ))}
+                        </Select.OptGroup>
+                    )}
                 </Select>
                 <Button
                     icon={<ReloadOutlined />}
+                    style={{ marginLeft: 'auto' }}
                     loading={loading}
                     onClick={() => fetchData(currentPage, pageSize)}
                 >Tải lại danh sách</Button>
@@ -527,8 +542,25 @@ const TabProduct = ({ categoryRefreshKey }) => {
 
                                     <div style={{ display: 'flex', gap: 16 }}>
                                         <Form.Item name="categoryId" label="Danh mục" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
-                                            <Select placeholder="Chọn danh mục">
-                                                {categories.map(c => <Select.Option key={c._id} value={c._id} disabled={c.status !== 'active'}>{c.name}</Select.Option>)}
+                                            <Select 
+                                                placeholder="Chọn danh mục"
+                                                showSearch
+                                                optionFilterProp="children"
+                                            >
+                                                {categories.filter(c => {
+                                                    if (c.status === 'active' && !c.isDeleted) return true;
+                                                    const editingCategoryId = editing?.categoryId?._id || editing?.categoryId;
+                                                    if (editing && editingCategoryId === c._id) return true;
+                                                    return false;
+                                                }).map(c => (
+                                                    <Select.Option 
+                                                        key={c._id} 
+                                                        value={c._id} 
+                                                        disabled={c.status !== 'active' || c.isDeleted}
+                                                    >
+                                                        {c.name} {(c.status !== 'active' || c.isDeleted) ? ' (Đã xóa/Dừng)' : ''}
+                                                    </Select.Option>
+                                                ))}
                                             </Select>
                                         </Form.Item>
                                         <Form.Item name="status" label="Trạng thái" style={{ flex: 1 }}>

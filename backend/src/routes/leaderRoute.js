@@ -1,5 +1,12 @@
 import express from "express";
-import { getAllLeaders, createLeader, updateLeader, deleteLeader, getAllLeadersForManagement, findLeaderByName } from "../controllers/leaderController.js";
+import {
+    getAllLeaders,
+    createLeader,
+    updateLeader,
+    deleteLeader,
+    getAllLeadersForManagement,
+    findLeaderByName
+} from "../controllers/leaderController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
 const router = express.Router();

@@ -1,5 +1,13 @@
 import express from "express";
-import { createContactRecruitment, getContactRecruitment, getContactRecruitmentByNameOrPhone, getContactRecruitmentByStatus, updateContactRecruitment, deleteContactRecruitment, getContactRecruitmentById } from "../controllers/contactRecruitmentController.js";
+import {
+    createContactRecruitment,
+    getContactRecruitment,
+    getContactRecruitmentByNameOrPhone,
+    getContactRecruitmentByStatus,
+    updateContactRecruitment,
+    deleteContactRecruitment,
+    getContactRecruitmentById
+} from "../controllers/contactRecruitmentController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
 const router = express.Router();

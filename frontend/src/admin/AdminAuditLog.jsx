@@ -13,8 +13,12 @@ const { Title, Text } = Typography;
 
 const getPlatformIcon = (platform = '') => {
     const p = platform.toLowerCase();
-    if (p.includes('mobile') || p.includes('android') || p.includes('ios')) return <MobileOutlined />;
-    if (p.includes('desktop') || p.includes('windows') || p.includes('mac') || p.includes('linux')) return <DesktopOutlined />;
+    if (p.includes('mobile') || p.includes('android') || p.includes('ios')) {
+        return <MobileOutlined />;
+    }
+    if (p.includes('desktop') || p.includes('windows') || p.includes('mac') || p.includes('linux')) {
+        return <DesktopOutlined />;
+    }
     return <GlobalOutlined />;
 };
 
@@ -27,7 +31,7 @@ const DeviceManagementTab = () => {
     const [searchVal, setSearchVal] = useState('');
     const [searchInput, setSearchInput] = useState('');
     const debounceRef = useRef(null);
-    const pageSize = 15;
+    const pageSize = 10;
 
     const fetchSessions = useCallback(async (pg = 1, active = '', search = '') => {
         setLoading(true);
@@ -128,7 +132,8 @@ const DeviceManagementTab = () => {
                     onSearch={v => { setSearchVal(v); setPage(1); }}
                     onClear={() => { setSearchVal(''); setPage(1); }}
                 />
-                <Button icon={<ReloadOutlined />} onClick={() => fetchSessions(page, filterActive, searchVal)}>
+                <Button icon={<ReloadOutlined />}
+                    onClick={() => fetchSessions(page, filterActive, searchVal)}>
                     Làm mới
                 </Button>
             </Space>
@@ -137,11 +142,13 @@ const DeviceManagementTab = () => {
                 dataSource={sessions}
                 loading={loading}
                 bordered
-                size="small"
                 locale={{ emptyText: <Empty description="Chưa có phiên đăng nhập nào" /> }}
                 pagination={{
-                    current: page, pageSize, total,
-                    showSizeChanger: false, showLessItems: true,
+                    current: page,
+                    pageSize,
+                    total,
+                    showSizeChanger: false,
+                    showLessItems: true,
                     onChange: p => setPage(p),
                     showTotal: t => `Tổng ${t} phiên`,
                 }}
@@ -149,7 +156,6 @@ const DeviceManagementTab = () => {
         </div>
     );
 };
-// ─────────────────────────────────────────────────────────────────────────────
 
 const ACTION_COLOR = {
     create: 'green',
@@ -172,8 +178,6 @@ const formatDate = (dateStr) => {
     });
 };
 
-
-
 const AdminAuditLog = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -195,21 +199,18 @@ const AdminAuditLog = () => {
 
     const debounceRef = useRef(null);
 
-    useEffect(() => {
-        getModulFilter().then((res) => {
-            setModuleOptions(res);
-        });
-        getActionFilter().then((res) => {
-            setActionOptions(res);
-        });
-    }, []);
-
     const fetchData = useCallback(async (page = 1, filters = {}) => {
         setLoading(true);
         try {
             const res = await getAllAuditLogs(page, pageSize, filters);
             setData((res.auditLogs || []).map(d => ({ ...d, key: d._id })));
             setTotalLogs(res.totalAuditLogs || 0);
+            getModulFilter().then((res) => {
+                setModuleOptions(res);
+            });
+            getActionFilter().then((res) => {
+                setActionOptions(res);
+            });
         } catch {
             setData([]);
         } finally {
@@ -367,7 +368,6 @@ const AdminAuditLog = () => {
         }
         return <Text style={{ wordBreak: 'break-word' }}>{str}</Text>;
     };
-
 
     const getFieldTranslation = (moduleName, key) => {
         if (moduleName === 'Danh mục tin tức' || moduleName === 'Danh mục sản phẩm') {
@@ -696,7 +696,7 @@ const AdminAuditLog = () => {
                                             <Button
                                                 icon={<ReloadOutlined />}
                                                 loading={loading}
-                                                onClick={() => fetchData(currentPage, pageSize)}
+                                                onClick={() => { fetchData(currentPage, pageSize) }}
                                             >
                                                 Tải lại danh sách
                                             </Button>

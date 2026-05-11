@@ -11,11 +11,11 @@ import dayjs from 'dayjs';
 import CustomQuillEditor from '../component/CustomQuillEditor';
 
 import {
-    getCategoryNewsForManage, createCategoryNews, updateCategoryNews, deleteCategoryNews, searchCategoryNews, getCategoryNews
+    getCategoryNewsForManage, createCategoryNews, updateCategoryNews, deleteCategoryNews, searchCategoryNews, getCategoryNewsForManageForm
 } from '../utils/categoryNewsApi';
 
 import {
-    getNewsForManage, createNews, updateNews, deleteNews, getNewsByName, getNewsByCategoryIdAdmin
+    getNewsForManage, createNews, updateNews, deleteNews
 } from '../utils/newsApi';
 
 import { uploadImageToCloudinary, processRichTextContent } from '../utils/imageApi';
@@ -310,12 +310,12 @@ const TabNews = ({ categoryRefreshKey }) => {
         try {
             const [newsRes, catRes] = await Promise.all([
                 getNewsForManage({ page, limit, name, categoryNewsId }),
-                getCategoryNewsForManage()
+                getCategoryNewsForManageForm()
             ]);
             setData(newsRes?.news ? newsRes.news.map(d => ({ ...d, key: d._id })) : []);
             setTotalPages(newsRes?.totalPages || 1);
             setCurrentPage(newsRes?.currentPage || 1);
-            setCategories(Array.isArray(catRes) ? catRes : (catRes?.categoryNew || []));
+            setCategories(Array.isArray(catRes) ? catRes : []);
         } catch { message.error('Lấy dữ liệu thất bại!'); }
         finally { setLoading(false); }
     };
@@ -481,13 +481,28 @@ const TabNews = ({ categoryRefreshKey }) => {
                     onChange={(val) => { setCurrentPage(1); handleFilterCategory(val, 1, pageSize); }}
                     style={{ width: 250 }}
                     value={filterCategory}
+                    showSearch
+                    optionFilterProp="children"
                 >
-                    {categories.map(c => (
-                        <Select.Option key={c._id} value={c._id}>{c.name} {c.status !== "active" ? "(Tạm dừng)" : ""}  </Select.Option>
-                    ))}
+                    <Select.OptGroup label="Đang hoạt động">
+                        {categories.filter(c => c.status === 'active' && !c.isDeleted).map(c => (
+                            <Select.Option key={c._id} value={c._id}>{c.name}</Select.Option>
+                        ))}
+                    </Select.OptGroup>
+                    
+                    {categories.some(c => c.status !== 'active' || c.isDeleted) && (
+                        <Select.OptGroup label="Đã xóa / Tạm dừng">
+                            {categories.filter(c => c.status !== 'active' || c.isDeleted).map(c => (
+                                <Select.Option key={c._id} value={c._id}>
+                                    {c.name} {c.isDeleted ? '(Đã xóa)' : '(Tạm dừng)'}
+                                </Select.Option>
+                            ))}
+                        </Select.OptGroup>
+                    )}
                 </Select>
                     <Button
                         icon={<ReloadOutlined />}
+                        style={{ marginLeft: 'auto' }}
                         loading={loading}
                         onClick={() => fetchData(currentPage, pageSize)}
                     >
@@ -558,8 +573,25 @@ const TabNews = ({ categoryRefreshKey }) => {
 
                             <div style={{ display: 'flex', gap: 16 }}>
                                 <Form.Item name="categoryNewsId" label="Danh mục" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
-                                    <Select placeholder="Chọn danh mục">
-                                        {categories.map(c => <Select.Option key={c._id} value={c._id} disabled={c.status === "inactive"}>{c.name} </Select.Option>)}
+                                    <Select 
+                                        placeholder="Chọn danh mục"
+                                        showSearch
+                                        optionFilterProp="children"
+                                    >
+                                        {categories.filter(c => {
+                                            if (c.status === 'active' && !c.isDeleted) return true;
+                                            const editingCategoryId = editing?.categoryNewsId?._id || editing?.categoryNewsId;
+                                            if (editing && editingCategoryId === c._id) return true;
+                                            return false;
+                                        }).map(c => (
+                                            <Select.Option 
+                                                key={c._id} 
+                                                value={c._id} 
+                                                disabled={c.status !== 'active' || c.isDeleted}
+                                            >
+                                                {c.name} {(c.status !== 'active' || c.isDeleted) ? ' (Đã xóa/Dừng)' : ''}
+                                            </Select.Option>
+                                        ))}
                                     </Select>
                                 </Form.Item>
                                 <Form.Item name="date" label="Ngày đăng" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>

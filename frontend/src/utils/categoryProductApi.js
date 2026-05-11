@@ -45,3 +45,11 @@ export const getCategoryProductBySearch = async (searchTerm, page, limit) => {
     return response.data;
 };
 
+export const getCategoryProductForManageForm = async () => {
+    const token = localStorage.getItem("token");
+    const response = await api.get(`/categoryProduct/get-category-product-for-manage-form`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+};
+

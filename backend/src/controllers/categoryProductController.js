@@ -36,6 +36,20 @@ const getCategoryProductForManage = async (req, res) => {
     }
 };
 
+const getCategoryProductForManageForm = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const categoryProducts = await CategoryProduct.find({})
+            .sort({ createdAt: -1 })
+            .lean();
+        res.status(200).json(categoryProducts);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 const createCategoryProduct = async (req, res) => {
     try {
         const { name, name_en, slug } = req.body;
@@ -167,5 +181,5 @@ const getCategoryProductBySearch = async (req, res) => {
 export {
     getCategoryProducts, getCategoryProductForManage, createCategoryProduct,
     updateCategoryProduct, deleteCategoryProduct, getCategoryProductById,
-    getCategoryProductBySearch
+    getCategoryProductBySearch, getCategoryProductForManageForm
 };

@@ -84,3 +84,18 @@ export const searchCategoryNews = async (name, page, limit) => {
         throw error;
     }
 };
+
+export const getCategoryNewsForManageForm = async () => {
+    try {
+        const response = await api.get("/categoryNews/get-category-news-for-manage-form", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching category news for manage form:", error);
+        throw error;
+    }
+};

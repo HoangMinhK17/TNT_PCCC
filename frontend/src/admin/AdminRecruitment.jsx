@@ -719,11 +719,11 @@ const TabContactRecruitment = () => {
     };
 
     const columns = [
-        { title: 'Tên Ứng viên', dataIndex: 'name', key: 'name' },
+        { title: 'Tên ứng viên', dataIndex: 'name', key: 'name' },
         { title: 'SĐT', dataIndex: 'phone', key: 'phone' },
         { title: 'Email', dataIndex: 'email', key: 'email' },
         {
-            title: 'Vị trí Ứng tuyển', dataIndex: 'recruitmentId', key: 'recruitmentId',
+            title: 'Vị trí ứng tuyển', dataIndex: 'recruitmentId', key: 'recruitmentId',
             render: (recruitment) => recruitment?.name || '---'
         },
         {

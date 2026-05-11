@@ -1,5 +1,16 @@
 import express from "express";
-import { getPublicProducts, createProduct, updateProduct, deleteProduct, getPublicProductById, getPublicProductByCategoryId, getProductByName, getProductForManage, getProductByCategoryIdForManage, getProductByNameForManage } from "../controllers/productController.js";
+import {
+    getPublicProducts,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+    getPublicProductById,
+    getPublicProductByCategoryId,
+    getProductByName,
+    getProductForManage,
+    getProductByCategoryIdForManage,
+    getProductByNameForManage
+} from "../controllers/productController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
 const router = express.Router();

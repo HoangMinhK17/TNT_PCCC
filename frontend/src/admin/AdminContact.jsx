@@ -4,7 +4,7 @@ import {
     Table, Button, Modal, Form, Input, Space,
     Popconfirm, message, Typography, Tag, Select, Descriptions
 } from 'antd';
-import { EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, EyeOutlined, ReloadOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
 import dayjs from 'dayjs';
@@ -210,6 +210,14 @@ const AdminContact = () => {
                             <Select.Option value="replied">Đã phản hồi</Select.Option>
                             <Select.Option value="rejected">Từ chối</Select.Option>
                         </Select>
+                        <Button
+                            icon={<ReloadOutlined />}
+                            style={{ marginLeft: 'auto' }}
+                            loading={loading}
+                            onClick={() => fetchData(currentPage, pageSize)}
+                        >
+                            Tải lại danh sách
+                        </Button>
                     </div>
 
                     <Table

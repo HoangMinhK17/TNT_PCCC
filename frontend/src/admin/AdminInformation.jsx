@@ -74,6 +74,7 @@ const MultiCloudinaryUpload = ({ value = [], onChange, maxCount = 1, ratioDesc }
 };
 
 const AdminInformation = () => {
+    const [activeTab, setActiveTab] = useState('1');
     const [infoData, setInfoData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [savingGen, setSavingGen] = useState(false);
@@ -173,8 +174,8 @@ const AdminInformation = () => {
         }
     };
 
-    const fetchDetail = async () => {
-        setLoading(true);
+    const fetchDetail = async (isSilent = false) => {
+        if (!isSilent) setLoading(true);
         try {
             const res = await getAllInformation();
             const data = Array.isArray(res) ? res[0] : res;
@@ -300,7 +301,7 @@ const AdminInformation = () => {
 
             await updateInformation(infoData._id, payload);
             message.success("Cập nhật thông tin chung thành công!");
-            fetchDetail();
+            fetchDetail(true);
         } catch (err) {
             message.error("Cập nhật thất bại!");
         } finally {
@@ -375,7 +376,7 @@ const AdminInformation = () => {
 
             await updateImageInformation(infoData._id, payload);
             message.success("Cập nhật hình ảnh thành công!");
-            fetchDetail();
+            fetchDetail(true);
         } catch (err) {
             message.error("Cập nhật hình ảnh thất bại!");
         } finally {
@@ -406,7 +407,7 @@ const AdminInformation = () => {
             };
             await updateContactInformation(infoData._id, payload);
             message.success("Cập nhật liên kết xã hội thành công!");
-            fetchDetail();
+            fetchDetail(true);
         } catch (err) {
             message.error("Cập nhật liên kết thất bại!");
         } finally {
@@ -437,7 +438,7 @@ const AdminInformation = () => {
             };
             await updateChatConfig(infoData._id, payload);
             message.success("Cập nhật cấu hình ChatBox thành công!");
-            fetchDetail();
+            fetchDetail(true);
         } catch (err) {
             message.error("Cập nhật cấu hình ChatBox thất bại!");
         } finally {
@@ -1036,7 +1037,8 @@ const AdminInformation = () => {
                 <Title level={2} style={{ color: '#1A237E', margin: '0 0 24px 0' }}>Cấu Hình Hệ Thống</Title>
                 <div style={{ background: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', minHeight: '80vh' }}>
                     <Tabs
-                        defaultActiveKey="1"
+                        activeKey={activeTab}
+                        onChange={(key) => setActiveTab(key)}
                         size="large"
                         type="card"
                         items={items}

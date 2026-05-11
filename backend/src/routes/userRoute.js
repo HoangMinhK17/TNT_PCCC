@@ -1,9 +1,22 @@
 import express from "express";
-import { createUser, getAllUsers, loginUser, updateTheme, getAdminTheme, changePassword, updateInfo, forgotPassword, resetPassword, getAllSessions, logoutSession, refreshToken } from "../controllers/userController.js";
+import {
+    createUser,
+    getAllUsers,
+    loginUser,
+    updateTheme,
+    getAdminTheme,
+    changePassword,
+    updateInfo,
+    forgotPassword,
+    resetPassword,
+    getAllSessions,
+    logoutSession,
+    refreshToken
+} from "../controllers/userController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
 const router = express.Router();
-//User
+
 // router.post("/create-user", authMiddleware, createUser);
 router.get("/get-all-users", authMiddleware, getAllUsers);
 router.post("/login-user", loginUser);

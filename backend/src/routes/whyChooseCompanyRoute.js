@@ -1,5 +1,11 @@
 import express from "express";
-import { getWhyChooseCompany, createWhyChooseCompany, updateWhyChooseCompany, deleteWhyChooseCompany, getWhyChooseCompanyForManage } from "../controllers/whyChooseCompanyController.js";
+import {
+    getWhyChooseCompany,
+    createWhyChooseCompany,
+    updateWhyChooseCompany,
+    deleteWhyChooseCompany,
+    getWhyChooseCompanyForManage
+} from "../controllers/whyChooseCompanyController.js";
 import { authMiddleware } from "../middleware/auth.js";
 const router = express.Router();
 

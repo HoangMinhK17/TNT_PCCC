@@ -1,5 +1,12 @@
 import express from "express";
-import { createWhyChooseService, getWhyChooseService, updateWhyChooseService, deleteWhyChooseService, getWhyChooseServiceForManage, searchWhyChooseService } from "../controllers/whyChooseServiceController.js";
+import {
+    createWhyChooseService,
+    getWhyChooseService,
+    updateWhyChooseService,
+    deleteWhyChooseService,
+    getWhyChooseServiceForManage,
+    searchWhyChooseService
+} from "../controllers/whyChooseServiceController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
 const router = express.Router();

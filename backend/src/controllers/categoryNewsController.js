@@ -39,6 +39,21 @@ export const getCategoryNewsForManage = async (req, res) => {
     }
 }
 
+export const getCategoryNewsForManageForm = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const categoryNew = await CategoryNew.find({})
+            .sort({ createdAt: -1 })
+            .select("name slug status name_en isDeleted")
+            .lean();
+        res.status(200).json(categoryNew);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 export const searchCategoryNews = async (req, res) => {
     try {
         if (req.user.role !== "admin") {

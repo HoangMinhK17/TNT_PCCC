@@ -1,6 +1,14 @@
 import express from "express";
-import { getRecruiments, createRecruiment, updateRecruiment, deleteRecruiment, getRecruimentsForManage, getRecruimentsByName } from "../controllers/recruitmentController.js";
+import {
+    getRecruiments,
+    createRecruiment,
+    updateRecruiment,
+    deleteRecruiment,
+    getRecruimentsForManage,
+    getRecruimentsByName
+} from "../controllers/recruitmentController.js";
 import { authMiddleware } from "../middleware/auth.js";
+
 const router = express.Router();
 
 router.get("/get-recruiments", getRecruiments);

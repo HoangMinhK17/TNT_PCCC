@@ -16,6 +16,7 @@ import {
 import { authMiddleware } from "../middleware/auth.js";
 
 const router = express.Router();
+
 router.get("/get-all", getAllIntroductCompany);
 router.get("/get-introduct-company", getIntroductCompany);
 router.get("/get-mission-vision", getMissionVision);

@@ -1,5 +1,13 @@
 import express from "express";
-import { getPublicTestimonials, createTestimonial, getPublicTestimonialById, updateTestimonial, deleteTestimonial, searchTestimonial, getTestimonialsForManage } from "../controllers/testimonialController.js";
+import {
+    getPublicTestimonials,
+    createTestimonial,
+    getPublicTestimonialById,
+    updateTestimonial,
+    deleteTestimonial,
+    searchTestimonial,
+    getTestimonialsForManage
+} from "../controllers/testimonialController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
 const router = express.Router();

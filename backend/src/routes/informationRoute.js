@@ -1,7 +1,16 @@
 import express from "express";
-import { getInformation, getImageInformation, createInformation, updateInformation, getContactInformation, upadateImageInformation, updateContactInformation, getAllInformation, updateChatConfig } from "../controllers/informationController.js";
+import {
+    getInformation,
+    getImageInformation,
+    createInformation,
+    updateInformation,
+    getContactInformation,
+    upadateImageInformation,
+    updateContactInformation,
+    getAllInformation,
+    updateChatConfig
+} from "../controllers/informationController.js";
 import { authMiddleware } from "../middleware/auth.js";
-
 
 const router = express.Router();
 
@@ -14,6 +23,5 @@ router.put("/update-image-information/:id", authMiddleware, upadateImageInformat
 router.put("/update-contact-information/:id", authMiddleware, updateContactInformation);
 router.get("/get-all-information", authMiddleware, getAllInformation);
 router.put("/update-chat-config/:id", authMiddleware, updateChatConfig);
-
 
 export default router;

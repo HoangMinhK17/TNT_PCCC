@@ -1,6 +1,15 @@
 import express from "express";
-import { getProjects, createProject, updateProject, deleteProject, getProjectById, getProjectByName, getProjectsForManage } from "../controllers/projectController.js";
+import {
+    getProjects,
+    createProject,
+    updateProject,
+    deleteProject,
+    getProjectById,
+    getProjectByName,
+    getProjectsForManage
+} from "../controllers/projectController.js";
 import { authMiddleware } from "../middleware/auth.js";
+
 const router = express.Router();
 
 router.get("/get-projects", getProjects);

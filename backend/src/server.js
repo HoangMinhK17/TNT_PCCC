@@ -27,7 +27,6 @@ app.use((req, res, next) => {
     next();
 });
 
-
 app.use("/api/tnt", apiRouter);
 
 app.listen(process.env.PORT, () => {

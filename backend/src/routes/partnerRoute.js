@@ -1,6 +1,14 @@
 import express from "express";
-import { getPartners, createPartner, updatePartner, deletePartner, getPartnerByName, getPartnersForManage } from "../controllers/partnerController.js";
+import {
+    getPartners,
+    createPartner,
+    updatePartner,
+    deletePartner,
+    getPartnerByName,
+    getPartnersForManage
+} from "../controllers/partnerController.js";
 import { authMiddleware } from "../middleware/auth.js";
+
 const router = express.Router();
 
 router.get("/get-partners", getPartners);

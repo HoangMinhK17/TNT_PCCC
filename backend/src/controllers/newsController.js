@@ -1,5 +1,6 @@
 import News from "../models/News.js";
 import AuditLog from "../models/AuditLog.js";
+import CategoryNews from "../models/CategoryNews.js";
 
 export const getNews = async (req, res) => {
     try {
@@ -142,6 +143,17 @@ export const updateNews = async (req, res) => {
                 }
             }
         });
+
+        if ('categoryNewsId' in oldValues || 'categoryNewsId' in newValues) {
+            if (oldValues.categoryNewsId) {
+                const oldCat = await CategoryNews.findById(oldValues.categoryNewsId);
+                if (oldCat) oldValues.categoryNewsId = oldCat.name;
+            }
+            if (newValues.categoryNewsId) {
+                const newCat = await CategoryNews.findById(newValues.categoryNewsId);
+                if (newCat) newValues.categoryNewsId = newCat.name;
+            }
+        }
 
         if (Object.keys(oldValues).length > 0) {
             await AuditLog.create({

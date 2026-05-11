@@ -1,5 +1,9 @@
 import express from "express";
-import { createThemeHeader, getThemeHeader, updateThemeHeader } from "../controllers/themeHeaderController.js";
+import {
+    createThemeHeader,
+    getThemeHeader,
+    updateThemeHeader
+} from "../controllers/themeHeaderController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
 const router = express.Router();

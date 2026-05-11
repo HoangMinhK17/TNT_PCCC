@@ -165,11 +165,24 @@ const updateProduct = async (req, res) => {
                 }
             }
         });
+
+        if ('categoryId' in oldValues || 'categoryId' in newValues) {
+            if (oldValues.categoryId) {
+                const oldCat = await CategoryProduct.findById(oldValues.categoryId);
+                if (oldCat) oldValues.categoryId = oldCat.name;
+            }
+            if (newValues.categoryId) {
+                const newCat = await CategoryProduct.findById(newValues.categoryId);
+                if (newCat) newValues.categoryId = newCat.name;
+            }
+        }
+
         const product = await Product.findByIdAndUpdate(req.params.id, {
             name, name_en, title, title_en, description,
             description_en, image, technical, technical_en,
             categoryId, slug, status
         }, { new: true });
+        
         if (Object.keys(oldValues).length > 0) {
             await AuditLog.create({
                 action: "update",
