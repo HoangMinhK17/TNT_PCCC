@@ -4,18 +4,28 @@ import {
     Tabs, Table, Button, Modal, Form, Input, Space,
     Popconfirm, message, Typography, Upload, Image, Tag, Select, DatePicker, Tooltip
 } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined, ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined, ReloadOutlined, MenuOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
 import dayjs from 'dayjs';
 import CustomQuillEditor from '../component/CustomQuillEditor';
 
 import {
-    getCategoryNewsForManage, createCategoryNews, updateCategoryNews, deleteCategoryNews, searchCategoryNews, getCategoryNewsForManageForm
+    DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors,
+} from '@dnd-kit/core';
+import {
+    arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+import {
+    getCategoryNewsForManage, createCategoryNews, updateCategoryNews, deleteCategoryNews,
+    searchCategoryNews, getCategoryNewsForManageForm, reorderCategoryNews
 } from '../utils/categoryNewsApi';
 
 import {
-    getNewsForManage, createNews, updateNews, deleteNews
+    getNewsForManage, createNews, updateNews, deleteNews,
+    reorderNews, getAllNewsByCategoryForReorder
 } from '../utils/newsApi';
 
 import { uploadImageToCloudinary, processRichTextContent } from '../utils/imageApi';
@@ -74,11 +84,186 @@ const MultiCloudinaryUpload = ({ value = [], onChange, maxCount = 1 }) => {
     );
 };
 
+const SortableRow = ({ id, children }) => {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+        background: isDragging ? '#e6f7ff' : '#fff',
+        borderRadius: 8,
+        marginBottom: 8,
+        boxShadow: isDragging ? '0 4px 16px rgba(24,144,255,0.18)' : '0 1px 4px rgba(0,0,0,0.07)',
+        display: 'flex',
+        alignItems: 'center',
+        padding: '10px 14px',
+        gap: 12,
+        userSelect: 'none',
+    };
+    return (
+        <div ref={setNodeRef} style={style}>
+            <span {...attributes} {...listeners}
+                style={{ cursor: 'grab', color: '#aaa', fontSize: 18, flexShrink: 0, display: 'flex', alignItems: 'center' }}
+                title="Kéo để sắp xếp"
+            >
+                <MenuOutlined />
+            </span>
+            {children}
+        </div>
+    );
+};
+
+const CategoryNewsReorderModal = ({ open, onClose, onSaved }) => {
+    const [items, setItems] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    );
+    useEffect(() => {
+        if (!open) return;
+        setLoading(true);
+        getCategoryNewsForManageForm().then(data => {
+            setItems(Array.isArray(data) ? data.filter(c => !c.isDeleted) : []);
+            setLoading(false);
+        }).catch(() => { message.error('Lấy dữ liệu thất bại!'); setLoading(false); });
+    }, [open]);
+    const handleDragEnd = ({ active, over }) => {
+        if (active.id !== over?.id) {
+            setItems(prev => {
+                const o = prev.findIndex(i => i._id === active.id);
+                const n = prev.findIndex(i => i._id === over.id);
+                return arrayMove(prev, o, n);
+            });
+        }
+    };
+    const handleSave = async () => {
+        setSaving(true);
+        try {
+            await reorderCategoryNews(items.map((it, idx) => ({ id: it._id, displayOrder: idx })));
+            message.success('Đã lưu thứ tự danh mục!');
+            onSaved?.();
+            onClose();
+        } catch { message.error('Lưu thất bại!'); }
+        finally { setSaving(false); }
+    };
+    return (
+        <Modal title="Sắp xếp thứ tự Danh mục tin tức" open={open} onCancel={onClose} width={540}
+            footer={[<Button key="c" onClick={onClose}>Hủy</Button>, <Button key="s" type="primary" loading={saving} onClick={handleSave}>Lưu thứ tự</Button>]}
+        >
+            <p style={{ color: '#888', marginBottom: 16, fontSize: 13 }}>Kéo thả để sắp xếp thứ tự danh mục.</p>
+            {loading ? <div style={{ textAlign: 'center', padding: 32 }}>Đang tải...</div> : (
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <SortableContext items={items.map(i => i._id)} strategy={verticalListSortingStrategy}>
+                        {items.map((cat, idx) => (
+                            <SortableRow key={cat._id} id={cat._id}>
+                                <span style={{ color: '#bbb', minWidth: 28, fontSize: 13 }}>#{idx + 1}</span>
+                                <Tag color={cat.status === 'active' ? 'green' : 'red'} style={{ flexShrink: 0 }}>
+                                    {cat.status === 'active' ? 'Đang hiện' : 'Ẩn'}
+                                </Tag>
+                                <span style={{ fontWeight: 500, flex: 1 }}>{cat.name}</span>
+                                {cat.name_en && <span style={{ color: '#aaa', fontSize: 12 }}>{cat.name_en}</span>}
+                            </SortableRow>
+                        ))}
+                    </SortableContext>
+                </DndContext>
+            )}
+        </Modal>
+    );
+};
+
+const NewsReorderModal = ({ open, onClose, categories }) => {
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+    const [items, setItems] = useState([]);
+    const [loadingNews, setLoadingNews] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    );
+    useEffect(() => { if (!open) { setSelectedCategoryId(null); setItems([]); } }, [open]);
+    useEffect(() => {
+        if (!selectedCategoryId) { setItems([]); return; }
+        setLoadingNews(true);
+        getAllNewsByCategoryForReorder(selectedCategoryId)
+            .then(res => setItems(Array.isArray(res.news) ? res.news : []))
+            .catch(() => message.error('Lấy tin tức thất bại!'))
+            .finally(() => setLoadingNews(false));
+    }, [selectedCategoryId]);
+    const handleDragEnd = ({ active, over }) => {
+        if (active.id !== over?.id) {
+            setItems(prev => {
+                const o = prev.findIndex(i => i._id === active.id);
+                const n = prev.findIndex(i => i._id === over.id);
+                return arrayMove(prev, o, n);
+            });
+        }
+    };
+    const handleSave = async () => {
+        if (!selectedCategoryId || items.length === 0) return;
+        setSaving(true);
+        try {
+            await reorderNews(items.map((it, idx) => ({ id: it._id, displayOrder: idx })));
+            message.success('Đã lưu thứ tự tin tức!');
+            onClose();
+        } catch { message.error('Lưu thất bại!'); }
+        finally { setSaving(false); }
+    };
+    const activeCategories = (categories || []).filter(c => c.status === 'active' && !c.isDeleted);
+    return (
+        <Modal title="Sắp xếp thứ tự Tin tức trong danh mục" open={open} onCancel={onClose} width={620}
+            footer={[
+                <Button key="c" onClick={onClose}>Hủy</Button>,
+                <Button key="s" type="primary" loading={saving} disabled={!selectedCategoryId || items.length === 0} onClick={handleSave}>Lưu thứ tự</Button>
+            ]}
+        >
+            <div style={{ marginBottom: 16 }}>
+                <Select placeholder="Chọn danh mục để sắp xếp tin tức" style={{ width: '100%' }}
+                    value={selectedCategoryId} onChange={setSelectedCategoryId} showSearch optionFilterProp="children"
+                >
+                    {activeCategories.map(c => (
+                        <Select.Option key={c._id} value={c._id}>{c.name}</Select.Option>
+                    ))}
+                </Select>
+            </div>
+            {!selectedCategoryId && <div style={{ textAlign: 'center', color: '#aaa', padding: '24px 0' }}>Chọn danh mục để xem và sắp xếp tin tức</div>}
+            {selectedCategoryId && loadingNews && <div style={{ textAlign: 'center', padding: 32 }}>Đang tải...</div>}
+            {selectedCategoryId && !loadingNews && items.length === 0 && <div style={{ textAlign: 'center', color: '#aaa', padding: '24px 0' }}>Danh mục này chưa có tin tức</div>}
+            {selectedCategoryId && !loadingNews && items.length > 0 && (
+                <>
+                    <p style={{ color: '#888', marginBottom: 12, fontSize: 13 }}>Kéo thả để sắp xếp. <strong>{items.length}</strong> tin tức.</p>
+                    <div style={{ maxHeight: 400, overflowY: 'auto', paddingRight: 4 }}>
+                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                            <SortableContext items={items.map(i => i._id)} strategy={verticalListSortingStrategy}>
+                                {items.map((news, idx) => (
+                                    <SortableRow key={news._id} id={news._id}>
+                                        <span style={{ color: '#bbb', minWidth: 28, fontSize: 13 }}>#{idx + 1}</span>
+                                        {news.image && (
+                                            <img src={news.image} alt={news.name}
+                                                style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
+                                        )}
+                                        <span style={{ fontWeight: 500, flex: 1, fontSize: 14 }}>{news.name}</span>
+                                        <Tag color={news.status === 'active' ? 'green' : 'red'} style={{ flexShrink: 0 }}>
+                                            {news.status === 'active' ? 'Hiện' : 'Ẩn'}
+                                        </Tag>
+                                    </SortableRow>
+                                ))}
+                            </SortableContext>
+                        </DndContext>
+                    </div>
+                </>
+            )}
+        </Modal>
+    );
+};
+
 // ═══════════════════════ TAB 1: DANH MỤC TIN TỨC ══════════════════════════
 const TabCategoryNews = ({ onCategoryChange }) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [reorderModalVisible, setReorderModalVisible] = useState(false);
     const [editing, setEditing] = useState(null);
     const [saving, setSaving] = useState(false);
     const [searchText, setSearchText] = useState('');
@@ -193,9 +378,12 @@ const TabCategoryNews = ({ onCategoryChange }) => {
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <Title level={4} style={{ margin: 0 }}>Danh mục Tin tức</Title>
-                <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>Thêm danh mục</Button>
+                <Space>
+                    <Button icon={<MenuOutlined />} onClick={() => setReorderModalVisible(true)}>Sắp xếp thứ tự</Button>
+                    <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>Thêm danh mục</Button>
+                </Space>
             </div>
 
             <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
@@ -279,6 +467,11 @@ const TabCategoryNews = ({ onCategoryChange }) => {
                     </Form.Item>
                 </Form>
             </Modal>
+            <CategoryNewsReorderModal
+                open={reorderModalVisible}
+                onClose={() => setReorderModalVisible(false)}
+                onSaved={() => { fetchData(currentPage, pageSize); onCategoryChange?.(); }}
+            />
         </div>
     );
 };
@@ -289,6 +482,7 @@ const TabNews = ({ categoryRefreshKey }) => {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [newsReorderModalVisible, setNewsReorderModalVisible] = useState(false);
     const [editing, setEditing] = useState(null);
     const [saving, setSaving] = useState(false);
     const [searchText, setSearchText] = useState('');
@@ -461,9 +655,12 @@ const TabNews = ({ categoryRefreshKey }) => {
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <Title level={4} style={{ margin: 0 }}>Danh sách Tin tức</Title>
-                <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>Thêm Tin tức</Button>
+                <Space>
+                    <Button icon={<MenuOutlined />} onClick={() => setNewsReorderModalVisible(true)}>Sắp xếp tin tức</Button>
+                    <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>Thêm Tin tức</Button>
+                </Space>
             </div>
 
             <div style={{ display: 'flex', gap: 16, marginBottom: 16, alignItems: 'center' }}>
@@ -643,6 +840,11 @@ const TabNews = ({ categoryRefreshKey }) => {
                     </Tabs>
                 </Form>
             </Modal>
+            <NewsReorderModal
+                open={newsReorderModalVisible}
+                onClose={() => setNewsReorderModalVisible(false)}
+                categories={categories}
+            />
         </div>
     );
 };

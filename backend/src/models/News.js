@@ -60,16 +60,20 @@ const newsSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-
+    displayOrder: {
+        type: Number,
+        default: 0
+    }
 },
     {
         timestamps: true
     }
 );
 
-newsSchema.index({ status: 1, isDeleted: 1, createdAt: -1 })
-newsSchema.index({ isDeleted: 1, createdAt: -1 })
+newsSchema.index({ status: 1, isDeleted: 1, displayOrder: 1 })
+newsSchema.index({ isDeleted: 1, displayOrder: 1 })
 newsSchema.index({ name: 1 })
+newsSchema.index({ displayOrder: 1 })
 newsSchema.index(
     { slug: 1 },
     {

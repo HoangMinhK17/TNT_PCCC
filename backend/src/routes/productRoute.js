@@ -9,7 +9,8 @@ import {
     getProductByName,
     getProductForManage,
     getProductByCategoryIdForManage,
-    getProductByNameForManage
+    getProductByNameForManage,
+    updateProductOrder
 } from "../controllers/productController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
@@ -25,5 +26,6 @@ router.get("/getPublicProductByCategoryId/:categoryId", getPublicProductByCatego
 router.get("/getProductByName/:name", getProductByName);
 router.get("/getProductByCategoryIdForManage/:categoryId", authMiddleware, getProductByCategoryIdForManage);
 router.get("/getProductByNameForManage/:name", authMiddleware, getProductByNameForManage);
+router.put("/reorder", authMiddleware, updateProductOrder);
 
 export default router;

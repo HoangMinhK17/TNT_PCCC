@@ -134,3 +134,18 @@ export const getNewsByCategoryIdAdmin = async (categoryNewsId, page, limit) => {
     }
 };
 
+export const reorderNews = async (items) => {
+    const token = localStorage.getItem("token");
+    const response = await api.put("/news/reorder", { items }, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+};
+
+export const getAllNewsByCategoryForReorder = async (categoryNewsId) => {
+    const token = localStorage.getItem("token");
+    const response = await api.get(`/news/get-news-by-category-id-admin/${categoryNewsId}?page=1&limit=1000`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+};

@@ -6,7 +6,8 @@ import {
     deleteCategoryNews,
     getCategoryNewsForManage,
     searchCategoryNews,
-    getCategoryNewsForManageForm
+    getCategoryNewsForManageForm,
+    updateCategoryNewsOrder
 } from "../controllers/categoryNewsController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
@@ -19,5 +20,6 @@ router.delete("/delete-category-news/:id", authMiddleware, deleteCategoryNews);
 router.get("/get-category-news-for-manage", authMiddleware, getCategoryNewsForManage);
 router.get("/search-category-news/:name", authMiddleware, searchCategoryNews);
 router.get("/get-category-news-for-manage-form", authMiddleware, getCategoryNewsForManageForm);
+router.put("/reorder", authMiddleware, updateCategoryNewsOrder);
 
 export default router;

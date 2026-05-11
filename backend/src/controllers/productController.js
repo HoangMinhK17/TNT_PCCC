@@ -5,7 +5,7 @@ import Product from "../models/Product.js";
 const getPublicProducts = async (req, res) => {
     try {
         const products = await Product.find({ isDeleted: false, status: "active" })
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .select("name name_en title title_en image slug status")
             .populate({
                 path: "categoryId", select: "name_en name slug status",
@@ -40,7 +40,7 @@ const getProductForManage = async (req, res) => {
 
         const totalProducts = await Product.countDocuments(filter);
         const products = await Product.find(filter)
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .populate({ path: "categoryId", select: "name slug status" })
             .skip(skip)
             .limit(limit)
@@ -265,7 +265,7 @@ const getPublicProductByCategoryId = async (req, res) => {
             })
             .skip(skip)
             .limit(limit)
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .lean();
 
         res.status(200).json({
@@ -294,7 +294,7 @@ const getProductByCategoryIdForManage = async (req, res) => {
             .populate({ path: "categoryId", select: "name slug name_en" })
             .skip(skip)
             .limit(limit)
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .lean();
 
         res.status(200).json({
@@ -333,7 +333,7 @@ const getProductByName = async (req, res) => {
             .populate({ path: "categoryId", select: "name slug name_en" })
             .skip(skip)
             .limit(limit)
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .lean();
 
         res.status(200).json({
@@ -367,7 +367,7 @@ const getProductByNameForManage = async (req, res) => {
             .populate({ path: "categoryId", select: "name slug" })
             .skip(skip)
             .limit(limit)
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .lean();
 
         res.status(200).json({
@@ -381,8 +381,38 @@ const getProductByNameForManage = async (req, res) => {
     }
 };
 
+const updateProductOrder = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const { items } = req.body;
+        if (!Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ message: "Danh sách không hợp lệ" });
+        }
+        const bulkOps = items.map(({ id, displayOrder }) => ({
+            updateOne: {
+                filter: { _id: id },
+                update: { $set: { displayOrder } }
+            }
+        }));
+        await Product.bulkWrite(bulkOps);
+        await AuditLog.create({
+            action: "update",
+            module: "Sản phẩm",
+            recordId: null,
+            recordName: "Sắp xếp thứ tự sản phẩm",
+            userId: req.user.id,
+        });
+        res.status(200).json({ message: "Cập nhật thứ tự thành công" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export {
     getPublicProducts, createProduct, updateProduct, deleteProduct,
     getPublicProductById, getPublicProductByCategoryId, getProductByName,
-    getProductForManage, getProductByCategoryIdForManage, getProductByNameForManage
+    getProductForManage, getProductByCategoryIdForManage, getProductByNameForManage,
+    updateProductOrder
 };

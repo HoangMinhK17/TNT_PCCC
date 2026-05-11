@@ -22,13 +22,11 @@ const contactRecruitmentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
     recruitmentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Recruitment",
         required: true
     },
-
     status: {
         type: String,
         enum: ["pending", "approved", "rejected"],

@@ -9,7 +9,8 @@ import {
     getNewsByName,
     getNewsBySearch,
     getNewsForManage,
-    getNewsByCategoryIdAdmin
+    getNewsByCategoryIdAdmin,
+    updateNewsOrder
 } from "../controllers/newsController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
@@ -25,5 +26,6 @@ router.get("/get-news-by-name/:name",authMiddleware, getNewsByName);
 router.get("/get-news-by-search/:searchTerm", getNewsBySearch);
 router.get("/get-news-for-manage", authMiddleware, getNewsForManage);
 router.get("/get-news-by-category-id-admin/:categoryNewsId", authMiddleware, getNewsByCategoryIdAdmin);
+router.put("/reorder", authMiddleware, updateNewsOrder);
 
 export default router;

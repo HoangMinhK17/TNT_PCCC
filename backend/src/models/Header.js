@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const headerSchema = new mongoose.Schema({
-
     key: {
         type: String,
         required: true
@@ -22,7 +21,6 @@ const headerSchema = new mongoose.Schema({
         type: String,
         default: "active"
     }
-
 },
     {
         timestamps: true

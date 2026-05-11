@@ -41,7 +41,6 @@ const recruitmentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
     requirements: {
         type: [String],
         default: []
@@ -50,7 +49,6 @@ const recruitmentSchema = new mongoose.Schema({
         type: [String],
         default: []
     },
-
     status: {
         type: String,
         enum: ["active", "inactive"],
@@ -74,7 +72,6 @@ const recruitmentSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
-
 },
     {
         timestamps: true

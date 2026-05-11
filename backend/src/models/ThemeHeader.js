@@ -13,12 +13,10 @@ const themeHeaderSchema = new mongoose.Schema({
         type: String,
         default: "14px"
     }
-
-
-
-
 },
-    { timestamps: true }
+    {
+        timestamps: true
+    }
 )
 
 const ThemeHeader = mongoose.model("ThemeHeader", themeHeaderSchema);

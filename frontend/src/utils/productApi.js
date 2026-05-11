@@ -71,3 +71,19 @@ export const getProductByNameForManage = async (name, page = 1, limit = 10) => {
     });
     return response.data;
 };
+
+export const reorderProducts = async (items) => {
+    const token = localStorage.getItem("token");
+    const response = await api.put(`/product/reorder`, { items }, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+};
+
+export const getAllProductsByCategoryForReorder = async (categoryId) => {
+    const token = localStorage.getItem("token");
+    const response = await api.get(`/product/getProductByCategoryIdForManage/${categoryId}?page=1&limit=1000`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+};

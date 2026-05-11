@@ -5,8 +5,7 @@ const TestimonialSchema = new mongoose.Schema({
     {
         type: String,
         required: true
-    }
-    ,
+    },
     role:
     {
         type: String,
@@ -43,12 +42,10 @@ const TestimonialSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
-
 },
     {
         timestamps: true
     }
-
 );
 
 export default mongoose.model("Testimonial", TestimonialSchema);

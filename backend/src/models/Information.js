@@ -9,7 +9,6 @@ const informationSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
     email: {
         type: String,
         required: true
@@ -51,8 +50,7 @@ const informationSchema = new mongoose.Schema({
         required: false
     },
     favicon: {
-        type: String,
-
+        type: String
     },
     chatConfig: {
         scriptUrl: {
@@ -84,9 +82,7 @@ const informationSchema = new mongoose.Schema({
                 default: ""
             }
         }
-
     }
-
 },
     {
         timestamps: true

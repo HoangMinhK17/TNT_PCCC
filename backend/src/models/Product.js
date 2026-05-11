@@ -72,16 +72,20 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-
+    displayOrder: {
+        type: Number,
+        default: 0
+    },
 },
     {
         timestamps: true
     }
 );
 
-productSchema.index({ status: 1, isDeleted: 1, createdAt: -1 })
-productSchema.index({ isDeleted: 1, createdAt: -1 })
+productSchema.index({ status: 1, isDeleted: 1, displayOrder: 1 })
+productSchema.index({ isDeleted: 1, displayOrder: 1 })
 productSchema.index({ name: 1 })
+productSchema.index({ displayOrder: 1 })
 productSchema.index(
     { slug: 1 },
     {

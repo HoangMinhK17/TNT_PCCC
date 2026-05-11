@@ -4,7 +4,7 @@ import AuditLog from "../models/AuditLog.js";
 export const getCategoryNews = async (req, res) => {
     try {
         const categoryNew = await CategoryNew.find({ status: "active", isDeleted: false })
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .select("name slug status name_en")
             .lean();
         res.status(200).json(categoryNew);
@@ -23,7 +23,7 @@ export const getCategoryNewsForManage = async (req, res) => {
         const skip = (page - 1) * limit;
         const totalCategoryNew = await CategoryNew.countDocuments({ isDeleted: false });
         const categoryNew = await CategoryNew.find({ isDeleted: false })
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .select("name slug status name_en")
             .skip(skip)
             .limit(limit)
@@ -45,7 +45,7 @@ export const getCategoryNewsForManageForm = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const categoryNew = await CategoryNew.find({})
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .select("name slug status name_en isDeleted")
             .lean();
         res.status(200).json(categoryNew);
@@ -70,7 +70,7 @@ export const searchCategoryNews = async (req, res) => {
             name: { $regex: req.params.name, $options: "i" },
             isDeleted: false
         })
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .select("name slug status name_en")
             .skip(skip)
             .limit(limit)
@@ -190,6 +190,35 @@ export const deleteCategoryNews = async (req, res) => {
             userId: req.user.id,
         });
         res.status(200).json(categoryNew);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export const updateCategoryNewsOrder = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const { items } = req.body;
+        if (!Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ message: "Danh sách không hợp lệ" });
+        }
+        const bulkOps = items.map(({ id, displayOrder }) => ({
+            updateOne: {
+                filter: { _id: id },
+                update: { $set: { displayOrder } }
+            }
+        }));
+        await CategoryNew.bulkWrite(bulkOps);
+        await AuditLog.create({
+            action: "update",
+            module: "Danh mục tin tức",
+            recordId: null,
+            recordName: "Sắp xếp thứ tự danh mục tin tức",
+            userId: req.user.id,
+        });
+        res.status(200).json({ message: "Cập nhật thứ tự thành công" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

@@ -20,7 +20,6 @@ const introductCompanySchema = new mongoose.Schema({
       type: String,
       required: true
     }
-
   },
   description: {
     descriptionName: {
@@ -34,7 +33,6 @@ const introductCompanySchema = new mongoose.Schema({
       type: String,
       required: false
     }
-
   },
   image: {
     type: [String]

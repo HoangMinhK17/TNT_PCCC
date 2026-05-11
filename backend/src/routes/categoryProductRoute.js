@@ -6,7 +6,8 @@ import {
     deleteCategoryProduct,
     getCategoryProductForManage,
     getCategoryProductBySearch,
-    getCategoryProductForManageForm
+    getCategoryProductForManageForm,
+    updateCategoryProductOrder
 } from "../controllers/categoryProductController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
@@ -19,5 +20,6 @@ router.put("/update-category-product/:id", authMiddleware, updateCategoryProduct
 router.delete("/delete-category-product/:id", authMiddleware, deleteCategoryProduct);
 router.get("/search-category-product/:searchTerm", authMiddleware, getCategoryProductBySearch);
 router.get("/get-category-product-for-manage-form", authMiddleware, getCategoryProductForManageForm);
+router.put("/reorder", authMiddleware, updateCategoryProductOrder);
 
 export default router;

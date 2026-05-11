@@ -5,7 +5,7 @@ import CategoryNews from "../models/CategoryNews.js";
 export const getNews = async (req, res) => {
     try {
         const news = await News.find({ status: "active", isDeleted: false })
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .select("name name_en date title title_en image slug ")
             .populate({ path: "categoryNewsId", select: "name name_en", match: { status: "active" } })
             .lean();
@@ -36,7 +36,7 @@ export const getNewsForManage = async (req, res) => {
 
         const totalNews = await News.countDocuments(filter);
         const news = await News.find(filter)
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .select("name name_en date title title_en image slug description description_en status")
             .populate("categoryNewsId", "name name_en")
             .skip(skip)
@@ -58,14 +58,16 @@ export const createNews = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, name_en, slug, title, title_en, description, description_en, 
+        const { name, name_en, slug, title, title_en, description, description_en,
             image, date, status, categoryNewsId } = req.body;
         const existingProduct = await News.findOne({ slug, isDeleted: false });
         if (existingProduct) {
             return res.status(400).json({ message: "Slug already exists" });
         }
-        const news = await News.create({ name, name_en, slug, title, title_en, description,
-             description_en, image, date, status, categoryNewsId });
+        const news = await News.create({
+            name, name_en, slug, title, title_en, description,
+            description_en, image, date, status, categoryNewsId
+        });
         await AuditLog.create({
             action: "create",
             module: "Tin tức",
@@ -222,7 +224,7 @@ export const getNewsByCategoryId = async (req, res) => {
         const query = { categoryNewsId, status: "active", isDeleted: false };
 
         const news = await News.find(query)
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .skip(skip)
             .limit(limit)
             .select("name name_en date title title_en image description description_en slug ")
@@ -254,7 +256,7 @@ export const getNewsByCategoryIdAdmin = async (req, res) => {
         const query = { categoryNewsId, isDeleted: false };
 
         const news = await News.find(query)
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .skip(skip)
             .limit(limit)
             .select("name name_en date title title_en image description description_en slug status ")
@@ -290,7 +292,7 @@ export const getNewsByName = async (req, res) => {
         };
 
         const news = await News.find(query)
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .skip(skip)
             .limit(limit)
             .select("name name_en date title title_en image description description_en slug")
@@ -326,7 +328,7 @@ export const getNewsBySearch = async (req, res) => {
         };
 
         const news = await News.find(query)
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .skip(skip)
             .limit(limit)
             .select("name name_en date title title_en image slug")
@@ -345,3 +347,31 @@ export const getNewsBySearch = async (req, res) => {
     }
 }
 
+export const updateNewsOrder = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const { items } = req.body;
+        if (!Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ message: "Danh sách không hợp lệ" });
+        }
+        const bulkOps = items.map(({ id, displayOrder }) => ({
+            updateOne: {
+                filter: { _id: id },
+                update: { $set: { displayOrder } }
+            }
+        }));
+        await News.bulkWrite(bulkOps);
+        await AuditLog.create({
+            action: "update",
+            module: "Tin tức",
+            recordId: null,
+            recordName: "Sắp xếp thứ tự tin tức",
+            userId: req.user.id,
+        });
+        res.status(200).json({ message: "Cập nhật thứ tự thành công" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}

@@ -4,7 +4,7 @@ import AuditLog from "../models/AuditLog.js";
 const getCategoryProducts = async (req, res) => {
     try {
         const categoryProducts = await CategoryProduct.find({ isDeleted: false, status: "active" })
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .lean();
         res.status(200).json(categoryProducts);
     } catch (error) {
@@ -22,7 +22,7 @@ const getCategoryProductForManage = async (req, res) => {
         const skip = (page - 1) * limit;
         const totalCategoryProduct = await CategoryProduct.countDocuments({ isDeleted: false });
         const categoryProducts = await CategoryProduct.find({ isDeleted: false })
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .skip(skip)
             .limit(limit)
             .lean();
@@ -42,7 +42,7 @@ const getCategoryProductForManageForm = async (req, res) => {
             return res.status(403).json({ message: "Forbidden" });
         }
         const categoryProducts = await CategoryProduct.find({})
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .lean();
         res.status(200).json(categoryProducts);
     } catch (error) {
@@ -163,7 +163,7 @@ const getCategoryProductBySearch = async (req, res) => {
             .countDocuments({ name: { $regex: searchTerm, $options: "i" }, isDeleted: false });
         const categoryProduct = await CategoryProduct
             .find({ name: { $regex: searchTerm, $options: "i" }, isDeleted: false })
-            .sort({ createdAt: -1 })
+            .sort({ displayOrder: 1, createdAt: 1 })
             .select("name slug status")
             .skip(skip)
             .limit(limit)
@@ -178,8 +178,37 @@ const getCategoryProductBySearch = async (req, res) => {
     }
 };
 
+const updateCategoryProductOrder = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const { items } = req.body;
+        if (!Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ message: "Danh sách không hợp lệ" });
+        }
+        const bulkOps = items.map(({ id, displayOrder }) => ({
+            updateOne: {
+                filter: { _id: id },
+                update: { $set: { displayOrder } }
+            }
+        }));
+        await CategoryProduct.bulkWrite(bulkOps);
+        await AuditLog.create({
+            action: "update",
+            module: "Danh mục sản phẩm",
+            recordId: null,
+            recordName: "Sắp xếp thứ tự danh mục",
+            userId: req.user.id,
+        });
+        res.status(200).json({ message: "Cập nhật thứ tự thành công" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export {
     getCategoryProducts, getCategoryProductForManage, createCategoryProduct,
     updateCategoryProduct, deleteCategoryProduct, getCategoryProductById,
-    getCategoryProductBySearch, getCategoryProductForManageForm
+    getCategoryProductBySearch, getCategoryProductForManageForm, updateCategoryProductOrder
 };

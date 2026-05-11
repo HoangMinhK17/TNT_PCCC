@@ -99,3 +99,18 @@ export const getCategoryNewsForManageForm = async () => {
         throw error;
     }
 };
+
+export const reorderCategoryNews = async (items) => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await api.put("/categoryNews/reorder", { items }, {
+            headers: {
+                Authorization: `Bearer ${token}` 
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error reordering category news:", error);
+        throw error;
+    }
+};

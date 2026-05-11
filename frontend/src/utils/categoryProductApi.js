@@ -53,3 +53,11 @@ export const getCategoryProductForManageForm = async () => {
     return response.data;
 };
 
+export const reorderCategoryProducts = async (items) => {
+    const token = localStorage.getItem("token");
+    const response = await api.put(`/categoryProduct/reorder`, { items }, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+};
+

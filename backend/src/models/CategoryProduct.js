@@ -23,7 +23,6 @@ const categoryProductSchema = new mongoose.Schema({
         type: Date,
         default: null
     },
-
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -38,17 +37,20 @@ const categoryProductSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-
-
+    displayOrder: {
+        type: Number,
+        default: 0
+    }
 },
     {
         timestamps: true
     }
 );
 
-categoryProductSchema.index({ status: 1, isDeleted: 1, createdAt: -1 })
-categoryProductSchema.index({ isDeleted: 1, createdAt: -1 })
+categoryProductSchema.index({ status: 1, isDeleted: 1, displayOrder: 1 })
+categoryProductSchema.index({ isDeleted: 1, displayOrder: 1 })
 categoryProductSchema.index({ name: 1 })
+categoryProductSchema.index({ displayOrder: 1 })
 categoryProductSchema.index(
     { slug: 1 },
     {
@@ -56,6 +58,5 @@ categoryProductSchema.index(
         partialFilterExpression: { isDeleted: false }
     }
 );
-
 
 export default mongoose.model("CategoryProduct", categoryProductSchema);
