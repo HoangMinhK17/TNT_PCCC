@@ -26,7 +26,9 @@ app.use((req, res, next) => {
     };
     next();
 });
-
+app.get("/", (req, res) => {
+    res.status(200).send("TNT-PCCC Backend is active and awake!");
+});
 app.use("/api/tnt", apiRouter);
 
 app.listen(process.env.PORT, () => {

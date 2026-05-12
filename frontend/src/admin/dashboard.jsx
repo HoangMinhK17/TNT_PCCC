@@ -92,8 +92,6 @@ const Dashboard = () => {
     };
 
     const [loading, setLoading] = useState(false);
-
-
     const [totalContacts, setTotalContacts] = useState(0);
     const [totalProducts, setTotalProducts] = useState(0);
     const [totalProjects, setTotalProjects] = useState(0);
@@ -173,7 +171,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchAuditLogs = async () => {
             try {
-                const res = await getAllAuditLogs(1, 7);
+                const res = await getAllAuditLogs(1, 5);
                 setRecentAuditLogs(res?.auditLogs || []);
             } catch {
                 setRecentAuditLogs([]);
