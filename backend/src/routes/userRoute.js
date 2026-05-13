@@ -11,7 +11,8 @@ import {
     resetPassword,
     getAllSessions,
     logoutSession,
-    refreshToken
+    refreshToken,
+    deleteSession
 } from "../controllers/userController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
@@ -31,5 +32,6 @@ router.post("/reset-password", resetPassword);
 router.get("/sessions", authMiddleware, getAllSessions);
 router.put("/sessions/:id/logout", authMiddleware, logoutSession);
 router.post("/refresh-token", refreshToken);
+router.delete("/sessions/delete/:id", authMiddleware, deleteSession);
 
 export default router;

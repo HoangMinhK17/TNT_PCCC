@@ -8,6 +8,7 @@ import crypto from "crypto";
 import Information from "../models/Information.js";
 import AuditLog from "../models/AuditLog.js";
 import Session from "../models/Session.js";
+import { emitForceLogout } from "../config/socket.js";
 
 const createUser = async (req, res) => {
     try {
@@ -373,6 +374,11 @@ const logoutSession = async (req, res) => {
         session.isActive = false;
         await session.save();
 
+        emitForceLogout(
+            session.deviceId,
+            "Phiên đăng nhập của bạn đã bị quản trị viên đăng xuất."
+        );
+
         await AuditLog.create({
             module: "Quản lý thiết bị",
             action: "update",
@@ -419,7 +425,34 @@ const refreshToken = async (req, res) => {
     }
 };
 
+const deleteSession = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const { id } = req.params;
+        const session = await Session.findById(id);
+        if (!session) {
+            return res.status(404).json({ message: "Không tìm thấy phiên đăng nhập" });
+        }
+
+        await session.deleteOne();
+        await AuditLog.create({
+            module: "Quản lý thiết bị",
+            action: "delete",
+            recordId: session._id,
+            recordName: `Xóa phiên đăng nhập – ${session.browser || ''} / ${session.os || ''} (${session.ip || ''})`,
+            userId: req.user.id,
+        });
+
+        res.status(200).json({ message: "Xóa phiên đăng nhập thành công" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 export {
     createUser, getAllUsers, loginUser, updateTheme, getAdminTheme, changePassword
     , updateInfo, forgotPassword, resetPassword, getAllSessions, logoutSession, refreshToken
+    , deleteSession
 };

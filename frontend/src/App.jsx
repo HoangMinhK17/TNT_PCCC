@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import 'react-toastify/dist/ReactToastify.css'
@@ -39,6 +39,7 @@ import AdminAuditLog from './admin/AdminAuditLog'
 import ProtectedRoute from './component/ProtectedRoute'
 import api from './utils/api'
 import { getImageInformation } from './utils/informationApi'
+import { initSocket, registerUser, disconnectSocket } from './utils/socket'
 
 const imageModules = import.meta.glob('./uploads/**/*.{png,jpg,jpeg,svg,webp,ico}', { eager: true, query: '?url', import: 'default' });
 
@@ -53,6 +54,45 @@ function App() {
       once: false,
       mirror: true
     });
+  }, []);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const deviceId = localStorage.getItem('deviceId');
+    const socket = initSocket();
+
+    if (user?.id && deviceId) {
+      registerUser(user.id, deviceId);
+      socket.on('connect', () => {
+        registerUser(user.id, deviceId);
+      });
+    }
+
+    socket.on('force_logout', ({ reason }) => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('refreshToken');
+      disconnectSocket();
+
+      toast.error(reason || 'Phiên đăng nhập của bạn đã bị đăng xuất!', {
+        autoClose: 3000,
+        onClose: () => {
+          if (window.location.pathname.startsWith('/admin') && window.location.pathname !== '/admin/login') {
+            window.location.href = '/admin/login';
+          }
+        }
+      });
+
+      setTimeout(() => {
+        if (window.location.pathname.startsWith('/admin') && window.location.pathname !== '/admin/login') {
+          window.location.href = '/admin/login';
+        }
+      }, 3200);
+    });
+
+    return () => {
+      socket.off('force_logout');
+    };
   }, []);
 
   useEffect(() => {

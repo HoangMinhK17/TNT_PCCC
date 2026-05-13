@@ -3,11 +3,11 @@ import {
     Table, Tag, Typography, Space, Select, Input, Modal, Descriptions, Empty, Button, DatePicker, Tabs, Badge, Popconfirm, Tooltip
 } from 'antd';
 import dayjs from 'dayjs';
-import { EyeOutlined, LogoutOutlined, DesktopOutlined, MobileOutlined, GlobalOutlined, ReloadOutlined } from '@ant-design/icons';
+import { EyeOutlined, LogoutOutlined, DesktopOutlined, MobileOutlined, GlobalOutlined, ReloadOutlined, DeleteOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
 import { getAllAuditLogs, getModulFilter, getActionFilter } from '../utils/auditLog';
-import { getAllSessionsAPI, logoutSessionAPI } from '../utils/userApi';
+import { getAllSessionsAPI, logoutSessionAPI, deleteSessionAPI } from '../utils/userApi';
 
 const { Title, Text } = Typography;
 
@@ -57,10 +57,19 @@ const DeviceManagementTab = () => {
         }
     };
 
+    const handleDelete = async (sessionId) => {
+        try {
+            await deleteSessionAPI(sessionId);
+            fetchSessions(page, filterActive, searchVal);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     const columns = [
         { title: '#', key: 'idx', width: 52, render: (_, __, i) => (page - 1) * pageSize + i + 1 },
         {
-            title: 'Người dùng', key: 'user', width: 180,
+            title: 'Người dùng', key: 'user', width: 200,
             render: (_, row) => (
                 <div>
                     <div style={{ fontWeight: 600 }}>{row.userId?.name || <Text type="secondary">Ẩn danh</Text>}</div>
@@ -76,8 +85,8 @@ const DeviceManagementTab = () => {
                 </Tooltip>
             )
         },
-        { title: 'IP', dataIndex: 'ip', key: 'ip', width: 140, render: v => <Text code>{v || '---'}</Text> },
-        { title: 'Trình duyệt', dataIndex: 'browser', key: 'browser', width: 140, render: v => v || '---' },
+        { title: 'IP', dataIndex: 'ip', key: 'ip', width: 160, render: v => <Text code>{v || '---'}</Text> },
+        { title: 'Trình duyệt', dataIndex: 'browser', key: 'browser', width: 100, render: v => v || '---' },
         { title: 'Hệ điều hành', dataIndex: 'os', key: 'os', width: 140, render: v => v || '---' },
         {
             title: 'Trạng thái', dataIndex: 'isActive', key: 'isActive', width: 110, align: 'center',
@@ -90,19 +99,33 @@ const DeviceManagementTab = () => {
             render: d => d ? new Date(d).toLocaleString('vi-VN') : '---'
         },
         {
-            title: 'Thao tác', key: 'action', width: 140, align: 'center',
-            render: (_, row) => row.isActive ? (
-                <Popconfirm
-                    title="Đăng xuất thiết bị này?"
-                    description="Phiên đăng nhập sẽ bị vô hiệu hóa ngay lập tức."
-                    okText="Đăng xuất"
-                    cancelText="Hủy"
-                    okButtonProps={{ danger: true }}
-                    onConfirm={() => handleLogout(row._id)}
-                >
-                    <Button danger size="small" icon={<LogoutOutlined />}>Đăng xuất</Button>
-                </Popconfirm>
-            ) : <Text type="secondary">—</Text>
+            title: 'Thao tác', key: 'action', width: 200, align: 'center',
+            render: (_, row) => (
+                <Space>
+                    {row.isActive && (
+                        <Popconfirm
+                            title="Đăng xuất thiết bị này?"
+                            description="Phiên đăng nhập sẽ bị vô hiệu hóa ngay lập tức."
+                            okText="Đăng xuất"
+                            cancelText="Hủy"
+                            okButtonProps={{ danger: true }}
+                            onConfirm={() => handleLogout(row._id)}
+                        >
+                            <Button danger size="small" icon={<LogoutOutlined />}>Đăng xuất</Button>
+                        </Popconfirm>
+                    )}
+                    <Popconfirm
+                        title="Xóa thiết bị này?"
+                        description="Hành động này không thể hoàn tác."
+                        okText="Xóa"
+                        cancelText="Hủy"
+                        okButtonProps={{ danger: true }}
+                        onConfirm={() => handleDelete(row._id)}
+                    >
+                        <Button danger type="primary" size="small" icon={<DeleteOutlined />}>Xóa</Button>
+                    </Popconfirm>
+                </Space>
+            )
         },
     ];
 

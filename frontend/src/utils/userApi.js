@@ -146,3 +146,14 @@ export const logoutSessionAPI = async (sessionId) => {
         throw error;
     }
 };
+
+export const deleteSessionAPI = async (sessionId) => {
+    try {
+        const response = await api.delete(`/user/sessions/delete/${sessionId}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

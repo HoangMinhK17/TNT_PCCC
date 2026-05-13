@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import "../styles/Login.css";
 import { loginUser } from "../utils/userApi";
 import { getImageInformation } from "../utils/informationApi";
+import { initSocket, registerUser } from "../utils/socket";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -43,6 +44,13 @@ const Login = () => {
             if (data.token && data.user.role === "admin") {
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("user", JSON.stringify(data.user));
+                
+                const deviceId = localStorage.getItem('deviceId');
+                if (data.user.id && deviceId) {
+                    initSocket();
+                    registerUser(data.user.id, deviceId);
+                }
+
                 toast.success("Đăng nhập thành công!");
                 navigate("/admin/dashboard");
             } else {
