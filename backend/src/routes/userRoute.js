@@ -12,14 +12,16 @@ import {
     getAllSessions,
     logoutSession,
     refreshToken,
-    deleteSession
+    deleteSession,
+    updateStatusUser
 } from "../controllers/userController.js";
 import { authMiddleware } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// router.post("/create-user", authMiddleware, createUser);
+router.post("/create-user", authMiddleware, createUser);
 router.get("/get-all-users", authMiddleware, getAllUsers);
+router.put("/update-status", authMiddleware, updateStatusUser);
 router.post("/login-user", loginUser);
 router.put("/update-theme", authMiddleware, updateTheme);
 router.get("/admin-theme", getAdminTheme);

@@ -15,7 +15,7 @@ export const getCategoryNews = async (req, res) => {
 
 export const getCategoryNewsForManage = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -41,7 +41,7 @@ export const getCategoryNewsForManage = async (req, res) => {
 
 export const getCategoryNewsForManageForm = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const categoryNew = await CategoryNew.find({})
@@ -56,7 +56,7 @@ export const getCategoryNewsForManageForm = async (req, res) => {
 
 export const searchCategoryNews = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -88,7 +88,7 @@ export const searchCategoryNews = async (req, res) => {
 
 export const createCategoryNews = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, slug, status, name_en } = req.body;
@@ -112,7 +112,7 @@ export const createCategoryNews = async (req, res) => {
 
 export const updateCategoryNews = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, slug, status, name_en } = req.body;
@@ -177,7 +177,7 @@ export const updateCategoryNews = async (req, res) => {
 
 export const deleteCategoryNews = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const categoryNew = await CategoryNew
@@ -197,7 +197,7 @@ export const deleteCategoryNews = async (req, res) => {
 
 export const updateCategoryNewsOrder = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { items } = req.body;

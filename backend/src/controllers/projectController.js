@@ -28,7 +28,7 @@ const getProjects = async (req, res) => {
 
 const getProjectsForManage = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -56,7 +56,7 @@ const getProjectsForManage = async (req, res) => {
 
 const createProject = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, name_en, slug, title, title_en, description, description_en, image, date } = req.body;
@@ -87,7 +87,7 @@ const createProject = async (req, res) => {
 
 const updateProject = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, name_en, slug, title, title_en, description, description_en, image, date,
@@ -173,7 +173,7 @@ const updateProject = async (req, res) => {
 
 const deleteProject = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const project = await Project.findByIdAndUpdate(req.params.id, { isDeleted: true },

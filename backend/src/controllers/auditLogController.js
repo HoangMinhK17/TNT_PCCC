@@ -39,7 +39,7 @@ const getAuditLogs = async (req, res) => {
             .select("action module recordName userId oldValues newValues createdAt")
             .populate({
                 path: "userId",
-                select: "name email"
+                select: "name email role"
             })
             .skip(skip)
             .limit(limit)

@@ -36,7 +36,7 @@ const getContactInformation = async (req, res) => {
 
 const getAllInformation = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const information = await Information.find().lean();
@@ -48,7 +48,7 @@ const getAllInformation = async (req, res) => {
 
 const createInformation = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const information = await Information.create(req.body);
@@ -60,7 +60,7 @@ const createInformation = async (req, res) => {
 
 const updateInformation = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const oldData = await Information.findById(req.params.id).lean();
@@ -109,7 +109,7 @@ const updateInformation = async (req, res) => {
 
 const upadateImageInformation = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const oldData = await Information.findById(req.params.id).lean();
@@ -155,7 +155,7 @@ const upadateImageInformation = async (req, res) => {
 
 const updateContactInformation = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const oldData = await Information.findById(req.params.id).lean();
@@ -210,7 +210,7 @@ const updateContactInformation = async (req, res) => {
 
 const updateChatConfig = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const oldData = await Information.findById(req.params.id).lean();

@@ -22,7 +22,7 @@ const getPublicProducts = async (req, res) => {
 
 const getProductForManage = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, categoryId } = req.query;
@@ -61,7 +61,7 @@ const createProduct = async (req, res) => {
     try {
         const { name, name_en, title, title_en, description, description_en, image,
             technical, technical_en, categoryId, slug, status } = req.body;
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const existingProduct = await Product.findOne({ slug, isDeleted: false });
@@ -90,7 +90,7 @@ const updateProduct = async (req, res) => {
     try {
         const { name, name_en, title, title_en, description, description_en, image,
             technical, technical_en, categoryId, slug, status } = req.body;
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const existingProduct = await Product.findOne({ slug, isDeleted: false, _id: { $ne: req.params.id } });
@@ -202,7 +202,7 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const product = await Product.findByIdAndUpdate(req.params.id, { isDeleted: true },
@@ -281,7 +281,7 @@ const getPublicProductByCategoryId = async (req, res) => {
 
 const getProductByCategoryIdForManage = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -349,7 +349,7 @@ const getProductByName = async (req, res) => {
 
 const getProductByNameForManage = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const name = req.params.name;
@@ -383,7 +383,7 @@ const getProductByNameForManage = async (req, res) => {
 
 const updateProductOrder = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { items } = req.body;

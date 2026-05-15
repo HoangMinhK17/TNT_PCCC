@@ -3,7 +3,7 @@ import WhyChooseService from "../models/WhyChooseService.js";
 export const createWhyChooseService = async (req, res) => {
     try {
 
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { title, title_en, description, description_en, icon, status } = req.body;
@@ -30,7 +30,7 @@ export const getWhyChooseService = async (req, res) => {
 
 export const updateWhyChooseService = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { id } = req.params;
@@ -46,7 +46,7 @@ export const updateWhyChooseService = async (req, res) => {
 
 export const deleteWhyChooseService = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { id } = req.params;
@@ -61,7 +61,7 @@ export const deleteWhyChooseService = async (req, res) => {
 
 export const getWhyChooseServiceForManage = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -85,7 +85,7 @@ export const getWhyChooseServiceForManage = async (req, res) => {
 
 export const searchWhyChooseService = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;

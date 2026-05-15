@@ -3,7 +3,7 @@ import AuditLog from "../models/AuditLog.js";
 
 export const createHeader = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ error: "Forbidden" });
         }
         const header = await Header.create(req.body);
@@ -33,7 +33,7 @@ export const getAllHeaderForShowHome = async (req, res) => {
 
 export const updateHeader = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ error: "Forbidden" });
         }
         const oldData = await Header.findById(req.params.id).lean();
@@ -80,7 +80,7 @@ export const updateHeader = async (req, res) => {
 
 export const getAllForManagement = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ error: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -106,7 +106,7 @@ export const getAllForManagement = async (req, res) => {
 
 export const findHeaderByName = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ error: "Forbidden" });
         }
 

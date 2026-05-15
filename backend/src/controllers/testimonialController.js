@@ -16,7 +16,7 @@ const getPublicTestimonials = async (req, res) => {
 
 const getTestimonialsForManage = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -45,7 +45,7 @@ const getTestimonialsForManage = async (req, res) => {
 
 const createTestimonial = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, role, company, content, rating, avatar } = req.body;
@@ -60,7 +60,7 @@ const createTestimonial = async (req, res) => {
 
 const updateTestimonial = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, role, company, content, rating, avatar, status } = req.body;
@@ -75,7 +75,7 @@ const updateTestimonial = async (req, res) => {
 
 const deleteTestimonial = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const testimonial = await Testimonial.findByIdAndUpdate(req.params.id,
@@ -88,7 +88,7 @@ const deleteTestimonial = async (req, res) => {
 
 const searchTestimonial = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;

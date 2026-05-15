@@ -15,7 +15,7 @@ export const getPartners = async (req, res) => {
 
 export const createPartner = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const partner = new Partner(req.body);
@@ -36,7 +36,7 @@ export const createPartner = async (req, res) => {
 
 export const updatePartner = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const oldData = await Partner.findById(req.params.id);
@@ -74,7 +74,7 @@ export const updatePartner = async (req, res) => {
 
 export const deletePartner = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const partner = await Partner.findByIdAndUpdate(req.params.id,
@@ -96,7 +96,7 @@ export const deletePartner = async (req, res) => {
 
 export const getPartnersForManage = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -122,7 +122,7 @@ export const getPartnersForManage = async (req, res) => {
 
 export const getPartnerByName = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;

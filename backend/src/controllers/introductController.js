@@ -16,7 +16,7 @@ const updateIntroductCompany = async (req, res) => {
     try {
         const { id } = req.params;
 
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
 
@@ -133,7 +133,7 @@ const updateMissionVision = async (req, res) => {
         const { id } = req.params;
         const { mission, vision } = req.body;
 
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
 
@@ -211,7 +211,7 @@ const updateCoreValuesCompany = async (req, res) => {
         const { id } = req.params;
         const { title, title_en, description, description_en, image, date } = req.body;
 
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
 
@@ -273,7 +273,7 @@ const updateCoreValuesCompany = async (req, res) => {
 const addCoreValuesCompany = async (req, res) => {
     try {
         const { parentId, title, title_en, description, description_en, image, date } = req.body;
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         if (!parentId) return res.status(400).json({ message: "parentId is required" });
@@ -298,7 +298,7 @@ const addCoreValuesCompany = async (req, res) => {
 const deleteCoreValuesCompany = async (req, res) => {
     try {
         const { id } = req.params;
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const introductCompany = await IntroductCompany.findOneAndUpdate(

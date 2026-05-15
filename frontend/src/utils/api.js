@@ -43,7 +43,7 @@ api.interceptors.response.use(
             }
 
             const msg = error.response.data?.message?.toLowerCase() || "";
-            if (msg.includes("token") || msg.includes("forbidden") || msg.includes("unauthorized") || error.response.status === 401) {
+            if (msg.includes("token") || msg.includes("unauthorized") || error.response.status === 401) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 localStorage.removeItem('refreshToken');

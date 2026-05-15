@@ -18,7 +18,7 @@ export const getNews = async (req, res) => {
 
 export const getNewsForManage = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, categoryNewsId } = req.query;
@@ -55,7 +55,7 @@ export const getNewsForManage = async (req, res) => {
 
 export const createNews = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, name_en, slug, title, title_en, description, description_en,
@@ -83,7 +83,7 @@ export const createNews = async (req, res) => {
 
 export const updateNews = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, name_en, slug, title, title_en, description, description_en, image, date,
@@ -176,7 +176,7 @@ export const updateNews = async (req, res) => {
 
 export const deleteNews = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const news = await News.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
@@ -245,7 +245,7 @@ export const getNewsByCategoryId = async (req, res) => {
 
 export const getNewsByCategoryIdAdmin = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { categoryNewsId } = req.params;
@@ -278,7 +278,7 @@ export const getNewsByCategoryIdAdmin = async (req, res) => {
 export const getNewsByName = async (req, res) => {
     try {
 
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name } = req.params;
@@ -349,7 +349,7 @@ export const getNewsBySearch = async (req, res) => {
 
 export const updateNewsOrder = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { items } = req.body;

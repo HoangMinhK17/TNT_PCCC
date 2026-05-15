@@ -40,7 +40,7 @@ const AdminSidebar = () => {
         { label: 'Đối tác', path: '/admin/partners', icon: <FaHandshake /> },
         { label: 'Đánh giá', path: '/admin/testimonial', icon: <FaStar /> },
         { label: 'Cấu hình hệ thống', path: '/admin/information', icon: <FaCogs /> },
-        { label: 'Nhật ký hoạt động', path: '/admin/audit-log', icon: <FaHistory /> },
+        { label: 'Quản trị hệ thống', path: '/admin/audit-log', icon: <FaHistory />, roles: ['admin'] },
     ];
 
     const [information, setInformation] = useState(null);
@@ -57,6 +57,12 @@ const AdminSidebar = () => {
         fetchData();
     }, []);
 
+    const user = JSON.parse(localStorage.getItem('user'));
+    const filteredMenuItems = menuItems.filter(item => {
+        if (!item.roles) return true;
+        return item.roles.includes(user.role);
+    });
+
     return (
         <aside className="admin-sidebar">
             <div className="admin-sidebar-header">
@@ -65,7 +71,8 @@ const AdminSidebar = () => {
             </div>
 
             <ul className="admin-sidebar-menu">
-                {menuItems.map((item, index) => (
+
+                {filteredMenuItems.map((item, index) => (
                     <li key={index} className="admin-menu-item">
                         <NavLink
                             to={item.path}

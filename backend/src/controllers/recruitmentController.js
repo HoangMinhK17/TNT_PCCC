@@ -14,7 +14,7 @@ export const getRecruiments = async (req, res) => {
 
 export const createRecruiment = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         if (req.body.slug) {
@@ -44,7 +44,7 @@ export const createRecruiment = async (req, res) => {
 
 export const updateRecruiment = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         if (req.body.slug) {
@@ -149,7 +149,7 @@ export const updateRecruiment = async (req, res) => {
 
 export const deleteRecruiment = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const recruiment = await Recruitment.findByIdAndUpdate(
@@ -173,7 +173,7 @@ export const deleteRecruiment = async (req, res) => {
 
 export const getRecruimentsForManage = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;

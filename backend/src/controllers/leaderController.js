@@ -12,7 +12,7 @@ export const getAllLeaders = async (req, res) => {
 
 export const getAllLeadersForManagement = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -32,7 +32,7 @@ export const getAllLeadersForManagement = async (req, res) => {
 
 export const findLeaderByName = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -52,7 +52,7 @@ export const findLeaderByName = async (req, res) => {
 
 export const createLeader = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const leader = new Leader(req.body);
@@ -72,7 +72,7 @@ export const createLeader = async (req, res) => {
 
 export const updateLeader = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const oldData = await Leader.findById(req.params.id);
@@ -108,7 +108,7 @@ export const updateLeader = async (req, res) => {
 
 export const deleteLeader = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const leader = await Leader.findByIdAndUpdate(req.params.id, { isDeleted: true });

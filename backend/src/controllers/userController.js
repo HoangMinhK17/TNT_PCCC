@@ -15,20 +15,110 @@ const createUser = async (req, res) => {
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Forbidden" });
         }
-        const { name, email, password } = req.body;
+        const { name, email, role } = req.body;
+        const emailCheck = await User.findOne({ email })
+        if (emailCheck) {
+            return res.status(404).json({ message: "Email đã tồn tại" })
+        }
+
+        const randomPassword = Math.random().toString(36).slice(-8);
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-        const user = await User.create({ name, email, password: hashedPassword });
+        const hashedPassword = await bcrypt.hash(randomPassword, salt);
+        const user = await User.create({ name, email, password: hashedPassword, role });
+        await AuditLog.create({
+            module: "Quản lý người dùng",
+            action: "create",
+            recordId: user._id,
+            recordName: user.name,
+            userId: req.user.id,
+        });
         res.status(200).json(user);
+        sendMail(email, "CẤP TÀI KHOẢN", "Tài khoản của bạn đã được cấp thành công vào lúc "
+            + new Date().toLocaleString("vi-VN")
+            + "\n Email: " + email
+            + "\n Mật khẩu: " + randomPassword
+            + "\n Vui lòng đổi mật khẩu sau khi đăng nhập!");
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
+const updateStatusUser = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const { userId, status, role } = req.body;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng" });
+        }
+        const oldUser = await User.findById(userId);
+        if (oldUser.role === "admin") {
+            return res.status(404).json({ message: "Không thể thay đổi quyền và trạng thái của Admin" });
+        }
+        const getThemeAdmin = await User.findOne({ role: "admin" })
+        if (role == "admin") {
+            user.theme = getThemeAdmin.theme;
+        }
+
+        user.role = role;
+        user.status = status;
+        await user.save();
+        const oldValues = {};
+        const newValues = {};
+        let hasChanges = false;
+
+        if (oldUser.role !== user.role) {
+            oldValues.role = oldUser.role;
+            newValues.role = user.role;
+            hasChanges = true;
+        }
+
+        if (oldUser.status !== user.status) {
+            oldValues.status = oldUser.status;
+            newValues.status = user.status;
+            hasChanges = true;
+        }
+
+        if (hasChanges) {
+            await AuditLog.create({
+                module: "Quản lý người dùng",
+                action: "update",
+                recordId: user._id,
+                recordName: user.name,
+                userId: req.user.id,
+                oldValues: oldValues,
+                newValues: newValues,
+            });
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find().lean();
-        res.status(200).json(users);
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        const totalUsers = await User.countDocuments();
+        const users = await User.find()
+            .sort({ role: 1, createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .select('name email role status')
+            .lean();
+        res.status(200).json({
+            users,
+            totalUsers,
+            currentPage: page,
+            totalPages: Math.ceil(totalUsers / limit),
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -95,6 +185,7 @@ const loginUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                status: user.status,
                 theme: user.theme
             }
         });
@@ -112,28 +203,25 @@ const updateTheme = async (req, res) => {
         const userId = req.user.id;
 
         const oldUser = await User.findById(userId);
-
-        const user = await User.findById(userId);
-        if (!user) {
+        if (!oldUser) {
             return res.status(404).json({ message: "Không tìm thấy người dùng" });
         }
 
-        user.theme = theme;
-        await user.save();
+        await User.updateMany({ role: "admin" }, { theme: theme });
 
-        if (oldUser.theme !== user.theme) {
+        if (oldUser.theme !== theme) {
             await AuditLog.create({
                 module: "Cấu hình hệ thống",
                 action: "update",
-                recordId: user._id,
+                recordId: oldUser._id,
                 recordName: "Cấu hình theme (UI)",
                 userId: req.user.id,
                 oldValues: { theme: oldUser.theme },
-                newValues: { theme: user.theme },
+                newValues: { theme: theme },
             });
         }
 
-        res.status(200).json({ message: "Cập nhật theme thành công", theme: user.theme });
+        res.status(200).json({ message: "Cập nhật theme thành công", theme: theme });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -141,24 +229,10 @@ const updateTheme = async (req, res) => {
 
 const getAdminTheme = async (req, res) => {
     try {
-        const authHeader = req.headers.authorization;
-        if (authHeader && authHeader.startsWith('Bearer ')) {
-            const token = authHeader.split(' ')[1];
-            try {
-                const decoded = jwt.verify(token, process.env.JWT_SECRET);
-                const user = await User.findById(decoded.id).select('theme').lean();
-                if (user && user.theme) {
-                    return res.status(200).json({ theme: user.theme });
-                }
-            } catch (err) {
-
-            }
-        }
-
         const admin = await User.findOne({ role: "admin" })
             .select('theme')
             .lean();
-        res.status(200).json({ theme: admin ? admin.theme : 'corporate-red' });
+        res.status(200).json({ theme: admin && admin.theme ? admin.theme : 'corporate-red' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -206,7 +280,7 @@ const changePassword = async (req, res) => {
 
 const updateInfo = async (req, res) => {
     try {
-        if (req.user.role !== "admin" && req.user.role !== "user") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name } = req.body;
@@ -454,5 +528,5 @@ const deleteSession = async (req, res) => {
 export {
     createUser, getAllUsers, loginUser, updateTheme, getAdminTheme, changePassword
     , updateInfo, forgotPassword, resetPassword, getAllSessions, logoutSession, refreshToken
-    , deleteSession
+    , deleteSession, updateStatusUser
 };

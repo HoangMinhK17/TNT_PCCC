@@ -17,9 +17,9 @@ export const loginUser = async (email, password) => {
     }
 };
 
-export const createUser = async (name, email, password) => {
+export const createUser = async (name, email, role) => {
     try {
-        const response = await api.post("/user/create-user", { name, email, password }, {
+        const response = await api.post("/user/create-user", { name, email, role }, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
@@ -30,9 +30,23 @@ export const createUser = async (name, email, password) => {
     }
 };
 
-export const getAllUsers = async () => {
+export const getAllUsers = async (page, limit) => {
     try {
         const response = await api.get("/user/get-all-users", {
+            params: { page, limit },
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateStatusUser = async (userId, status, role) => {
+    try {
+        const response = await api.put("/user/update-status", { userId, status, role }, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }

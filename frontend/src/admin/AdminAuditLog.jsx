@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
-    Table, Tag, Typography, Space, Select, Input, Modal, Descriptions, Empty, Button, DatePicker, Tabs, Badge, Popconfirm, Tooltip
+    Table, Tag, Typography, Space, Select, Input, Modal, Descriptions, Empty, Button, DatePicker, Tabs, Badge, Popconfirm, Tooltip, Form, message, Avatar
 } from 'antd';
 import dayjs from 'dayjs';
-import { EyeOutlined, LogoutOutlined, DesktopOutlined, MobileOutlined, GlobalOutlined, ReloadOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EyeOutlined, LogoutOutlined, DesktopOutlined, MobileOutlined, GlobalOutlined, ReloadOutlined, DeleteOutlined, UserAddOutlined, EditOutlined, UserOutlined, CheckCircleOutlined, StopOutlined } from '@ant-design/icons';
 import AdminSidebar from './AdminSidebar';
 import '../styles/Dashboard.css';
 import { getAllAuditLogs, getModulFilter, getActionFilter } from '../utils/auditLog';
-import { getAllSessionsAPI, logoutSessionAPI, deleteSessionAPI } from '../utils/userApi';
+import { getAllSessionsAPI, logoutSessionAPI, deleteSessionAPI, getAllUsers, createUser, updateStatusUser } from '../utils/userApi';
 
 const { Title, Text } = Typography;
 
@@ -99,7 +99,7 @@ const DeviceManagementTab = () => {
             render: d => d ? new Date(d).toLocaleString('vi-VN') : '---'
         },
         {
-            title: 'Thao tác', key: 'action', 
+            title: 'Thao tác', key: 'action',
             render: (_, row) => (
                 <Space>
                     {row.isActive && (
@@ -114,7 +114,7 @@ const DeviceManagementTab = () => {
                             <Button danger size="small" icon={<LogoutOutlined />}>Đăng xuất</Button>
                         </Popconfirm>
                     )}
-                    {row.isActive == false &&  (
+                    {row.isActive == false && (
                         <Popconfirm
                             title="Xóa thiết bị này?"
                             description="Hành động này không thể hoàn tác."
@@ -131,7 +131,7 @@ const DeviceManagementTab = () => {
             )
         },
     ];
-      
+
     return (
         <div>
             <Space style={{ marginBottom: 16, flexWrap: 'wrap' }}>
@@ -183,6 +183,297 @@ const DeviceManagementTab = () => {
         </div>
     );
 };
+
+// ===================== USER MANAGEMENT TAB =====================
+const ROLE_COLOR = { admin: 'red', staff: 'blue', user: 'default' };
+const ROLE_LABEL = { admin: 'Quản trị viên', staff: 'Nhân viên', user: 'Người dùng' };
+
+const UserManagementTab = () => {
+    const [users, setUsers] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const pageSize = 5;
+
+    const [createVisible, setCreateVisible] = useState(false);
+    const [createLoading, setCreateLoading] = useState(false);
+    const [createForm] = Form.useForm();
+
+    const [editVisible, setEditVisible] = useState(false);
+    const [editLoading, setEditLoading] = useState(false);
+    const [editRecord, setEditRecord] = useState(null);
+    const [editForm] = Form.useForm();
+
+    const fetchUsers = useCallback(async (pg = 1) => {
+        setLoading(true);
+        try {
+            const res = await getAllUsers(pg, pageSize);
+            const currentUserLocal = JSON.parse(localStorage.getItem("user") || "{}");
+            const currentUserId = currentUserLocal?.id || currentUserLocal?._id;
+
+            let fetchedUsers = (res.users || []).map(u => ({ ...u, key: u._id }));
+            
+            // Đưa tài khoản của tôi lên đầu danh sách (nếu có trong trang hiện tại)
+            fetchedUsers.sort((a, b) => {
+                if (a._id === currentUserId) return -1;
+                if (b._id === currentUserId) return 1;
+                return 0;
+            });
+
+            setUsers(fetchedUsers);
+            setTotal(res.totalUsers || 0);
+        } catch {
+            setUsers([]);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => { fetchUsers(page); }, [page]);
+
+    const handleCreate = async (values) => {
+        setCreateLoading(true);
+        try {
+            await createUser(values.name, values.email, values.role);
+            message.success('Tạo tài khoản thành công! Mật khẩu đã được gửi qua email.');
+            setCreateVisible(false);
+            createForm.resetFields();
+            fetchUsers(page);
+        } catch (e) {
+            message.error(e?.response?.data?.message || 'Tạo tài khoản thất bại!');
+        } finally {
+            setCreateLoading(false);
+        }
+    };
+
+    const openEdit = (record) => {
+        setEditRecord(record);
+        editForm.setFieldsValue({ role: record.role, status: record.status });
+        setEditVisible(true);
+    };
+
+    const handleEdit = async (values) => {
+        setEditLoading(true);
+        try {
+            await updateStatusUser(editRecord._id, values.status, values.role);
+            message.success('Cập nhật thành công!');
+            setEditVisible(false);
+            fetchUsers(page);
+        } catch (e) {
+            message.error(e?.response?.data?.message || 'Cập nhật thất bại!');
+        } finally {
+            setEditLoading(false);
+        }
+    };
+
+    const columns = [
+        { title: '#', key: 'idx', width: 52, align: 'center', render: (_, __, i) => (page - 1) * pageSize + i + 1 },
+        {
+            title: 'Người dùng', key: 'user',
+            render: (_, row) => {
+                const currentUserLocal = JSON.parse(localStorage.getItem("user") || "{}");
+                const currentUserId = currentUserLocal?.id || currentUserLocal?._id;
+                const isCurrentUser = row._id === currentUserId;
+
+                return (
+                    <Space>
+                        <Avatar style={{ backgroundColor: isCurrentUser ? '#faad14' : '#1A237E' }} icon={<UserOutlined />} />
+                        <div>
+                            <div style={{ fontWeight: 600 }}>
+                                {row.name} {isCurrentUser && <Tag color="orange" style={{ marginLeft: 8, border: 0 }}>Tài khoản của tôi</Tag>}
+                            </div>
+                            <Typography.Text type="secondary" style={{ fontSize: 12 }}>{row.email}</Typography.Text>
+                        </div>
+                    </Space>
+                )
+            }
+        },
+        {
+            title: 'Vai trò', dataIndex: 'role', key: 'role', align: 'center',
+            render: v => <Tag color={ROLE_COLOR[v] || 'default'}>{ROLE_LABEL[v] || v}</Tag>
+        },
+        {
+            title: 'Trạng thái', dataIndex: 'status', key: 'status', align: 'center',
+            render: v => v === 'active'
+                ? <Badge status="success" text={<Typography.Text style={{ color: '#52c41a', fontWeight: 600 }}>Hoạt động</Typography.Text>} />
+                : <Badge status="error" text={<Typography.Text type="danger">Bị khóa</Typography.Text>} />
+        },
+        {
+            title: 'Thao tác', key: 'action', align: 'center',
+            render: (_, row) => {
+                const currentUserLocal = JSON.parse(localStorage.getItem("user") || "{}");
+                const currentUserId = currentUserLocal?.id || currentUserLocal?._id;
+                const isCurrentUser = row._id === currentUserId;
+
+                return (
+                    <Tooltip title={isCurrentUser ? "Không thể chỉnh sửa quyền của chính mình" : "Chỉnh sửa vai trò & trạng thái"}>
+                        <Button
+                            type="primary"
+                            ghost
+                            size="small"
+                            icon={<EditOutlined />}
+                            onClick={() => openEdit(row)}
+                            disabled={isCurrentUser}
+                        >
+                            Chỉnh sửa
+                        </Button>
+                    </Tooltip>
+                );
+            }
+        },
+    ];
+
+    return (
+        <div>
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, gap: 8 }}>
+                <Title level={4} style={{ margin: 0 }}>Danh sách tài khoản</Title>
+                <Button
+                    type="primary"
+                    icon={<UserAddOutlined />}
+                    onClick={() => { createForm.resetFields(); setCreateVisible(true); }}
+                >
+                    Thêm người dùng
+                </Button>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: 16, gap: 8 }}>
+                <Input type='search' placeholder='Tìm kiếm...' style={{ width: '25%' }} />
+                <Select
+                    placeholder="Trạng thái"
+                    style={{ width: '15%' }}
+                    options={[
+                        { value: 'active', label: 'Hoạt động' },
+                        { value: 'inactive', label: 'Bị khóa' },
+                    ]}
+                />
+                <Select
+                    placeholder="Vai trò"
+                    style={{ width: '15%' }}
+                    options={[
+                        { value: 'admin', label: 'Quản trị viên' },
+                        { value: 'staff', label: 'Nhân viên' },
+                        { value: 'user', label: 'Người dùng' },
+                    ]}
+                />
+
+                <Button icon={<ReloadOutlined />} onClick={() => fetchUsers(page)}>Làm mới</Button>
+            </div>
+
+            <Table
+                columns={columns}
+                dataSource={users}
+                loading={loading}
+                bordered
+                locale={{ emptyText: <Empty description="Chưa có người dùng nào" /> }}
+                pagination={{
+                    current: page,
+                    pageSize,
+                    total,
+                    showSizeChanger: false,
+                    showLessItems: true,
+                    onChange: p => setPage(p),
+                    showTotal: t => `Tổng ${t} tài khoản`,
+                }}
+            />
+
+            <Modal
+                title={
+                    <Space>
+                        <UserAddOutlined style={{ color: '#1A237E' }} />
+                        <span>Thêm người dùng mới</span>
+                    </Space>
+                }
+                open={createVisible}
+                onCancel={() => { setCreateVisible(false); createForm.resetFields(); }}
+                onOk={() => createForm.submit()}
+                okText="Tạo tài khoản"
+                cancelText="Hủy"
+                confirmLoading={createLoading}
+                okButtonProps={{ style: { background: '#1A237E' } }}
+            >
+                <Form form={createForm} layout="vertical" onFinish={handleCreate} style={{ marginTop: 12 }}>
+                    <Form.Item
+                        name="name"
+                        label="Họ và tên"
+                        rules={[{ required: true, message: 'Vui lòng nhập họ và tên!' }]}
+                    >
+                        <Input placeholder="Nhập họ và tên..." prefix={<UserOutlined />} />
+                    </Form.Item>
+                    <Form.Item
+                        name="email"
+                        label="Email"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập email!' },
+                            { type: 'email', message: 'Email không hợp lệ!' },
+                        ]}
+                    >
+                        <Input placeholder="Nhập địa chỉ email..." />
+                    </Form.Item>
+                    <Form.Item
+                        name="role"
+                        label="Vai trò"
+                        rules={[{ required: true, message: 'Vui lòng chọn vai trò!' }]}
+                    >
+                        <Select
+                            placeholder="Chọn vai trò"
+                            options={[
+                                { label: 'Nhân viên', value: 'staff' },
+                                { label: 'Người dùng', value: 'user' },
+                            ]}
+                        />
+                    </Form.Item>
+                    <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                        * Mật khẩu ngẫu nhiên sẽ được tạo và gửi đến email của người dùng.
+                    </Typography.Text>
+                </Form>
+            </Modal>
+
+            <Modal
+                title={
+                    <Space>
+                        <EditOutlined style={{ color: '#1A237E' }} />
+                        <span>Chỉnh sửa: <strong>{editRecord?.name}</strong></span>
+                    </Space>
+                }
+                open={editVisible}
+                onCancel={() => setEditVisible(false)}
+                onOk={() => editForm.submit()}
+                okText="Lưu thay đổi"
+                cancelText="Hủy"
+                confirmLoading={editLoading}
+                okButtonProps={{ style: { background: '#1A237E' } }}
+            >
+                <Form form={editForm} layout="vertical" onFinish={handleEdit} style={{ marginTop: 12 }}>
+                    <Form.Item
+                        name="role"
+                        label="Vai trò"
+                        rules={[{ required: true, message: 'Vui lòng chọn vai trò!' }]}
+                    >
+                        <Select
+                            options={[
+                                { label: 'Quản trị viên', value: 'admin' },
+                                { label: 'Nhân viên', value: 'staff' },
+                                { label: 'Người dùng', value: 'user' },
+                            ]}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        name="status"
+                        label="Trạng thái"
+                        rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+                    >
+                        <Select
+                            options={[
+                                { label: <Space><CheckCircleOutlined style={{ color: '#52c41a' }} />Hoạt động</Space>, value: 'active' },
+                                { label: <Space><StopOutlined style={{ color: '#ff4d4f' }} />Bị khóa</Space>, value: 'inactive' },
+                            ]}
+                        />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </div>
+    );
+};
+// ===============================================================
 
 const ACTION_COLOR = {
     create: 'green',
@@ -753,6 +1044,11 @@ const AdminAuditLog = () => {
                                 label: ' Quản lý Thiết bị',
                                 children: <DeviceManagementTab />,
                             },
+                            {
+                                key: 'users',
+                                label: ' Quản lý Người dùng',
+                                children: <UserManagementTab />,
+                            },
                         ]}
                     />
                 </div>
@@ -780,6 +1076,10 @@ const AdminAuditLog = () => {
                             <div>
                                 <Text strong style={{ marginBottom: 8, marginRight: 8 }}> Người thực hiện:</Text>
                                 <Text>{detailRecord.userId?.name || 'Ẩn danh'}</Text>
+                            </div>
+                            <div>
+                                <Text strong style={{ marginBottom: 8, marginRight: 8 }}> Chức vụ:</Text>
+                                <Text>{detailRecord.userId?.role == 'admin' ? 'Quản trị viên' : detailRecord.userId?.role == 'staff' ? 'Nhân viên' : 'Người dùng'}</Text>
                             </div>
                             <div>
                                 <Text strong style={{ marginBottom: 8, marginRight: 8 }}>Email:</Text>

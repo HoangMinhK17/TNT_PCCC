@@ -14,7 +14,7 @@ const getCategoryProducts = async (req, res) => {
 
 const getCategoryProductForManage = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -38,7 +38,7 @@ const getCategoryProductForManage = async (req, res) => {
 
 const getCategoryProductForManageForm = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const categoryProducts = await CategoryProduct.find({})
@@ -53,7 +53,7 @@ const getCategoryProductForManageForm = async (req, res) => {
 const createCategoryProduct = async (req, res) => {
     try {
         const { name, name_en, slug } = req.body;
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         if (slug) {
@@ -79,7 +79,7 @@ const createCategoryProduct = async (req, res) => {
 const updateCategoryProduct = async (req, res) => {
     try {
         const { name, name_en, slug, status } = req.body;
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const existingProduct = await CategoryProduct.findOne({ slug, isDeleted: false, _id: { $ne: req.params.id } });
@@ -123,7 +123,7 @@ const updateCategoryProduct = async (req, res) => {
 
 const deleteCategoryProduct = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const categoryProduct = await CategoryProduct
@@ -152,7 +152,7 @@ const getCategoryProductById = async (req, res) => {
 
 const getCategoryProductBySearch = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { searchTerm } = req.params;
@@ -180,7 +180,7 @@ const getCategoryProductBySearch = async (req, res) => {
 
 const updateCategoryProductOrder = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { items } = req.body;

@@ -41,7 +41,8 @@ const Dashboard = () => {
             onClick: () => {
                 infoForm.setFieldsValue({
                     name: user?.name || "",
-                    email: user?.email || ""
+                    email: user?.email || "",
+                    role: user?.role == "admin" ? "Quản trị viên" : user?.role == "staff" ? "Nhân viên" :"",
                 });
                 setIsInfoModalVisible(true);
             }
@@ -171,7 +172,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchAuditLogs = async () => {
             try {
-                const res = await getAllAuditLogs(1, 5);
+                const res = await getAllAuditLogs(1, 6);
                 setRecentAuditLogs(res?.auditLogs || []);
             } catch {
                 setRecentAuditLogs([]);
@@ -380,6 +381,12 @@ const Dashboard = () => {
                             label="Email"
                         >
                             <Input placeholder="Nhập email" readOnly />
+                        </Form.Item>
+                        <Form.Item
+                            name="role"
+                            label="Vai trò"
+                        >
+                            <Input placeholder="Nhập vai trò" readOnly />
                         </Form.Item>
                         <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
                             <Button onClick={() => setIsInfoModalVisible(false)} style={{ marginRight: 8 }}>

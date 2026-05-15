@@ -41,7 +41,15 @@ const Login = () => {
         setIsLoading(true);
         try {
             const data = await loginUser(formData.username, formData.password);
-            if (data.token && data.user.role === "admin") {
+            if (data.token && data.user.role === "admin" || data.user.role === "staff") {
+                if (data.user.role === "admin" && data.user.status === "inactive") {
+                    toast.error("Tài khoản Admin của bạn đã bị vô hiệu hóa");
+                    return;
+                }
+                if (data.user.role === "staff" && data.user.status === "inactive") {
+                    toast.error("Tài khoản Staff của bạn đã bị vô hiệu hóa");
+                    return;
+                }
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("user", JSON.stringify(data.user));
                 

@@ -29,7 +29,7 @@ const getPublicServices = async (req, res) => {
 
 const getServicesForManage = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -58,7 +58,7 @@ const getServicesForManage = async (req, res) => {
 
 const createService = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, name_en, description, description_en, title, title_en, image, slug,
@@ -88,7 +88,7 @@ const createService = async (req, res) => {
 
 const updateService = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const {
@@ -175,7 +175,7 @@ const updateService = async (req, res) => {
 
 const deleteService = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const service = await Service.findByIdAndUpdate(req.params.id, { isDeleted: true },
@@ -196,7 +196,7 @@ const deleteService = async (req, res) => {
 
 const searchService = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;

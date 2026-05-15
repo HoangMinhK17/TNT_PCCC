@@ -21,7 +21,7 @@ const createContactRecruitment = async (req, res) => {
 
 const getContactRecruitment = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -43,7 +43,7 @@ const getContactRecruitment = async (req, res) => {
 
 const getContactRecruitmentByNameOrPhone = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const search = req.params.search;
@@ -77,7 +77,7 @@ const getContactRecruitmentByNameOrPhone = async (req, res) => {
 
 const getContactRecruitmentByStatus = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const status = req.params.status;
@@ -100,7 +100,7 @@ const getContactRecruitmentByStatus = async (req, res) => {
 
 const getContactRecruitmentById = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const contactRecruitment = await ContactRecruitment.findById(req.params.id)
@@ -114,7 +114,7 @@ const getContactRecruitmentById = async (req, res) => {
 
 const updateContactRecruitment = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { name, email, phone, address, cv, recruitmentId, status, note } = req.body;
@@ -165,7 +165,7 @@ const updateContactRecruitment = async (req, res) => {
 
 const deleteContactRecruitment = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const contactRecruitment = await ContactRecruitment

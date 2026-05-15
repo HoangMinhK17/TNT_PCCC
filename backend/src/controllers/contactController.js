@@ -3,7 +3,7 @@ import AuditLog from "../models/AuditLog.js";
 
 const getContactsForManage = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;
@@ -28,7 +28,7 @@ const getContactsForManage = async (req, res) => {
 
 const getContactById = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const contact = await Contact.findById(req.params.id)
@@ -54,7 +54,7 @@ const createContact = async (req, res) => {
 
 const updateContact = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { repliedMessage, status } = req.body;
@@ -93,7 +93,7 @@ const updateContact = async (req, res) => {
 
 const deleteContact = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const contact = await Contact
@@ -117,7 +117,7 @@ const deleteContact = async (req, res) => {
 
 const findContactByNameOrPhone = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const search = req.body.name;
@@ -155,7 +155,7 @@ const findContactByNameOrPhone = async (req, res) => {
 
 const filterByStatus = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const page = parseInt(req.query.page) || 1;

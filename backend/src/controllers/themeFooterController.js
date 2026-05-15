@@ -12,7 +12,7 @@ const getThemeFooter = async (req, res) => {
 
 const updateThemeFooter = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ error: "Forbidden" });
         }
         const { id } = req.params;
@@ -51,7 +51,7 @@ const updateThemeFooter = async (req, res) => {
 }
 const createThemeFooter = async (req, res) => {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ error: "Forbidden" });
         }
         const themeFooter = await ThemeFooter.create(req.body);
