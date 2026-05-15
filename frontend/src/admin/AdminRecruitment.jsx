@@ -161,6 +161,7 @@ const TabRecruitment = () => {
     };
 
     const columns = [
+        { title: '#', dataIndex: 'index', key: 'index', width: '50px', render: (_, __, i) => (pagination.current - 1) * pagination.pageSize + i + 1 },
         { title: 'Tên công việc', dataIndex: 'name', key: 'name' },
         { title: 'Cấp bậc', dataIndex: 'level', key: 'level' },
         { title: 'Địa điểm', dataIndex: 'location', key: 'location' },
@@ -719,6 +720,7 @@ const TabContactRecruitment = () => {
     };
 
     const columns = [
+        { title: '#', dataIndex: 'index', key: 'index', width: '50px', render: (_, __, i) => (pagination.current - 1) * pagination.pageSize + i + 1 },
         { title: 'Tên ứng viên', dataIndex: 'name', key: 'name' },
         { title: 'SĐT', dataIndex: 'phone', key: 'phone' },
         { title: 'Email', dataIndex: 'email', key: 'email' },

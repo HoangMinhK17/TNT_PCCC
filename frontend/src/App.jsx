@@ -73,7 +73,6 @@ function App() {
       localStorage.removeItem('user');
       localStorage.removeItem('refreshToken');
       disconnectSocket();
-
       toast.error(reason || 'Phiên đăng nhập của bạn đã bị đăng xuất!', {
         autoClose: 3000,
         onClose: () => {

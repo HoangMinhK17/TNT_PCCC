@@ -150,6 +150,7 @@ const AdminContact = () => {
     };
 
     const columns = [
+        { title: '#', dataIndex: 'index', key: 'index', width: '50px', render: (_, __, i) => (currentPage - 1) * pageSize + i + 1 },
         { title: 'Họ và tên', dataIndex: 'name', key: 'name' },
         { title: 'Email', dataIndex: 'email', key: 'email' },
         { title: 'SĐT', dataIndex: 'phone', key: 'phone' },
@@ -189,7 +190,9 @@ const AdminContact = () => {
             <main className="admin-main" style={{ padding: '24px 32px' }}>
                 <Title level={2} style={{ color: '#1A237E', margin: '0 0 24px 0' }}>Quản lý Liên hệ</Title>
                 <div style={{ background: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', minHeight: '80vh' }}>
-
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+                        <Title level={4} style={{ margin: 0 }}>Danh sách Liên hệ</Title>
+                    </div>
                     <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
                         <Input.Search
                             placeholder="Tìm bằng tên hoặc SĐT..."

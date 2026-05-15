@@ -449,6 +449,7 @@ const AdminInformation = () => {
     if (loading) return <div style={{ padding: 50, textAlign: 'center' }}>Đang tải thông tin...</div>;
 
     const headerColumns = [
+        { title: '#', dataIndex: 'index', key: 'index', width: '50px', render: (_, __, i) => (headerPage - 1) * headerLimit + i + 1, align: 'center' },
         {
             title: 'Tiếng Anh (EN)',
             dataIndex: 'name_en',

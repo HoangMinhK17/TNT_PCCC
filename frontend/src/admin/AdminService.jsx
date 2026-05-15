@@ -168,6 +168,7 @@ const TabService = () => {
     };
 
     const columns = [
+        { title: '#', dataIndex: 'index', key: 'index', width: '50px', render: (_, __, i) => (pagination.current - 1) * pagination.pageSize + i + 1 },
         { title: 'Tên dịch vụ', dataIndex: 'name', key: 'name', width: '25%' },
         { title: 'Tiêu đề', dataIndex: 'title', key: 'title', width: '25%' },
         {
@@ -417,6 +418,7 @@ const TabWhyChooseService = () => {
     };
 
     const columns = [
+        { title: '#', dataIndex: 'index', key: 'index', width: '50px', render: (_, __, i) => (pagination.current - 1) * pagination.pageSize + i + 1 },
         { title: 'Tiêu đề', dataIndex: 'title', key: 'title' },
         { title: 'Mô tả', dataIndex: 'description', key: 'description' },
         {

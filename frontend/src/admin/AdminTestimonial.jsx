@@ -173,7 +173,8 @@ const AdminTestimonial = () => {
     };
 
     const columns = [
-        { title: 'Tên người đánh giá', dataIndex: 'name', key: 'name', width: '20%' },
+        { title: '#', dataIndex: 'index', key: 'index', width: '50px', render: (_, __, i) => (currentPage - 1) * pageSize + i + 1, align: 'center' },
+        { title: 'Tên người đánh giá', dataIndex: 'name', key: 'name', width: '20%', align: 'center' },
         {
             title: 'Avatar', dataIndex: 'avatar', key: 'avatar',
             render: (img) => img ? (

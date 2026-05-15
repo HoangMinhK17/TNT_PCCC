@@ -13,7 +13,7 @@ const { Title, Text } = Typography;
 
 const getPlatformIcon = (platform = '') => {
     const p = platform.toLowerCase();
-    if (p.includes('mobile') || p.includes('android') || p.includes('ios')) {
+    if (p.includes('mobile') || p.includes('android') || p.includes('iphone') || p.includes('ios')) {
         return <MobileOutlined />;
     }
     if (p.includes('desktop') || p.includes('windows') || p.includes('mac') || p.includes('linux')) {
@@ -31,7 +31,7 @@ const DeviceManagementTab = () => {
     const [searchVal, setSearchVal] = useState('');
     const [searchInput, setSearchInput] = useState('');
     const debounceRef = useRef(null);
-    const pageSize = 10;
+    const pageSize = 5;
 
     const fetchSessions = useCallback(async (pg = 1, active = '', search = '') => {
         setLoading(true);
@@ -78,7 +78,7 @@ const DeviceManagementTab = () => {
             )
         },
         {
-            title: 'Thiết bị', key: 'device', width: 60, align: 'center',
+            title: 'Thiết bị', key: 'device', width: 90, align: 'center',
             render: (_, row) => (
                 <Tooltip title={`${row.platform || ''} – ${row.os || ''}`}>
                     <span style={{ fontSize: 20, color: '#1A237E' }}>{getPlatformIcon(row.platform)}</span>
@@ -99,7 +99,7 @@ const DeviceManagementTab = () => {
             render: d => d ? new Date(d).toLocaleString('vi-VN') : '---'
         },
         {
-            title: 'Thao tác', key: 'action', width: 200, align: 'center',
+            title: 'Thao tác', key: 'action', 
             render: (_, row) => (
                 <Space>
                     {row.isActive && (
@@ -114,21 +114,24 @@ const DeviceManagementTab = () => {
                             <Button danger size="small" icon={<LogoutOutlined />}>Đăng xuất</Button>
                         </Popconfirm>
                     )}
-                    <Popconfirm
-                        title="Xóa thiết bị này?"
-                        description="Hành động này không thể hoàn tác."
-                        okText="Xóa"
-                        cancelText="Hủy"
-                        okButtonProps={{ danger: true }}
-                        onConfirm={() => handleDelete(row._id)}
-                    >
-                        <Button danger type="primary" size="small" icon={<DeleteOutlined />}>Xóa</Button>
-                    </Popconfirm>
+                    {row.isActive == false &&  (
+                        <Popconfirm
+                            title="Xóa thiết bị này?"
+                            description="Hành động này không thể hoàn tác."
+                            okText="Xóa"
+                            cancelText="Hủy"
+                            okButtonProps={{ danger: true }}
+                            onConfirm={() => handleDelete(row._id)}
+                        >
+                            <Button danger type="primary" size="small" icon={<DeleteOutlined />}>Xóa</Button>
+                        </Popconfirm>
+
+                    )}
                 </Space>
             )
         },
     ];
-
+      
     return (
         <div>
             <Space style={{ marginBottom: 16, flexWrap: 'wrap' }}>
@@ -174,6 +177,7 @@ const DeviceManagementTab = () => {
                     showLessItems: true,
                     onChange: p => setPage(p),
                     showTotal: t => `Tổng ${t} phiên`,
+                    showSizeChanger: false,
                 }}
             />
         </div>
@@ -738,6 +742,7 @@ const AdminAuditLog = () => {
                                                 showLessItems: true,
                                                 showSizeChanger: false,
                                                 onChange: (page) => setCurrentPage(page),
+                                                showTotal: t => `Tổng ${t} nhật ký`,
                                             }}
                                         />
                                     </>

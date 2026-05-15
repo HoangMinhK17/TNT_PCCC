@@ -164,7 +164,8 @@ const AdminPartner = () => {
     };
 
     const columns = [
-        { title: 'Tên đối tác', dataIndex: 'name', key: 'name', width: '30%' },
+        { title: '#', dataIndex: 'index', key: 'index', width: '50px', render: (_, __, i) => (currentPage - 1) * pageSize + i + 1, align: 'center' },
+        { title: 'Tên đối tác', dataIndex: 'name', key: 'name', width: '30%', align: 'center' },
         {
             title: 'Ảnh logo', dataIndex: 'image', key: 'image',
             render: (img) => img ? (

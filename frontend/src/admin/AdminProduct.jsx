@@ -405,6 +405,7 @@ const TabCategoryProduct = ({ onCategoryChange }) => {
     };
 
     const columns = [
+        { title: '#', dataIndex: 'index', key: 'index', width: '50px', render: (_, __, i) => (currentPage - 1) * pageSize + i + 1 },
         { title: 'Tên danh mục', dataIndex: 'name', key: 'name' },
         { title: 'Slug', dataIndex: 'slug', key: 'slug' },
         {
@@ -656,6 +657,7 @@ const TabProduct = ({ categoryRefreshKey }) => {
     };
 
     const columns = [
+        { title: '#', dataIndex: 'index', key: 'index', width: '50px', render: (_, __, i) => (currentPage - 1) * pageSize + i + 1 },
         { title: 'Tên sản phẩm ', dataIndex: 'name', key: 'name', width: '30%' },
         {
             title: 'Danh mục', dataIndex: 'categoryId', key: 'categoryId', width: '250px',

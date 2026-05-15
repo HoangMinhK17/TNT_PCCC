@@ -237,7 +237,7 @@ const AdminProject = () => {
                         />
                     </div>
 
-                    <Table columns={columns} dataSource={data} loading={loading} bordered pagination={{ pageSize: 5 }} />
+                    <Table columns={columns} dataSource={data} loading={loading} bordered pagination={{ pageSize: 5, showTotal: t => `Tổng ${t} dự án`, }} />
 
                     <Modal title={editing ? "Sửa Dự án" : "Thêm mới Dự án"} open={modalVisible}
                         onOk={handleSave} onCancel={() => setModalVisible(false)}

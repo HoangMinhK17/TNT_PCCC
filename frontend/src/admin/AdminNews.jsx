@@ -353,6 +353,7 @@ const TabCategoryNews = ({ onCategoryChange }) => {
     };
 
     const columns = [
+        { title: '#', dataIndex: 'index', key: 'index', width: '50px', render: (_, __, i) => (currentPage - 1) * pageSize + i + 1 },
         { title: 'Tên danh mục', dataIndex: 'name', key: 'name' },
         { title: 'Slug', dataIndex: 'slug', key: 'slug' },
         {
@@ -611,6 +612,7 @@ const TabNews = ({ categoryRefreshKey }) => {
     };
 
     const columns = [
+        { title: '#', dataIndex: 'index', key: 'index', width: '50px', render: (_, __, i) => (currentPage - 1) * pageSize + i + 1 },
         { title: 'Tên bài viết', dataIndex: 'name', key: 'name', width: '30%' },
         {
             title: 'Danh mục', dataIndex: 'categoryNewsId', key: 'categoryNewsId',
