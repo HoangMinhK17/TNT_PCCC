@@ -17,7 +17,7 @@ const sendMail = async (to, subject, text, html) => {
                 },
                 to: [{ email: to }],
                 subject,
-                htmlContent: html || "",
+                htmlContent: html || `<p>${text}</p>`,
                 textContent: text || ""
             })
         });

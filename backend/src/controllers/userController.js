@@ -37,7 +37,7 @@ const createUser = async (req, res) => {
             + new Date().toLocaleString("vi-VN")
             + "\n Email: " + email
             + "\n Mật khẩu: " + randomPassword
-            + "\n Vui lòng đổi mật khẩu sau khi đăng nhập!");
+            + "\n Vui lòng đổi mật khẩu sau khi đăng nhập!", "", "");
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -240,7 +240,7 @@ const getAdminTheme = async (req, res) => {
 
 const changePassword = async (req, res) => {
     try {
-        if (req.user.role !== "admin" && req.user.role !== "user") {
+        if (req.user.role !== "admin" && req.user.role !== "staff") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { password, newPassword } = req.body;
@@ -271,7 +271,7 @@ const changePassword = async (req, res) => {
         });
         res.status(200).json(user);
         sendMail(user.email, "ĐỔI MẬT KHẨU", "Mật khẩu của bạn đã được thay đổi thành công vào lúc "
-            + new Date().toLocaleString("vi-VN"));
+            + new Date().toLocaleString("vi-VN"), "", "");
 
     } catch (error) {
         res.status(500).json({ message: error.message });
