@@ -1,40 +1,31 @@
-import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import dns from "dns";
-import { promisify } from "util";
-
 dotenv.config();
-
-const resolve4 = promisify(dns.resolve4);
 
 const sendMail = async (to, subject, text, html) => {
     try {
-        // Bắt buộc resolve ra IPv4 thay vì để OS tự chọn (tránh IPv6 trên Render)
-        const addresses = await resolve4("smtp.gmail.com");
-        const smtpIPv4 = addresses[0];
-
-        const transporter = nodemailer.createTransport({
-            host: smtpIPv4,   // Dùng IP IPv4 trực tiếp
-            port: 587,
-            secure: false,
-            auth: {
-                user: process.env.EMAIL_USENAME,
-                pass: process.env.EMAIL_PASSWORD
+        const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+            method: "POST",
+            headers: {
+                "accept": "application/json",
+                "api-key": process.env.BREVO_API_KEY,
+                "content-type": "application/json"
             },
-            tls: {
-                servername: "smtp.gmail.com" // Cần để TLS/SNI hoạt động khi dùng IP
-            }
+            body: JSON.stringify({
+                sender: {
+                    email: process.env.EMAIL_USENAME,
+                    name: "TNT PCCC"
+                },
+                to: [{ email: to }],
+                subject,
+                htmlContent: html || "",
+                textContent: text || ""
+            })
         });
 
-        const mailOptions = {
-            from: process.env.EMAIL_USENAME,
-            to,
-            subject,
-            text,
-            html
-        };
-
-        await transporter.sendMail(mailOptions);
+        if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(JSON.stringify(errData));
+        }
     } catch (error) {
         console.error("Error sending email:", error);
     }
