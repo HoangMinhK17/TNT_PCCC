@@ -1,3 +1,6 @@
+import dns from "dns";
+dns.setDefaultResultOrder("ipv4first"); // Force IPv4 — tránh lỗi ENETUNREACH IPv6 trên Render
+
 import express from "express";
 import dotenv from "dotenv";
 import { createServer } from "http";
