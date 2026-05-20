@@ -195,6 +195,12 @@ const UserManagementTab = () => {
     const [page, setPage] = useState(1);
     const pageSize = 5;
 
+    const [searchVal, setSearchVal] = useState('');
+    const [searchInput, setSearchInput] = useState('');
+    const [filterRole, setFilterRole] = useState('');
+    const [filterStatus, setFilterStatus] = useState('');
+    const debounceRefUser = useRef(null);
+
     const [createVisible, setCreateVisible] = useState(false);
     const [createLoading, setCreateLoading] = useState(false);
     const [createForm] = Form.useForm();
@@ -204,16 +210,15 @@ const UserManagementTab = () => {
     const [editRecord, setEditRecord] = useState(null);
     const [editForm] = Form.useForm();
 
-    const fetchUsers = useCallback(async (pg = 1) => {
+    const fetchUsers = useCallback(async (pg = 1, search = '', role = '', status = '') => {
         setLoading(true);
         try {
-            const res = await getAllUsers(pg, pageSize);
+            const res = await getAllUsers(pg, pageSize, search, role, status);
             const currentUserLocal = JSON.parse(localStorage.getItem("user") || "{}");
             const currentUserId = currentUserLocal?.id || currentUserLocal?._id;
 
             let fetchedUsers = (res.users || []).map(u => ({ ...u, key: u._id }));
-            
-            // Đưa tài khoản của tôi lên đầu danh sách (nếu có trong trang hiện tại)
+
             fetchedUsers.sort((a, b) => {
                 if (a._id === currentUserId) return -1;
                 if (b._id === currentUserId) return 1;
@@ -229,7 +234,7 @@ const UserManagementTab = () => {
         }
     }, []);
 
-    useEffect(() => { fetchUsers(page); }, [page]);
+    useEffect(() => { fetchUsers(page, searchVal, filterRole, filterStatus); }, [page, searchVal, filterRole, filterStatus]);
 
     const handleCreate = async (values) => {
         setCreateLoading(true);
@@ -238,7 +243,7 @@ const UserManagementTab = () => {
             message.success('Tạo tài khoản thành công! Mật khẩu đã được gửi qua email.');
             setCreateVisible(false);
             createForm.resetFields();
-            fetchUsers(page);
+            fetchUsers(page, searchVal, filterRole, filterStatus);
         } catch (e) {
             message.error(e?.response?.data?.message || 'Tạo tài khoản thất bại!');
         } finally {
@@ -258,7 +263,7 @@ const UserManagementTab = () => {
             await updateStatusUser(editRecord._id, values.status, values.role);
             message.success('Cập nhật thành công!');
             setEditVisible(false);
-            fetchUsers(page);
+            fetchUsers(page, searchVal, filterRole, filterStatus);
         } catch (e) {
             message.error(e?.response?.data?.message || 'Cập nhật thất bại!');
         } finally {
@@ -336,26 +341,41 @@ const UserManagementTab = () => {
                 </Button>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: 16, gap: 8 }}>
-                <Input type='search' placeholder='Tìm kiếm...' style={{ width: '25%' }} />
+                <Input.Search 
+                    placeholder='Tìm kiếm...' 
+                    style={{ width: '25%' }} 
+                    value={searchInput}
+                    onChange={e => {
+                        setSearchInput(e.target.value);
+                        if (debounceRefUser.current) clearTimeout(debounceRefUser.current);
+                        debounceRefUser.current = setTimeout(() => { setSearchVal(e.target.value); setPage(1); }, 500);
+                    }}
+                    onSearch={v => { setSearchVal(v); setPage(1); }}
+                    allowClear
+                />
                 <Select
                     placeholder="Trạng thái"
+                    allowClear
                     style={{ width: '15%' }}
                     options={[
                         { value: 'active', label: 'Hoạt động' },
                         { value: 'inactive', label: 'Bị khóa' },
                     ]}
+                    onChange={v => { setFilterStatus(v ?? ''); setPage(1); }}
                 />
                 <Select
                     placeholder="Vai trò"
+                    allowClear
                     style={{ width: '15%' }}
                     options={[
                         { value: 'admin', label: 'Quản trị viên' },
                         { value: 'staff', label: 'Nhân viên' },
                         { value: 'user', label: 'Người dùng' },
                     ]}
+                    onChange={v => { setFilterRole(v ?? ''); setPage(1); }}
                 />
 
-                <Button icon={<ReloadOutlined />} onClick={() => fetchUsers(page)}>Làm mới</Button>
+                <Button icon={<ReloadOutlined />} onClick={() => fetchUsers(page, searchVal, filterRole, filterStatus)}>Làm mới</Button>
             </div>
 
             <Table
@@ -798,7 +818,8 @@ const AdminAuditLog = () => {
             logo: 'Logo Công Ty',
             favicon: 'Favicon Trang Web',
             socialLinks: 'Danh sách mạng xã hội',
-            chatConfig: 'Chatbox'
+            chatConfig: 'Chatbox',
+            role : 'Chức vụ'
         };
         return commonDict[key] || key;
     };

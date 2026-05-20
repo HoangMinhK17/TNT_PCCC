@@ -44,7 +44,6 @@ const contactRecruitmentSchema = new mongoose.Schema({
     {
         timestamps: true
     }
-
 )
 
 contactRecruitmentSchema.index({ status: 1, isDeleted: 1, createdAt: -1 })

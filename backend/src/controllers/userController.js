@@ -106,8 +106,25 @@ const getAllUsers = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const totalUsers = await User.countDocuments();
-        const users = await User.find()
+
+        const { search, role, status } = req.query;
+        let query = {};
+        
+        if (search) {
+            query.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } }
+            ];
+        }
+        if (role) {
+            query.role = role;
+        }
+        if (status) {
+            query.status = status;
+        }
+
+        const totalUsers = await User.countDocuments(query);
+        const users = await User.find(query)
             .sort({ role: 1, createdAt: -1 })
             .skip(skip)
             .limit(limit)
@@ -240,7 +257,7 @@ const getAdminTheme = async (req, res) => {
 
 const changePassword = async (req, res) => {
     try {
-        if (req.user.role !== "admin" && req.user.role !== "staff") {
+        if (req.user.role !== "admin" && req.user.role !== "staff" && req.user.role !== "user") {
             return res.status(403).json({ message: "Forbidden" });
         }
         const { password, newPassword } = req.body;

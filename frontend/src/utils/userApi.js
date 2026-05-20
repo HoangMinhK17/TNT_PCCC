@@ -30,10 +30,14 @@ export const createUser = async (name, email, role) => {
     }
 };
 
-export const getAllUsers = async (page, limit) => {
+export const getAllUsers = async (page, limit, search = '', role = '', status = '') => {
     try {
+        const params = { page, limit };
+        if (search) params.search = search;
+        if (role) params.role = role;
+        if (status) params.status = status;
         const response = await api.get("/user/get-all-users", {
-            params: { page, limit },
+            params,
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
