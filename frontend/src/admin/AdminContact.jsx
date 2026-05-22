@@ -158,7 +158,7 @@ const AdminContact = () => {
             title: 'Sản phẩm', key: 'product',
             render: (_, record) => record.productId?.name ? (
                 <Link to={`/products/${record.productId._id}`} target="_blank">
-                    <Tag color="cyan" style={{ cursor: 'pointer' }}>{record.productId.name}</Tag>
+                    <Tag color="cyan" style={{ cursor: 'pointer', whiteSpace: 'normal', wordBreak: 'break-word' }}>{record.productId.name}</Tag>
                 </Link>
             ) : <Tag color="gray">Không có</Tag>
         },
@@ -275,12 +275,11 @@ const AdminContact = () => {
                                 {currentRecord.productId && (
                                     <Descriptions.Item label="Sản phẩm quan tâm" >
                                         <Link to={`/products/${currentRecord.productId._id}`} target="_blank">
-                                            <span style={{ color: '#e8aa0dff', fontWeight: 'bold' }}>{currentRecord.productId.name}</span>
+                                            <span style={{ color: '#e8aa0dff', fontWeight: 'bold', wordBreak: 'break-word' }}>{currentRecord.productId.name}</span>
                                         </Link>
                                     </Descriptions.Item>
                                 )}
                                 <Descriptions.Item label="Nội dung gửi">{currentRecord.title}</Descriptions.Item>
-                                {/* <Descriptions.Item label="Nội dung gửi"><div style={{ whiteSpace: 'pre-wrap' }}>{currentRecord.message}</div></Descriptions.Item> */}
                                 {currentRecord.status !== 'pending' && (
                                     <>
                                         <Descriptions.Item label="Ghi chú xử lý / Nội dung phản hồi">

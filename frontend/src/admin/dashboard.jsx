@@ -213,7 +213,7 @@ const Dashboard = () => {
             key: 'subject',
             render: (_, record) => record.productId?.name ?
                 <Link to={`/products/${record.productId._id}`} target="_blank">
-                    <Tag color="cyan" style={{ cursor: 'pointer' }}>{record.productId.name}</Tag>
+                    <Tag color="cyan" style={{ cursor: 'pointer', whiteSpace: 'normal', height: 'auto', display: 'inline-block', wordBreak: 'break-word' }}>{record.productId.name}</Tag>
                 </Link> : <Tag color="gray">Không có</Tag>
         },
         {

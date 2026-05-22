@@ -176,7 +176,7 @@ const CategoryReorderModal = ({ open, onClose, onSaved }) => {
             ]}
         >
             <p style={{ color: '#888', marginBottom: 16, fontSize: 13 }}>
-                 Kéo thả để sắp xếp thứ tự danh mục hiển thị trên trang chủ.
+                Kéo thả để sắp xếp thứ tự danh mục hiển thị trên trang chủ.
             </p>
             {loading ? <div style={{ textAlign: 'center', padding: 32 }}>Đang tải...</div> : (
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -291,7 +291,7 @@ const ProductReorderModal = ({ open, onClose, categories }) => {
             {selectedCategoryId && !loadingProducts && items.length > 0 && (
                 <>
                     <p style={{ color: '#888', marginBottom: 12, fontSize: 13 }}>
-                         Kéo thả để sắp xếp thứ tự sản phẩm. <strong>{items.length}</strong> sản phẩm.
+                        Kéo thả để sắp xếp thứ tự sản phẩm. <strong>{items.length}</strong> sản phẩm.
                     </p>
                     <div style={{ maxHeight: 400, overflowY: 'auto', paddingRight: 4 }}>
                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -496,27 +496,27 @@ const TabCategoryProduct = ({ onCategoryChange }) => {
                         <Input />
                     </Form.Item>
                     <Form.Item name="slug" label="Slug" rules={[{ required: true, whitespace: true, message: 'Vui lòng không để trống!' }]}>
-                        <Input 
-                        addonAfter={
-                            <Tooltip title="Tạo slug từ tên danh mục">
-                                <ReloadOutlined
-                                    onClick={() => {
-                                        const name = form.getFieldValue("name");
+                        <Input
+                            addonAfter={
+                                <Tooltip title="Tạo slug từ tên danh mục">
+                                    <ReloadOutlined
+                                        onClick={() => {
+                                            const name = form.getFieldValue("name");
 
-                                        if (!name) return;
+                                            if (!name) return;
 
-                                        const slug = slugify(name, {
-                                            lower: true,
-                                            strict: true,
-                                            locale: "vi",
-                                        });
+                                            const slug = slugify(name, {
+                                                lower: true,
+                                                strict: true,
+                                                locale: "vi",
+                                            });
 
-                                        form.setFieldsValue({ slug });
-                                    }}
-                                    style={{ cursor: "pointer" }}
-                                />
-                            </Tooltip>
-                        }
+                                            form.setFieldsValue({ slug });
+                                        }}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                </Tooltip>
+                            }
                         />
                     </Form.Item>
                     <Form.Item name="status" label="Trạng thái">
@@ -675,7 +675,7 @@ const TabProduct = ({ categoryRefreshKey }) => {
             ) : <Tag>Chưa có</Tag>
         },
         {
-            title: 'Trạng thái', dataIndex: 'status', key: 'status', width : '150px',
+            title: 'Trạng thái', dataIndex: 'status', key: 'status', width: '150px',
             render: (status) => (
                 <Tag color={status === 'active' ? 'green' : 'red'}>
                     {status === 'active' ? 'Hoạt động' : 'Dừng hoạt động'}
@@ -733,7 +733,7 @@ const TabProduct = ({ categoryRefreshKey }) => {
                             <Select.Option key={c._id} value={c._id}>{c.name}</Select.Option>
                         ))}
                     </Select.OptGroup>
-                    
+
                     {categories.some(c => c.status !== 'active' || c.isDeleted) && (
                         <Select.OptGroup label="Đã xóa / Tạm dừng">
                             {categories.filter(c => c.status !== 'active' || c.isDeleted).map(c => (
@@ -821,7 +821,7 @@ const TabProduct = ({ categoryRefreshKey }) => {
 
                                     <div style={{ display: 'flex', gap: 16 }}>
                                         <Form.Item name="categoryId" label="Danh mục" rules={[{ required: true, message: 'Bắt buộc!' }]} style={{ flex: 1 }}>
-                                            <Select 
+                                            <Select
                                                 placeholder="Chọn danh mục"
                                                 showSearch
                                                 optionFilterProp="children"
@@ -832,9 +832,9 @@ const TabProduct = ({ categoryRefreshKey }) => {
                                                     if (editing && editingCategoryId === c._id) return true;
                                                     return false;
                                                 }).map(c => (
-                                                    <Select.Option 
-                                                        key={c._id} 
-                                                        value={c._id} 
+                                                    <Select.Option
+                                                        key={c._id}
+                                                        value={c._id}
                                                         disabled={c.status !== 'active' || c.isDeleted}
                                                     >
                                                         {c.name} {(c.status !== 'active' || c.isDeleted) ? ' (Đã xóa/Dừng)' : ''}

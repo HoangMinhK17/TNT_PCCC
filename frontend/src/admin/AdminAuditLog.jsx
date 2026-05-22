@@ -304,6 +304,10 @@ const UserManagementTab = () => {
                 : <Badge status="error" text={<Typography.Text type="danger">Bị khóa</Typography.Text>} />
         },
         {
+            title: 'Ngày tạo', dataIndex: 'createdAt', key: 'createdAt', align: 'center',
+            render: v => <span>{new Date(v).toLocaleString('vi-VN')}</span>
+        },
+        {
             title: 'Thao tác', key: 'action', align: 'center',
             render: (_, row) => {
                 const currentUserLocal = JSON.parse(localStorage.getItem("user") || "{}");
@@ -331,7 +335,7 @@ const UserManagementTab = () => {
     return (
         <div>
             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, gap: 8 }}>
-                <Title level={4} style={{ margin: 0 }}>Danh sách tài khoản</Title>
+                <Title level={4} style={{ margin: 0 }}>Danh sách người dùng</Title>
                 <Button
                     type="primary"
                     icon={<UserAddOutlined />}
@@ -341,18 +345,6 @@ const UserManagementTab = () => {
                 </Button>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: 16, gap: 8 }}>
-                <Input.Search 
-                    placeholder='Tìm kiếm...' 
-                    style={{ width: '25%' }} 
-                    value={searchInput}
-                    onChange={e => {
-                        setSearchInput(e.target.value);
-                        if (debounceRefUser.current) clearTimeout(debounceRefUser.current);
-                        debounceRefUser.current = setTimeout(() => { setSearchVal(e.target.value); setPage(1); }, 500);
-                    }}
-                    onSearch={v => { setSearchVal(v); setPage(1); }}
-                    allowClear
-                />
                 <Select
                     placeholder="Trạng thái"
                     allowClear
@@ -373,6 +365,18 @@ const UserManagementTab = () => {
                         { value: 'user', label: 'Người dùng' },
                     ]}
                     onChange={v => { setFilterRole(v ?? ''); setPage(1); }}
+                />
+                <Input.Search
+                    placeholder='Tìm theo tên hoặc email...'
+                    style={{ width: '25%' }}
+                    value={searchInput}
+                    onChange={e => {
+                        setSearchInput(e.target.value);
+                        if (debounceRefUser.current) clearTimeout(debounceRefUser.current);
+                        debounceRefUser.current = setTimeout(() => { setSearchVal(e.target.value); setPage(1); }, 500);
+                    }}
+                    onSearch={v => { setSearchVal(v); setPage(1); }}
+                    allowClear
                 />
 
                 <Button icon={<ReloadOutlined />} onClick={() => fetchUsers(page, searchVal, filterRole, filterStatus)}>Làm mới</Button>
@@ -516,7 +520,7 @@ const formatDate = (dateStr) => {
     });
 };
 
-const AdminAuditLog = () => {
+const AuditLogTab = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -819,7 +823,7 @@ const AdminAuditLog = () => {
             favicon: 'Favicon Trang Web',
             socialLinks: 'Danh sách mạng xã hội',
             chatConfig: 'Chatbox',
-            role : 'Chức vụ'
+            role: 'Chức vụ'
         };
         return commonDict[key] || key;
     };
@@ -922,6 +926,188 @@ const AdminAuditLog = () => {
     };
 
     return (
+        <>
+            <Space style={{ marginBottom: 16, flexWrap: 'wrap' }}>
+                <Select
+                    placeholder="Lọc hành động"
+                    allowClear
+                    style={{ width: 160 }}
+                    options={actionOptions.map(a => ({ label: ACTION_LABEL[a] || a, value: a }))}
+                    onChange={(v) => {
+                        const newAction = v ?? null;
+                        setFilterAction(newAction);
+                        const currentFilters = { search: searchUser, action: newAction, module: filterModule };
+                        if (filterDateRange && filterDateRange.length === 2) {
+                            currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                            currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                        }
+                        handleFilterChange(currentFilters);
+                    }}
+                />
+                <Select
+                    placeholder="Lọc module"
+                    allowClear
+                    style={{ width: 200 }}
+                    options={moduleOptions.map(m => ({ label: m, value: m }))}
+                    onChange={(v) => {
+                        const newModule = v ?? null;
+                        setFilterModule(newModule);
+                        const currentFilters = { search: searchUser, action: filterAction, module: newModule };
+                        if (filterDateRange && filterDateRange.length === 2) {
+                            currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                            currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                        }
+                        handleFilterChange(currentFilters);
+                    }}
+                />
+                <Input.Search
+                    placeholder="Tìm theo tên hoặc email người dùng..."
+                    allowClear
+                    style={{ width: 320 }}
+                    value={searchInput}
+                    onChange={e => {
+                        const val = e.target.value;
+                        setSearchInput(val);
+                        if (debounceRef.current) clearTimeout(debounceRef.current);
+                        debounceRef.current = setTimeout(() => {
+                            setSearchUser(val);
+                            const currentFilters = { search: val, action: filterAction, module: filterModule };
+                            if (filterDateRange && filterDateRange.length === 2) {
+                                currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                                currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                            }
+                            handleFilterChange(currentFilters);
+                        }, 500);
+                    }}
+                    onSearch={v => {
+                        if (debounceRef.current) clearTimeout(debounceRef.current);
+                        setSearchInput(v);
+                        setSearchUser(v);
+                        const currentFilters = { search: v, action: filterAction, module: filterModule };
+                        if (filterDateRange && filterDateRange.length === 2) {
+                            currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                            currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                        }
+                        handleFilterChange(currentFilters);
+                    }}
+                    onClear={() => {
+                        if (debounceRef.current) clearTimeout(debounceRef.current);
+                        setSearchInput('');
+                        setSearchUser('');
+                        const currentFilters = { search: '', action: filterAction, module: filterModule };
+                        if (filterDateRange && filterDateRange.length === 2) {
+                            currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
+                            currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
+                        }
+                        handleFilterChange(currentFilters);
+                    }}
+                />
+                <DatePicker.RangePicker
+                    placeholder={['Từ ngày', 'Đến ngày']}
+                    style={{ width: 260 }}
+                    value={filterDateRange}
+                    disabledDate={(current) => {
+                        return current && (current > dayjs().endOf('day') || current < dayjs().subtract(30, 'days').startOf('day'));
+                    }}
+                    onChange={(dates) => {
+                        setFilterDateRange(dates);
+                        const currentFilters = { search: searchUser, action: filterAction, module: filterModule };
+                        if (dates && dates.length === 2) {
+                            currentFilters.startDate = dates[0].startOf('day').toISOString();
+                            currentFilters.endDate = dates[1].endOf('day').toISOString();
+                        }
+                        handleFilterChange(currentFilters);
+                    }}
+                />
+                <Button
+                    icon={<ReloadOutlined />}
+                    loading={loading}
+                    onClick={() => { fetchData(currentPage, pageSize) }}
+                >
+                    Tải lại danh sách
+                </Button>
+            </Space>
+
+            <Table
+                columns={columns}
+                dataSource={data}
+                loading={loading}
+                bordered
+                locale={{ emptyText: <Empty description="Chưa có nhật ký nào" /> }}
+                pagination={{
+                    current: currentPage,
+                    pageSize,
+                    total: totalLogs,
+                    showLessItems: true,
+                    showSizeChanger: false,
+                    onChange: (page) => setCurrentPage(page),
+                    showTotal: t => `Tổng ${t} nhật ký`,
+                }}
+            />
+
+            <Modal
+                title={
+                    <Space>
+                        <Tag color={ACTION_COLOR[detailRecord?.action]}>
+                            {ACTION_LABEL[detailRecord?.action] || detailRecord?.action}
+                        </Tag>
+                        <Text>{detailRecord?.module} – {detailRecord?.recordName || detailRecord?.recordId}</Text>
+                    </Space>
+                }
+                open={detailVisible}
+                onCancel={() => setDetailVisible(false)}
+                footer={null}
+                width={700}
+            >
+                {detailRecord && (
+                    <Space direction="vertical" style={{ width: '100%' }} size={16}>
+                        <div>
+                            <Text strong style={{ marginBottom: 8, marginRight: 8 }}> Thời gian:</Text>
+                            <Text>{formatDate(detailRecord.createdAt)}</Text>
+                        </div>
+                        <div>
+                            <Text strong style={{ marginBottom: 8, marginRight: 8 }}> Người thực hiện:</Text>
+                            <Text>{detailRecord.userId?.name || 'Ẩn danh'}</Text>
+                        </div>
+                        <div>
+                            <Text strong style={{ marginBottom: 8, marginRight: 8 }}> Chức vụ:</Text>
+                            <Text>{detailRecord.userId?.role == 'admin' ? 'Quản trị viên' : detailRecord.userId?.role == 'staff' ? 'Nhân viên' : 'Người dùng'}</Text>
+                        </div>
+                        <div>
+                            <Text strong style={{ marginBottom: 8, marginRight: 8 }}>Email:</Text>
+                            <Text>{detailRecord.userId?.email || 'Ẩn danh'}</Text>
+                        </div>
+
+                        {detailRecord.action === 'update' ? (
+                            <div>
+                                <Text strong style={{ display: 'block', marginBottom: 16, fontSize: 16 }}>Chi tiết thay đổi:</Text>
+                                {renderUpdateDiff(detailRecord.oldValues, detailRecord.newValues, detailRecord.module)}
+                            </div>
+                        ) : (
+                            <>
+                                {detailRecord.oldValues && Object.keys(detailRecord.oldValues).length > 0 && (
+                                    <div>
+                                        <Text strong style={{ display: 'block', marginBottom: 8, color: '#cf1322' }}> Giá trị cũ:</Text>
+                                        {renderValues(detailRecord.oldValues, detailRecord.module)}
+                                    </div>
+                                )}
+                                {detailRecord.newValues && Object.keys(detailRecord.newValues).length > 0 && (
+                                    <div>
+                                        <Text strong style={{ display: 'block', marginBottom: 8, color: '#389e0d' }}> Giá trị mới:</Text>
+                                        {renderValues(detailRecord.newValues, detailRecord.module)}
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </Space>
+                )}
+            </Modal>
+        </>
+    );
+};
+
+const AdminAuditLog = () => {
+    return (
         <div className="admin-dashboard-layout">
             <AdminSidebar />
             <main className="admin-main" style={{ padding: '24px 32px' }}>
@@ -938,199 +1124,21 @@ const AdminAuditLog = () => {
                             {
                                 key: 'auditlog',
                                 label: ' Nhật ký hoạt động',
-                                children: (
-                                    <>
-                                        <Space style={{ marginBottom: 16, flexWrap: 'wrap' }}>
-                                            <Select
-                                                placeholder="Lọc hành động"
-                                                allowClear
-                                                style={{ width: 160 }}
-                                                options={actionOptions.map(a => ({ label: ACTION_LABEL[a] || a, value: a }))}
-                                                onChange={(v) => {
-                                                    const newAction = v ?? null;
-                                                    setFilterAction(newAction);
-                                                    const currentFilters = { search: searchUser, action: newAction, module: filterModule };
-                                                    if (filterDateRange && filterDateRange.length === 2) {
-                                                        currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
-                                                        currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
-                                                    }
-                                                    handleFilterChange(currentFilters);
-                                                }}
-                                            />
-                                            <Select
-                                                placeholder="Lọc module"
-                                                allowClear
-                                                style={{ width: 200 }}
-                                                options={moduleOptions.map(m => ({ label: m, value: m }))}
-                                                onChange={(v) => {
-                                                    const newModule = v ?? null;
-                                                    setFilterModule(newModule);
-                                                    const currentFilters = { search: searchUser, action: filterAction, module: newModule };
-                                                    if (filterDateRange && filterDateRange.length === 2) {
-                                                        currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
-                                                        currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
-                                                    }
-                                                    handleFilterChange(currentFilters);
-                                                }}
-                                            />
-                                            <Input.Search
-                                                placeholder="Tìm theo tên hoặc email người dùng..."
-                                                allowClear
-                                                style={{ width: 320 }}
-                                                value={searchInput}
-                                                onChange={e => {
-                                                    const val = e.target.value;
-                                                    setSearchInput(val);
-                                                    if (debounceRef.current) clearTimeout(debounceRef.current);
-                                                    debounceRef.current = setTimeout(() => {
-                                                        setSearchUser(val);
-                                                        const currentFilters = { search: val, action: filterAction, module: filterModule };
-                                                        if (filterDateRange && filterDateRange.length === 2) {
-                                                            currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
-                                                            currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
-                                                        }
-                                                        handleFilterChange(currentFilters);
-                                                    }, 500);
-                                                }}
-                                                onSearch={v => {
-                                                    if (debounceRef.current) clearTimeout(debounceRef.current);
-                                                    setSearchInput(v);
-                                                    setSearchUser(v);
-                                                    const currentFilters = { search: v, action: filterAction, module: filterModule };
-                                                    if (filterDateRange && filterDateRange.length === 2) {
-                                                        currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
-                                                        currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
-                                                    }
-                                                    handleFilterChange(currentFilters);
-                                                }}
-                                                onClear={() => {
-                                                    if (debounceRef.current) clearTimeout(debounceRef.current);
-                                                    setSearchInput('');
-                                                    setSearchUser('');
-                                                    const currentFilters = { search: '', action: filterAction, module: filterModule };
-                                                    if (filterDateRange && filterDateRange.length === 2) {
-                                                        currentFilters.startDate = filterDateRange[0].startOf('day').toISOString();
-                                                        currentFilters.endDate = filterDateRange[1].endOf('day').toISOString();
-                                                    }
-                                                    handleFilterChange(currentFilters);
-                                                }}
-                                            />
-                                            <DatePicker.RangePicker
-                                                placeholder={['Từ ngày', 'Đến ngày']}
-                                                style={{ width: 260 }}
-                                                value={filterDateRange}
-                                                disabledDate={(current) => {
-                                                    return current && (current > dayjs().endOf('day') || current < dayjs().subtract(30, 'days').startOf('day'));
-                                                }}
-                                                onChange={(dates) => {
-                                                    setFilterDateRange(dates);
-                                                    const currentFilters = { search: searchUser, action: filterAction, module: filterModule };
-                                                    if (dates && dates.length === 2) {
-                                                        currentFilters.startDate = dates[0].startOf('day').toISOString();
-                                                        currentFilters.endDate = dates[1].endOf('day').toISOString();
-                                                    }
-                                                    handleFilterChange(currentFilters);
-                                                }}
-                                            />
-                                            <Button
-                                                icon={<ReloadOutlined />}
-                                                loading={loading}
-                                                onClick={() => { fetchData(currentPage, pageSize) }}
-                                            >
-                                                Tải lại danh sách
-                                            </Button>
-                                        </Space>
-
-                                        <Table
-                                            columns={columns}
-                                            dataSource={data}
-                                            loading={loading}
-                                            bordered
-                                            locale={{ emptyText: <Empty description="Chưa có nhật ký nào" /> }}
-                                            pagination={{
-                                                current: currentPage,
-                                                pageSize,
-                                                total: totalLogs,
-                                                showLessItems: true,
-                                                showSizeChanger: false,
-                                                onChange: (page) => setCurrentPage(page),
-                                                showTotal: t => `Tổng ${t} nhật ký`,
-                                            }}
-                                        />
-                                    </>
-                                ),
+                                children: <AuditLogTab />,
                             },
                             {
                                 key: 'devices',
-                                label: ' Quản lý Thiết bị',
+                                label: ' Quản lý thiết bị',
                                 children: <DeviceManagementTab />,
                             },
                             {
                                 key: 'users',
-                                label: ' Quản lý Người dùng',
+                                label: ' Quản lý người dùng',
                                 children: <UserManagementTab />,
                             },
                         ]}
                     />
                 </div>
-
-                <Modal
-                    title={
-                        <Space>
-                            <Tag color={ACTION_COLOR[detailRecord?.action]}>
-                                {ACTION_LABEL[detailRecord?.action] || detailRecord?.action}
-                            </Tag>
-                            <Text>{detailRecord?.module} – {detailRecord?.recordName || detailRecord?.recordId}</Text>
-                        </Space>
-                    }
-                    open={detailVisible}
-                    onCancel={() => setDetailVisible(false)}
-                    footer={null}
-                    width={700}
-                >
-                    {detailRecord && (
-                        <Space direction="vertical" style={{ width: '100%' }} size={16}>
-                            <div>
-                                <Text strong style={{ marginBottom: 8, marginRight: 8 }}> Thời gian:</Text>
-                                <Text>{formatDate(detailRecord.createdAt)}</Text>
-                            </div>
-                            <div>
-                                <Text strong style={{ marginBottom: 8, marginRight: 8 }}> Người thực hiện:</Text>
-                                <Text>{detailRecord.userId?.name || 'Ẩn danh'}</Text>
-                            </div>
-                            <div>
-                                <Text strong style={{ marginBottom: 8, marginRight: 8 }}> Chức vụ:</Text>
-                                <Text>{detailRecord.userId?.role == 'admin' ? 'Quản trị viên' : detailRecord.userId?.role == 'staff' ? 'Nhân viên' : 'Người dùng'}</Text>
-                            </div>
-                            <div>
-                                <Text strong style={{ marginBottom: 8, marginRight: 8 }}>Email:</Text>
-                                <Text>{detailRecord.userId?.email || 'Ẩn danh'}</Text>
-                            </div>
-
-                            {detailRecord.action === 'update' ? (
-                                <div>
-                                    <Text strong style={{ display: 'block', marginBottom: 16, fontSize: 16 }}>Chi tiết thay đổi:</Text>
-                                    {renderUpdateDiff(detailRecord.oldValues, detailRecord.newValues, detailRecord.module)}
-                                </div>
-                            ) : (
-                                <>
-                                    {detailRecord.oldValues && Object.keys(detailRecord.oldValues).length > 0 && (
-                                        <div>
-                                            <Text strong style={{ display: 'block', marginBottom: 8, color: '#cf1322' }}> Giá trị cũ:</Text>
-                                            {renderValues(detailRecord.oldValues, detailRecord.module)}
-                                        </div>
-                                    )}
-                                    {detailRecord.newValues && Object.keys(detailRecord.newValues).length > 0 && (
-                                        <div>
-                                            <Text strong style={{ display: 'block', marginBottom: 8, color: '#389e0d' }}> Giá trị mới:</Text>
-                                            {renderValues(detailRecord.newValues, detailRecord.module)}
-                                        </div>
-                                    )}
-                                </>
-                            )}
-                        </Space>
-                    )}
-                </Modal>
             </main>
         </div>
     );

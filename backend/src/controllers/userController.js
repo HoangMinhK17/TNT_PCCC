@@ -128,7 +128,7 @@ const getAllUsers = async (req, res) => {
             .sort({ role: 1, createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .select('name email role status')
+            .select('name email role status createdAt')
             .lean();
         res.status(200).json({
             users,
@@ -438,7 +438,7 @@ const getAllSessions = async (req, res) => {
         const total = await Session.countDocuments(sessionFilter);
         const sessions = await Session.find(sessionFilter)
             .populate('userId', 'name email')
-            .sort({ createdAt: -1 })
+            .sort({ updatedAt: -1 })
             .skip((page - 1) * pageSize)
             .limit(pageSize)
             .lean();
