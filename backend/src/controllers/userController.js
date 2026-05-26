@@ -288,7 +288,7 @@ const changePassword = async (req, res) => {
         });
         res.status(200).json(user);
         sendMail(user.email, "ĐỔI MẬT KHẨU", "Mật khẩu của bạn đã được thay đổi thành công vào lúc "
-            + new Date().toLocaleString("vi-VN"), "", "");
+            + new Date().toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" }), "", "");
 
     } catch (error) {
         res.status(500).json({ message: error.message });
