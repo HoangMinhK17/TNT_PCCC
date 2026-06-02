@@ -467,7 +467,8 @@ const logoutSession = async (req, res) => {
 
         emitForceLogout(
             session.deviceId,
-            "Phiên đăng nhập của bạn đã bị quản trị viên đăng xuất."
+            "Phiên đăng nhập của bạn đã bị quản trị viên đăng xuất.",
+            session.userId
         );
 
         await AuditLog.create({

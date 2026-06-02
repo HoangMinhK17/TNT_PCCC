@@ -2,11 +2,16 @@ import api from "./api";
 
 export const loginUser = async (email, password) => {
     try {
-        let deviceId = localStorage.getItem('deviceId');
+        // Mỗi tài khoản có deviceId riêng biệt theo email
+        // Tránh tình trạng hai tài khoản khác nhau trên cùng trình duyệt dùng chung deviceId
+        const deviceKey = `deviceId_${email}`;
+        let deviceId = localStorage.getItem(deviceKey);
         if (!deviceId) {
             deviceId = crypto.randomUUID ? crypto.randomUUID() : 'device-' + Math.random().toString(36).substring(2, 15) + Date.now();
-            localStorage.setItem('deviceId', deviceId);
+            localStorage.setItem(deviceKey, deviceId);
         }
+        // Lưu deviceId hiện tại (của account đang đăng nhập) để socket dùng
+        localStorage.setItem('deviceId', deviceId);
         const response = await api.post("/user/login-user", { email, password, deviceId });
         if (response.data.refreshToken) {
             localStorage.setItem('refreshToken', response.data.refreshToken);

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Eye, EyeOff } from "lucide-react";
 import "../styles/Login.css";
 import { loginUser } from "../utils/userApi";
 import { getImageInformation } from "../utils/informationApi";
-import { initSocket, registerUser } from "../utils/socket";
+import { initSocket, registerUser, disconnectSocket } from "../utils/socket";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -13,6 +14,7 @@ const Login = () => {
         password: ""
     });
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -40,7 +42,7 @@ const Login = () => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const data = await loginUser(formData.username, formData.password);
+            const data = await loginUser(formData.username.trim(), formData.password.trim());
             if (data.token && data.user.role === "admin" || data.user.role === "staff") {
                 if (data.user.role === "admin" && data.user.status === "inactive") {
                     toast.error("Tài khoản Admin của bạn đã bị vô hiệu hóa");
@@ -53,10 +55,17 @@ const Login = () => {
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("user", JSON.stringify(data.user));
                 
+                // deviceId đã được cập nhật đúng (theo email) trong loginUser()
+                // Phải disconnect socket cũ rồi re-init để tránh
+                // trường hợp socket cũ của account khác vẫn dùng cùng socketId
+                disconnectSocket();
                 const deviceId = localStorage.getItem('deviceId');
                 if (data.user.id && deviceId) {
-                    initSocket();
+                    const sock = initSocket();
                     registerUser(data.user.id, deviceId);
+                    sock.on('connect', () => {
+                        registerUser(data.user.id, deviceId);
+                    });
                 }
 
                 toast.success("Đăng nhập thành công!");
@@ -95,14 +104,25 @@ const Login = () => {
 
                     <div className="form-group">
                         <label htmlFor="password">Mật khẩu</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            placeholder="Nhập mật khẩu"
-                            required
-                        />
+                        <div className="password-input-wrapper">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="Nhập mật khẩu"
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="toggle-password-btn"
+                                onClick={() => setShowPassword(prev => !prev)}
+                                tabIndex={-1}
+                                aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" className="login-btn" disabled={isLoading}>
