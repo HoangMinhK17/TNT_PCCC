@@ -215,7 +215,7 @@ const ContactSection = () => {
                 </div>
                 <div className="info-content">
                   <h4>{t('section_email')}</h4>
-                  <p><a href={`mailto:${information.email}`}>{information.email}</a></p>
+                  <p><a href={`mailto:${information.email}`} data-nosnippet>{information.email}</a></p>
                 </div>
               </div>
               {information?.timeWork?.length > 0 && (

@@ -96,7 +96,7 @@ const Footer = () => {
                 </li>
                 <li className="contact-item">
                   <span className="icon"><FaEnvelope /></span>
-                  <span>{information?.email}</span>
+                  <span data-nosnippet>{information?.email}</span>
                 </li>
               </ul>
             </div>
