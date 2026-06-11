@@ -9,7 +9,7 @@ const SEO = ({ title, description, keywords, image, url, type = 'website', schem
     const defaultDescription = introduction?.description?.descriptionName || '';
     const defaultKeywords = introduction?.title?.titleName || '';
     const defaultImage = introduction?.image?.[0] || '';
-    const siteUrl = introduction?.url || '';
+    const siteUrl = introduction?.url || 'https://www.pccctnt.com.vn';
 
     const metaTitle = title ? `${title} | ${siteTitle}` : siteTitle;
     const metaDescription = description || defaultDescription;
