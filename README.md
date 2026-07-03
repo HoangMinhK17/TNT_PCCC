@@ -1,6 +1,25 @@
-#  TNT PCCC – Website giới thiệu về sản phẩm, thông tin, dự án, tin tức PCCC và liên hệ, đặt hàng của công ty TNHH TNT PCCC.
+# 🧯 TNT PCCC - Nền tảng Thương mại & Quản trị Doanh nghiệp
 
-Dự án web fullstack gồm **Frontend (React + Vite)** và **Backend (Node.js + Express)**, sử dụng **MongoDB Atlas** làm cơ sở dữ liệu và **Cloudinary** để lưu trữ media.
+**TNT PCCC** là giải pháp Web Fullstack toàn diện được xây dựng cho công ty TNHH TNT PCCC. Dự án không chỉ cung cấp website giới thiệu sản phẩm, dự án, tin tức và đặt hàng, mà còn tích hợp một **Hệ thống Quản trị (Admin Dashboard)** mạnh mẽ với các module chuyên sâu.
+
+## 🌟 Tính năng nổi bật
+
+### 🛒 Dành cho Khách hàng (Client-side)
+- **📧 Xác thực & Bảo mật:** Quản lý tài khoản bảo mật, hỗ trợ lấy lại mật khẩu và thông báo đổi mật khẩu tự động qua hệ thống Email.
+- Xem thông tin công ty, dự án, tin tức chuyên ngành PCCC.
+- Duyệt danh mục sản phẩm và thao tác đặt hàng trực tuyến dễ dàng.
+- Giao diện thân thiện, chuẩn SEO và tương thích mọi thiết bị (Responsive).
+
+### ⚙️ Hệ thống Quản trị (Admin Dashboard)
+Bên cạnh các chức năng quản lý (CRUD) cốt lõi, hệ thống tạo điểm nhấn với các tính năng nâng cao giúp tối ưu vận hành:
+- **🎨 Tùy biến giao diện (Dynamic UI):** Admin có thể tự do thay đổi màu sắc, kích cỡ chữ của Header/Footer trực tiếp từ dashboard mà không cần can thiệp source code.
+- **🛡️ Audit Logs & Bảo mật:** Lưu vết (log) chi tiết mọi thao tác thay đổi hệ thống. Lưu trữ thông tin địa chỉ, thiết bị đăng nhập để rà soát bất thường.
+- **⚡ Quản lý truy cập Real-time:** Ứng dụng Socket.IO cho phép giám sát phiên hoạt động và có khả năng "Kick" (buộc người dùng đăng xuất) ngay lập tức theo thời gian thực.
+- **🔄 Thao tác Kéo thả (Drag & Drop):** Sắp xếp thứ tự hiển thị của sản phẩm trực quan chỉ bằng thao tác kéo thả, tăng trải nghiệm UX cho Admin.
+
+---
+
+> 💻 **Tech Stack:** Dự án sử dụng **React + Vite** (Frontend), **Node.js + Express** (Backend), **MongoDB Atlas** (Database), và **Cloudinary** (Lưu trữ media).
 
 ---
 
