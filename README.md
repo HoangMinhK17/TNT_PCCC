@@ -1,4 +1,4 @@
-﻿# 🔥 TNT PCCC – Hệ thống Quản lý Phòng cháy Chữa cháy
+#  TNT PCCC – Website giới thiệu về sản phẩm, thông tin, dự án, tin tức PCCC và liên hệ, đặt hàng của công ty TNHH TNT PCCC.
 
 Dự án web fullstack gồm **Frontend (React + Vite)** và **Backend (Node.js + Express)**, sử dụng **MongoDB Atlas** làm cơ sở dữ liệu và **Cloudinary** để lưu trữ media.
 
@@ -292,4 +292,12 @@ taskkill /PID <PID> /F
 
 ---
 
-> Made with ❤️ by TNT Team
+## 👨‍💻 Tác giả & Thông tin liên hệ (Author & Contact)
+
+Dự án này được phân tích, thiết kế hệ thống và phát triển toàn bộ bởi:
+
+**Hoàng Minh** - *Software Engineer / Fullstack Developer*
+
+- 📧 **Email:**  [minhhoang1601dev@gmail.com]
+- 🐙 **GitHub:** [@HoangMinhK17](https://github.com/HoangMinhK17)
+
