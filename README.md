@@ -38,7 +38,7 @@ TNT_PCCC/
 │   │   ├── config/
 │   │   ├── controllers/
 │   │   ├── middleware/
-│   │   ├── models/
+│   │   ├── models/        # 22 Mongoose models → MongoDB collections
 │   │   ├── routes/
 │   │   └── server.js
 │   └── .env
@@ -47,17 +47,48 @@ TNT_PCCC/
         └── keep-alive.yml
 ```
 
+### 🗄️ Database – MongoDB Atlas Collections
+
+Dự án sử dụng **MongoDB Atlas** (cloud) với database tên `tnt_company`. Toàn bộ schema được định nghĩa qua **Mongoose** trong `backend/src/models/`:
+
+| Collection               | Model File                 | Mô tả                                   |
+|--------------------------|----------------------------|-----------------------------------------|
+| `auditlogs`              | `AuditLog.js`              | Lưu vết mọi thao tác thay đổi hệ thống |
+| `categorynews`           | `CategoryNews.js`          | Danh mục tin tức                        |
+| `categoryproducts`       | `CategoryProduct.js`       | Danh mục sản phẩm                       |
+| `contacts`               | `Contact.js`               | Thông tin liên hệ từ khách hàng         |
+| `contactrecruitments`    | `ContactRecruitment.js`    | Đơn ứng tuyển tuyển dụng               |
+| `headers`                | `Header.js`                | Cấu hình header website                 |
+| `informations`           | `Information.js`           | Thông tin chung công ty                 |
+| `introductcompanies`     | `IntroductCompany.js`      | Nội dung giới thiệu công ty             |
+| `leaders`                | `Leader.js`                | Thông tin ban lãnh đạo                  |
+| `news`                   | `News.js`                  | Bài viết / tin tức                      |
+| `partners`               | `Partner.js`               | Đối tác của công ty                     |
+| `products`               | `Product.js`               | Danh sách sản phẩm                      |
+| `projects`               | `Project.js`               | Dự án đã thực hiện                      |
+| `recruitments`           | `Recruitment.js`           | Tin tuyển dụng                          |
+| `services`               | `Service.js`               | Dịch vụ cung cấp                        |
+| `sessions`               | `Session.js`               | Phiên đăng nhập (giám sát real-time)   |
+| `testimonials`           | `Testimonial.js`           | Đánh giá / phản hồi khách hàng         |
+| `themefooters`           | `ThemeFooter.js`           | Cấu hình giao diện footer               |
+| `themeheaders`           | `ThemeHeader.js`           | Cấu hình giao diện header               |
+| `users`                  | `User.js`                  | Tài khoản quản trị viên                 |
+| `whychoosecompanies`     | `WhyChooseCompany.js`      | Nội dung "Tại sao chọn chúng tôi"      |
+| `whychooseservices`      | `WhyChooseService.js`      | Lý do chọn dịch vụ                      |
+
 ---
 
 ## ⚙️ Yêu cầu môi trường
 
-| Công cụ     | Phiên bản tối thiểu |
-|-------------|---------------------|
-| Node.js     | >= 18.x             |
-| npm         | >= 9.x              |
-| Git         | Bất kỳ              |
+| Công cụ          | Phiên bản tối thiểu |
+|------------------|---------------------|
+| Node.js          | >= 18.x             |
+| npm              | >= 9.x              |
+| Git              | Bất kỳ              |
+| MongoDB Atlas    | Free Tier (M0)      |
 
 > Tải Node.js tại: https://nodejs.org/
+> Đăng ký MongoDB Atlas miễn phí tại: https://www.mongodb.com/atlas
 
 ---
 
@@ -69,6 +100,33 @@ TNT_PCCC/
 git clone https://github.com/<your-username>/TNT_PCCC.git
 cd TNT_PCCC
 ```
+
+---
+
+### Bước 1.5 – Cấu hình Database (MongoDB Atlas)
+
+> ⚠️ **Bắt buộc thực hiện trước khi chạy Backend.**
+
+#### 1. Tạo tài khoản & Cluster
+1. Truy cập [mongodb.com/atlas](https://www.mongodb.com/atlas) → Đăng ký miễn phí
+2. Tạo **Cluster M0** (Free Tier)
+3. Tạo **Database User**: vào *Database Access* → Add New Database User
+4. Cấu hình **Network Access**: vào *Network Access* → Add IP Address → chọn `0.0.0.0/0` (cho phép mọi IP, phù hợp development)
+
+#### 2. Lấy Connection String
+1. Vào cluster → Click **Connect** → chọn **Drivers**
+2. Chọn Driver: **Node.js**, Version: **5.5 or later**
+3. Copy chuỗi kết nối có dạng:
+
+```
+mongodb+srv://<username>:<password>@<cluster>.mongodb.net/tnt_company?retryWrites=true&w=majority&appName=Cluster0
+```
+
+4. Thay `<username>`, `<password>` bằng thông tin Database User đã tạo
+5. Dán vào biến `MONGO_URI` trong file `backend/.env`
+
+#### 3. Database sẽ tự động khởi tạo
+> Khi backend chạy lần đầu và có request, **Mongoose sẽ tự động tạo các collections** tương ứng với 22 models. Không cần chạy migration hay seed thủ công.
 
 ---
 
@@ -141,11 +199,12 @@ npm run dev
 
 ### ✅ Kết quả sau khi chạy thành công
 
-| Service  | URL                           |
-|----------|-------------------------------|
-| Frontend | http://localhost:5173         |
-| Backend  | http://localhost:5001         |
-| API Base | http://localhost:5001/api/tnt |
+| Service    | URL                              |
+|------------|----------------------------------|
+| Frontend   | http://localhost:5173            |
+| Backend    | http://localhost:5001            |
+| API Base   | http://localhost:5001/api/tnt    |
+| Database   | MongoDB Atlas (cloud connection) |
 
 ---
 
@@ -181,6 +240,22 @@ npm start
 
 ## ☁️ Triển khai (Deployment)
 
+### Database – MongoDB Atlas
+
+1. Đăng nhập [mongodb.com/atlas](https://www.mongodb.com/atlas)
+2. Tạo **Cluster M0** (Free Tier) → chọn region gần nhất (Singapore recommended)
+3. Vào **Database Access** → Add New Database User:
+   - Authentication: **Password**
+   - Role: **Atlas Admin** (hoặc `readWriteAnyDatabase`)
+4. Vào **Network Access** → Add IP Address:
+   - Development: `0.0.0.0/0`
+   - Production: thêm IP cố định của Render.com
+5. Lấy **Connection String** → dán vào biến `MONGO_URI` trên Render.com
+
+> ✅ Database **không cần deploy riêng** – MongoDB Atlas là dịch vụ cloud managed, luôn sẵn sàng 24/7.
+
+---
+
 ### Backend – Render.com
 
 1. Đẩy code lên GitHub
@@ -211,6 +286,24 @@ npm start
    VITE_SOCKET_URL = https://tnt-pccc.onrender.com
    ```
 4. Deploy → File `vercel.json` đã cấu hình sẵn proxy API và SPA routing
+
+### 🗺️ Sơ đồ triển khai tổng thể
+
+```
+┌─────────────────┐     HTTPS      ┌─────────────────┐
+│   Vercel         │ ─────────────► │   Render.com     │
+│   (Frontend)     │  REST API /    │   (Backend)      │
+│   React + Vite   │  Socket.IO     │   Node + Express │
+└─────────────────┘                └────────┬────────┘
+                                             │ MONGO_URI
+                                             │ (mongodb+srv://)
+                                             ▼
+                                   ┌─────────────────┐
+                                   │  MongoDB Atlas   │
+                                   │  (Database)      │
+                                   │  22 Collections  │
+                                   └─────────────────┘
+```
 
 ---
 
@@ -246,6 +339,14 @@ npm start
 | Multer         | Upload file                     |
 | Nodemon        | Auto-reload khi dev             |
 
+### Database
+
+| Công nghệ          | Mục đích                                        |
+|--------------------|-------------------------------------------------|
+| MongoDB Atlas      | Cloud database (NoSQL document store)           |
+| Mongoose 8         | ODM – định nghĩa Schema, validation, relations  |
+| MongoDB M0 Cluster | Free tier – 512MB storage, shared cluster       |
+
 ---
 
 ## 🌐 Biến môi trường tham khảo
@@ -275,6 +376,18 @@ npm start
 |--------------------|-----------------------------|
 | `VITE_API_URL`     | URL base của REST API       |
 | `VITE_SOCKET_URL`  | URL kết nối Socket.IO       |
+
+### `database` – Không có file `.env` riêng
+
+> MongoDB Atlas không cần file cấu hình riêng. Toàn bộ kết nối được quản lý qua biến `MONGO_URI` trong `backend/.env`.
+
+| Thông số             | Giá trị mặc định                      |
+|----------------------|---------------------------------------|
+| Database Name        | `tnt_company`                         |
+| Auth Source          | `admin`                               |
+| Connection Pool      | Mongoose mặc định (5 connections)     |
+| Retry Writes         | `true`                                |
+| Write Concern        | `majority`                            |
 
 ---
 

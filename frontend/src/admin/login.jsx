@@ -81,12 +81,15 @@ const Login = () => {
         }
     };
 
+    const isSubdomainAdmin = typeof window !== 'undefined' && window.location.hostname.toLowerCase().startsWith('admin.');
+    const homeUrl = isSubdomainAdmin ? 'https://pccctnt.com.vn' : '/';
+
     return (
         <div className="login-container">
             <div className="login-card">
-                <Link to="/">
+                <a href={homeUrl}>
                     <img src={information?.logo} alt="TNT Logo" className="login-logo" />
-                </Link>
+                </a>
                 <h2>Đăng nhập Admin</h2>
 
                 <form className="login-form" onSubmit={handleSubmit}>
@@ -131,9 +134,9 @@ const Login = () => {
                 </form>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
 
-                    <Link to="/" className="back-to-site">
+                    <a href={homeUrl} className="back-to-site">
                         Quay lại trang chủ
-                    </Link>
+                    </a>
                     <Link to="/admin/forget-password" className="back-to-site" >
                         Quên mật khẩu
                     </Link>
