@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 // const api = axios.create({
 //     baseURL: '/api',
 //     headers: {
@@ -55,6 +56,15 @@ api.interceptors.response.use(
                     }
                 }
             }
+        }
+        if (error.response && error.response.status === 429) {
+            const msg = error.response.data?.message || "Bạn đang thao tác quá nhanh. Vui lòng thử lại sau!";
+            // Dùng toastId cố định để tránh hiển thị nhiều toast 429 chồng lên nhau
+            toast.warn(msg, {
+                toastId: "rate-limit-toast",
+                autoClose: 5000,
+            });
+            return Promise.reject(error);
         }
         return Promise.reject(error);
     }
