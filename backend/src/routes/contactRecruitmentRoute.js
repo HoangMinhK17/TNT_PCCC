@@ -9,10 +9,11 @@ import {
     getContactRecruitmentById
 } from "../controllers/contactRecruitmentController.js";
 import { authMiddleware } from "../middleware/auth.js";
+import { formSubmitLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
-router.post("/create-contact-recruitment", createContactRecruitment);
+router.post("/create-contact-recruitment", formSubmitLimiter, createContactRecruitment);
 router.get("/get-contact-recruitment", authMiddleware, getContactRecruitment);
 router.get("/get-contact-recruitment-by-name-or-phone/:search", authMiddleware, getContactRecruitmentByNameOrPhone);
 router.get("/get-contact-recruitment-by-status/:status", authMiddleware, getContactRecruitmentByStatus);

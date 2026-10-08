@@ -7,6 +7,7 @@ import cors from "cors";
 import * as useragent from 'express-useragent';
 import requestIp from 'request-ip';
 import { initSocket } from "./config/socket.js";
+import { globalLimiter } from "./middleware/rateLimiter.js";
 
 dotenv.config();
 connectDB();
@@ -17,6 +18,7 @@ app.set("trust proxy", 1);
 app.use(express.json());
 app.use(cors({ origin: "*" }));
 app.use(useragent.express());
+app.use("/api", globalLimiter); // Giới hạn: tối đa 100 request/phút mỗi IP
 
 app.use((req, res, next) => {
     req.userInfo = {
